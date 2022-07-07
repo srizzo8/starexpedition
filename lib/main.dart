@@ -178,7 +178,8 @@ class CustomSearchDelegate extends SearchDelegate {
               break;
           }
         },*/
-            leading: Image.network(theImages[index]),
+            leading:
+              Image.network(theImages[index], height: 50, width: 50),
             trailing: Icon(Icons.whatshot_rounded)
         );
       },
