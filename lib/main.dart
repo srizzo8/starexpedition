@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 FirebaseDatabase database = FirebaseDatabase.instance;
+DatabaseReference ref = FirebaseDatabase.instance.ref("Alpha Centauri");
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +34,13 @@ class MyApp extends StatelessWidget {
 }
 // This is the widget that will be shown
 // as the homepage of your application.
+_getStars() async { //this method gets data for Alpha Centauri from the database. If you did it outside the main class, you will probably not be able to see it. async means that it will run once you press the button or run the function.
+  DatabaseEvent event = await ref.once();
+
+// Print the data of the snapshot
+  print(event.snapshot.value); // { "name": "John" }
+}
+
 class StarExpedition extends StatefulWidget {
   const StarExpedition({Key? key}) : super(key: key);
 
@@ -53,6 +60,7 @@ class _StarExpeditionState extends State<StarExpedition> {
           IconButton(
             onPressed: () {
               // method to show the search bar
+              _getStars(); //putting it here is just for testing; it is just to see if we are getting any data from firebase (the data we want, such as data relating to Alpha Centauri).
               showSearch(
                   context: context,
                   // delegate to customize the search bar
