@@ -27,13 +27,15 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 // This is the widget that will be shown
 // as the homepage of your application.
-_getStars() async { //this method gets data for Alpha Centauri from the database. If you did it outside the main class, you will probably not be able to see it. async means that it will run once you press the button or run the function.
-  DatabaseEvent event = await ref.once(); //the getStars method is for the first button. it is put somewhere where i can call it.
+_getStars() async {
+  // This method gets data for Alpha Centauri from the database. If you did it outside the main class, you will probably not be able to see it. async means that it will run once you press the button or run the function.
+  DatabaseEvent event = await ref.once(); //the _getStars() method is for the first button. it is put somewhere where i can call it.
 
-// Print the data of the snapshot
-  print(event.snapshot.value); //{ "name": "John" } for example
+  // This is where one will print the data of the snapshot (in this case, Alpha Centauri's data)
+  print(event.snapshot.value); // This will show Alpha Centauri's data
 }
 
 class StarExpedition extends StatefulWidget {
@@ -55,12 +57,11 @@ class _StarExpeditionState extends State<StarExpedition> {
           IconButton(
             onPressed: () {
               // method to show the search bar
-              _getStars(); //putting it here is just for testing; it is just to see if we are getting any data from firebase (the data we want, such as data relating to Alpha Centauri).
+              _getStars(); // I am putting it here is just for testing; it is just to see if we are getting any data from firebase (the data we want, such as data relating to Alpha Centauri).
               showSearch(
                   context: context,
                   // delegate to customize the search bar
-                  delegate: CustomSearchDelegate()
-              );
+                  delegate: CustomSearchDelegate());
             },
             icon: const Icon(Icons.search),
           )
@@ -69,8 +70,9 @@ class _StarExpeditionState extends State<StarExpedition> {
     );
   }
 }
+
 class CustomSearchDelegate extends SearchDelegate {
-  // Demo list to show querying
+  // This is a demo list to show querying
   List<String> searchTerms = [
     "Proxima Centauri",
     "Alpha Centauri",
@@ -97,8 +99,7 @@ class CustomSearchDelegate extends SearchDelegate {
     'http://www.daviddarling.info/images/Lacaille_9352.jpg'
   ];
 
-  // first overwrite to
-  // clear the search text
+  // This is the first overwrite (to clear the search text)
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -111,7 +112,7 @@ class CustomSearchDelegate extends SearchDelegate {
     ];
   }
 
-  // second overwrite to pop out of search menu
+  // This is the second overwrite (to pop out of search menu)
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
@@ -122,7 +123,7 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 
-  // third overwrite to show query result
+  // This is the third overwrite to show query result
   @override
   Widget buildResults(BuildContext context) {
     List<String> myMatchQuery = [];
@@ -142,8 +143,7 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 
-  // last overwrite to show the
-  // querying process at the runtime
+  // This is the last overwrite (to show the querying process at the runtime)
   @override
   Widget buildSuggestions(BuildContext context) {
     List<String> myMatchQuery = [];
@@ -157,13 +157,12 @@ class CustomSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         var result = myMatchQuery[index];
         return ListTile(
-            title: Text(result, style: TextStyle(color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
-            leading:
-            Image.network(theImages[index], height: 50, width: 50),
-            trailing: Icon(Icons.whatshot_rounded)
-        );
+            title: Text(result,
+                style: TextStyle(
+                    color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
+            leading: Image.network(theImages[index], height: 50, width: 50),
+            trailing: Icon(Icons.whatshot_rounded));
       },
     );
   }
 }
-
