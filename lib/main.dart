@@ -11,11 +11,6 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-
-/*void main() async{
-  runApp(const MyApp());
-}*/
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -35,10 +30,10 @@ class MyApp extends StatelessWidget {
 // This is the widget that will be shown
 // as the homepage of your application.
 _getStars() async { //this method gets data for Alpha Centauri from the database. If you did it outside the main class, you will probably not be able to see it. async means that it will run once you press the button or run the function.
-  DatabaseEvent event = await ref.once();
+  DatabaseEvent event = await ref.once(); //the getStars method is for the first button. it is put somewhere where i can call it.
 
 // Print the data of the snapshot
-  print(event.snapshot.value); // { "name": "John" }
+  print(event.snapshot.value); //{ "name": "John" } for example
 }
 
 class StarExpedition extends StatefulWidget {
@@ -79,7 +74,6 @@ class CustomSearchDelegate extends SearchDelegate {
   List<String> searchTerms = [
     "Proxima Centauri",
     "Alpha Centauri",
-    "Epsilon Eridani",
     "Tau Ceti",
     "Ross 128",
     "Luyten's Star",
@@ -87,19 +81,20 @@ class CustomSearchDelegate extends SearchDelegate {
     "Wolf 1061",
     "Gliese 876",
     "Gliese 581",
+    "Lacaille 9352",
   ];
 
   List<String> theImages = [
     'https://upload.wikimedia.org/wikipedia/commons/9/95/New_shot_of_Proxima_Centauri%2C_our_nearest_neighbour.jpg',
     'https://upload.wikimedia.org/wikipedia/commons/6/61/Alpha%2C_Beta_and_Proxima_Centauri_%281%29.jpg',
-    'http://www.daviddarling.info/images/EpsEri.jpg',
     'https://www.universetoday.com/wp-content/uploads/2010/11/exoplanet.jpg',
     'https://skyandtelescope.org/wp-content/uploads/Ross-128-SDSS_S_480x274-736x490-c-default.jpg',
     'http://www.solstation.com/stars/gl623ab.gif',
     'http://www.daviddarling.info/images/Kapteyns_Star.jpg',
     'https://upload.wikimedia.org/wikipedia/commons/a/a8/Planets_Under_a_Red_Sun.jpg',
     'https://www.cs.mcgill.ca/~rwest/wikispeedia/wpcd/images/185/18537.jpg',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRROUezXXVa6yArzPxwFTgtK8NrMA-0qkaYlA&usqp=CAU'
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRROUezXXVa6yArzPxwFTgtK8NrMA-0qkaYlA&usqp=CAU',
+    'http://www.daviddarling.info/images/Lacaille_9352.jpg'
   ];
 
   // first overwrite to
@@ -163,46 +158,12 @@ class CustomSearchDelegate extends SearchDelegate {
         var result = myMatchQuery[index];
         return ListTile(
             title: Text(result, style: TextStyle(color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
-            /*for(var i = 0; i < searchTerms.length; i++){
-          i = searchTerms[i];
-          switch(i){
-            case 0:
-              leading: Image.network('https://upload.wikimedia.org/wikipedia/commons/9/95/New_shot_of_Proxima_Centauri%2C_our_nearest_neighbour.jpg');
-              break;
-            case 1:
-              leading: Image.network('https://upload.wikimedia.org/wikipedia/commons/6/61/Alpha%2C_Beta_and_Proxima_Centauri_%281%29.jpg');
-              break;
-            case 2:
-              leading: Image.network('http://www.daviddarling.info/images/EpsEri.jpg');
-              break;
-            case 3:
-              leading: Image.network('https://www.universetoday.com/wp-content/uploads/2010/11/exoplanet.jpg');
-              break;
-            case 4:
-              leading: Image.network('https://skyandtelescope.org/wp-content/uploads/Ross-128-SDSS_S_480x274-736x490-c-default.jpg');
-              break;
-            case 5:
-              leading: Image.network('http://www.solstation.com/stars/gl623ab.gif');
-              break;
-            case 6:
-              leading: Image.network('http://www.daviddarling.info/images/Kapteyns_Star.jpg');
-              break;
-            case 7:
-              leading: Image.network('https://upload.wikimedia.org/wikipedia/commons/a/a8/Planets_Under_a_Red_Sun.jpg');
-              break;
-            case 8:
-              leading: Image.network('https://www.cs.mcgill.ca/~rwest/wikispeedia/wpcd/images/185/18537.jpg');
-              break;
-            case 9:
-              leading: Image.network('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRROUezXXVa6yArzPxwFTgtK8NrMA-0qkaYlA&usqp=CAU');
-              break;
-          }
-        },*/
             leading:
-              Image.network(theImages[index], height: 50, width: 50),
+            Image.network(theImages[index], height: 50, width: 50),
             trailing: Icon(Icons.whatshot_rounded)
         );
       },
     );
   }
 }
+
