@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "918349605155",
+    "firebase_url": "https://star-expedition-default-rtdb.firebaseio.com",
+    "project_id": "star-expedition",
+    "storage_bucket": "star-expedition.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918349605155:android:4181df2a12b87f2f27c496",
+        "android_client_info": {
+          "package_name": "com.srizzo.starexpedition4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918349605155-ebj2gd2sl0qv04iraipd10ohjpmmde31.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr2xlLrfn6I-ZyJISsw8kvvUw6FWNsBAE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918349605155-ebj2gd2sl0qv04iraipd10ohjpmmde31.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
