@@ -87,16 +87,16 @@ class CustomSearchDelegate extends SearchDelegate {
   ];
 
   List<String> theImages = [
-    'https://upload.wikimedia.org/wikipedia/commons/9/95/New_shot_of_Proxima_Centauri%2C_our_nearest_neighbour.jpg',
-    'https://upload.wikimedia.org/wikipedia/commons/6/61/Alpha%2C_Beta_and_Proxima_Centauri_%281%29.jpg',
-    'https://www.universetoday.com/wp-content/uploads/2010/11/exoplanet.jpg',
-    'https://skyandtelescope.org/wp-content/uploads/Ross-128-SDSS_S_480x274-736x490-c-default.jpg',
-    'http://www.solstation.com/stars/gl623ab.gif',
-    'http://www.daviddarling.info/images/Kapteyns_Star.jpg',
-    'https://upload.wikimedia.org/wikipedia/commons/a/a8/Planets_Under_a_Red_Sun.jpg',
-    'https://www.cs.mcgill.ca/~rwest/wikispeedia/wpcd/images/185/18537.jpg',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRROUezXXVa6yArzPxwFTgtK8NrMA-0qkaYlA&usqp=CAU',
-    'http://www.daviddarling.info/images/Lacaille_9352.jpg'
+    'assets/images/proxima_centauri.jpg',
+    'assets/images/alpha_centauri.jpg',
+    'assets/images/tau_ceti.jpg',
+    'assets/images/ross_128.jpg',
+    'assets/images/luytens_star.jpg',
+    'assets/images/kapteyns_star.jpg',
+    'assets/images/wolf_1061.jpg',
+    'assets/images/gliese_876.jpg',
+    'assets/images/gliese_581.jpg',
+    'assets/images/lacaille_9352.jpg'
   ];
 
   // This is the first overwrite (to clear the search text)
@@ -160,7 +160,7 @@ class CustomSearchDelegate extends SearchDelegate {
             title: Text(result,
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
-            leading: Image.network(theImages[index], height: 50, width: 50),
+            leading: Image.asset(theImages[index], height: 50, scale: 1.5),
             trailing: Icon(Icons.whatshot_rounded));
       },
     );
