@@ -160,7 +160,7 @@ class CustomSearchDelegate extends SearchDelegate {
             title: Text(result,
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
-            leading: Image.asset(theImages[index], height: 50, scale: 1.5),
+            leading: Image.asset(theImages[index], height: 50, width: 50, scale: 1.5),
             trailing: Icon(Icons.whatshot_rounded));
       },
     );
