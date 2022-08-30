@@ -138,6 +138,9 @@ class CustomSearchDelegate extends SearchDelegate {
         var result = myMatchQuery[index];
         return ListTile(
           title: Text(result),
+          onTap: () {
+            showAlertDialog(context);
+          }
         );
       },
     );
@@ -165,4 +168,28 @@ class CustomSearchDelegate extends SearchDelegate {
       },
     );
   }
+}
+showAlertDialog(BuildContext bc) {
+  // The OK button
+  Widget buttonForOk = TextButton(
+    child: Text("Ok"),
+    onPressed: () {},
+  );
+
+  // The content of the notification
+  AlertDialog ad = AlertDialog(
+    title: Text("Star Information"),
+    content: Text("Hello"),
+    actions: [
+      buttonForOk,
+    ],
+  );
+
+  // Showing the actual dialog
+  showDialog(
+    context: bc,
+    builder: (BuildContext bc) {
+      return ad;
+    },
+  );
 }
