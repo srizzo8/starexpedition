@@ -138,9 +138,10 @@ class CustomSearchDelegate extends SearchDelegate {
         var result = myMatchQuery[index];
         return ListTile(
           title: Text(result),
-          onTap: () {
+          /*onTap: () {
+            print('Testing pop-up');
             showAlertDialog(context);
-          }
+          }*/
         );
       },
     );
@@ -163,6 +164,10 @@ class CustomSearchDelegate extends SearchDelegate {
             title: Text(result,
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
+            onTap: () {
+              print('Testing pop-up');
+              showAlertDialog(context);
+            },
             leading: Image.asset(theImages[index], height: 50, width: 50, scale: 1.5),
             trailing: Icon(Icons.whatshot_rounded));
       },
