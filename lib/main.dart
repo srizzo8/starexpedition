@@ -178,7 +178,7 @@ showAlertDialog(BuildContext bc) {
   // The OK button
   Widget buttonForOk = TextButton(
     child: Text("Ok"),
-    onPressed: () {},
+    onPressed: () => Navigator.pop(bc),
   );
 
   // The content of the notification
