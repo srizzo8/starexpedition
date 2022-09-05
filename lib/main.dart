@@ -24,6 +24,8 @@ List<myStars> starsForSearchBar = [
   myStars(starName: "Proxima Centauri", imagePath: "assets/images/proxima_centauri.jpg"),
   myStars(starName: "Alpha Centauri", imagePath: "assets/images/alpha_centauri.jpg"),
   myStars(starName: "Tau Ceti", imagePath: "assets/images/tau_ceti.jpg"),
+  myStars(starName: "Ross 128", imagePath: "assets/images/ross_128.jpg"),
+  myStars(starName: "Luyten's Star", imagePath: "assets/images/luytens_star.jpg"),
 ];
 
 class MyApp extends StatelessWidget {
@@ -89,18 +91,18 @@ class _StarExpeditionState extends State<StarExpedition> {
 class CustomSearchDelegate extends SearchDelegate {
   // This is a demo list to show querying
   late final myStars outcome;
-  List<String> searchTerms = [
+  /*List<String> searchTerms = [
     "Proxima Centauri",
     "Alpha Centauri",
     "Tau Ceti",
-    /*"Ross 128",
+    "Ross 128",
     "Luyten's Star",
     "Kapteyn's Star",
     "Wolf 1061",
     "Gliese 876",
     "Gliese 581",
     "Lacaille 9352",*/
-  ];
+  //];
 
   /*List<String> theImages = [
     'assets/images/proxima_centauri.jpg',
@@ -142,10 +144,10 @@ class CustomSearchDelegate extends SearchDelegate {
   // This is the third overwrite to show query result
   @override
   Widget buildResults(BuildContext context) {
-    List<String> myMatchQuery = [];
-    for (var stars in searchTerms) {
-      if (stars.toLowerCase().contains(query.toLowerCase())) {
-        myMatchQuery.add(stars);
+    List<myStars> myMatchQuery = [];
+    for (var star in starsForSearchBar) {
+      if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
+        myMatchQuery.add(star!);
       }
     }
     return ListView.builder(
@@ -153,7 +155,7 @@ class CustomSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         var result = myMatchQuery[index];
         return ListTile(
-          title: Text(result),
+          title: Text(result.starName!), // The ! is there so that it can prevent errors, especially for variables that are set to null
           /*onTap: () {
             print('Testing pop-up');
             showAlertDialog(context);
@@ -166,24 +168,29 @@ class CustomSearchDelegate extends SearchDelegate {
   // This is the last overwrite (to show the querying process at the runtime)
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<String> myMatchQuery = [];
-    for (var stars in searchTerms) {
-      if (stars.toLowerCase().contains(query.toLowerCase())) {
+    List<myStars> myMatchQuery = [];
+    /*for (var stars in starsForSearchBar) {
+      /*if (stars.toLowerCase().contains(query.toLowerCase())) {
         myMatchQuery.add(stars);
+      }*/
+    }*/
+    for (var star in starsForSearchBar) {
+      if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
+        myMatchQuery.add(star!);
       }
     }
     return ListView.builder(
       itemCount: myMatchQuery.length,
       itemBuilder: (context, index) {
         return ListTile(
-            title: Text("${outcome.starName}",
+            title: Text(myMatchQuery[index].starName!,
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () {
               print('Testing pop-up');
               showAlertDialog(context);
             },
-            leading: Image.asset("${outcome.imagePath}", height: 50, width: 50, scale: 1.5),
+            leading: Image.asset(myMatchQuery[index].imagePath!, height: 50, width: 50, scale: 1.5),
             trailing: Icon(Icons.whatshot_rounded));
       },
     );
