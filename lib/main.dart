@@ -11,6 +11,21 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
+class myStars{
+  String? starName;
+  String? imagePath;
+  myStars({
+    this.starName,
+    this.imagePath,
+  });
+}
+
+List<myStars> starsForSearchBar = [
+  myStars(starName: "Proxima Centauri", imagePath: "assets/images/proxima_centauri.jpg"),
+  myStars(starName: "Alpha Centauri", imagePath: "assets/images/alpha_centauri.jpg"),
+  myStars(starName: "Tau Ceti", imagePath: "assets/images/tau_ceti.jpg"),
+];
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -73,20 +88,21 @@ class _StarExpeditionState extends State<StarExpedition> {
 
 class CustomSearchDelegate extends SearchDelegate {
   // This is a demo list to show querying
+  late final myStars outcome;
   List<String> searchTerms = [
     "Proxima Centauri",
     "Alpha Centauri",
     "Tau Ceti",
-    "Ross 128",
+    /*"Ross 128",
     "Luyten's Star",
     "Kapteyn's Star",
     "Wolf 1061",
     "Gliese 876",
     "Gliese 581",
-    "Lacaille 9352",
+    "Lacaille 9352",*/
   ];
 
-  List<String> theImages = [
+  /*List<String> theImages = [
     'assets/images/proxima_centauri.jpg',
     'assets/images/alpha_centauri.jpg',
     'assets/images/tau_ceti.jpg',
@@ -97,7 +113,7 @@ class CustomSearchDelegate extends SearchDelegate {
     'assets/images/gliese_876.jpg',
     'assets/images/gliese_581.jpg',
     'assets/images/lacaille_9352.jpg'
-  ];
+  ];*/
 
   // This is the first overwrite (to clear the search text)
   @override
@@ -159,16 +175,15 @@ class CustomSearchDelegate extends SearchDelegate {
     return ListView.builder(
       itemCount: myMatchQuery.length,
       itemBuilder: (context, index) {
-        var result = myMatchQuery[index];
         return ListTile(
-            title: Text(result,
+            title: Text("${outcome.starName}",
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () {
               print('Testing pop-up');
               showAlertDialog(context);
             },
-            leading: Image.asset(theImages[index], height: 50, width: 50, scale: 1.5),
+            leading: Image.asset("${outcome.imagePath}", height: 50, width: 50, scale: 1.5),
             trailing: Icon(Icons.whatshot_rounded));
       },
     );
