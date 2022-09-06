@@ -89,8 +89,9 @@ class _StarExpeditionState extends State<StarExpedition> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
+  String correctStar = "";
   // This is a demo list to show querying
-  late final myStars outcome;
+  // late final myStars outcome;
   /*List<String> searchTerms = [
     "Proxima Centauri",
     "Alpha Centauri",
@@ -169,6 +170,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     List<myStars> myMatchQuery = [];
+    //String correctStar = "";
     /*for (var stars in starsForSearchBar) {
       /*if (stars.toLowerCase().contains(query.toLowerCase())) {
         myMatchQuery.add(stars);
@@ -187,8 +189,10 @@ class CustomSearchDelegate extends SearchDelegate {
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () {
-              print('Testing pop-up');
+              print(myMatchQuery[index].starName!);
               showAlertDialog(context);
+              //Navigator.push(context, myMatchQuery[index].starName!);
+              correctStar = myMatchQuery[index].starName!;
             },
             leading: Image.asset(myMatchQuery[index].imagePath!, height: 50, width: 50, scale: 1.5),
             trailing: Icon(Icons.whatshot_rounded));
@@ -197,7 +201,10 @@ class CustomSearchDelegate extends SearchDelegate {
   }
 }
 showAlertDialog(BuildContext bc) {
+  //final myStars s;
+  CustomSearchDelegate cs;
   // The OK button
+  List<myStars> myMatchQuery = [];
   Widget buttonForOk = TextButton(
     child: Text("Ok"),
     onPressed: () => Navigator.pop(bc),
