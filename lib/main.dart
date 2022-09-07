@@ -189,10 +189,12 @@ class CustomSearchDelegate extends SearchDelegate {
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () {
-              print(myMatchQuery[index].starName!);
-              showAlertDialog(context);
-              //Navigator.push(context, myMatchQuery[index].starName!);
               correctStar = myMatchQuery[index].starName!;
+              print(correctStar);
+              showAlertDialog(context);
+              //correctStar = myMatchQuery[index].starName!;
+              //Navigator.push(context, showAlertDialog(context)); // I am trying to use this to push the data from the star search suggestions to the dialog
+              //print(Navigator.push(context, showAlertDialog(context)));
             },
             leading: Image.asset(myMatchQuery[index].imagePath!, height: 50, width: 50, scale: 1.5),
             trailing: Icon(Icons.whatshot_rounded));
@@ -201,29 +203,29 @@ class CustomSearchDelegate extends SearchDelegate {
   }
 }
 showAlertDialog(BuildContext bc) {
-  //final myStars s;
-  CustomSearchDelegate cs;
-  // The OK button
-  List<myStars> myMatchQuery = [];
-  Widget buttonForOk = TextButton(
-    child: Text("Ok"),
-    onPressed: () => Navigator.pop(bc),
-  );
+    //final myStars s;
+    final CustomSearchDelegate cs = new CustomSearchDelegate();
+    // The OK button
+    List<myStars> myMatchQuery = [];
+    Widget buttonForOk = TextButton(
+      child: Text("Ok"),
+      onPressed: () => Navigator.pop(bc),
+    );
 
-  // The content of the notification
-  AlertDialog ad = AlertDialog(
-    title: Text("Star Information"),
-    content: Text("Hello"),
-    actions: [
-      buttonForOk,
-    ],
-  );
+    // The content of the notification
+    AlertDialog ad = AlertDialog(
+      title: Text(cs.correctStar!),
+      content: Text("Hello"),
+      actions: [
+        buttonForOk,
+      ],
+    );
 
-  // Showing the actual dialog
-  showDialog(
-    context: bc,
-    builder: (BuildContext bc) {
-      return ad;
-    },
-  );
-}
+    // Showing the actual dialog
+    showDialog(
+      context: bc,
+      builder: (BuildContext bc) {
+        return ad;
+      },
+    );
+  }
