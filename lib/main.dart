@@ -90,6 +90,8 @@ class _StarExpeditionState extends State<StarExpedition> {
 
 class CustomSearchDelegate extends SearchDelegate {
   String correctStar = "";
+  //const CustomSearchDelegate({super.key, required this.starsForSearch});
+  //final List<myStars> starsForSearch;
   // This is a demo list to show querying
   // late final myStars outcome;
   /*List<String> searchTerms = [
@@ -170,7 +172,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     List<myStars> myMatchQuery = [];
-    //String correctStar = "";
+    String correctStar = "";
     /*for (var stars in starsForSearchBar) {
       /*if (stars.toLowerCase().contains(query.toLowerCase())) {
         myMatchQuery.add(stars);
@@ -191,9 +193,10 @@ class CustomSearchDelegate extends SearchDelegate {
             onTap: () {
               correctStar = myMatchQuery[index].starName!;
               print(correctStar);
-              showAlertDialog(context);
+              //showAlertDialog(context);
+             // Navigator.push(context, MaterialPageRoute(builder: (context) => articlePage(ms: ));
               //correctStar = myMatchQuery[index].starName!;
-              //Navigator.push(context, showAlertDialog(context)); // I am trying to use this to push the data from the star search suggestions to the dialog
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const articlePage(), settings: RouteSettings(arguments: correctStar))); // I am trying to use this to push the data from the star search suggestions to the dialog
               //print(Navigator.push(context, showAlertDialog(context)));
             },
             leading: Image.asset(myMatchQuery[index].imagePath!, height: 50, width: 50, scale: 1.5),
@@ -202,7 +205,29 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 }
-showAlertDialog(BuildContext bc) {
+class articlePage extends StatelessWidget{
+  const articlePage({super.key});
+
+  @override
+  Widget build(BuildContext bc){
+    final theWantedStar = ModalRoute.of(bc)!.settings.arguments as myStars;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(theWantedStar.starName!),
+      ),
+      body: Container(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.baseline, children: <Widget>[
+          Text('This is information about the star',
+              textAlign:
+              TextAlign.left,
+              style: TextStyle(
+                  color: Colors.deepPurpleAccent, fontFamily: 'Raleway')
+          )
+        ])
+      )
+    );
+  }
+  /*showAlertDialog(BuildContext bc) {
     //final myStars s;
     final CustomSearchDelegate cs = new CustomSearchDelegate();
     // The OK button
@@ -228,4 +253,5 @@ showAlertDialog(BuildContext bc) {
         return ad;
       },
     );
-  }
+  }*/
+}
