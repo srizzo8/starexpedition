@@ -89,9 +89,9 @@ class _StarExpeditionState extends State<StarExpedition> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
-  String correctStar = "";
+  //String correctStar = "";
   //const CustomSearchDelegate({super.key, required this.starsForSearch});
-  //final List<myStars> starsForSearch;
+  // final List<myStars> starsForSearch;
   // This is a demo list to show querying
   // late final myStars outcome;
   /*List<String> searchTerms = [
@@ -172,7 +172,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     List<myStars> myMatchQuery = [];
-    String correctStar = "";
+    //String correctStar = "";
     /*for (var stars in starsForSearchBar) {
       /*if (stars.toLowerCase().contains(query.toLowerCase())) {
         myMatchQuery.add(stars);
@@ -191,12 +191,13 @@ class CustomSearchDelegate extends SearchDelegate {
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () {
-              correctStar = myMatchQuery[index].starName!;
-              print(correctStar);
+              //correctStar = myMatchQuery[index].starName!;
+              print(myMatchQuery[index].starName!);
               //showAlertDialog(context);
              // Navigator.push(context, MaterialPageRoute(builder: (context) => articlePage(ms: ));
               //correctStar = myMatchQuery[index].starName!;
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const articlePage(), settings: RouteSettings(arguments: correctStar))); // I am trying to use this to push the data from the star search suggestions to the dialog
+              //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(), arguments: )); // I am trying to use this to push the data from the star search suggestions to the dialog
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(), settings: RouteSettings(arguments: "star name")));
               //print(Navigator.push(context, showAlertDialog(context)));
             },
             leading: Image.asset(myMatchQuery[index].imagePath!, height: 50, width: 50, scale: 1.5),
@@ -206,14 +207,35 @@ class CustomSearchDelegate extends SearchDelegate {
   }
 }
 class articlePage extends StatelessWidget{
-  const articlePage({super.key});
+  //final myStars ms;
+  //articlePage({Key? key, required this.ms}) : super(key:key);
 
   @override
   Widget build(BuildContext bc){
-    final theWantedStar = ModalRoute.of(bc)!.settings.arguments as myStars;
+    /*var theWantedStar = myStars(starName: "Star not found", imagePath: "No image path specified");
+    for(var starMatch in starsForSearchBar){
+      if(starMatch.starName! == ModalRoute.of(bc)!.settings.arguments) {
+        //if they match, then the wanted star equals starmatch
+        theWantedStar = starMatch;
+      }// If there is no match, what do you want theWantedStar to be?
+        //theWantedStar = starMatch.starName!; // theWantedStar is not a string. it is a star match object. You need a generic placeholder if you can't find a match.
+
+    }*/
+    var info = ModalRoute.of(bc)!.settings;
+    late String theStar;
+
+    //for(theStar in starsForSearchBar){
+      if(info.arguments == null){
+        theStar = "empty";
+      }
+      else{
+        theStar = info.arguments as String;
+      }
+    //}
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(theWantedStar.starName!),
+        title: Text("$theStar"),
       ),
       body: Container(
         child: Column(crossAxisAlignment: CrossAxisAlignment.baseline, children: <Widget>[
