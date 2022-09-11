@@ -197,7 +197,7 @@ class CustomSearchDelegate extends SearchDelegate {
              // Navigator.push(context, MaterialPageRoute(builder: (context) => articlePage(ms: ));
               //correctStar = myMatchQuery[index].starName!;
               //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(), arguments: )); // I am trying to use this to push the data from the star search suggestions to the dialog
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(), settings: RouteSettings(arguments: "star name")));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(), settings: RouteSettings(arguments: myMatchQuery[index])));
               //print(Navigator.push(context, showAlertDialog(context)));
             },
             leading: Image.asset(myMatchQuery[index].imagePath!, height: 50, width: 50, scale: 1.5),
@@ -222,23 +222,18 @@ class articlePage extends StatelessWidget{
 
     }*/
     var info = ModalRoute.of(bc)!.settings;
-    late String theStar;
+    myStars theStar;
 
     //for(theStar in starsForSearchBar){
-      if(info.arguments == null){
-        theStar = "empty";
-      }
-      else{
-        theStar = info.arguments as String;
-      }
+    theStar = info.arguments as myStars;
     //}
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("$theStar"),
+        title: Text(theStar.starName!),
       ),
       body: Container(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.baseline, children: <Widget>[
+        child: Column(children: <Widget>[
           Text('This is information about the star',
               textAlign:
               TextAlign.left,
