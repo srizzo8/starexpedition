@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+/* String myString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
-DatabaseReference ref = FirebaseDatabase.instance.ref("Alpha Centauri");
+DatabaseReference ref = FirebaseDatabase.instance.ref(myString);*/
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,13 +48,13 @@ class MyApp extends StatelessWidget {
 
 // This is the widget that will be shown
 // as the homepage of your application.
-_getStars() async {
+/*_getStars() async {
   // This method gets data for Alpha Centauri from the database. If you did it outside the main class, you will probably not be able to see it. async means that it will run once you press the button or run the function.
   DatabaseEvent event = await ref.once(); //the _getStars() method is for the first button. it is put somewhere where i can call it.
-
+  print(event.snapshot.value);
   // This is where one will print the data of the snapshot (in this case, Alpha Centauri's data)
-  print(event.snapshot.value); // This will show Alpha Centauri's data
-}
+  //print(event.snapshot.value); // This will show Alpha Centauri's data
+}*/
 
 class StarExpedition extends StatefulWidget {
   const StarExpedition({Key? key}) : super(key: key);
@@ -74,7 +75,7 @@ class _StarExpeditionState extends State<StarExpedition> {
           IconButton(
             onPressed: () {
               // method to show the search bar
-              _getStars(); // I am putting it here is just for testing; it is just to see if we are getting any data from firebase (the data we want, such as data relating to Alpha Centauri).
+              //_getStars(); // I am putting it here is just for testing; it is just to see if we are getting any data from firebase (the data we want, such as data relating to Alpha Centauri).
               showSearch(
                   context: context,
                   // delegate to customize the search bar
@@ -206,69 +207,79 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 }
+
 class articlePage extends StatelessWidget{
   //final myStars ms;
   //articlePage({Key? key, required this.ms}) : super(key:key);
+  /*DatabaseReference dr = FirebaseDatabase.instance.ref("Ross 128");
+
+  _getStarInfo() async{
+    DatabaseEvent de = await dr.once();
+  }*/
+
+  Future<String> getStarData() async{
+    DatabaseReference dr = FirebaseDatabase.instance.ref("Luyten's Star");
+    DatabaseEvent de = await dr.once();
+    return Future.delayed(Duration(seconds: 1), () {
+      return de.snapshot.value as String; // Data should be returned from the snapshot.
+    });
+  }
 
   @override
-  Widget build(BuildContext bc){
-    /*var theWantedStar = myStars(starName: "Star not found", imagePath: "No image path specified");
-    for(var starMatch in starsForSearchBar){
-      if(starMatch.starName! == ModalRoute.of(bc)!.settings.arguments) {
-        //if they match, then the wanted star equals starmatch
-        theWantedStar = starMatch;
-      }// If there is no match, what do you want theWantedStar to be?
-        //theWantedStar = starMatch.starName!; // theWantedStar is not a string. it is a star match object. You need a generic placeholder if you can't find a match.
-
-    }*/
+  Widget build(BuildContext bc) {
     var info = ModalRoute.of(bc)!.settings;
     myStars theStar;
 
     //for(theStar in starsForSearchBar){
     theStar = info.arguments as myStars;
-    //}
+    //ref = FirebaseDatabase.instance.ref(theStar.starName!);
+
+    /*Future<Object?> getStarData() async
+    {
+      return de.snapshot.value;
+    }*/
+
+    /*FutureBuilder(
+      future: getStarData(),
+      builder: (context, mySnapshot){
+    },
+    );*/
 
     return Scaffold(
       appBar: AppBar(
         title: Text(theStar.starName!),
       ),
-      body: Container(
-        child: Column(children: <Widget>[
-          Text('This is information about the star',
+      body: FutureBuilder(
+        /*child: Column(children: <Widget>[
+          Text("Hello there",
               textAlign:
               TextAlign.left,
               style: TextStyle(
                   color: Colors.deepPurpleAccent, fontFamily: 'Raleway')
           )
-        ])
-      )
+        ])*/
+        builder: (bc, mySnapshot){
+          if(mySnapshot.connectionState == ConnectionState.done){
+            if(mySnapshot.hasError){
+              return Text("Sorry, an error has occurred. Please try again.");
+            }
+            else{
+              if(mySnapshot.hasData){
+                final myData = mySnapshot.data as String;
+                return Text('$myData', style: TextStyle(fontSize: 14),);
+              }
+              else{ // This else statement indicates what happens if the Firebase database returns nothing.
+                return Text("No data is available"); // If the snapshot does not have data, this will print.
+              }
+            }
+          }
+          else{
+            return Text("Star data is still loading"); //This represents a scenario where the connection has not finished yet.
+          }
+          //future: getStarData(),
+        },
+        future: getStarData(),
+      ),
     );
   }
-  /*showAlertDialog(BuildContext bc) {
-    //final myStars s;
-    final CustomSearchDelegate cs = new CustomSearchDelegate();
-    // The OK button
-    List<myStars> myMatchQuery = [];
-    Widget buttonForOk = TextButton(
-      child: Text("Ok"),
-      onPressed: () => Navigator.pop(bc),
-    );
-
-    // The content of the notification
-    AlertDialog ad = AlertDialog(
-      title: Text(cs.correctStar!),
-      content: Text("Hello"),
-      actions: [
-        buttonForOk,
-      ],
-    );
-
-    // Showing the actual dialog
-    showDialog(
-      context: bc,
-      builder: (BuildContext bc) {
-        return ad;
-      },
-    );
-  }*/
 }
