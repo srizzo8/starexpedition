@@ -85,6 +85,11 @@ class _StarExpeditionState extends State<StarExpedition> {
           )
         ],
       ),
+      body: const Center(
+        child:
+          Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Raleway')),
+          heightFactor: 15,
+      ),
     );
   }
 }
