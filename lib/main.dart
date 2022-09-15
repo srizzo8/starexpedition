@@ -85,14 +85,39 @@ class _StarExpeditionState extends State<StarExpedition> {
           )
         ],
       ),
-      body: const Center(
-        child:
-          Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Raleway')),
-          heightFactor: 15,
+      body: Center(
+        heightFactor: 15,
+        child: (
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: const <Widget>[
+              Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Railway')),
+              Text('Star Expedition is an app that allows its users to view and research stars with terrestrial planets and the terrestrial planets that orbit those stars. Star Expedition will include stars whose spectral classes range from M8 to A5 and are within 100 light-years from Earth.', style: TextStyle(color: Colors.black, fontFamily: 'Railway'))
+            ]
+          )
+          /*SizedBox(
+            width: 100,
+            child: Center(
+              child: Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'))
+            ),
+          )*/
+        ),
+
+          /*SizedBox(height: 20),
+          Text('Star Expedition is an app that allows its users to view and research stars with terrestrial planets and the terrestrial planets that orbit those stars. Star Expedition will include stars whose spectral classes range from M8 to A5 and are within 100 light-years from Earth.'),
+          */
+          //heightFactor: 20,
       ),
-    );
+      );
   }
 }
+
+
+
+/*Widget _starOfTheDayWidget() => Expanded(
+
+);*/
 
 class CustomSearchDelegate extends SearchDelegate {
   //String correctStar = "";
