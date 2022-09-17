@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -66,6 +68,9 @@ class StarExpedition extends StatefulWidget {
 class _StarExpeditionState extends State<StarExpedition> {
   @override
   Widget build(BuildContext context) {
+    // _randomImageGenerator();
+    // print(_randomImageGenerator());
+    int randomNumber = _randomImageGenerator();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -85,9 +90,9 @@ class _StarExpeditionState extends State<StarExpedition> {
           )
         ],
       ),
-      body: Center(
-        heightFactor: 15,
-        child: (
+      body: Wrap(
+        //heightFactor: 15,
+        /*child: (
           Wrap(
             spacing: 10,
             runSpacing: 10,
@@ -102,19 +107,55 @@ class _StarExpeditionState extends State<StarExpedition> {
               child: Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'))
             ),
           )*/
-        ),
+        ),*/
 
           /*SizedBox(height: 20),
           Text('Star Expedition is an app that allows its users to view and research stars with terrestrial planets and the terrestrial planets that orbit those stars. Star Expedition will include stars whose spectral classes range from M8 to A5 and are within 100 light-years from Earth.'),
           */
           //heightFactor: 20,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.topCenter,
+            child: const Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 20.0)),
+            height: 30,
+          ),
+          Container(
+            alignment: Alignment.topCenter,
+            child: const Text('Star Expedition is an app that allows its users to view and research stars with terrestrial planets and the terrestrial planets that orbit those stars. Star Expedition will include stars whose spectral classes range from M8 to A5 and are within 100 light-years from Earth.', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'), textAlign: TextAlign.center),
+            height: 200,
+          ),
+          Container(
+            alignment: Alignment.topCenter,
+            child: const Text('Featured Star of the Day', style: TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 20.0)),
+            height: 25,
+          ),
+          Container( // This will eventually have a method that will have generate an image of a star and its name randomly.
+            alignment: Alignment.topCenter,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(starsForSearchBar[randomNumber].imagePath!),
+                fit: BoxFit.fill,
+                alignment: Alignment.topCenter,
+              ),
+            ),
+          height: 150,
+            width: 150,
+          ),
+          Container(
+            alignment: Alignment.topCenter,
+            height: 30,
+            child: Text(starsForSearchBar[randomNumber].starName!),
+          ),
+        ],
       ),
       );
   }
 }
 
-
-
+int _randomImageGenerator(){
+  Random randomStar = Random();
+  return randomStar.nextInt(starsForSearchBar.length);
+}
 /*Widget _starOfTheDayWidget() => Expanded(
 
 );*/
