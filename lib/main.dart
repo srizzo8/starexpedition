@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -70,7 +71,13 @@ class _StarExpeditionState extends State<StarExpedition> {
   Widget build(BuildContext context) {
     // _randomImageGenerator();
     // print(_randomImageGenerator());
-    int randomNumber = _randomImageGenerator();
+    int randomNumber = 0;
+    Timer(const Duration(seconds:5,), (){
+      setState(() {
+        randomNumber = _randomImageGenerator();
+        print(randomNumber);
+        });
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text(
