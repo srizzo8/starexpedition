@@ -71,16 +71,11 @@ class _StarExpeditionState extends State<StarExpedition> {
   Widget build(BuildContext context) {
     // _randomImageGenerator();
     // print(_randomImageGenerator());
-    int randomNumber = 5;
+    int randomNumber = _randomImageGenerator();
     Timer(const Duration(seconds:5,), (){
       setState(() {
-        do { // When randomNumber is first initialized, it equals 0. I am doing this because I have to initialize randomNumber to a certain value before the I use the Timer class and my goal is to ensure this does not stay at 0 and the image changes once a new number is generated.
-          randomNumber = _randomImageGenerator(); // A random number between 0 and 4 is generated
+          randomNumber = _randomImageGenerator();
           print(randomNumber);
-        }
-        while(randomNumber > 4);
-
-        randomNumber = _randomImageGenerator();
         });
     });
     return Scaffold(
