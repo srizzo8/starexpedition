@@ -66,18 +66,33 @@ class StarExpedition extends StatefulWidget {
   State<StarExpedition> createState() => _StarExpeditionState();
 }
 
+/*DateTime getMidnight(DateTime midnight){
+
+}*/
+
 class _StarExpeditionState extends State<StarExpedition> {
   @override
   Widget build(BuildContext context) {
     // _randomImageGenerator();
     // print(_randomImageGenerator());
+
+    DateTime? timeNow = DateTime.now();
+    var midnightTime = DateTime(timeNow.year, timeNow.month, timeNow.day + 1);
+
     int randomNumber = _randomImageGenerator();
-    Timer(const Duration(seconds:5,), (){
-      setState(() {
+    if(timeNow == midnightTime) {
+      Timer(const Duration(hours: 24,), () {
+        setState(() {
           randomNumber = _randomImageGenerator();
-          print(randomNumber);
+          print(timeNow);
+          print(midnightTime);
         });
-    });
+      });
+    }
+    else{
+      print(timeNow);
+      print(midnightTime);
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text(
