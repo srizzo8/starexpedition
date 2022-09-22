@@ -163,10 +163,15 @@ class _StarExpeditionState extends State<StarExpedition> {
           height: 150,
             width: 150,
           ),
-          Container(
-            alignment: Alignment.topCenter,
-            height: 30,
-            child: Text(starsForSearchBar[randomNumber].starName!),
+          GestureDetector(
+            child: Container(
+              alignment: Alignment.topCenter,
+              height: 30,
+              child: Text(starsForSearchBar[randomNumber].starName!),
+            ),
+            onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
+            }
           ),
         ],
       ),
