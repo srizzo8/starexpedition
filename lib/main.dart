@@ -76,23 +76,19 @@ class _StarExpeditionState extends State<StarExpedition> {
     // _randomImageGenerator();
     // print(_randomImageGenerator());
 
+    // DateTime? timeNow = DateTime.now();
     DateTime? timeNow = DateTime.now();
-    var midnightTime = DateTime(timeNow.year, timeNow.month, timeNow.day + 1);
+    //var myDate = DateTime(timeNow.year, timeNow.month, timeNow.day);
 
-    int randomNumber = _randomImageGenerator();
-    if(timeNow == midnightTime) {
-      Timer(const Duration(hours: 24,), () {
-        setState(() {
-          randomNumber = _randomImageGenerator();
-          print(timeNow);
-          print(midnightTime);
-        });
-      });
-    }
-    else{
-      print(timeNow);
-      print(midnightTime);
-    }
+    int millisecondsInADay = 1000 * 60 * 60 * 24;
+    int numberOfDays = timeNow.millisecondsSinceEpoch ~/ millisecondsInADay;
+    print(numberOfDays);
+    int numberOfStars = starsForSearchBar.length;
+    //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
+    int randomNumber = numberOfDays % numberOfStars;
+    print(randomNumber);
+    print(timeNow);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -179,10 +175,10 @@ class _StarExpeditionState extends State<StarExpedition> {
   }
 }
 
-int _randomImageGenerator(){
+/*int _randomImageGenerator(){
   Random randomStar = Random();
   return randomStar.nextInt(starsForSearchBar.length);
-}
+}*/
 /*Widget _starOfTheDayWidget() => Expanded(
 
 );*/
