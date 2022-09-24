@@ -81,7 +81,7 @@ class _StarExpeditionState extends State<StarExpedition> {
     //var myDate = DateTime(timeNow.year, timeNow.month, timeNow.day);
 
     int millisecondsInADay = 1000 * 60 * 60 * 24;
-    int numberOfDays = timeNow.millisecondsSinceEpoch ~/ millisecondsInADay;
+    int numberOfDays = (timeNow.millisecondsSinceEpoch / millisecondsInADay).floor();
     print(numberOfDays);
     int numberOfStars = starsForSearchBar.length;
     //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
@@ -311,12 +311,32 @@ class articlePage extends StatelessWidget{
     DatabaseEvent de = await dr.once();
   }*/
 
-  Future<String> getStarData() async{
-    DatabaseReference dr = FirebaseDatabase.instance.ref("Luyten's Star");
-    DatabaseEvent de = await dr.once();
+  var myPlanet = <String>[];
+
+  void getKeys(Map myMap){ // This is for getting planet names, which are keys
+    myMap.keys.forEach((key) {
+      print(key);
+      myPlanet.add(key);
+    });
+  }
+
+  Future<List<String>> getStarData() async{
+    final ref = FirebaseDatabase.instance.ref("Luyten's Star");
+    /*DatabaseEvent de = await ref.once();
     return Future.delayed(Duration(seconds: 1), () {
       return de.snapshot.value as String; // Data should be returned from the snapshot.
+    });*/
+    final snapshot = await ref.child('Planets').get();
+    if (snapshot.exists) {
+      getKeys(snapshot.value as Map); // Calling getKeys so that I can get the planets' names
+      print(snapshot.value);
+    } else {
+      print('No data available.');
+    }
+    return Future.delayed(Duration(seconds: 1), () {
+      return myPlanet; // Data should be returned from the snapshot.
     });
+    // return myPlanet;
   }
 
   @override
@@ -359,9 +379,18 @@ class articlePage extends StatelessWidget{
             }
             else{
               if(mySnapshot.hasData){
-                final myData = mySnapshot.data as String;
-                return Text('$myData', style: TextStyle(fontSize: 14),);
-              }
+                final myData = mySnapshot.data as List<String>;
+                return ListView.builder(
+                    itemCount: myData.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Text(myData[index])),
+                      );
+                    });
+          }
               else{ // This else statement indicates what happens if the Firebase database returns nothing.
                 return Text("No data is available"); // If the snapshot does not have data, this will print.
               }
