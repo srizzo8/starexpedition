@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-/* String myString = "";
+/* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
 DatabaseReference ref = FirebaseDatabase.instance.ref(myString);*/
+
+String correctStar = "";
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -184,7 +186,6 @@ class _StarExpeditionState extends State<StarExpedition> {
 );*/
 
 class CustomSearchDelegate extends SearchDelegate {
-  //String correctStar = "";
   //const CustomSearchDelegate({super.key, required this.starsForSearch});
   // final List<myStars> starsForSearch;
   // This is a demo list to show querying
@@ -286,8 +287,8 @@ class CustomSearchDelegate extends SearchDelegate {
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () {
-              //correctStar = myMatchQuery[index].starName!;
-              print(myMatchQuery[index].starName!);
+              correctStar = myMatchQuery[index].starName!;
+              print(correctStar);
               //showAlertDialog(context);
              // Navigator.push(context, MaterialPageRoute(builder: (context) => articlePage(ms: ));
               //correctStar = myMatchQuery[index].starName!;
@@ -315,13 +316,15 @@ class articlePage extends StatelessWidget{
 
   void getKeys(Map myMap){ // This is for getting planet names, which are keys
     myMap.keys.forEach((key) {
-      print(key);
+      //print(key);
       myPlanet.add(key);
+      print("The key is " + key);
     });
   }
 
   Future<List<String>> getStarData() async{
-    final ref = FirebaseDatabase.instance.ref("Luyten's Star");
+    final ref = FirebaseDatabase.instance.ref(correctStar);
+    print('This is the correct star: ' + correctStar);
     /*DatabaseEvent de = await ref.once();
     return Future.delayed(Duration(seconds: 1), () {
       return de.snapshot.value as String; // Data should be returned from the snapshot.
