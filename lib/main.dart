@@ -10,6 +10,7 @@ FirebaseDatabase database = FirebaseDatabase.instance;
 DatabaseReference ref = FirebaseDatabase.instance.ref(myString);*/
 
 String correctStar = "";
+String correctPlanet = "";
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -342,6 +343,22 @@ class articlePage extends StatelessWidget{
     // return myPlanet;
   }
 
+  void getPlanetData() async{
+    final planetRef = FirebaseDatabase.instance.ref("${correctStar}/Planets");
+    print('This is the correct planet: ' + correctPlanet);
+    print(planetRef.key);
+    print(planetRef.parent!.key);
+    final planetSnapshot = await planetRef.child(correctPlanet).get();
+
+    print(planetSnapshot.value);
+
+    //print('This is the planet event' + planetEvent.snapshot.value.toString());
+    /*final planetSnapshot = await planetRef.child('Planets/$correctPlanet').get();
+    if(planetSnapshot.exists){
+      print(planetSnapshot.value);
+    }*/
+  }
+
   @override
   Widget build(BuildContext bc) {
     var info = ModalRoute.of(bc)!.settings;
@@ -388,9 +405,14 @@ class articlePage extends StatelessWidget{
                     itemBuilder: (context, index) {
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                        child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Text(myData[index])),
+                        child: InkWell(
+                            radius: 10, //const EdgeInsets.all(10),
+                            child: Text(myData[index]),
+                            onTap: () {
+                              correctPlanet = myData[index];
+                              getPlanetData();
+                          },
+                        ),
                       );
                     });
           }
