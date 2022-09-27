@@ -360,6 +360,12 @@ class articlePage extends StatelessWidget{
       print(planetSnapshot.value);
     }*/
   }
+  // Dialog for showing a planet's data
+  /*showPlanetDialog(BuildContext bcPlanet){
+    AlertDialog ad = AlertDialog(
+      title:
+    )
+  }*/
 
   @override
   Widget build(BuildContext bc) {
@@ -421,7 +427,19 @@ class articlePage extends StatelessWidget{
                               print(informationAboutPlanet.toString());
                               //print('This is the planets information ' + informationAboutPlanet);
                               // Text(informationAboutPlanet, textAlign: TextAlign.center);
-                          },
+                              showDialog(
+                                builder: (BuildContext bcDialog) => AlertDialog(
+                                  title: Text(correctPlanet),
+                                  content: Text(informationAboutPlanet.toString()),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(bcDialog, 'Ok'),
+                                      child: const Text('Ok'),
+                                    )
+                                  ],
+                                ), context: context,
+                              );
+                            },
                         ),
                       );
                     });
