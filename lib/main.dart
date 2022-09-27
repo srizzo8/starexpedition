@@ -11,6 +11,7 @@ DatabaseReference ref = FirebaseDatabase.instance.ref(myString);*/
 
 String correctStar = "";
 String correctPlanet = "";
+var informationAboutPlanet;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -343,14 +344,15 @@ class articlePage extends StatelessWidget{
     // return myPlanet;
   }
 
-  void getPlanetData() async{
+  Future<String> getPlanetData() async{
     final planetRef = FirebaseDatabase.instance.ref("${correctStar}/Planets");
     print('This is the correct planet: ' + correctPlanet);
     print(planetRef.key);
     print(planetRef.parent!.key);
     final planetSnapshot = await planetRef.child(correctPlanet).get();
 
-    print(planetSnapshot.value);
+    //print(planetSnapshot.value);
+    return planetSnapshot.value.toString();
 
     //print('This is the planet event' + planetEvent.snapshot.value.toString());
     /*final planetSnapshot = await planetRef.child('Planets/$correctPlanet').get();
@@ -403,14 +405,22 @@ class articlePage extends StatelessWidget{
                 return ListView.builder(
                     itemCount: myData.length,
                     itemBuilder: (context, index) {
-                      return Card(
+                      return Container(
+                        height: 50,
+                        width: 15,
+                        color: Colors.grey,
                         margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                         child: InkWell(
                             radius: 10, //const EdgeInsets.all(10),
-                            child: Text(myData[index]),
-                            onTap: () {
+                            child: Text(myData[index], textAlign: TextAlign.center),
+                            onTap: () async {
                               correctPlanet = myData[index];
-                              getPlanetData();
+                              //getPlanetData();
+                              String informationAboutPlanet = await getPlanetData();
+                              print('Testing information about the planet');
+                              print(informationAboutPlanet.toString());
+                              //print('This is the planets information ' + informationAboutPlanet);
+                              // Text(informationAboutPlanet, textAlign: TextAlign.center);
                           },
                         ),
                       );
