@@ -30,10 +30,10 @@ class myStars{
 
 List<myStars> starsForSearchBar = [
   myStars(starName: "Proxima Centauri", imagePath: "assets/images/proxima_centauri.jpg"),
-  myStars(starName: "Alpha Centauri", imagePath: "assets/images/alpha_centauri.jpg"),
   myStars(starName: "Tau Ceti", imagePath: "assets/images/tau_ceti.jpg"),
   myStars(starName: "Ross 128", imagePath: "assets/images/ross_128.jpg"),
   myStars(starName: "Luyten's Star", imagePath: "assets/images/luytens_star.jpg"),
+  myStars(starName: "Kapteyn's Star", imagePath: "assets/images/kapteyns_star.jpg"),
 ];
 
 class MyApp extends StatelessWidget {
@@ -171,6 +171,7 @@ class _StarExpeditionState extends State<StarExpedition> {
             ),
             onTap: (){
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
+              correctStar = starsForSearchBar[randomNumber].starName!;
             }
           ),
         ],
@@ -344,6 +345,12 @@ class articlePage extends StatelessWidget{
     // return myPlanet;
   }
 
+  void getStarInformation() async{
+    final starReference = FirebaseDatabase.instance.ref(correctStar);
+    final starSnapshot = await starReference.child(correctStar).get();
+    print(starSnapshot.value);
+  }
+
   Future<String> getPlanetData() async{
     final planetRef = FirebaseDatabase.instance.ref("${correctStar}/Planets");
     print('This is the correct planet: ' + correctPlanet);
@@ -392,15 +399,12 @@ class articlePage extends StatelessWidget{
         title: Text(theStar.starName!),
       ),
       body: FutureBuilder(
-        /*child: Column(children: <Widget>[
-          Text("Hello there",
-              textAlign:
-              TextAlign.left,
-              style: TextStyle(
-                  color: Colors.deepPurpleAccent, fontFamily: 'Raleway')
-          )
-        ])*/
         builder: (bc, mySnapshot){
+            Container(
+              alignment: Alignment.topCenter,
+              child: Text("Hello"),
+              height: 30,
+            );
           if(mySnapshot.connectionState == ConnectionState.done){
             if(mySnapshot.hasError){
               return Text("Sorry, an error has occurred. Please try again.");
@@ -412,7 +416,7 @@ class articlePage extends StatelessWidget{
                     itemCount: myData.length,
                     itemBuilder: (context, index) {
                       return Container(
-                        height: 50,
+                        height: 40,
                         width: 15,
                         color: Colors.grey,
                         margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
