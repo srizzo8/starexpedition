@@ -95,6 +95,7 @@ class _StarExpeditionState extends State<StarExpedition> {
     int numberOfStars = starsForSearchBar.length;
     int randomNumber = numberOfDays % numberOfStars;
     //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
+    // I am currently testing the if statement with testTime.
     if(timeNow.compareTo(testTime) > 0) // If timeNow is after nextMidnight
     {
       print('It went through the if statement!');
