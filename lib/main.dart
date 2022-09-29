@@ -81,16 +81,38 @@ class _StarExpeditionState extends State<StarExpedition> {
     // print(_randomImageGenerator());
 
     // DateTime? timeNow = DateTime.now();
+    var firstDay = DateTime(2022, 1, 1);
     DateTime? timeNow = DateTime.now();
+    var nextMidnight = DateTime(timeNow.year, timeNow.month, timeNow.day + 1);
+    var testTime = DateTime.parse('2022-09-29 17:21:00Z');
+    //timeNow.add(Duration(hours: 5));
     //var myDate = DateTime(timeNow.year, timeNow.month, timeNow.day);
 
-    int millisecondsInADay = 1000 * 60 * 60 * 24;
-    int numberOfDays = (timeNow.millisecondsSinceEpoch / millisecondsInADay).floor();
+    //int millisecondsInADay = 1000 * 60 * 60 * 24;
+    //int numberOfDays = (timeNow.millisecondsSinceEpoch / millisecondsInADay).floor();
+    int numberOfDays = timeNow.difference(firstDay).inDays;
     print(numberOfDays);
     int numberOfStars = starsForSearchBar.length;
-    //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
     int randomNumber = numberOfDays % numberOfStars;
-    print(randomNumber);
+    //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
+    if(timeNow.compareTo(testTime) > 0) // If timeNow is after nextMidnight
+    {
+      print('It went through the if statement!');
+      switch(randomNumber){
+        case 0-3:
+          print('randomNumber is 1');
+          randomNumber++;
+          print('randomNumber is now 2');
+          break;
+        case 4:
+          randomNumber = 0;
+          break;
+      }
+    }
+    else{
+      randomNumber = numberOfDays % numberOfStars;
+    }
+    // print(randomNumber);
     print(timeNow);
 
     return Scaffold(
@@ -400,11 +422,6 @@ class articlePage extends StatelessWidget{
       ),
       body: FutureBuilder(
         builder: (bc, mySnapshot){
-            Container(
-              alignment: Alignment.topCenter,
-              child: Text("Hello"),
-              height: 30,
-            );
           if(mySnapshot.connectionState == ConnectionState.done){
             if(mySnapshot.hasError){
               return Text("Sorry, an error has occurred. Please try again.");
