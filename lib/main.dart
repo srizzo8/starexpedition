@@ -81,38 +81,33 @@ class _StarExpeditionState extends State<StarExpedition> {
     // print(_randomImageGenerator());
 
     // DateTime? timeNow = DateTime.now();
-    var firstDay = DateTime(2022, 1, 1);
+    //var firstDay = DateTime(2022, 1, 1);
     DateTime? timeNow = DateTime.now();
-    var nextMidnight = DateTime(timeNow.year, timeNow.month, timeNow.day + 1);
-    var testTime = DateTime.parse('2022-09-29 17:21:00Z');
+    //var nextMidnight = DateTime(timeNow.year, timeNow.month, timeNow.day + 1);
+    var testTime = DateTime.parse('2022-10-02 03:43:00Z');
     //timeNow.add(Duration(hours: 5));
     //var myDate = DateTime(timeNow.year, timeNow.month, timeNow.day);
 
     //int millisecondsInADay = 1000 * 60 * 60 * 24;
     //int numberOfDays = (timeNow.millisecondsSinceEpoch / millisecondsInADay).floor();
-    int numberOfDays = timeNow.difference(firstDay).inDays;
-    print(numberOfDays);
+    int numberOfDays = timeNow.day;
+    numberOfDays = endOfMonthAdjustment(numberOfDays);
+    print(numberOfDays.toString());
     int numberOfStars = starsForSearchBar.length;
     int randomNumber = numberOfDays % numberOfStars;
     //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
     // I am currently testing the if statement with testTime.
-    if(timeNow.compareTo(testTime) > 0) // If timeNow is after nextMidnight
+    /*if(timeNow.difference(testTime).inMinutes == 0) // If timeNow equals to nextMidnight
     {
       print('It went through the if statement!');
-      switch(randomNumber){
-        case 0-3:
-          print('randomNumber is 1');
-          randomNumber++;
-          print('randomNumber is now 2');
-          break;
-        case 4:
-          randomNumber = 0;
-          break;
-      }
+      print(timeNow.difference(testTime));
+      numberOfDays++;
     }
     else{
+      print('It did not go through the if statement');
+      print(timeNow.difference(testTime));
       randomNumber = numberOfDays % numberOfStars;
-    }
+    }*/
     // print(randomNumber);
     print(timeNow);
 
@@ -200,6 +195,14 @@ class _StarExpeditionState extends State<StarExpedition> {
         ],
       ),
       );
+  }
+
+  int endOfMonthAdjustment(int numberOfDays) {
+    if(numberOfDays == 31)
+    {
+      numberOfDays = 32;
+    }
+    return numberOfDays;
   }
 }
 
