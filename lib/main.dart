@@ -340,6 +340,7 @@ class articlePage extends StatelessWidget{
   _getStarInfo() async{
     DatabaseEvent de = await dr.once();
   }*/
+  String informationAboutPlanet = "";
 
   var myPlanet = <String>[];
 
@@ -447,8 +448,9 @@ class articlePage extends StatelessWidget{
                             onTap: () async {
                               correctPlanet = myData[index];
                               //getPlanetData();
-                              String informationAboutPlanet = await getPlanetData();
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => planetArticle(), settings: RouteSettings(arguments: informationAboutPlanet)));
+                              informationAboutPlanet = await getPlanetData();
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                              //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
                               /*print('Testing information about the planet');
                               print(informationAboutPlanet.toString());*/
                               //print('This is the planets information ' + informationAboutPlanet);
@@ -488,7 +490,10 @@ class articlePage extends StatelessWidget{
 
 class planetArticle extends StatelessWidget{
 
-  //String informationAboutPlanet = "";
+  //final articlePage articlepage;
+  final String informationAboutPlanet;
+  planetArticle(this.informationAboutPlanet);
+  //planetArticle({required Key key, required this.articlepage}) : super(key: key);
 
   @override
   Widget build(BuildContext theContext) {
@@ -500,9 +505,9 @@ class planetArticle extends StatelessWidget{
         children: <Widget>[
           Container(
             alignment: Alignment.center,
-            height: 60,
-            width: 60,
-            child: Text(informationAboutPlanet),
+            height: 80,
+            width: 360,
+            child: Text(informationAboutPlanet.toString()),
           ),
         ],
       ),
