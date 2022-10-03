@@ -448,11 +448,12 @@ class articlePage extends StatelessWidget{
                               correctPlanet = myData[index];
                               //getPlanetData();
                               String informationAboutPlanet = await getPlanetData();
-                              print('Testing information about the planet');
-                              print(informationAboutPlanet.toString());
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => planetArticle(), settings: RouteSettings(arguments: informationAboutPlanet)));
+                              /*print('Testing information about the planet');
+                              print(informationAboutPlanet.toString());*/
                               //print('This is the planets information ' + informationAboutPlanet);
                               // Text(informationAboutPlanet, textAlign: TextAlign.center);
-                              showDialog(
+                              /*showDialog(
                                 builder: (BuildContext bcDialog) => AlertDialog(
                                   title: Text(correctPlanet),
                                   content: Text(informationAboutPlanet.toString()),
@@ -463,7 +464,7 @@ class articlePage extends StatelessWidget{
                                     )
                                   ],
                                 ), context: context,
-                              );
+                              );*/
                             },
                         ),
                       );
@@ -483,4 +484,35 @@ class articlePage extends StatelessWidget{
       ),
     );
   }
+}
+
+class planetArticle extends StatelessWidget{
+
+  //String informationAboutPlanet = "";
+
+  @override
+  Widget build(BuildContext theContext) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(correctPlanet),
+      ),
+      body: Wrap(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.center,
+            height: 60,
+            width: 60,
+            child: Text(informationAboutPlanet),
+          ),
+        ],
+      ),
+    );
+  }
+        /*children: <Widget>[
+          Container(
+            informationAboutPlanet = await ap.getPlanetData(),
+            print('Testing information about the planet'),
+            print(informationAboutPlanet.toString())
+            ),
+        ],*/
 }
