@@ -11,7 +11,7 @@ DatabaseReference ref = FirebaseDatabase.instance.ref(myString);*/
 
 String correctStar = "";
 String correctPlanet = "";
-var informationAboutPlanet;
+List<String> informationAboutPlanet = [];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -340,7 +340,7 @@ class articlePage extends StatelessWidget{
   _getStarInfo() async{
     DatabaseEvent de = await dr.once();
   }*/
-  String informationAboutPlanet = "";
+  List<String> informationAboutPlanet = [];
 
   var myPlanet = <String>[];
 
@@ -378,28 +378,23 @@ class articlePage extends StatelessWidget{
     print(starSnapshot.value);
   }
 
-  Future<String> getPlanetData() async{
-    final planetRef = FirebaseDatabase.instance.ref("${correctStar}/Planets");
+  Future<List<String>> getPlanetData() async{
+    /*final planetRef = FirebaseDatabase.instance.ref("${correctStar}/Planets");
     print('This is the correct planet: ' + correctPlanet);
     print(planetRef.key);
     print(planetRef.parent!.key);
     final planetSnapshot = await planetRef.child(correctPlanet).get();
 
-    //print(planetSnapshot.value);
-    return planetSnapshot.value.toString();
+    return planetSnapshot.value.toString();*/
+    final getPlanetAttribute = FirebaseDatabase.instance.ref("${correctStar}/Planets/${correctPlanet}");
+    final discoveryDate = await getPlanetAttribute.child("discovery_date").get();
+    final distanceFromStar = await getPlanetAttribute.child("distance_from_star").get();
+    final earthMasses = await getPlanetAttribute.child("earth_masses").get();
+    final orbitalPeriod = await getPlanetAttribute.child("orbital_period").get();
+    final planetTemperature = await getPlanetAttribute.child("planet_temperature").get();
 
-    //print('This is the planet event' + planetEvent.snapshot.value.toString());
-    /*final planetSnapshot = await planetRef.child('Planets/$correctPlanet').get();
-    if(planetSnapshot.exists){
-      print(planetSnapshot.value);
-    }*/
+    return [discoveryDate.value.toString(), distanceFromStar.value.toString(), earthMasses.value.toString(), orbitalPeriod.value.toString(), planetTemperature.value.toString()];
   }
-  // Dialog for showing a planet's data
-  /*showPlanetDialog(BuildContext bcPlanet){
-    AlertDialog ad = AlertDialog(
-      title:
-    )
-  }*/
 
   @override
   Widget build(BuildContext bc) {
@@ -491,7 +486,7 @@ class articlePage extends StatelessWidget{
 class planetArticle extends StatelessWidget{
 
   //final articlePage articlepage;
-  final String informationAboutPlanet;
+  final List<String> informationAboutPlanet;
   planetArticle(this.informationAboutPlanet);
   //planetArticle({required Key key, required this.articlepage}) : super(key: key);
 
