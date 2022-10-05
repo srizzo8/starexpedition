@@ -502,7 +502,13 @@ class planetArticle extends StatelessWidget{
             alignment: Alignment.center,
             height: 80,
             width: 360,
-            child: Text(informationAboutPlanet.toString()),
+            child:
+              Text("Discovery date: " + informationAboutPlanet[0].toString() + '\n' +
+                  "Distance from star: " + informationAboutPlanet[1].toString() + '\n' +
+                  "Earth masses: " + informationAboutPlanet[2].toString() + '\n' +
+                  "Orbital period: " + informationAboutPlanet[3].toString() + '\n' +
+                  "Temperature (in Kelvin): " + informationAboutPlanet[4].toString()),
+
           ),
         ],
       ),
