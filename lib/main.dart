@@ -405,17 +405,6 @@ class articlePage extends StatelessWidget{
     theStar = info.arguments as myStars;
     //ref = FirebaseDatabase.instance.ref(theStar.starName!);
 
-    /*Future<Object?> getStarData() async
-    {
-      return de.snapshot.value;
-    }*/
-
-    /*FutureBuilder(
-      future: getStarData(),
-      builder: (context, mySnapshot){
-    },
-    );*/
-
     return Scaffold(
       appBar: AppBar(
         title: Text(theStar.starName!),
@@ -429,43 +418,50 @@ class articlePage extends StatelessWidget{
             else{
               if(mySnapshot.hasData){
                 final myData = mySnapshot.data as List<String>;
-                return ListView.builder(
-                    itemCount: myData.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        height: 40,
-                        width: 15,
-                        color: Colors.grey,
-                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                        child: InkWell(
-                            radius: 10, //const EdgeInsets.all(10),
-                            child: Text(myData[index], textAlign: TextAlign.center),
-                            onTap: () async {
-                              correctPlanet = myData[index];
-                              //getPlanetData();
-                              informationAboutPlanet = await getPlanetData();
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
-                              //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
-                              /*print('Testing information about the planet');
-                              print(informationAboutPlanet.toString());*/
-                              //print('This is the planets information ' + informationAboutPlanet);
-                              // Text(informationAboutPlanet, textAlign: TextAlign.center);
-                              /*showDialog(
-                                builder: (BuildContext bcDialog) => AlertDialog(
-                                  title: Text(correctPlanet),
-                                  content: Text(informationAboutPlanet.toString()),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(bcDialog, 'Ok'),
-                                      child: const Text('Ok'),
-                                    )
-                                  ],
-                                ), context: context,
-                              );*/
-                            },
-                        ),
-                      );
-                    });
+                /*return new <Widget>[
+                  Container(
+                    child: Text("Information about the star"),
+                    height: 80,
+                    width: 360,
+                  ),*/
+                /*children: <Widget>[
+                  Container(
+                    child: Text("This is an article about a star"),
+                  );
+                ];*/
+                return Column(
+                  children: [
+                    Container(
+                      child: Text("This is where the star's information will be located"),
+                      height: 80,
+                      width: 360,
+                    ),
+                    Expanded(
+                        child: ListView.builder(
+                        itemCount: myData.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            height: 40,
+                            width: 15,
+                            color: Colors.grey,
+                            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                            child: InkWell(
+                                radius: 10, //const EdgeInsets.all(10),
+                                child: Text(myData[index], textAlign: TextAlign.center),
+                                onTap: () async {
+                                  correctPlanet = myData[index];
+                                  //getPlanetData();
+                                  informationAboutPlanet = await getPlanetData();
+                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                                  //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
+                                },
+                            ),
+                          );
+                        }),
+                      ),
+                  ],
+                );
+                //];
           }
               else{ // This else statement indicates what happens if the Firebase database returns nothing.
                 return Text("No data is available"); // If the snapshot does not have data, this will print.
@@ -475,7 +471,6 @@ class articlePage extends StatelessWidget{
           else{
             return Text("Star data is still loading"); //This represents a scenario where the connection has not finished yet.
           }
-          //future: getStarData(),
         },
         future: getStarData(),
       ),
