@@ -12,6 +12,7 @@ DatabaseReference ref = FirebaseDatabase.instance.ref(myString);*/
 String correctStar = "";
 String correctPlanet = "";
 List<String> informationAboutPlanet = [];
+List<String> starInfo = [];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -188,7 +189,7 @@ class _StarExpeditionState extends State<StarExpedition> {
               child: Text(starsForSearchBar[randomNumber].starName!),
             ),
             onTap: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(CustomSearchDelegate().starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
               correctStar = starsForSearchBar[randomNumber].starName!;
             }
           ),
@@ -215,6 +216,8 @@ class _StarExpeditionState extends State<StarExpedition> {
 );*/
 
 class CustomSearchDelegate extends SearchDelegate {
+
+  List<String> starInfo = [];
   //const CustomSearchDelegate({super.key, required this.starsForSearch});
   // final List<myStars> starsForSearch;
   // This is a demo list to show querying
@@ -244,6 +247,22 @@ class CustomSearchDelegate extends SearchDelegate {
     'assets/images/gliese_581.jpg',
     'assets/images/lacaille_9352.jpg'
   ];*/
+
+  Future<List<String>> getStarInformation() async{
+    final starReference = FirebaseDatabase.instance.ref(correctStar);
+    final starConstellation = await starReference.child("constellation").get();
+    final starDistance = await starReference.child("distance").get();
+    final starOtherNames = await starReference.child("other_names").get();
+    final starSpectralClass = await starReference.child("spectral_class").get();
+    final starAbsoluteMagnitude = await starReference.child("absolute_magnitude").get();
+    final starAge = await starReference.child("star_age").get();
+    final starApparentMagnitude = await starReference.child("apparent_magnitude").get();
+    final starDiscoverer = await starReference.child("star_discoverer").get();
+    final starDiscoveryDate = await starReference.child("star_discovery_date").get();
+    final starTemperature = await starReference.child("star_temperature").get();
+
+    return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString()];
+  }
 
   // This is the first overwrite (to clear the search text)
   @override
@@ -315,15 +334,17 @@ class CustomSearchDelegate extends SearchDelegate {
             title: Text(myMatchQuery[index].starName!,
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
-            onTap: () {
+            onTap: () async{
               correctStar = myMatchQuery[index].starName!;
               print(correctStar);
               //showAlertDialog(context);
              // Navigator.push(context, MaterialPageRoute(builder: (context) => articlePage(ms: ));
               //correctStar = myMatchQuery[index].starName!;
               //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(), arguments: )); // I am trying to use this to push the data from the star search suggestions to the dialog
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(), settings: RouteSettings(arguments: myMatchQuery[index])));
+              // Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
               //print(Navigator.push(context, showAlertDialog(context)));
+              starInfo = await getStarInformation();
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
             },
             leading: Image.asset(myMatchQuery[index].imagePath!, height: 50, width: 50, scale: 1.5),
             trailing: Icon(Icons.whatshot_rounded));
@@ -341,8 +362,11 @@ class articlePage extends StatelessWidget{
     DatabaseEvent de = await dr.once();
   }*/
   List<String> informationAboutPlanet = [];
-
   var myPlanet = <String>[];
+
+  final List<String> starInfo;
+  articlePage(this.starInfo);
+
 
   void getKeys(Map myMap){ // This is for getting planet names, which are keys
     myMap.keys.forEach((key) {
@@ -372,12 +396,6 @@ class articlePage extends StatelessWidget{
     // return myPlanet;
   }
 
-  void getStarInformation() async{
-    final starReference = FirebaseDatabase.instance.ref(correctStar);
-    final starSnapshot = await starReference.child(correctStar).get();
-    print(starSnapshot.value);
-  }
-
   Future<List<String>> getPlanetData() async{
     /*final planetRef = FirebaseDatabase.instance.ref("${correctStar}/Planets");
     print('This is the correct planet: ' + correctPlanet);
@@ -404,6 +422,7 @@ class articlePage extends StatelessWidget{
     //for(theStar in starsForSearchBar){
     theStar = info.arguments as myStars;
     //ref = FirebaseDatabase.instance.ref(theStar.starName!);
+
 
     return Scaffold(
       appBar: AppBar(
@@ -432,8 +451,17 @@ class articlePage extends StatelessWidget{
                 return Column(
                   children: [
                     Container(
-                      child: Text("This is where the star's information will be located"),
-                      height: 80,
+                      child: Text("Constellation: " + starInfo[0].toString() + '\n' +
+                      "Distance (in light-years): " + starInfo[1].toString() + '\n' +
+                      "Other names: " + starInfo[2].toString() + '\n' +
+                      "Spectral class: " + starInfo[3].toString() + '\n' +
+                      "Absolute magnitude: " + starInfo[4].toString() + '\n' +
+                      "Age of star: " + starInfo[5].toString() + '\n' +
+                      "Apparent magnitude: " + starInfo[6].toString() + '\n' +
+                      "Discoverer of star: " + starInfo[7].toString() + '\n' +
+                      "Discovery date of star: " + starInfo[8].toString() + '\n' +
+                      "Temperature (in Kelvin): " + starInfo[9].toString()),
+                      height: 180,
                       width: 360,
                     ),
                     Expanded(
