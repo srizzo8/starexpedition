@@ -167,6 +167,17 @@ class _StarExpeditionState extends State<StarExpedition> {
           ),
           Container(
             alignment: Alignment.topCenter,
+            child: const Text('Featured Star of the Day', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 20.0)),
+            height: 25,
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(2.0, 4.0, 2.0, 2.0),
+              child: Image.asset(starsForSearchBar[randomNumber].imagePath!, height: 150, width: 150),
+            )
+          ),
+          /*Container(
+            alignment: Alignment.topCenter,
             child: const Text('Featured Star of the Day', style: TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 20.0)),
             height: 25,
           ),
@@ -181,7 +192,7 @@ class _StarExpeditionState extends State<StarExpedition> {
             ),
           height: 150,
             width: 150,
-          ),
+          ),*/
           GestureDetector(
             child: Container(
               alignment: Alignment.topCenter,
@@ -254,9 +265,9 @@ class CustomSearchDelegate extends SearchDelegate {
     final starDistance = await starReference.child("distance").get();
     final starOtherNames = await starReference.child("other_names").get();
     final starSpectralClass = await starReference.child("spectral_class").get();
-    final starAbsoluteMagnitude = await starReference.child("absolute_magnitude").get();
+    final starAbsoluteMagnitude = await starReference.child("star_absolute_magnitude").get();
     final starAge = await starReference.child("star_age").get();
-    final starApparentMagnitude = await starReference.child("apparent_magnitude").get();
+    final starApparentMagnitude = await starReference.child("star_apparent_magnitude").get();
     final starDiscoverer = await starReference.child("star_discoverer").get();
     final starDiscoveryDate = await starReference.child("star_discovery_date").get();
     final starTemperature = await starReference.child("star_temperature").get();
