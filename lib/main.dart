@@ -451,6 +451,9 @@ class articlePage extends StatelessWidget{
                 return Column(
                   children: [
                     Container(
+                      child: Text("Star Information:", textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
                       child: Text("Constellation: " + starInfo[0].toString() + '\n' +
                       "Distance (in light-years): " + starInfo[1].toString() + '\n' +
                       "Other names: " + starInfo[2].toString() + '\n' +
@@ -463,6 +466,9 @@ class articlePage extends StatelessWidget{
                       "Temperature (in Kelvin): " + starInfo[9].toString()),
                       height: 180,
                       width: 360,
+                    ),
+                    Container(
+                      child: Text("Confirmed terrestrial planets:", textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
                     Expanded(
                         child: ListView.builder(
