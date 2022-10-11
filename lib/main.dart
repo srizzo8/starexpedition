@@ -68,7 +68,7 @@ class StarExpedition extends StatefulWidget {
   const StarExpedition({Key? key}) : super(key: key);
 
   @override
-  State<StarExpedition> createState() => _StarExpeditionState();
+  State<StarExpedition> createState() => _StarExpeditionState(starInfo);
 }
 
 /*DateTime getMidnight(DateTime midnight){
@@ -76,6 +76,10 @@ class StarExpedition extends StatefulWidget {
 }*/
 
 class _StarExpeditionState extends State<StarExpedition> {
+  List<String> starInfo = [];
+  _StarExpeditionState(this.starInfo);
+  final CustomSearchDelegate csd = new CustomSearchDelegate();
+
   @override
   Widget build(BuildContext context) {
     // _randomImageGenerator();
@@ -199,9 +203,17 @@ class _StarExpeditionState extends State<StarExpedition> {
               height: 30,
               child: Text(starsForSearchBar[randomNumber].starName!),
             ),
-            onTap: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(CustomSearchDelegate().starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
+            onTap: () async{
+              starInfo = await csd.getStarInformation();
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
               correctStar = starsForSearchBar[randomNumber].starName!;
+              //starInfo = await CustomSearchDelegate().getStarInformation();
+              if(starInfo.length == 0){
+                print("Sorry; the length is 0");
+              }
+              else{
+                print(starInfo);
+              }
             }
           ),
         ],
