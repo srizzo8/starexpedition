@@ -75,6 +75,22 @@ class StarExpedition extends StatefulWidget {
 
 }*/
 
+Future<List<String>> getStarInformation() async{
+  final starReference = FirebaseDatabase.instance.ref(correctStar);
+  final starConstellation = await starReference.child("constellation").get();
+  final starDistance = await starReference.child("distance").get();
+  final starOtherNames = await starReference.child("other_names").get();
+  final starSpectralClass = await starReference.child("spectral_class").get();
+  final starAbsoluteMagnitude = await starReference.child("star_absolute_magnitude").get();
+  final starAge = await starReference.child("star_age").get();
+  final starApparentMagnitude = await starReference.child("star_apparent_magnitude").get();
+  final starDiscoverer = await starReference.child("star_discoverer").get();
+  final starDiscoveryDate = await starReference.child("star_discovery_date").get();
+  final starTemperature = await starReference.child("star_temperature").get();
+
+  return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString()];
+}
+
 class _StarExpeditionState extends State<StarExpedition> {
   List<String> starInfo = [];
   _StarExpeditionState(this.starInfo);
@@ -204,7 +220,7 @@ class _StarExpeditionState extends State<StarExpedition> {
               child: Text(starsForSearchBar[randomNumber].starName!),
             ),
             onTap: () async{
-              starInfo = await csd.getStarInformation();
+              starInfo = await getStarInformation();
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
               correctStar = starsForSearchBar[randomNumber].starName!;
               //starInfo = await CustomSearchDelegate().getStarInformation();
@@ -270,22 +286,6 @@ class CustomSearchDelegate extends SearchDelegate {
     'assets/images/gliese_581.jpg',
     'assets/images/lacaille_9352.jpg'
   ];*/
-
-  Future<List<String>> getStarInformation() async{
-    final starReference = FirebaseDatabase.instance.ref(correctStar);
-    final starConstellation = await starReference.child("constellation").get();
-    final starDistance = await starReference.child("distance").get();
-    final starOtherNames = await starReference.child("other_names").get();
-    final starSpectralClass = await starReference.child("spectral_class").get();
-    final starAbsoluteMagnitude = await starReference.child("star_absolute_magnitude").get();
-    final starAge = await starReference.child("star_age").get();
-    final starApparentMagnitude = await starReference.child("star_apparent_magnitude").get();
-    final starDiscoverer = await starReference.child("star_discoverer").get();
-    final starDiscoveryDate = await starReference.child("star_discovery_date").get();
-    final starTemperature = await starReference.child("star_temperature").get();
-
-    return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString()];
-  }
 
   // This is the first overwrite (to clear the search text)
   @override
