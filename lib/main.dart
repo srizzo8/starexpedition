@@ -220,10 +220,11 @@ class _StarExpeditionState extends State<StarExpedition> {
               child: Text(starsForSearchBar[randomNumber].starName!),
             ),
             onTap: () async{
+              correctStar = starsForSearchBar[randomNumber].starName!;
               starInfo = await getStarInformation();
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
-              correctStar = starsForSearchBar[randomNumber].starName!;
-              //starInfo = await CustomSearchDelegate().getStarInformation();
+              // correctStar = starsForSearchBar[randomNumber].starName!;
+              //starInfo = await getStarInformation();
               if(starInfo.length == 0){
                 print("Sorry; the length is 0");
               }
