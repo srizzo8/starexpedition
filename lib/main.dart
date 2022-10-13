@@ -78,28 +78,7 @@ class StarExpedition extends StatefulWidget {
 
   @override
   State<StarExpedition> createState() => _StarExpeditionState(starInfo);
-  /*Widget build(BuildContext myContext){
-    return Drawer(
-      child: Container(
-        color: Colors.red,
-        child: ListView(
-          children: <Widget>[
-            Container(
-              child: Text("About Star Expedition"),
-            ),
-            Container(
-              child: Text("Spectral Classes of Stars"),
-            ),
-          ],
-        )
-      ),
-    );
-  }*/
 }
-
-/*DateTime getMidnight(DateTime midnight){
-
-}*/
 
 Future<List<String>> getStarInformation() async{
   final starReference = FirebaseDatabase.instance.ref(correctStar);
@@ -239,38 +218,7 @@ class _StarExpeditionState extends State<StarExpedition> {
           ),
         ],
       ),
-      drawer: Drawer(
-          child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                  ),
-                  child: Text("Star Expedition Navigation Drawer", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
-                ),
-                ListTile(
-                    title: Text("Why Star Expedition Was Made"),
-                    onTap: () {
-                      Navigator.pop(context);
-                    }
-                ),
-                ListTile(
-                  title: Text("Information about the Spectral Classes of Stars"),
-                  onTap: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage()));
-                    Navigator.pushReplacementNamed(context, routesToOtherPages.spectralClass);
-                  }
-                ),
-                ListTile(
-                  title: Text("Discussion Board"),
-                  onTap: () {
-                    Navigator.pop(context);
-                  }
-                )
-              ]
-          )
-      ),
+      drawer: starExpeditionNavigationDrawer(),
       );
   }
 
@@ -280,6 +228,44 @@ class _StarExpeditionState extends State<StarExpedition> {
       numberOfDays = 32;
     }
     return numberOfDays;
+  }
+}
+
+class starExpeditionNavigationDrawer extends StatelessWidget{
+  @override
+  Widget build(BuildContext context){
+    return Drawer(
+        child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                ),
+                child: Text("Star Expedition Navigation Drawer", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+              ),
+              ListTile(
+                  title: Text("Why Star Expedition Was Made"),
+                  onTap: () {
+                    Navigator.pop(context);
+                  }
+              ),
+              ListTile(
+                  title: Text("Information about the Spectral Classes of Stars"),
+                  onTap: () {
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage()));
+                    Navigator.pushReplacementNamed(context, routesToOtherPages.spectralClass);
+                  }
+              ),
+              ListTile(
+                  title: Text("Discussion Board"),
+                  onTap: () {
+                    Navigator.pop(context);
+                  }
+              )
+            ]
+        )
+    );
   }
 }
 
