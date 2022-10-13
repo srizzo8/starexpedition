@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:starexpedition4/spectralClassPage.dart';
+//import 'package:starexpedition4/spectralClassPage.dart';
 
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -50,8 +52,15 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
       ),
       home: StarExpedition(),
+      routes:{
+        routesToOtherPages.spectralClass: (context) => spectralClassPage(),
+      }
     );
   }
+}
+
+class routesToOtherPages{
+  static String spectralClass = spectralClassPage.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -249,7 +258,8 @@ class _StarExpeditionState extends State<StarExpedition> {
                 ListTile(
                   title: Text("Information about the Spectral Classes of Stars"),
                   onTap: () {
-                    Navigator.pop(context);
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage()));
+                    Navigator.pushReplacementNamed(context, routesToOtherPages.spectralClass);
                   }
                 ),
                 ListTile(
