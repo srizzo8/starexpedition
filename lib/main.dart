@@ -69,6 +69,23 @@ class StarExpedition extends StatefulWidget {
 
   @override
   State<StarExpedition> createState() => _StarExpeditionState(starInfo);
+  /*Widget build(BuildContext myContext){
+    return Drawer(
+      child: Container(
+        color: Colors.red,
+        child: ListView(
+          children: <Widget>[
+            Container(
+              child: Text("About Star Expedition"),
+            ),
+            Container(
+              child: Text("Spectral Classes of Stars"),
+            ),
+          ],
+        )
+      ),
+    );
+  }*/
 }
 
 /*DateTime getMidnight(DateTime midnight){
@@ -98,19 +115,9 @@ class _StarExpeditionState extends State<StarExpedition> {
 
   @override
   Widget build(BuildContext context) {
-    // _randomImageGenerator();
-    // print(_randomImageGenerator());
-
-    // DateTime? timeNow = DateTime.now();
-    //var firstDay = DateTime(2022, 1, 1);
     DateTime? timeNow = DateTime.now();
     //var nextMidnight = DateTime(timeNow.year, timeNow.month, timeNow.day + 1);
-    var testTime = DateTime.parse('2022-10-02 03:43:00Z');
-    //timeNow.add(Duration(hours: 5));
-    //var myDate = DateTime(timeNow.year, timeNow.month, timeNow.day);
 
-    //int millisecondsInADay = 1000 * 60 * 60 * 24;
-    //int numberOfDays = (timeNow.millisecondsSinceEpoch / millisecondsInADay).floor();
     int numberOfDays = timeNow.day;
     numberOfDays = endOfMonthAdjustment(numberOfDays);
     print(numberOfDays.toString());
@@ -118,18 +125,6 @@ class _StarExpeditionState extends State<StarExpedition> {
     int randomNumber = numberOfDays % numberOfStars;
     //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
     // I am currently testing the if statement with testTime.
-    /*if(timeNow.difference(testTime).inMinutes == 0) // If timeNow equals to nextMidnight
-    {
-      print('It went through the if statement!');
-      print(timeNow.difference(testTime));
-      numberOfDays++;
-    }
-    else{
-      print('It did not go through the if statement');
-      print(timeNow.difference(testTime));
-      randomNumber = numberOfDays % numberOfStars;
-    }*/
-    // print(randomNumber);
     print(timeNow);
 
     return Scaffold(
@@ -234,6 +229,37 @@ class _StarExpeditionState extends State<StarExpedition> {
             }
           ),
         ],
+      ),
+      drawer: Drawer(
+          child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                  ),
+                  child: Text("Star Expedition Navigation Drawer", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                ),
+                ListTile(
+                    title: Text("Why Star Expedition Was Made"),
+                    onTap: () {
+                      Navigator.pop(context);
+                    }
+                ),
+                ListTile(
+                  title: Text("Information about the Spectral Classes of Stars"),
+                  onTap: () {
+                    Navigator.pop(context);
+                  }
+                ),
+                ListTile(
+                  title: Text("Discussion Board"),
+                  onTap: () {
+                    Navigator.pop(context);
+                  }
+                )
+              ]
+          )
       ),
       );
   }
