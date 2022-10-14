@@ -23,6 +23,12 @@ class spectralClassPage extends StatelessWidget {
   //spectralClassOfStars = await getSpectralClassData();
 
   @override
+  void initState() async{
+    spectralClassOfStars = await getSpectralClassData();
+    print(spectralClassOfStars);
+  }
+
+  @override
   Widget build(BuildContext bc){
     return Scaffold(
       appBar: AppBar(
@@ -38,16 +44,16 @@ class spectralClassPage extends StatelessWidget {
           DataTable(
             columns: [
               DataColumn(label: Text('Spectral Class', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Temperature', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Example', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Number of Stars with Star Expedition Articles', style: TextStyle(fontWeight: FontWeight.bold))),
+              //DataColumn(label: Text('Temperature', style: TextStyle(fontWeight: FontWeight.bold))),
+              //DataColumn(label: Text('Example', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Number of Stars with Articles', style: TextStyle(fontWeight: FontWeight.bold))),
             ],
             rows: [
               DataRow(cells: [
                 DataCell(Text('M')),
-                DataCell(Text('2545-3760 K')),
-                DataCell(Text('Proxima Centauri')),
-                DataCell(Text('Not available')),
+                //DataCell(Text('2545-3760 K')),
+                //DataCell(Text('Proxima Centauri')),
+                DataCell(Text(spectralClassOfStars.toString())),
               ]),
             ],
             ),
