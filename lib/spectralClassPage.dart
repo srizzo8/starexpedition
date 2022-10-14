@@ -9,7 +9,18 @@ import 'main.dart';
 
 class spectralClassPage extends StatelessWidget {
   static String nameOfRoute = '/spectralClassPage';
-  final spectralClassRef = FirebaseDatabase.instance.ref("/spectral_class");
+  //final spectralClassSnapshot = await spectralClassRef.get();
+  List<String> spectralClassOfStars = [];
+  //String spectralClass = "";
+
+  Future <List<String>> getSpectralClassData() async{
+    final spectralClassRef = FirebaseDatabase.instance.ref("/spectral_class");
+    final spectralClassSnapshot = await spectralClassRef.get();
+
+    return [spectralClassSnapshot.value.toString()];
+  }
+
+  //spectralClassOfStars = await getSpectralClassData();
 
   @override
   Widget build(BuildContext bc){
@@ -36,6 +47,7 @@ class spectralClassPage extends StatelessWidget {
                 DataCell(Text('M')),
                 DataCell(Text('2545-3760 K')),
                 DataCell(Text('Proxima Centauri')),
+                DataCell(Text('Not available')),
               ]),
             ],
             ),
