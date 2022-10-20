@@ -77,7 +77,7 @@ class StarExpedition extends StatefulWidget {
   const StarExpedition({Key? key}) : super(key: key);
 
   @override
-  State<StarExpedition> createState() => _StarExpeditionState(starInfo);
+  State<StarExpedition> createState() => theStarExpeditionState(starInfo);
 }
 
 Future<List<String>> getStarInformation() async{
@@ -96,9 +96,9 @@ Future<List<String>> getStarInformation() async{
   return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString()];
 }
 
-class _StarExpeditionState extends State<StarExpedition> {
+class theStarExpeditionState extends State<StarExpedition> {
   List<String> starInfo = [];
-  _StarExpeditionState(this.starInfo);
+  theStarExpeditionState(this.starInfo);
   final CustomSearchDelegate csd = new CustomSearchDelegate();
 
   @override

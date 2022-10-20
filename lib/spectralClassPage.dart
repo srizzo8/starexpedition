@@ -5,19 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import 'main.dart';
+import 'main.dart' as myMain;
 
 class spectralClassPage extends StatelessWidget {
   static String nameOfRoute = '/spectralClassPage';
   //final spectralClassSnapshot = await spectralClassRef.get();
   List<String> spectralClassOfStars = [];
   //String spectralClass = "";
+  var scpNumberOfStars = myMain.starsForSearchBar.length;
 
   Future <List<String>> getSpectralClassData() async{
-    final spectralClassRef = FirebaseDatabase.instance.ref().child('spectral_class');
-    final spectralClassSnapshot = await spectralClassRef.get();
+    final spectralClassRef = FirebaseDatabase.instance.ref();
+    String spectralClassSnapshot = "";
 
-    return [spectralClassSnapshot.value.toString()];
+    for(int i = 0; i < scpNumberOfStars; i++) {
+      //spectralClassSnapshot = await spectralClassRef.child().get().toString();
+      print('I am looping through this for loop');
+    }
+
+    return [spectralClassSnapshot.toString()];
   }
 
   //spectralClassOfStars = await getSpectralClassData();
@@ -100,7 +106,7 @@ class spectralClassPage extends StatelessWidget {
           ),
         ],
       ),
-      drawer: starExpeditionNavigationDrawer(),
+      drawer: myMain.starExpeditionNavigationDrawer(),
     );
   }
 }
