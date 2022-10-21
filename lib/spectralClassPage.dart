@@ -14,6 +14,14 @@ class spectralClassPage extends StatelessWidget {
   //String spectralClass = "";
   var scpNumberOfStars = myMain.starsForSearchBar.length;
 
+  int countMStars = 0;
+  int countKStars = 0;
+  int countGStars = 0;
+  int countFStars = 0;
+  int countAStars = 0;
+  int countBStars = 0;
+  int countOStars = 0;
+
   Future <List<String>> getSpectralClassData() async{
     List<String> spectralClasses = [];
     for(int i = 0; i < scpNumberOfStars; i++) {
@@ -32,12 +40,50 @@ class spectralClassPage extends StatelessWidget {
   @override
   void generateSpectralClasses() async{
     spectralClassOfStars = await getSpectralClassData();
+
     print(spectralClassOfStars);
+    for(int i = 0; i < spectralClassOfStars.length; i++)
+    {
+      String mySpectralClass = spectralClassOfStars[i];
+      print(mySpectralClass[0]);
+      switch(mySpectralClass[0])
+      {
+        case 'M':
+          countMStars++;
+          break;
+        case 'K':
+          countKStars++;
+          break;
+        case 'G':
+          countGStars++;
+          break;
+        case 'F':
+          countFStars++;
+          break;
+        case 'A':
+          countAStars++;
+          break;
+        case 'B':
+          countBStars++;
+          break;
+        case 'O':
+          countOStars++;
+          break;
+      }
+
+    }
   }
 
   @override
   Widget build(BuildContext bc){
     generateSpectralClasses();
+    print('M star count: ' + countMStars.toString());
+    print('K star count: ' + countKStars.toString());
+    print('G star count: ' + countGStars.toString());
+    print('F star count: ' + countFStars.toString());
+    print('A star count: ' + countAStars.toString());
+    print('B star count: ' + countBStars.toString());
+    print('O star count: ' + countOStars.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
@@ -61,7 +107,7 @@ class spectralClassPage extends StatelessWidget {
                 DataCell(Text('M')),
                 DataCell(Text('2500-3800 K')),
                 //DataCell(Text('Proxima Centauri')),
-                DataCell(Text(spectralClassOfStars.toString())),
+                DataCell(Text(countMStars.toString())),
               ]),
               DataRow(cells: [
                 DataCell(Text('K')),
