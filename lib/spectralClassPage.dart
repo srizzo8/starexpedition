@@ -15,28 +15,29 @@ class spectralClassPage extends StatelessWidget {
   var scpNumberOfStars = myMain.starsForSearchBar.length;
 
   Future <List<String>> getSpectralClassData() async{
-    final spectralClassRef = FirebaseDatabase.instance.ref();
-    String spectralClassSnapshot = "";
-
+    List<String> spectralClasses = [];
     for(int i = 0; i < scpNumberOfStars; i++) {
-      //spectralClassSnapshot = await spectralClassRef.child().get().toString();
-      print('I am looping through this for loop');
+      final spectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
+      var spectralClassSnapshot = await spectralClassRef.child("spectral_class").get();
+      //print(spectralClassSnapshot.value.toString());
+      spectralClasses.add(spectralClassSnapshot.value.toString());
     }
+    //print(spectralClasses);
 
-    return [spectralClassSnapshot.toString()];
+    return spectralClasses;
   }
 
   //spectralClassOfStars = await getSpectralClassData();
 
   @override
-  void initState() async{
+  void generateSpectralClasses() async{
     spectralClassOfStars = await getSpectralClassData();
     print(spectralClassOfStars);
   }
 
   @override
   Widget build(BuildContext bc){
-    initState();
+    generateSpectralClasses();
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
