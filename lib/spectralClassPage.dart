@@ -22,6 +22,7 @@ class spectralClassPageState extends State<spectralClassPage>{
   var scpNumberOfStars = myMain.starsForSearchBar.length;
   List<String> spectralClassCount = [];
 
+  @override
   Future <List<String>> getSpectralClassData() async{
     List<String> spectralClasses = [];
     for(int i = 0; i < scpNumberOfStars; i++) {
@@ -47,12 +48,13 @@ class spectralClassPageState extends State<spectralClassPage>{
     int countBStars = 0;
     int countOStars = 0;
 
-    spectralClassOfStars = await getSpectralClassData();
+    List<String> gscSpectralClassesOfStars = [];
+    gscSpectralClassesOfStars = await getSpectralClassData();
 
-    print(spectralClassOfStars);
-    for(int i = 0; i < spectralClassOfStars.length; i++)
+    print(gscSpectralClassesOfStars);
+    for(int i = 0; i < gscSpectralClassesOfStars.length; i++)
     {
-      String mySpectralClass = spectralClassOfStars[i];
+      String mySpectralClass = gscSpectralClassesOfStars[i];
       print(mySpectralClass[0]);
       switch(mySpectralClass[0])
       {
@@ -84,25 +86,47 @@ class spectralClassPageState extends State<spectralClassPage>{
     return [countMStars.toString(), countKStars.toString(), countGStars.toString(), countFStars.toString(), countAStars.toString(), countBStars.toString(), countOStars.toString()];
   }
 
-  /*@override
-  void initState() {
-    Future.delayed(const Duration(milliseconds: 250),() async {
-      print("Testing initState method");
+  @override
+  /*void initState() {
+    Future.delayed(Duration.zero,() async {
+      spectralClassOfStars = await getSpectralClassData();
+      print('The spectral classes of stars: ' + spectralClassOfStars.toString());
       spectralClassCount = await generateSpectralClasses();
+      print('This is spectralClassCount: ' + spectralClassCount.toString());
     });
     super.initState();
 
+    //print('This is spectralClassCount: ' + spectralClassCount.toString());
+  }*/
+  @override
+  /*void generateSpectralClassCount() async{
+    spectralClassCount = await generateSpectralClasses();
     print('This is spectralClassCount: ' + spectralClassCount.toString());
   }*/
 
   @override
-  Widget build(BuildContext bc){
+  Widget build(BuildContext bc) {
     //spectralClassCount = await generateSpectralClasses();
 
-    setState(() async {
+    /*setState(() async {
       spectralClassCount = await generateSpectralClasses();
       print(spectralClassCount);
-    });
+    });*/
+
+    Future.delayed(Duration.zero, () async {
+      spectralClassOfStars = await getSpectralClassData();
+      print(
+          'The spectral classes of stars: ' + spectralClassOfStars.toString());
+      spectralClassCount = await generateSpectralClasses();
+      print('This is spectralClassCount: ' + spectralClassCount.toString());
+
+    //print('This is the list of the full spectral classes of stars: ' + spectralClassOfStars.toString());
+    //print('This is spectralClassCount in the build method: ' + spectralClassCount.toString());
+    /*() async{
+      spectralClassCount = await generateSpectralClasses();
+      print('async spectralClassCount: ' + spectralClassCount.toString());
+    };
+    print('spectralClassCount outside async: ' + spectralClassCount.toString());*/
 
     return Scaffold(
       appBar: AppBar(
@@ -112,22 +136,27 @@ class spectralClassPageState extends State<spectralClassPage>{
         children: <Widget>[
           Container(
             alignment: Alignment.topCenter,
-            child: Text("Spectral Classes of Stars", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+            child: Text(
+                "Spectral Classes of Stars", textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
             height: 30,
           ),
           DataTable(
             columns: [
-              DataColumn(label: Text('Spectral Class', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9.0))),
-              DataColumn(label: Text('Temperature', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9.0))),
+              DataColumn(label: Text('Spectral Class', style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 9.0))),
+              DataColumn(label: Text('Temperature', style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 9.0))),
               //DataColumn(label: Text('Example', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Stars with Articles', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9.0))),
+              DataColumn(label: Text('Stars with Articles', style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 9.0))),
             ],
             rows: [
               DataRow(cells: [
                 DataCell(Text('M')),
                 DataCell(Text('2500-3800 K')),
                 //DataCell(Text('Proxima Centauri')),
-                DataCell(Text("TBA")),
+                DataCell(Text(spectralClassCount[0].toString())),
               ]),
               DataRow(cells: [
                 DataCell(Text('K')),
@@ -160,20 +189,36 @@ class spectralClassPageState extends State<spectralClassPage>{
                 DataCell(Text(spectralClassOfStars.toString())),
               ]),
             ],
-            ),
+          ),
           Container(
-            child: Text("Sources", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Text("Sources", textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold)),
             height: 20,
             width: 360,
           ),
           Container(
-            child: Text("https://www.handprint.com/ASTRO/specclass.html", textAlign: TextAlign.center),
+            child: Text("https://www.handprint.com/ASTRO/specclass.html",
+                textAlign: TextAlign.center),
             height: 20,
             width: 360,
           ),
         ],
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
+    );
+  });
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Star Expedition"),
+      ),
+      body: Wrap(
+      children: <Widget>[
+        Container(
+          alignment: Alignment.topCenter,
+          child: Text("Hello World"),
+        ),
+      ]
+    ),
     );
   }
 }
