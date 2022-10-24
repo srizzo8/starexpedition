@@ -7,20 +7,20 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'main.dart' as myMain;
 
-class spectralClassPage extends StatelessWidget {
+class spectralClassPage extends StatefulWidget{
+  const spectralClassPage({Key? key}) : super(key: key);
+
+  @override
+  spectralClassPageState createState() => spectralClassPageState();
+}
+
+class spectralClassPageState extends State<spectralClassPage>{
   static String nameOfRoute = '/spectralClassPage';
   //final spectralClassSnapshot = await spectralClassRef.get();
   List<String> spectralClassOfStars = [];
   //String spectralClass = "";
   var scpNumberOfStars = myMain.starsForSearchBar.length;
-
-  int countMStars = 0;
-  int countKStars = 0;
-  int countGStars = 0;
-  int countFStars = 0;
-  int countAStars = 0;
-  int countBStars = 0;
-  int countOStars = 0;
+  List<String> spectralClassCount = [];
 
   Future <List<String>> getSpectralClassData() async{
     List<String> spectralClasses = [];
@@ -38,7 +38,15 @@ class spectralClassPage extends StatelessWidget {
   //spectralClassOfStars = await getSpectralClassData();
 
   @override
-  void generateSpectralClasses() async{
+  Future<List<String>> generateSpectralClasses() async{
+    int countMStars = 0;
+    int countKStars = 0;
+    int countGStars = 0;
+    int countFStars = 0;
+    int countAStars = 0;
+    int countBStars = 0;
+    int countOStars = 0;
+
     spectralClassOfStars = await getSpectralClassData();
 
     print(spectralClassOfStars);
@@ -70,20 +78,32 @@ class spectralClassPage extends StatelessWidget {
           countOStars++;
           break;
       }
+      //print([countMStars.toString(), countKStars.toString(), countGStars.toString(), countFStars.toString(), countAStars.toString(), countBStars.toString(), countOStars.toString()]);
 
     }
+    return [countMStars.toString(), countKStars.toString(), countGStars.toString(), countFStars.toString(), countAStars.toString(), countBStars.toString(), countOStars.toString()];
   }
+
+  /*@override
+  void initState() {
+    Future.delayed(const Duration(milliseconds: 250),() async {
+      print("Testing initState method");
+      spectralClassCount = await generateSpectralClasses();
+    });
+    super.initState();
+
+    print('This is spectralClassCount: ' + spectralClassCount.toString());
+  }*/
 
   @override
   Widget build(BuildContext bc){
-    generateSpectralClasses();
-    print('M star count: ' + countMStars.toString());
-    print('K star count: ' + countKStars.toString());
-    print('G star count: ' + countGStars.toString());
-    print('F star count: ' + countFStars.toString());
-    print('A star count: ' + countAStars.toString());
-    print('B star count: ' + countBStars.toString());
-    print('O star count: ' + countOStars.toString());
+    //spectralClassCount = await generateSpectralClasses();
+
+    setState(() async {
+      spectralClassCount = await generateSpectralClasses();
+      print(spectralClassCount);
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
@@ -107,7 +127,7 @@ class spectralClassPage extends StatelessWidget {
                 DataCell(Text('M')),
                 DataCell(Text('2500-3800 K')),
                 //DataCell(Text('Proxima Centauri')),
-                DataCell(Text(countMStars.toString())),
+                DataCell(Text("TBA")),
               ]),
               DataRow(cells: [
                 DataCell(Text('K')),

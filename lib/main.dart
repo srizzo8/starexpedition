@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
 }
 
 class routesToOtherPages{
-  static String spectralClass = spectralClassPage.nameOfRoute;
+  static String spectralClass = spectralClassPageState.nameOfRoute;
 }
 
 // This is the widget that will be shown
