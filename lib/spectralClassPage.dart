@@ -98,29 +98,24 @@ class spectralClassPageState extends State<spectralClassPage>{
 
     //print('This is spectralClassCount: ' + spectralClassCount.toString());
   }*/
-  @override
-  /*void generateSpectralClassCount() async{
-    spectralClassCount = await generateSpectralClasses();
-    print('This is spectralClassCount: ' + spectralClassCount.toString());
-  }*/
+  void futureListToListConverterGSCD(Future<List<String>> fls) async{
+    Future<List<String>> flcSpectralClassOfStars = getSpectralClassData();
+    List<String> listOfStrings = await flcSpectralClassOfStars;
+    print("New list: " + listOfStrings.toString());
+  }
 
   @override
   Widget build(BuildContext bc) {
-    //spectralClassCount = await generateSpectralClasses();
-
-    /*setState(() async {
-      spectralClassCount = await generateSpectralClasses();
-      print(spectralClassCount);
-    });*/
-
     Future.delayed(Duration.zero, () async {
       spectralClassOfStars = await getSpectralClassData();
-      print(
-          'The spectral classes of stars: ' + spectralClassOfStars.toString());
+      print('The spectral classes of stars: ' + spectralClassOfStars.toString());
       spectralClassCount = await generateSpectralClasses();
       print('This is spectralClassCount: ' + spectralClassCount.toString());
+    });
 
-    //print('This is the list of the full spectral classes of stars: ' + spectralClassOfStars.toString());
+    futureListToListConverterGSCD(getSpectralClassData());
+
+    print('This is the list of the full spectral classes of stars: ' + spectralClassOfStars.toString());
     //print('This is spectralClassCount in the build method: ' + spectralClassCount.toString());
     /*() async{
       spectralClassCount = await generateSpectralClasses();
@@ -156,7 +151,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                 DataCell(Text('M')),
                 DataCell(Text('2500-3800 K')),
                 //DataCell(Text('Proxima Centauri')),
-                DataCell(Text(spectralClassCount[0].toString())),
+                DataCell(Text("TBA")),
               ]),
               DataRow(cells: [
                 DataCell(Text('K')),
@@ -206,8 +201,8 @@ class spectralClassPageState extends State<spectralClassPage>{
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
     );
-  });
-    return Scaffold(
+  //});
+    /*return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
       ),
@@ -219,6 +214,6 @@ class spectralClassPageState extends State<spectralClassPage>{
         ),
       ]
     ),
-    );
+    );*/
   }
 }
