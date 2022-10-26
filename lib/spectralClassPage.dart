@@ -176,6 +176,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                 DataCell(GestureDetector(
                     onTap: (){
                       print("You clicked me!");
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                     },
                     child: Text(spectralClassCount[0].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
                   ),
@@ -249,5 +250,24 @@ class spectralClassPageState extends State<spectralClassPage>{
       ]
     ),
     );*/
+  }
+}
+
+class listForSpectralClassesPage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Star Expedition"),
+      ),
+      body: Wrap(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.topCenter,
+            child: Text("List of Stars with articles that belong to this spectral class"),
+          )
+        ]
+      )
+    );
   }
 }
