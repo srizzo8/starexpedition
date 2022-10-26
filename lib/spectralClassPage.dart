@@ -21,6 +21,7 @@ class spectralClassPageState extends State<spectralClassPage>{
   //String spectralClass = "";
   var scpNumberOfStars = myMain.starsForSearchBar.length;
   List<String> spectralClassCount = [];
+  bool b = false;
 
   @override
   Future <List<String>> getSpectralClassData() async{
@@ -86,37 +87,58 @@ class spectralClassPageState extends State<spectralClassPage>{
     return [countMStars.toString(), countKStars.toString(), countGStars.toString(), countFStars.toString(), countAStars.toString(), countBStars.toString(), countOStars.toString()];
   }
 
-  @override
-  /*void initState() {
-    Future.delayed(Duration.zero,() async {
-      spectralClassOfStars = await getSpectralClassData();
-      print('The spectral classes of stars: ' + spectralClassOfStars.toString());
-      spectralClassCount = await generateSpectralClasses();
-      print('This is spectralClassCount: ' + spectralClassCount.toString());
+  void getDataForMyLists() async{
+    spectralClassOfStars = await getSpectralClassData();
+    spectralClassCount = await generateSpectralClasses();
+    setState(() {
+      b = true;
     });
-    super.initState();
-
-    //print('This is spectralClassCount: ' + spectralClassCount.toString());
-  }*/
-  void futureListToListConverterGSCD(Future<List<String>> fls) async{
-    Future<List<String>> flcSpectralClassOfStars = getSpectralClassData();
-    List<String> listOfStrings = await flcSpectralClassOfStars;
-    print("New list: " + listOfStrings.toString());
   }
 
   @override
-  Widget build(BuildContext bc) {
-    Future.delayed(Duration.zero, () async {
+  void initState() {
+    /*Future.delayed(Duration.zero,() async {
       spectralClassOfStars = await getSpectralClassData();
       print('The spectral classes of stars: ' + spectralClassOfStars.toString());
       spectralClassCount = await generateSpectralClasses();
       print('This is spectralClassCount: ' + spectralClassCount.toString());
-    });
+    });*/
+    getDataForMyLists();
+    super.initState();
 
-    futureListToListConverterGSCD(getSpectralClassData());
+    //print('This is spectralClassCount: ' + spectralClassCount.toString());
+  }
+  /*void futureListToListConverterGSCD(Future<List<String>> fls) async{
+    Future<List<String>> flcSpectralClassOfStars = getSpectralClassData();
+    List<String> listOfStrings = await flcSpectralClassOfStars;
+    print("New list: " + listOfStrings.toString());
+  }*/
 
-    print('This is the list of the full spectral classes of stars: ' + spectralClassOfStars.toString());
-    //print('This is spectralClassCount in the build method: ' + spectralClassCount.toString());
+  /*void main() async{
+    List<String> list1 = await getSpectralClassData();
+    List<String> list2 = await generateSpectralClasses();
+    spectralClassOfStars.add(list1.toString());
+    spectralClassCount.add(list2.toString());
+    print('spectralClassOfStars in main method: ' + spectralClassOfStars.toString());
+    print('spectralClassCount in main method: ' + spectralClassCount.toString());
+  }*/
+
+  @override
+  Widget build(BuildContext bc) {
+    /*Future.delayed(Duration.zero, () async {
+      spectralClassOfStars = await getSpectralClassData();
+      print('The spectral classes of stars: ' + spectralClassOfStars.toString());
+      spectralClassCount = await generateSpectralClasses();
+      print('This is spectralClassCount: ' + spectralClassCount.toString());
+    });*/
+
+    //futureListToListConverterGSCD(getSpectralClassData());
+    //Future.delayed(const Duration(milliseconds: 200), (){
+    if(b == true) {
+      print('spectralClassOfStars in build method: ' + spectralClassOfStars.toString());
+      print('spectralClassCount in build method: ' + spectralClassCount.toString());
+      //print('This is spectralClassCount in the build method: ' + spectralClassCount.toString());
+    }//});
     /*() async{
       spectralClassCount = await generateSpectralClasses();
       print('async spectralClassCount: ' + spectralClassCount.toString());
