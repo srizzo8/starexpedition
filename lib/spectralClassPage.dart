@@ -173,13 +173,25 @@ class spectralClassPageState extends State<spectralClassPage>{
                 DataCell(Text('M')),
                 DataCell(Text('2500-3800 K')),
                 //DataCell(Text('Proxima Centauri')),
-                DataCell(Text(spectralClassCount[0].toString())),
+                DataCell(GestureDetector(
+                    onTap: (){
+                      print("You clicked me!");
+                    },
+                    child: Text(spectralClassCount[0].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
+                  ),
+                ),
               ]),
               DataRow(cells: [
                 DataCell(Text('K')),
                 DataCell(Text('3800-5300 K')),
-                DataCell(Text(spectralClassCount[1].toString())),
-              ]),
+                DataCell(GestureDetector(
+                    onTap: (){
+                      print('You clicked me!');
+                      },
+                    child: Text(spectralClassCount[1].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
+                ),
+                ),
+            ]),
               DataRow(cells: [
                 DataCell(Text('G')),
                 DataCell(Text('5300-6000 K')),
