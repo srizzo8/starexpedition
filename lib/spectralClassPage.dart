@@ -7,6 +7,8 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'main.dart' as myMain;
 
+String mySpectralClass = "";
+
 class spectralClassPage extends StatefulWidget{
   const spectralClassPage({Key? key}) : super(key: key);
 
@@ -177,6 +179,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                     onTap: (){
                       print("You clicked me!");
                       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                      mySpectralClass = "M";
                     },
                     child: Text(spectralClassCount[0].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
                   ),
@@ -254,6 +257,7 @@ class spectralClassPageState extends State<spectralClassPage>{
 }
 
 class listForSpectralClassesPage extends StatelessWidget{
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -264,7 +268,7 @@ class listForSpectralClassesPage extends StatelessWidget{
         children: <Widget>[
           Container(
             alignment: Alignment.topCenter,
-            child: Text("List of Stars with articles that belong to this spectral class"),
+            child: Text("List of stars with articles that belong to the " + mySpectralClass + " spectral class"),
           )
         ]
       )
