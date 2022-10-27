@@ -191,6 +191,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                 DataCell(GestureDetector(
                     onTap: (){
                       print('You clicked me!');
+                      mySpectralClass = "K";
                       },
                     child: Text(spectralClassCount[1].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
                 ),
@@ -257,6 +258,52 @@ class spectralClassPageState extends State<spectralClassPage>{
 }
 
 class listForSpectralClassesPage extends StatelessWidget{
+
+  List<String> mStars = [];
+  List<String> kStars = [];
+  List<String> gStars = [];
+  List<String> fStars = [];
+  List<String> aStars = [];
+  List<String> bStars = [];
+  List<String> oStars = [];
+
+  @override
+  void getStars() async{
+    for(int i = 0; i < myMain.starsForSearchBar.length; i++) {
+      var starsWithSpectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
+      String starSnapshot = await starsWithSpectralClassRef.child("spectral_class").toString();
+      String starSnapshotSpectralClass = starSnapshot[0];
+      switch(starSnapshotSpectralClass){
+        case "M":
+          mStars.add(myMain.starsForSearchBar[i].starName!);
+          break;
+        case "K":
+          kStars.add(myMain.starsForSearchBar[i].starName!);
+          break;
+        case "G":
+          gStars.add(myMain.starsForSearchBar[i].starName!);
+          break;
+        case "F":
+          fStars.add(myMain.starsForSearchBar[i].starName!);
+          break;
+        case "A":
+          aStars.add(myMain.starsForSearchBar[i].starName!);
+          break;
+        case "B":
+          bStars.add(myMain.starsForSearchBar[i].starName!);
+          break;
+        case "O":
+          oStars.add(myMain.starsForSearchBar[i].starName!);
+          break;
+      }
+    }
+    print(mStars.toString());
+  }
+
+  void initState(){
+    getStars();
+  }
+
 
   @override
   Widget build(BuildContext context){
