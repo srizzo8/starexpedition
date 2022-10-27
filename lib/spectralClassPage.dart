@@ -257,7 +257,14 @@ class spectralClassPageState extends State<spectralClassPage>{
   }
 }
 
-class listForSpectralClassesPage extends StatelessWidget{
+class listForSpectralClassesPage extends StatefulWidget{
+  const listForSpectralClassesPage({Key? key}) : super(key: key);
+
+  @override
+  listForSpectralClassesPageState createState() => listForSpectralClassesPageState();
+}
+
+class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
 
   List<String> mStars = [];
   List<String> kStars = [];
@@ -300,8 +307,10 @@ class listForSpectralClassesPage extends StatelessWidget{
     print(mStars.toString());
   }
 
+  @override
   void initState(){
     getStars();
+    super.initState();
   }
 
 
