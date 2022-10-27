@@ -304,7 +304,13 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
           break;
       }
     }
-    print(mStars.toString());
+    print("List of M-type stars: " + mStars.toString());
+    print("List of K-type stars: " + kStars.toString());
+    print("List of G-type stars: " + gStars.toString());
+    print("List of F-type stars: " + fStars.toString());
+    print("List of A-type stars: " + aStars.toString());
+    print("List of B-type stars: " + bStars.toString());
+    print("List of O-type stars: " + oStars.toString());
   }
 
   @override
