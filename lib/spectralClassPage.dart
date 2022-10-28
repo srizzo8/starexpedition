@@ -275,9 +275,19 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
   List<String> aStars = [];
   List<String> bStars = [];
   List<String> oStars = [];
+  List<List> fullListOfStars = [];
+  bool switchOn = false;
 
   @override
-  void getStars() async{
+  Future<List<List>> getStars() async{
+    List<String> getMStars = [];
+    List<String> getKStars = [];
+    List<String> getGStars = [];
+    List<String> getFStars = [];
+    List<String> getAStars = [];
+    List<String> getBStars = [];
+    List<String> getOStars = [];
+
     for(int i = 0; i < myMain.starsForSearchBar.length; i++) {
       print('Current star: ' + myMain.starsForSearchBar[i].starName!.toString());
       final starsWithSpectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
@@ -286,28 +296,28 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
       //print('This is starSnapshot: ' + starSnapshot.toString());
       String starSnapshotString = starSnapshot.value.toString();
       String starSnapshotSpectralClass = starSnapshotString[0];
-      print('This is starSnapshotSpectralClass: ' + starSnapshotSpectralClass);
+      //print('This is starSnapshotSpectralClass: ' + starSnapshotSpectralClass);
       switch(starSnapshotSpectralClass){
         case "M":
-          mStars.add(myMain.starsForSearchBar[i].starName!);
+          getMStars.add(myMain.starsForSearchBar[i].starName!);
           break;
         case "K":
-          kStars.add(myMain.starsForSearchBar[i].starName!);
+          getKStars.add(myMain.starsForSearchBar[i].starName!);
           break;
         case "G":
-          gStars.add(myMain.starsForSearchBar[i].starName!);
+          getGStars.add(myMain.starsForSearchBar[i].starName!);
           break;
         case "F":
-          fStars.add(myMain.starsForSearchBar[i].starName!);
+          getFStars.add(myMain.starsForSearchBar[i].starName!);
           break;
         case "A":
-          aStars.add(myMain.starsForSearchBar[i].starName!);
+          getAStars.add(myMain.starsForSearchBar[i].starName!);
           break;
         case "B":
-          bStars.add(myMain.starsForSearchBar[i].starName!);
+          getBStars.add(myMain.starsForSearchBar[i].starName!);
           break;
         case "O":
-          oStars.add(myMain.starsForSearchBar[i].starName!);
+          getOStars.add(myMain.starsForSearchBar[i].starName!);
           break;
       }
     }
@@ -319,17 +329,29 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
     print("List of B-type stars: " + bStars.toString());
     print("List of O-type stars: " + oStars.toString());
     //return "myFutureString";
+    return [getMStars, getKStars, getGStars, getFStars, getAStars, getBStars, getOStars];
+  }
+
+  void getListOfStars() async{
+    fullListOfStars = await getStars();
+    setState((){
+      switchOn = true;
+    });
   }
 
   @override
   void initState(){
-    getStars();
+    getListOfStars();
     super.initState();
   }
 
 
   @override
   Widget build(BuildContext context){
+    if(switchOn == true) {
+      //print('Here are some M stars: ' + mStars.toString());
+      print('This is fullListOfStars: ' + fullListOfStars.toString());
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
