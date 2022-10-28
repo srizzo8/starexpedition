@@ -30,7 +30,9 @@ class spectralClassPageState extends State<spectralClassPage>{
     List<String> spectralClasses = [];
     for(int i = 0; i < scpNumberOfStars; i++) {
       final spectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
+      //print('This is spectralClassRef: ' + spectralClassRef.toString());
       var spectralClassSnapshot = await spectralClassRef.child("spectral_class").get();
+      //print('This is spectralClassSnapshot: ' + spectralClassSnapshot.toString());
       //print(spectralClassSnapshot.value.toString());
       spectralClasses.add(spectralClassSnapshot.value.toString());
     }
@@ -277,9 +279,14 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
   @override
   void getStars() async{
     for(int i = 0; i < myMain.starsForSearchBar.length; i++) {
-      var starsWithSpectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
-      String starSnapshot = await starsWithSpectralClassRef.child("spectral_class").toString();
-      String starSnapshotSpectralClass = starSnapshot[0];
+      print('Current star: ' + myMain.starsForSearchBar[i].starName!.toString());
+      final starsWithSpectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
+      //print(starsWithSpectralClassRef.toString());
+      var starSnapshot = await starsWithSpectralClassRef.child("spectral_class").get();
+      //print('This is starSnapshot: ' + starSnapshot.toString());
+      String starSnapshotString = starSnapshot.value.toString();
+      String starSnapshotSpectralClass = starSnapshotString[0];
+      print('This is starSnapshotSpectralClass: ' + starSnapshotSpectralClass);
       switch(starSnapshotSpectralClass){
         case "M":
           mStars.add(myMain.starsForSearchBar[i].starName!);
@@ -311,6 +318,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
     print("List of A-type stars: " + aStars.toString());
     print("List of B-type stars: " + bStars.toString());
     print("List of O-type stars: " + oStars.toString());
+    //return "myFutureString";
   }
 
   @override
