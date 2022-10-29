@@ -361,9 +361,41 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
           Container(
             alignment: Alignment.topCenter,
             child: Text("List of stars with articles that belong to the " + mySpectralClass + " spectral class"),
-          )
+          ),
+          Container(
+            height: 100,
+            width: 360,
+            child: spectralClassListInformation(),
+          ),
         ]
       )
     );
+  }
+  Text spectralClassListInformation(){
+    Text myContainerText = Text("Not available at the moment");
+    switch(mySpectralClass){
+      case "M":
+        myContainerText = Text(fullListOfStars[0].toString());
+        break;
+      case "K":
+        myContainerText = Text(fullListOfStars[1].toString());
+        break;
+      case "G":
+        myContainerText = Text(fullListOfStars[2].toString());
+        break;
+      case "F":
+        myContainerText = Text(fullListOfStars[3].toString());
+        break;
+      case "A":
+        myContainerText = Text(fullListOfStars[4].toString());
+        break;
+      case "B":
+        myContainerText = Text(fullListOfStars[5].toString());
+        break;
+      case "O":
+        myContainerText = Text(fullListOfStars[6].toString());
+        break;
+    }
+    return myContainerText;
   }
 }
