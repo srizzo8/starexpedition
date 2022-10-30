@@ -193,6 +193,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                 DataCell(GestureDetector(
                     onTap: (){
                       print('You clicked me!');
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                       mySpectralClass = "K";
                       },
                     child: Text(spectralClassCount[1].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
@@ -202,12 +203,26 @@ class spectralClassPageState extends State<spectralClassPage>{
               DataRow(cells: [
                 DataCell(Text('G')),
                 DataCell(Text('5300-6000 K')),
-                DataCell(Text(spectralClassCount[2].toString())),
-              ]),
+                DataCell(GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                    mySpectralClass = "G";
+                  },
+                  child: Text(spectralClassCount[2].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
+                ),
+                ),      //Text(spectralClassCount[2].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))),
+            ]),
               DataRow(cells: [
                 DataCell(Text('F')),
                 DataCell(Text('6000-7300 K')),
-                DataCell(Text(spectralClassCount[3].toString())),
+                DataCell(GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                    mySpectralClass = "F";
+                },
+                child: Text(spectralClassCount[3].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
+                )
+                ),
               ]),
               DataRow(cells: [
                 DataCell(Text('A')),
@@ -351,6 +366,8 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
     if(switchOn == true) {
       //print('Here are some M stars: ' + mStars.toString());
       print('This is fullListOfStars: ' + fullListOfStars.toString());
+      print('List of M stars: ' + fullListOfStars[0].toString());
+      print('An M star: ' + fullListOfStars[0][1].toString());
     }
     return Scaffold(
       appBar: AppBar(
@@ -363,7 +380,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
             child: Text("List of stars with articles that belong to the " + mySpectralClass + " spectral class"),
           ),
           Container(
-            height: 100,
+            height: 300,
             width: 360,
             child: spectralClassListInformation(),
           ),
@@ -373,27 +390,49 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
   }
   Text spectralClassListInformation(){
     Text myContainerText = Text("Not available at the moment");
+    List starList = [];
     switch(mySpectralClass){
       case "M":
-        myContainerText = Text(fullListOfStars[0].toString());
+        for(int m = 0; m < fullListOfStars[0].length; m++) {
+          starList.add(fullListOfStars[0][m]);
+        }
+        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
         break;
       case "K":
-        myContainerText = Text(fullListOfStars[1].toString());
+        for(int k = 0; k < fullListOfStars[1].length; k++){
+          starList.add(fullListOfStars[1][k]);
+        }
+        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
         break;
       case "G":
-        myContainerText = Text(fullListOfStars[2].toString());
+        for(int g = 0; g < fullListOfStars[2].length; g++){
+          starList.add(fullListOfStars[2][g]);
+        }
+        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
         break;
       case "F":
-        myContainerText = Text(fullListOfStars[3].toString());
+        for(int f = 0; f < fullListOfStars[3].length; f++){
+          starList.add(fullListOfStars[3][f]);
+        }
+        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
         break;
       case "A":
-        myContainerText = Text(fullListOfStars[4].toString());
+        for(int a = 0; a < fullListOfStars[4].length; a++){
+          starList.add(fullListOfStars[4][a]);
+        }
+        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
         break;
       case "B":
-        myContainerText = Text(fullListOfStars[5].toString());
+        for(int b = 0; b < fullListOfStars[5].length; b++){
+          starList.add(fullListOfStars[5][b]);
+        }
+        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
         break;
       case "O":
-        myContainerText = Text(fullListOfStars[6].toString());
+        for(int o = 0; o < fullListOfStars[6].length; o++){
+          starList.add(fullListOfStars[6][o]);
+        }
+        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
         break;
     }
     return myContainerText;
