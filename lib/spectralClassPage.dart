@@ -402,7 +402,13 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
           Container(
             height: 300,
             width: 360,
-            child: spectralClassListInformation(),
+            child: InkWell(
+              onTap: (){
+                print('You clicked on a star!');
+              },
+              child: spectralClassListInformation(),
+            )
+            //child: spectralClassListInformation(),
           ),
         ]
       )
