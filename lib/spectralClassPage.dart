@@ -227,17 +227,37 @@ class spectralClassPageState extends State<spectralClassPage>{
               DataRow(cells: [
                 DataCell(Text('A')),
                 DataCell(Text('7300-10000 K')),
-                DataCell(Text(spectralClassCount[4].toString())),
+                DataCell(GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                    mySpectralClass = "A";
+                  },
+                  child: Text(spectralClassCount[4].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
+                )
+                ),
               ]),
               DataRow(cells: [
                 DataCell(Text('B')),
                 DataCell(Text('10000-30000 K')),
-                DataCell(Text(spectralClassCount[5].toString())),
+                DataCell(GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                    mySpectralClass = "B";
+                  },
+                  child: Text(spectralClassCount[5].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
+                )
+                ),
               ]),
               DataRow(cells: [
                 DataCell(Text('O')),
                 DataCell(Text('30000+ K')),
-                DataCell(Text(spectralClassCount[6].toString())),
+                DataCell(GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                    mySpectralClass = "O";
+                  },
+                  child: Text(spectralClassCount[6].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))
+                )),
               ]),
             ],
           ),
