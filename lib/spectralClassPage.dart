@@ -313,6 +313,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
   List<String> oStars = [];
   List<List> fullListOfStars = [];
   bool switchOn = false;
+  myMain.myStars clickedStar = myMain.myStars(starName: "not available");
 
   @override
   Future<List<List>> getStars() async{
@@ -394,6 +395,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
       //buildMethodStarList = spectralClassListInformation() as List<String>;
       //print(buildMethodStarList);
     }
+    List<String> informationAboutClickedStar = [];
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
@@ -418,7 +420,23 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
               itemCount: fullListOfStars[indexPlaceSpectralClass()].length,
               itemBuilder: (context, index){
                 return Card(
-                  child: Text(fullListOfStars[indexPlaceSpectralClass()][index]),
+                  child: InkWell(
+                    onTap: () async{
+                      //clickedStar.add(myMain.myStars(starName: fullListOfStars[indexPlaceSpectralClass()][index]));
+                      myMain.correctStar = fullListOfStars[indexPlaceSpectralClass()][index];
+                      print(myMain.correctStar);
+                      clickedStar.starName = myMain.correctStar;
+                      print(clickedStar.starName);
+                      //clickedStar = ;
+                      //print(clickedStar);
+                      //print("This is the clicked star: " + clickedStar! as String);
+                      informationAboutClickedStar = await myMain.getStarInformation();
+                      print(informationAboutClickedStar);
+                      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
+                    },
+                    child: Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
+                  ),
+                  //Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
                 );
               }
             ),
@@ -434,6 +452,15 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
       )
     );
   }
+
+  /*myMain.myStars starDecider(){
+    if(clickedStar != null){
+      print("clickedStar is empty!");
+    }
+    else{
+      myMain.myStars(imagePath:)
+    }
+  }*/
 
   int indexPlaceSpectralClass(){
     int myIndexPlace = 0;
