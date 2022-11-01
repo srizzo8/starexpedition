@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
+
+import 'package:starexpedition4/discussionBoardPage.dart';
 //import 'package:starexpedition4/spectralClassPage.dart';
 
 /* String correctString = "";
@@ -54,6 +56,7 @@ class MyApp extends StatelessWidget {
       home: StarExpedition(),
       routes:{
         routesToOtherPages.spectralClass: (context) => spectralClassPage(),
+        routesToOtherPages.discussionBoard: (context) => discussionBoardPage(),
       }
     );
   }
@@ -61,6 +64,7 @@ class MyApp extends StatelessWidget {
 
 class routesToOtherPages{
   static String spectralClass = spectralClassPageState.nameOfRoute;
+  static String discussionBoard = discussionBoardPageState.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -260,7 +264,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
               ListTile(
                   title: Text("Discussion Board"),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, routesToOtherPages.discussionBoard);
                   }
               )
             ]
