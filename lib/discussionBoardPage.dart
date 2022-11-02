@@ -27,12 +27,19 @@ class discussionBoardPageState extends State<discussionBoardPage>{
       body: ListView.builder(
         itemCount: subforumList.length,
         itemBuilder: (context, index){
-          return Container(
-            height: 100,
-            width: 240,
-            alignment: Alignment.center,
-            color: Colors.red,
-            child: Text(subforumList[index], textAlign: TextAlign.center),
+          return Column(
+            children: <Widget>[
+              Container(
+                height: 15,
+              ),
+              Container(
+                height: 80,
+                width: 240,
+                alignment: Alignment.center,
+                color: Colors.red,
+                child: Text(subforumList[index], textAlign: TextAlign.center),
+              ),
+            ],
           );
         },
       ),
