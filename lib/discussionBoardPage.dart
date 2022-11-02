@@ -17,10 +17,26 @@ class discussionBoardPage extends StatefulWidget{
 
 class discussionBoardPageState extends State<discussionBoardPage>{
   static String nameOfRoute = '/discussionBoardPage';
+  List<String> subforumList = ["Discussion Board Updates", "Questions and Answers", "Technologies", "Projects", "New Discoveries"];
 
   Widget build(BuildContext context){
     return Scaffold(
-
+      appBar: AppBar(
+        title: Text("Star Expedition"),
+      ),
+      body: ListView.builder(
+        itemCount: subforumList.length,
+        itemBuilder: (context, index){
+          return Container(
+            height: 100,
+            width: 240,
+            alignment: Alignment.center,
+            color: Colors.red,
+            child: Text(subforumList[index], textAlign: TextAlign.center),
+          );
+        },
+      ),
+      drawer: myMain.starExpeditionNavigationDrawer(),
     );
   }
 }
