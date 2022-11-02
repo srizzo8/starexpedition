@@ -24,24 +24,33 @@ class discussionBoardPageState extends State<discussionBoardPage>{
       appBar: AppBar(
         title: Text("Star Expedition"),
       ),
-      body: ListView.builder(
-        itemCount: subforumList.length,
-        itemBuilder: (context, index){
-          return Column(
-            children: <Widget>[
-              Container(
-                height: 15,
-              ),
-              Container(
-                height: 80,
-                width: 240,
-                alignment: Alignment.center,
-                color: Colors.red,
-                child: Text(subforumList[index], textAlign: TextAlign.center),
-              ),
-            ],
-          );
-        },
+      body: Column(
+        children: <Widget>[
+          Container(
+            child: Text("Star Expedition Discussion Board",textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: subforumList.length,
+              itemBuilder: (context, index){
+              return Column(
+                children: <Widget>[
+                  Container(
+                    height: 15,
+                  ),
+                  Container(
+                    height: 80,
+                    width: 240,
+                    alignment: Alignment.center,
+                    color: Colors.red,
+                    child: Text(subforumList[index], textAlign: TextAlign.center),
+                  ),
+                ],
+              );
+            },
+          ),
+          ),
+        ],
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
     );
