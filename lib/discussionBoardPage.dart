@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'discussionBoardUpdatesPage.dart';
 import 'main.dart' as myMain;
 
 class discussionBoardPage extends StatefulWidget{
@@ -13,6 +14,24 @@ class discussionBoardPage extends StatefulWidget{
 
   @override
   discussionBoardPageState createState() => discussionBoardPageState();
+}
+
+class MyDiscussionBoard extends StatelessWidget{
+  const MyDiscussionBoard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext bc) {
+    return MaterialApp(
+        title: 'Discussion Board Main Page',
+        routes: {
+          discussionBoardRoutes.updatesSubforum: (context) => discussionBoardUpdatesPage(),
+        }
+    );
+  }
+}
+
+class discussionBoardRoutes{
+  static String updatesSubforum = discussionBoardUpdatesPageState.dBoardRoute;
 }
 
 class discussionBoardPageState extends State<discussionBoardPage>{
@@ -41,6 +60,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                   GestureDetector(
                     onTap: (){
                       print("Testing subforum button");
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage()));
                     },
                     child: Container(
                       height: 80,
