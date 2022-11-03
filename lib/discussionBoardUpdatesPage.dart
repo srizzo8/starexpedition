@@ -20,7 +20,36 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
 
   Widget build(BuildContext bc){
     return Scaffold(
-
+      appBar: AppBar(
+        title: Text("Star Expedition"),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 5,
+              itemBuilder: (context, index){
+              return Column(
+                children: <Widget>[
+                  Container(
+                    height: 10,
+                  ),
+                  Container(
+                    child: Text("Updates subforum post"),
+                    height: 30,
+                    width: 360,
+                    color: Colors.tealAccent,
+                  ),
+                ],
+              );
+            }
+          ),
+          ),
+        ],
+      ),
     );
   }
 }
