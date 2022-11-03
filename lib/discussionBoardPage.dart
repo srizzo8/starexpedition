@@ -38,12 +38,17 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                   Container(
                     height: 15,
                   ),
-                  Container(
-                    height: 80,
-                    width: 240,
-                    alignment: Alignment.center,
-                    color: Colors.red,
-                    child: Text(subforumList[index], textAlign: TextAlign.center),
+                  GestureDetector(
+                    onTap: (){
+                      print("Testing subforum button");
+                    },
+                    child: Container(
+                      height: 80,
+                      width: 240,
+                      alignment: Alignment.center,
+                      color: Colors.red,
+                      child: Text(subforumList[index], textAlign: TextAlign.center),
+                    ),
                   ),
                 ],
               );
