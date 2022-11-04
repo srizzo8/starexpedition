@@ -28,6 +28,13 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
           Container(
             child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
+          Container(
+            child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+            color: Colors.black,
+            height: 20,
+            width: 120,
+            margin: EdgeInsets.only(left: 250.0),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: 5,
