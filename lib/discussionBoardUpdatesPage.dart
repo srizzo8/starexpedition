@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'createThread.dart';
 import 'main.dart' as myMain;
 
 class discussionBoardUpdatesPage extends StatefulWidget{
@@ -13,6 +14,24 @@ class discussionBoardUpdatesPage extends StatefulWidget{
 
   @override
   discussionBoardUpdatesPageState createState() => discussionBoardUpdatesPageState();
+}
+
+class MyDiscussionBoardUpdatesPage extends StatelessWidget{
+  const MyDiscussionBoardUpdatesPage ({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext updatesSubforumBuildContext){
+    return MaterialApp(
+      title: 'Discussion Board Updates Page',
+      routes: {
+        routeToCreateThread.createThreadPage: (context) => createThread(),
+      }
+    );
+  }
+}
+
+class routeToCreateThread{
+  static String createThreadPage = createThreadState.threadCreator;
 }
 
 class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
@@ -28,12 +47,18 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
           Container(
             child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
-          Container(
-            child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
-            color: Colors.black,
-            height: 20,
-            width: 120,
-            margin: EdgeInsets.only(left: 250.0),
+          GestureDetector(
+            child: Container(
+              child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+              color: Colors.black,
+              height: 20,
+              width: 120,
+              margin: EdgeInsets.only(left: 250.0),
+            ),
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+              print("I am going to write a new thread.");
+            }
           ),
           Expanded(
             child: ListView.builder(
