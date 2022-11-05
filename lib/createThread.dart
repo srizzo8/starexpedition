@@ -23,10 +23,14 @@ class createThreadState extends State<createThread>{
       appBar: AppBar(
         title: Text("Star Expedition"),
       ),
-      body: Expanded(
-        child: Container(
-          child: Text("Making a thread", style: TextStyle(fontWeight: FontWeight.bold)),
-        ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            child: Text("Making a thread", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
+            width: 480,
+            alignment: Alignment.center,
+          ),
+        ],
       ),
     );
   }
