@@ -54,6 +54,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
               height: 20,
               width: 120,
               margin: EdgeInsets.only(left: 250.0),
+              alignment: Alignment.center,
             ),
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));

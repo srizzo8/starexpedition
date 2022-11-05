@@ -49,6 +49,19 @@ class createThreadState extends State<createThread>{
               ),
             )
           ),
+          GestureDetector(
+            child: Container(
+              child: Text("Post to Subforum", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+              color: Colors.black,
+              margin: EdgeInsets.only(left: 200.0),
+              height: 30,
+              width: 140,
+              alignment: Alignment.center,
+            ),
+            onTap: (){
+              print('Posting the thread');
+            }
+          ),
         ],
       ),
     );
