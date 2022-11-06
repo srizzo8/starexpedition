@@ -34,6 +34,16 @@ class createThreadState extends State<createThread>{
             padding: EdgeInsets.all(20.0),
             child: TextField(
               decoration: InputDecoration(
+                labelText: "Username",
+              ),
+              maxLines: 1,
+              maxLength: 30,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(20.0),
+            child: TextField(
+              decoration: InputDecoration(
                 labelText: "Thread Name",
               ),
               maxLines: 2,
