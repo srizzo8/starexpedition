@@ -10,6 +10,7 @@ import 'createThread.dart';
 import 'main.dart' as myMain;
 
 bool discussionBoardUpdatesBool = false;
+List<List> discussionBoardUpdatesThreads = [];
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -38,7 +39,6 @@ class routeToCreateThread{
 
 class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
   static String dBoardRoute = '/discussionBoardUpdatesPage';
-  List<String> discussionBoardUpdatesThreads = [];
 
   Widget build(BuildContext bc){
     return Scaffold(
@@ -68,8 +68,11 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
             }
           ),
           Expanded(
+            child: Align(
+              alignment: Alignment.topCenter,
             child: ListView.builder(
-              itemCount: 5,
+              reverse: true,
+              itemCount: discussionBoardUpdatesThreads.length,
               itemBuilder: (context, index){
               return Column(
                 children: <Widget>[
@@ -77,7 +80,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                     height: 10,
                   ),
                   Container(
-                    child: Text("Updates subforum post"),
+                    child: Text(discussionBoardUpdatesThreads[index][1] + "\n" + "By: " + discussionBoardUpdatesThreads[index][0]),
                     height: 30,
                     width: 360,
                     color: Colors.tealAccent,
@@ -85,6 +88,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                 ],
               );
             }
+          ),
           ),
           ),
         ],

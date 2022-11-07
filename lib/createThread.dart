@@ -21,6 +21,7 @@ class createThreadState extends State<createThread>{
   final usernameController = TextEditingController();
   final threadNameController = TextEditingController();
   final threadContentController = TextEditingController();
+  List<String> discussionBoardUpdatesPendingThreads = [];
 
   Widget build(BuildContext createThreadBuildContext){
     return Scaffold(
@@ -82,6 +83,12 @@ class createThreadState extends State<createThread>{
                 if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != "" && discussionBoardUpdatesPage.discussionBoardUpdatesBool == true){
                   //print(usernameController.text);
                   print('You are ready to post this thread');
+                  discussionBoardUpdatesPendingThreads.add(usernameController.text);
+                  discussionBoardUpdatesPendingThreads.add(threadNameController.text);
+                  discussionBoardUpdatesPendingThreads.add(threadContentController.text);
+                  print(discussionBoardUpdatesPendingThreads);
+                  discussionBoardUpdatesPage.discussionBoardUpdatesThreads.add(discussionBoardUpdatesPendingThreads);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                   discussionBoardUpdatesPage.discussionBoardUpdatesBool = false;
                 }
               }
