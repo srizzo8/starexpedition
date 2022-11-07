@@ -9,6 +9,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'createThread.dart';
 import 'main.dart' as myMain;
 
+bool discussionBoardUpdatesBool = false;
+
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
 
@@ -36,6 +38,7 @@ class routeToCreateThread{
 
 class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
   static String dBoardRoute = '/discussionBoardUpdatesPage';
+  List<String> discussionBoardUpdatesThreads = [];
 
   Widget build(BuildContext bc){
     return Scaffold(
@@ -57,6 +60,9 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
               alignment: Alignment.center,
             ),
             onTap: (){
+              print(discussionBoardUpdatesBool);
+              discussionBoardUpdatesBool = true;
+              print(discussionBoardUpdatesBool);
               Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
               print("I am going to write a new thread.");
             }

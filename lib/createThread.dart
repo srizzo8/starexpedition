@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 
 import 'main.dart' as myMain;
 
@@ -77,9 +78,11 @@ class createThreadState extends State<createThread>{
               ),
               onTap: (){
                 //print('Posting the thread');
-                if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != ""){
-                  print(usernameController.text);
+                print(discussionBoardUpdatesPage.discussionBoardUpdatesBool);
+                if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != "" && discussionBoardUpdatesPage.discussionBoardUpdatesBool == true){
+                  //print(usernameController.text);
                   print('You are ready to post this thread');
+                  discussionBoardUpdatesPage.discussionBoardUpdatesBool = false;
                 }
               }
             ),
