@@ -154,7 +154,8 @@ class spectralClassPageState extends State<spectralClassPage>{
       appBar: AppBar(
         title: Text("Star Expedition"),
       ),
-      body: Wrap(
+      body: spectralClassOfStars.isEmpty || spectralClassCount.isEmpty? Center(child: CircularProgressIndicator()):
+      Wrap(
         children: <Widget>[
           Container(
             alignment: Alignment.topCenter,
