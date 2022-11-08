@@ -11,6 +11,8 @@ import 'main.dart' as myMain;
 
 bool discussionBoardUpdatesBool = false;
 List<List> discussionBoardUpdatesThreads = [];
+//List<List> reversedDiscussionBoardUpdatesThreadsList = discussionBoardUpdatesThreads.reversed.toList();
+Iterable<List> reversedDiscussionBoardUpdatesThreadsIterable = discussionBoardUpdatesThreads.reversed;
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -68,11 +70,8 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
             }
           ),
           Expanded(
-            child: Align(
-              alignment: Alignment.topCenter,
             child: ListView.builder(
-              reverse: true,
-              itemCount: discussionBoardUpdatesThreads.length,
+              itemCount: reversedDiscussionBoardUpdatesThreadsIterable.toList().length,
               itemBuilder: (context, index){
               return Column(
                 children: <Widget>[
@@ -80,7 +79,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                     height: 10,
                   ),
                   Container(
-                    child: Text(discussionBoardUpdatesThreads[index][1] + "\n" + "By: " + discussionBoardUpdatesThreads[index][0]),
+                    child: Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
                     height: 30,
                     width: 360,
                     color: Colors.tealAccent,
@@ -88,7 +87,6 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                 ],
               );
             }
-          ),
           ),
           ),
         ],

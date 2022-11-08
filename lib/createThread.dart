@@ -90,6 +90,8 @@ class createThreadState extends State<createThread>{
                   discussionBoardUpdatesPage.discussionBoardUpdatesThreads.add(discussionBoardUpdatesPendingThreads);
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                   discussionBoardUpdatesPage.discussionBoardUpdatesBool = false;
+                  //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsList);
+                  print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsIterable.toList());
                 }
               }
             ),
