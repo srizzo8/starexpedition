@@ -13,6 +13,9 @@ bool discussionBoardUpdatesBool = false;
 List<List> discussionBoardUpdatesThreads = [];
 //List<List> reversedDiscussionBoardUpdatesThreadsList = discussionBoardUpdatesThreads.reversed.toList();
 Iterable<List> reversedDiscussionBoardUpdatesThreadsIterable = discussionBoardUpdatesThreads.reversed;
+String threadAuthorDbu = "";
+String threadTitleDbu = "";
+String threadContentDbu = "";
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -78,11 +81,21 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                   Container(
                     height: 10,
                   ),
-                  Container(
-                    child: Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
-                    height: 30,
-                    width: 360,
-                    color: Colors.tealAccent,
+                  GestureDetector(
+                    child: Container(
+                      child: Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
+                      height: 30,
+                      width: 360,
+                      color: Colors.tealAccent,
+                    ),
+                    onTap: (){
+                      print("I clicked on a thread");
+                      print('You clicked on: ' + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1]);
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadContent()));
+                      threadAuthorDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0];
+                      threadTitleDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1];
+                      threadContentDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][2];
+                    }
                   ),
                 ],
               );
@@ -95,3 +108,25 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
   }
 }
 
+class discussionBoardUpdatesThreadContent extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Star Expedition"),
+      ),
+      body: Wrap(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              child: Text("Thread title: " + threadTitleDbu + "\n" + "Posted by: " + threadAuthorDbu + "\n" + threadContentDbu),
+              color: Colors.tealAccent,
+              alignment: Alignment.topLeft,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
