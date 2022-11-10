@@ -61,6 +61,7 @@ class MyApp extends StatelessWidget {
       routes:{
         routesToOtherPages.spectralClass: (context) => spectralClassPage(),
         routesToOtherPages.discussionBoard: (context) => discussionBoardPage(),
+        routesToOtherPages.homePage: (context) => StarExpedition(),
       }
     );
   }
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
 class routesToOtherPages{
   static String spectralClass = spectralClassPageState.nameOfRoute;
   static String discussionBoard = discussionBoardPageState.nameOfRoute;
+  static String homePage = theStarExpeditionState.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -105,6 +107,7 @@ Future<List<String>> getStarInformation() async{
 }
 
 class theStarExpeditionState extends State<StarExpedition> {
+  static String nameOfRoute = '/StarExpedition';
   List<String> starInfo = [];
   theStarExpeditionState(this.starInfo);
   final CustomSearchDelegate csd = new CustomSearchDelegate();
@@ -251,6 +254,12 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                   color: Colors.red,
                 ),
                 child: Text("Star Expedition Navigation Drawer", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+              ),
+              ListTile(
+                title: Text("Home"),
+                onTap: (){
+                  Navigator.pushReplacementNamed(context, routesToOtherPages.homePage);
+                }
               ),
               ListTile(
                   title: Text("Why Star Expedition Was Made"),
