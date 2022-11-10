@@ -39,6 +39,10 @@ List<myStars> starsForSearchBar = [
   myStars(starName: "Ross 128", imagePath: "assets/images/ross_128.jpg"),
   myStars(starName: "Luyten's Star", imagePath: "assets/images/luytens_star.jpg"),
   myStars(starName: "Kapteyn's Star", imagePath: "assets/images/kapteyns_star.jpg"),
+  myStars(starName: "Wolf 1061", imagePath: "assets/images/wolf_1061.jpg"),
+  myStars(starName: "Gliese 876", imagePath: "assets/images/gliese_876.jpg"),
+  myStars(starName: "Gliese 581", imagePath: "assets/images/gliese_581.jpg"),
+  myStars(starName: "Lacaille 9352", imagePath: "assets/images/lacaille_9352.jpg"),
 ];
 
 class MyApp extends StatelessWidget {
