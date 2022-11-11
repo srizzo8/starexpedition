@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
+import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 
 import 'main.dart' as myMain;
 
@@ -22,6 +23,7 @@ class createThreadState extends State<createThread>{
   final threadNameController = TextEditingController();
   final threadContentController = TextEditingController();
   List<String> discussionBoardUpdatesPendingThreads = [];
+  List<String> questionsAndAnswersPendingThreads = [];
 
   Widget build(BuildContext createThreadBuildContext){
     return Scaffold(
@@ -80,18 +82,30 @@ class createThreadState extends State<createThread>{
               onTap: (){
                 //print('Posting the thread');
                 print(discussionBoardUpdatesPage.discussionBoardUpdatesBool);
-                if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != "" && discussionBoardUpdatesPage.discussionBoardUpdatesBool == true){
+                if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != "" && discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false){
                   //print(usernameController.text);
-                  print('You are ready to post this thread');
-                  discussionBoardUpdatesPendingThreads.add(usernameController.text);
-                  discussionBoardUpdatesPendingThreads.add(threadNameController.text);
-                  discussionBoardUpdatesPendingThreads.add(threadContentController.text);
-                  print(discussionBoardUpdatesPendingThreads);
-                  discussionBoardUpdatesPage.discussionBoardUpdatesThreads.add(discussionBoardUpdatesPendingThreads);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
-                  discussionBoardUpdatesPage.discussionBoardUpdatesBool = false;
-                  //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsList);
-                  print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsIterable.toList());
+                  if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false) {
+                    print('You are ready to post this thread');
+                    discussionBoardUpdatesPendingThreads.add(usernameController.text);
+                    discussionBoardUpdatesPendingThreads.add(threadNameController.text);
+                    discussionBoardUpdatesPendingThreads.add(threadContentController.text);
+                    print(discussionBoardUpdatesPendingThreads);
+                    discussionBoardUpdatesPage.discussionBoardUpdatesThreads.add(discussionBoardUpdatesPendingThreads);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
+                    discussionBoardUpdatesPage.discussionBoardUpdatesBool = false;
+                    //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsList);
+                    print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsIterable.toList());
+                  }
+                  else{
+                    if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == true){
+                      questionsAndAnswersPendingThreads.add(usernameController.text);
+                      questionsAndAnswersPendingThreads.add(threadNameController.text);
+                      questionsAndAnswersPendingThreads.add(threadContentController.text);
+                      questionsAndAnswersPage.questionsAndAnswersThreads.add(questionsAndAnswersPendingThreads);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
+                      questionsAndAnswersPage.questionsAndAnswersBool = false;
+                    }
+                  }
                 }
               }
             ),

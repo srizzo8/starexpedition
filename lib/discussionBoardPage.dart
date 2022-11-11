@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'discussionBoardUpdatesPage.dart';
+import 'questionsAndAnswersPage.dart';
 import 'main.dart' as myMain;
 
 class discussionBoardPage extends StatefulWidget{
@@ -25,6 +26,7 @@ class MyDiscussionBoard extends StatelessWidget{
         title: 'Discussion Board Main Page',
         routes: {
           discussionBoardRoutes.updatesSubforum: (context) => discussionBoardUpdatesPage(),
+          discussionBoardRoutes.questionsAndAnswersSubforum: (context) => questionsAndAnswersPage(),
         }
     );
   }
@@ -32,6 +34,7 @@ class MyDiscussionBoard extends StatelessWidget{
 
 class discussionBoardRoutes{
   static String updatesSubforum = discussionBoardUpdatesPageState.dBoardRoute;
+  static String questionsAndAnswersSubforum = questionsAndAnswersPageState.nameOfRoute;
 }
 
 class discussionBoardPageState extends State<discussionBoardPage>{
@@ -60,7 +63,24 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                   GestureDetector(
                     onTap: (){
                       print("Testing subforum button");
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage()));
+                      switch(subforumList[index]){
+                        case "Discussion Board Updates":
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage()));
+                          break;
+                        case "Questions and Answers":
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage()));
+                          print("Questions and Answers");
+                          break;
+                        case "Technologies":
+                          print("Technologies");
+                          break;
+                        case "Projects":
+                          print("Projects");
+                          break;
+                        case "New Discoveries":
+                          print("New Discoveries");
+                          break;
+                      }
                     },
                     child: Container(
                       height: 80,
