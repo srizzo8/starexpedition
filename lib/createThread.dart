@@ -82,7 +82,7 @@ class createThreadState extends State<createThread>{
               onTap: (){
                 //print('Posting the thread');
                 print(discussionBoardUpdatesPage.discussionBoardUpdatesBool);
-                if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != "" && discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false){
+                if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != ""){
                   //print(usernameController.text);
                   if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false) {
                     print('You are ready to post this thread');
@@ -101,6 +101,7 @@ class createThreadState extends State<createThread>{
                       questionsAndAnswersPendingThreads.add(usernameController.text);
                       questionsAndAnswersPendingThreads.add(threadNameController.text);
                       questionsAndAnswersPendingThreads.add(threadContentController.text);
+                      print(usernameController.text);
                       questionsAndAnswersPage.questionsAndAnswersThreads.add(questionsAndAnswersPendingThreads);
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
                       questionsAndAnswersPage.questionsAndAnswersBool = false;

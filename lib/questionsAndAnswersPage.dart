@@ -79,6 +79,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                     ),
                     GestureDetector(
                       child: Container(
+                        child: Text(reversedQuestionsAndAnswersThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedQuestionsAndAnswersThreadsIterable.toList()[index][0]),
                         height: 30,
                         width: 360,
                         color: Colors.tealAccent,
