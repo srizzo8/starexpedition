@@ -8,6 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
+import 'projectsPage.dart' as projectsPage;
 
 import 'main.dart' as myMain;
 
@@ -26,6 +27,7 @@ class createThreadState extends State<createThread>{
   List<String> discussionBoardUpdatesPendingThreads = [];
   List<String> questionsAndAnswersPendingThreads = [];
   List<String> technologiesPendingThreads = [];
+  List<String> projectsPendingThreads = [];
 
   Widget build(BuildContext createThreadBuildContext){
     return Scaffold(
@@ -86,7 +88,7 @@ class createThreadState extends State<createThread>{
                 print(discussionBoardUpdatesPage.discussionBoardUpdatesBool);
                 if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != ""){
                   //print(usernameController.text);
-                  if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false) {
+                  if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false) {
                     print('You are ready to post this thread');
                     discussionBoardUpdatesPendingThreads.add(usernameController.text);
                     discussionBoardUpdatesPendingThreads.add(threadNameController.text);
@@ -99,7 +101,7 @@ class createThreadState extends State<createThread>{
                     print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsIterable.toList());
                   }
                   else{
-                    if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == true && technologiesPage.technologiesBool == false){
+                    if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == true && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false){
                       questionsAndAnswersPendingThreads.add(usernameController.text);
                       questionsAndAnswersPendingThreads.add(threadNameController.text);
                       questionsAndAnswersPendingThreads.add(threadContentController.text);
@@ -109,13 +111,23 @@ class createThreadState extends State<createThread>{
                       questionsAndAnswersPage.questionsAndAnswersBool = false;
                     }
                     else{
-                      if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == true){
+                      if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == true && projectsPage.projectsBool == false){
                         technologiesPendingThreads.add(usernameController.text);
                         technologiesPendingThreads.add(threadNameController.text);
                         technologiesPendingThreads.add(threadContentController.text);
                         technologiesPage.technologiesThreads.add(technologiesPendingThreads);
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
                         technologiesPage.technologiesBool = false;
+                      }
+                      else{
+                        if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == true){
+                          projectsPendingThreads.add(usernameController.text);
+                          projectsPendingThreads.add(threadNameController.text);
+                          projectsPendingThreads.add(threadContentController.text);
+                          projectsPage.projectsThreads.add(projectsPendingThreads);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
+                          projectsPage.projectsBool = false;
+                        }
                       }
                     }
                   }

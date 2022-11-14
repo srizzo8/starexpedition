@@ -9,6 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'discussionBoardUpdatesPage.dart';
 import 'questionsAndAnswersPage.dart';
 import 'technologiesPage.dart';
+import 'projectsPage.dart';
 import 'main.dart' as myMain;
 
 class discussionBoardPage extends StatefulWidget{
@@ -29,6 +30,7 @@ class MyDiscussionBoard extends StatelessWidget{
           discussionBoardRoutes.updatesSubforum: (context) => discussionBoardUpdatesPage(),
           discussionBoardRoutes.questionsAndAnswersSubforum: (context) => questionsAndAnswersPage(),
           discussionBoardRoutes.technologiesSubforum: (context) => technologiesPage(),
+          discussionBoardRoutes.projectsSubforum: (context) => projectsPage(),
         }
     );
   }
@@ -38,6 +40,7 @@ class discussionBoardRoutes{
   static String updatesSubforum = discussionBoardUpdatesPageState.dBoardRoute;
   static String questionsAndAnswersSubforum = questionsAndAnswersPageState.nameOfRoute;
   static String technologiesSubforum = technologiesPageState.technologiesRoute;
+  static String projectsSubforum = projectsPageState.projectsSubforumRoute;
 }
 
 class discussionBoardPageState extends State<discussionBoardPage>{
@@ -79,6 +82,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                           print("Technologies");
                           break;
                         case "Projects":
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage()));
                           print("Projects");
                           break;
                         case "New Discoveries":
