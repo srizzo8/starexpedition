@@ -10,6 +10,7 @@ import 'discussionBoardUpdatesPage.dart';
 import 'questionsAndAnswersPage.dart';
 import 'technologiesPage.dart';
 import 'projectsPage.dart';
+import 'newDiscoveriesPage.dart';
 import 'main.dart' as myMain;
 
 class discussionBoardPage extends StatefulWidget{
@@ -31,6 +32,7 @@ class MyDiscussionBoard extends StatelessWidget{
           discussionBoardRoutes.questionsAndAnswersSubforum: (context) => questionsAndAnswersPage(),
           discussionBoardRoutes.technologiesSubforum: (context) => technologiesPage(),
           discussionBoardRoutes.projectsSubforum: (context) => projectsPage(),
+          discussionBoardRoutes.newDiscoveriesSubforum: (context) => newDiscoveriesPage(),
         }
     );
   }
@@ -41,6 +43,7 @@ class discussionBoardRoutes{
   static String questionsAndAnswersSubforum = questionsAndAnswersPageState.nameOfRoute;
   static String technologiesSubforum = technologiesPageState.technologiesRoute;
   static String projectsSubforum = projectsPageState.projectsSubforumRoute;
+  static String newDiscoveriesSubforum = newDiscoveriesPageState.newDiscoveriesRoute;
 }
 
 class discussionBoardPageState extends State<discussionBoardPage>{
@@ -86,6 +89,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                           print("Projects");
                           break;
                         case "New Discoveries":
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage()));
                           print("New Discoveries");
                           break;
                       }
