@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'createThread.dart';
+import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 
 bool discussionBoardUpdatesBool = false;
@@ -33,6 +34,7 @@ class MyDiscussionBoardUpdatesPage extends StatelessWidget{
       title: 'Discussion Board Updates Page',
       routes: {
         routeToCreateThread.createThreadPage: (context) => createThread(),
+        routeToReplyToThreadDiscussionBoardUpdates.replyThreadPage: (context) => replyThreadPage(),
       }
     );
   }
@@ -40,6 +42,10 @@ class MyDiscussionBoardUpdatesPage extends StatelessWidget{
 
 class routeToCreateThread{
   static String createThreadPage = createThreadState.threadCreator;
+}
+
+class routeToReplyToThreadDiscussionBoardUpdates{
+  static String replyThreadPage = replyThreadPageState.replyThread;
 }
 
 class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
@@ -124,6 +130,17 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
               color: Colors.tealAccent,
               alignment: Alignment.topLeft,
             ),
+          ),
+          GestureDetector(
+            child: Container(
+              child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+              color: Colors.deepPurpleAccent,
+              height: 20,
+            ),
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+              print('Replying to thread');
+            }
           ),
         ],
       ),
