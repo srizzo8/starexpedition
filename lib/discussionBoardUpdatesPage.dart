@@ -12,8 +12,10 @@ import 'main.dart' as myMain;
 
 bool discussionBoardUpdatesBool = false;
 List<List> discussionBoardUpdatesThreads = [];
+List<List> discussionBoardUpdatesReplies = [];
 //List<List> reversedDiscussionBoardUpdatesThreadsList = discussionBoardUpdatesThreads.reversed.toList();
 Iterable<List> reversedDiscussionBoardUpdatesThreadsIterable = discussionBoardUpdatesThreads.reversed;
+Iterable<List> reversedDiscussionBoardUpdatesRepliesIterable = discussionBoardUpdatesReplies.reversed;
 String threadAuthorDbu = "";
 String threadTitleDbu = "";
 String threadContentDbu = "";
@@ -121,28 +123,50 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
       appBar: AppBar(
         title: Text("Star Expedition"),
       ),
-      body: Wrap(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              child: Text("Thread title: " + threadTitleDbu + "\n" + "Posted by: " + threadAuthorDbu + "\n" + threadContentDbu),
-              color: Colors.tealAccent,
-              alignment: Alignment.topLeft,
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                child: Text("Thread title: " + threadTitleDbu + "\n" + "Posted by: " + threadAuthorDbu + "\n" + threadContentDbu),
+                color: Colors.tealAccent,
+                alignment: Alignment.topLeft,
+              ),
             ),
-          ),
-          GestureDetector(
-            child: Container(
-              child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
-              color: Colors.deepPurpleAccent,
-              height: 20,
+            GestureDetector(
+              child: Container(
+                child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+                color: Colors.deepPurpleAccent,
+                height: 20,
+              ),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                print('Replying to thread');
+              }
             ),
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-              print('Replying to thread');
-            }
-          ),
-        ],
+            Expanded(
+              child: ListView.builder(
+                itemCount: reversedDiscussionBoardUpdatesRepliesIterable.toList().length,
+                itemBuilder: (context, index){
+                  return Column(
+                    children: <Widget>[
+                      Container(
+                        height: 5,
+                      ),
+                      Container(
+                        child: Text("Reply " + (index + 1).toString() + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
+                        color: Colors.tealAccent,
+                        height: 30,
+                        width: 360,
+                      ),
+                    ],
+                  );
+                }
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
