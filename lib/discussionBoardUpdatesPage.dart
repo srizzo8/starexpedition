@@ -145,25 +145,28 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                 print('Replying to thread');
               }
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: reversedDiscussionBoardUpdatesRepliesIterable.toList().length,
-                itemBuilder: (context, index){
-                  return Column(
-                    children: <Widget>[
-                      Container(
-                        height: 5,
-                      ),
-                      Container(
-                        child: Text("Reply " + (index + 1).toString() + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
-                        color: Colors.tealAccent,
-                        height: 30,
-                        width: 360,
-                      ),
-                    ],
-                  );
-                }
-              ),
+            Column(
+              children: <Widget>[
+                  ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: reversedDiscussionBoardUpdatesRepliesIterable.toList().length,
+                    itemBuilder: (context, index){
+                      return Column(
+                        children: <Widget>[
+                          Container(
+                            height: 5,
+                          ),
+                          Container(
+                            child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
+                            color: Colors.tealAccent,
+                            width: 360,
+                        ),
+                      ],
+                    );
+                  }
+                ),
+              ],
             ),
           ],
         ),

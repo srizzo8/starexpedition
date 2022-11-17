@@ -70,7 +70,12 @@ class replyThreadPageState extends State<replyThreadPage>{
                 if(usernameReplyController.text != "" && replyContentController.text != ""){
                   pendingDiscussionBoardUpdatesReply.add(usernameReplyController.text);
                   pendingDiscussionBoardUpdatesReply.add(replyContentController.text);
+                  pendingDiscussionBoardUpdatesReply.add(DateTime.now().toString());
+                  print(pendingDiscussionBoardUpdatesReply);
                   discussionBoardUpdatesPage.discussionBoardUpdatesReplies.add(pendingDiscussionBoardUpdatesReply);
+                  print(discussionBoardUpdatesPage.discussionBoardUpdatesReplies);
+                  print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][0]);
+                  print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][1]);
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                 }
               }
