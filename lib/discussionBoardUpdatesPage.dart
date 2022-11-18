@@ -19,6 +19,8 @@ Iterable<List> reversedDiscussionBoardUpdatesRepliesIterable = discussionBoardUp
 String threadAuthorDbu = "";
 String threadTitleDbu = "";
 String threadContentDbu = "";
+//int threadsIndex = reversedDiscussionBoardUpdatesThreadsIterable.
+int myIndexPlace = 0;
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -141,6 +143,9 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                 height: 20,
               ),
               onTap: (){
+                print(reversedDiscussionBoardUpdatesThreadsIterable.toList());
+                myIndexPlace = reversedDiscussionBoardUpdatesThreadsIterable.toList().indexOf([threadAuthorDbu, threadTitleDbu, threadContentDbu]);
+                print(myIndexPlace);
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                 print('Replying to thread');
               }
