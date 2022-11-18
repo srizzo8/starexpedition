@@ -147,7 +147,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                 myIndexPlace = reversedDiscussionBoardUpdatesThreadsIterable.toList().indexOf([threadAuthorDbu, threadTitleDbu, threadContentDbu]);
                 print(myIndexPlace);
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                print('Replying to thread');
+                print('Replying to the thread');
               }
             ),
             Column(
