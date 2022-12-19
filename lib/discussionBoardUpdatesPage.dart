@@ -11,16 +11,17 @@ import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 
 bool discussionBoardUpdatesBool = false;
-List<List> discussionBoardUpdatesThreads = [];
-List<List> discussionBoardUpdatesReplies = [];
+bool discussionBoardUpdatesReplyBool = false;
+var discussionBoardUpdatesThreads = [];
+var discussionBoardUpdatesReplies = [];
 //List<List> reversedDiscussionBoardUpdatesThreadsList = discussionBoardUpdatesThreads.reversed.toList();
-Iterable<List> reversedDiscussionBoardUpdatesThreadsIterable = discussionBoardUpdatesThreads.reversed;
-Iterable<List> reversedDiscussionBoardUpdatesRepliesIterable = discussionBoardUpdatesReplies.reversed;
+var reversedDiscussionBoardUpdatesThreadsIterable = discussionBoardUpdatesThreads.reversed;
+var reversedDiscussionBoardUpdatesRepliesIterable = discussionBoardUpdatesReplies.reversed;
 String threadAuthorDbu = "";
 String threadTitleDbu = "";
 String threadContentDbu = "";
 //int threadsIndex = reversedDiscussionBoardUpdatesThreadsIterable.
-int myIndexPlace = 0;
+String threadID = "";
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -84,7 +85,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: reversedDiscussionBoardUpdatesThreadsIterable.toList().length,
+              itemCount: discussionBoardUpdatesThreads.reversed.toList().length,
               itemBuilder: (context, index){
               return Column(
                 children: <Widget>[
@@ -101,10 +102,12 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                     onTap: (){
                       print("I clicked on a thread");
                       print('You clicked on: ' + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1]);
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadContent()));
                       threadAuthorDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0];
                       threadTitleDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1];
                       threadContentDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][2];
+                      threadID = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3];
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadContent()));
+                      //myIndexPlace = index;
                     }
                   ),
                 ],
@@ -143,9 +146,11 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                 height: 20,
               ),
               onTap: (){
+                discussionBoardUpdatesReplyBool = true;
                 print(reversedDiscussionBoardUpdatesThreadsIterable.toList());
-                myIndexPlace = reversedDiscussionBoardUpdatesThreadsIterable.toList().indexOf([threadAuthorDbu, threadTitleDbu, threadContentDbu]);
-                print(myIndexPlace);
+                //myIndexPlace = discussionBoardUpdatesPageState.index;
+                //myIndexPlace = reversedDiscussionBoardUpdatesThreadsIterable.toList().indexWhere((reversedDiscussionBoardUpdatesThreadsIterable) => reversedDiscussionBoardUpdatesThreadsIterable.contains("[" + threadAuthorDbu + ", " + threadTitleDbu + ", " + threadContentDbu + "]"));
+                print(threadID);
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                 print('Replying to the thread');
               }
@@ -155,18 +160,20 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                   ListView.builder(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    itemCount: reversedDiscussionBoardUpdatesRepliesIterable.toList().length,
+                    itemCount: discussionBoardUpdatesThreads[int.parse(threadID)][4].length,
                     itemBuilder: (context, index){
                       return Column(
                         children: <Widget>[
                           Container(
                             height: 5,
                           ),
+                      //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
                           Container(
-                            child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
+                            //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
+                            child: Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
                             color: Colors.tealAccent,
                             width: 360,
-                        ),
+                          ),
                       ],
                     );
                   }

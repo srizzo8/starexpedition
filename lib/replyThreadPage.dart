@@ -22,6 +22,7 @@ class replyThreadPageState extends State<replyThreadPage>{
   final usernameReplyController = TextEditingController();
   final replyContentController = TextEditingController();
   List<String> pendingDiscussionBoardUpdatesReply = [];
+  int threadNumber = 0;
 
   Widget build(BuildContext bc){
     return Scaffold(
@@ -68,15 +69,24 @@ class replyThreadPageState extends State<replyThreadPage>{
               ),
               onTap: (){
                 if(usernameReplyController.text != "" && replyContentController.text != ""){
-                  pendingDiscussionBoardUpdatesReply.add(usernameReplyController.text);
-                  pendingDiscussionBoardUpdatesReply.add(replyContentController.text);
-                  pendingDiscussionBoardUpdatesReply.add(DateTime.now().toString());
-                  print(pendingDiscussionBoardUpdatesReply);
-                  discussionBoardUpdatesPage.discussionBoardUpdatesReplies.add(pendingDiscussionBoardUpdatesReply);
-                  print(discussionBoardUpdatesPage.discussionBoardUpdatesReplies);
-                  print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][0]);
-                  print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][1]);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
+                  if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool == true){
+                    threadNumber = int.parse(discussionBoardUpdatesPage.threadID);
+                    assert(threadNumber is int);
+                    print(threadNumber.runtimeType);
+                    pendingDiscussionBoardUpdatesReply.add(DateTime.now().toString());
+                    pendingDiscussionBoardUpdatesReply.add(usernameReplyController.text);
+                    pendingDiscussionBoardUpdatesReply.add(replyContentController.text);
+                    discussionBoardUpdatesPage.discussionBoardUpdatesThreads.toList()[threadNumber][4].add(pendingDiscussionBoardUpdatesReply);
+                    //= discussionBoardUpdatesPage.discussionBoardUpdatesReplies.toString();
+                    //print(pendingDiscussionBoardUpdatesReply);
+                    //discussionBoardUpdatesPage.discussionBoardUpdatesReplies.add(pendingDiscussionBoardUpdatesReply);
+                    print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsIterable);
+                    print(discussionBoardUpdatesPage.discussionBoardUpdatesReplies);
+                    //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][0]);
+                    //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][1]);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
+                    discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;
+                  }
                 }
               }
             ),

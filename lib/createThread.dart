@@ -25,7 +25,7 @@ class createThreadState extends State<createThread>{
   final usernameController = TextEditingController();
   final threadNameController = TextEditingController();
   final threadContentController = TextEditingController();
-  List<String> discussionBoardUpdatesPendingThreads = [];
+  var discussionBoardUpdatesPendingThreads = [];
   List<String> questionsAndAnswersPendingThreads = [];
   List<String> technologiesPendingThreads = [];
   List<String> projectsPendingThreads = [];
@@ -95,8 +95,11 @@ class createThreadState extends State<createThread>{
                     discussionBoardUpdatesPendingThreads.add(usernameController.text);
                     discussionBoardUpdatesPendingThreads.add(threadNameController.text);
                     discussionBoardUpdatesPendingThreads.add(threadContentController.text);
+                    discussionBoardUpdatesPendingThreads.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads.length.toString());
+                    discussionBoardUpdatesPendingThreads.add(List.empty(growable: true));
                     print(discussionBoardUpdatesPendingThreads);
                     discussionBoardUpdatesPage.discussionBoardUpdatesThreads.add(discussionBoardUpdatesPendingThreads);
+                    print("Threads in discussion board updates subforum: " + discussionBoardUpdatesPage.discussionBoardUpdatesThreads.toString());
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                     discussionBoardUpdatesPage.discussionBoardUpdatesBool = false;
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsList);
