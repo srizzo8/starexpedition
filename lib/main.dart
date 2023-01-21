@@ -7,6 +7,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
 
 import 'package:starexpedition4/discussionBoardPage.dart';
+import 'package:starexpedition4/loginPage.dart';
+
 //import 'package:starexpedition4/spectralClassPage.dart';
 
 /* String correctString = "";
@@ -62,6 +64,7 @@ class MyApp extends StatelessWidget {
         routesToOtherPages.spectralClass: (context) => spectralClassPage(),
         routesToOtherPages.discussionBoard: (context) => discussionBoardPage(),
         routesToOtherPages.homePage: (context) => StarExpedition(),
+        routesToOtherPages.theLoginPage: (context) => loginPage(),
       }
     );
   }
@@ -71,6 +74,7 @@ class routesToOtherPages{
   static String spectralClass = spectralClassPageState.nameOfRoute;
   static String discussionBoard = discussionBoardPageState.nameOfRoute;
   static String homePage = theStarExpeditionState.nameOfRoute;
+  static String theLoginPage = loginPageState.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -169,6 +173,18 @@ class theStarExpeditionState extends State<StarExpedition> {
           */
           //heightFactor: 20,
         children: <Widget>[
+          myUsername == ""? // If myUsername is empty, it will show the Login container. If myUsername is not empty, it will show an empty SizedBox.
+            GestureDetector(
+            child: Container(
+              alignment: Alignment.topRight,
+              child: Text('Login', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+              height: 25,
+            ),
+            onTap: (){
+              print('Logging in');
+              Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
+            }
+          ): SizedBox(),
           Container(
             alignment: Alignment.topCenter,
             child: const Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 20.0)),
