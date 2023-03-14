@@ -10,6 +10,7 @@ import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
 import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
+import 'registerPage.dart' as theRegisterPage;
 
 import 'main.dart' as myMain;
 
@@ -31,6 +32,7 @@ class MyLoginPage extends StatelessWidget{
       title: 'The Login Page',
       routes: {
         loginPageRoutes.homePage: (context) => myMain.StarExpedition(),
+        loginPageRoutes.myRegisterPage: (context) => theRegisterPage.registerPage(),
       }
     );
   }
@@ -38,6 +40,7 @@ class MyLoginPage extends StatelessWidget{
 
 class loginPageRoutes{
   static String homePage = myMain.theStarExpeditionState.nameOfRoute;
+  static String myRegisterPage = theRegisterPage.registerPageState.nameOfRoute;
 }
 
 class loginPageState extends State<loginPage>{
@@ -121,6 +124,7 @@ class loginPageState extends State<loginPage>{
               ),
             ),
             onTap: (){
+              Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
               print("Signing up");
             }
           ),
