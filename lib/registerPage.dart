@@ -48,10 +48,6 @@ class registerPageState extends State<registerPage>{
       ),
       body: Wrap(
         children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            child: Text("Username", style: TextStyle(fontSize: 14.0)),
-          ),
           Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),
@@ -107,6 +103,18 @@ class registerPageState extends State<registerPage>{
               ),
             ),
           ),
+          GestureDetector(
+            child: Center(
+              child: Container(
+                color: Colors.tealAccent,
+                child: Text("Sign Up for Star Expedition", style: TextStyle(fontSize: 14.0)),
+              ),
+            ),
+            onTap: (){
+              Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
+              print("Registering successfully");
+            }
+          )
         ]
       ),
     );

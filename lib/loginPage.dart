@@ -124,7 +124,8 @@ class loginPageState extends State<loginPage>{
               ),
             ),
             onTap: (){
-              Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
+              //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
+              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => theRegisterPage.registerPage()));
               print("Signing up");
             }
           ),
