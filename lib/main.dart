@@ -184,7 +184,11 @@ class theStarExpeditionState extends State<StarExpedition> {
               print('Logging in');
               Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
             }
-          ): SizedBox(),
+          ): Container(
+            alignment: Alignment.topRight,
+            child: Text('Hi ' + myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+            height: 25,
+          ),
           Container(
             alignment: Alignment.topCenter,
             child: const Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 20.0)),

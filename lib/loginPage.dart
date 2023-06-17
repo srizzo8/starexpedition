@@ -106,7 +106,8 @@ class loginPageState extends State<loginPage>{
             onTap: (){
               if(usernameController.text != "" && passwordController.text != "") {
                 print("Logging in123");
-                myUsername = usernameController.toString();
+                myUsername = usernameController.text;
+                print("Logging in as " + myUsername);
                 Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
               }
             }
