@@ -36,6 +36,7 @@ class registerPageRoutes{
 }
 
 class registerPageState extends State<registerPage>{
+  List userEmailPasswordList = [];
   static String nameOfRoute = '/registerPage';
   TextEditingController theUsername = TextEditingController();
   TextEditingController email = TextEditingController();
@@ -112,7 +113,8 @@ class registerPageState extends State<registerPage>{
             ),
             onTap: (){
               Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
-              print("Registering successfully");
+              userEmailPasswordList.add([theUsername, email, password]);
+              print("Registering successfully as: " + userEmailPasswordList.toString());
             }
           )
         ]
