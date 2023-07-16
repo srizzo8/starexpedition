@@ -8,6 +8,7 @@ import 'package:starexpedition4/spectralClassPage.dart';
 
 import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
+import 'package:starexpedition4/registerPage.dart';
 
 //import 'package:starexpedition4/spectralClassPage.dart';
 
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
         routesToOtherPages.discussionBoard: (context) => discussionBoardPage(),
         routesToOtherPages.homePage: (context) => StarExpedition(),
         routesToOtherPages.theLoginPage: (context) => loginPage(),
+        routesToOtherPages.theRegisterPage: (context) => registerPage()
       }
     );
   }
@@ -75,6 +77,7 @@ class routesToOtherPages{
   static String discussionBoard = discussionBoardPageState.nameOfRoute;
   static String homePage = theStarExpeditionState.nameOfRoute;
   static String theLoginPage = loginPageState.nameOfRoute;
+  static String theRegisterPage = registerPageState.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -173,7 +176,7 @@ class theStarExpeditionState extends State<StarExpedition> {
           */
           //heightFactor: 20,
         children: <Widget>[
-          myUsername == ""? // If myUsername is empty, it will show the Login container. If myUsername is not empty, it will show an empty SizedBox.
+          myUsername == "" && myNewUsername == ""? // If myUsername is empty, it will show the Login container. If myUsername is not empty, it will show an empty SizedBox.
             GestureDetector(
             child: Container(
               alignment: Alignment.topRight,
@@ -184,11 +187,17 @@ class theStarExpeditionState extends State<StarExpedition> {
               print('Logging in');
               Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
             }
-          ): Container(
-            alignment: Alignment.topRight,
-            child: Text('Hi ' + myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
-            height: 25,
-          ),
+          ): myUsername == "" && myNewUsername != ""?
+              Container(
+                alignment: Alignment.topRight,
+                child: Text('Hi ' + myNewUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                height: 25,
+              ):
+              Container(
+                alignment: Alignment.topRight,
+                child: Text('Hi ' + myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                height: 25,
+              ),
           Container(
             alignment: Alignment.topCenter,
             child: const Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 20.0)),

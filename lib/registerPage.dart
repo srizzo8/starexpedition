@@ -13,6 +13,8 @@ import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 
 import 'main.dart' as myMain;
 
+String myNewUsername = "";
+
 class registerPage extends StatefulWidget{
   const registerPage ({Key? key}) : super(key: key);
 
@@ -112,8 +114,9 @@ class registerPageState extends State<registerPage>{
               ),
             ),
             onTap: (){
+              myNewUsername = theUsername.text;
               Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
-              userEmailPasswordList.add([theUsername, email, password]);
+              userEmailPasswordList.add([theUsername.text, email.text, password.text]);
               print("Registering successfully as: " + userEmailPasswordList.toString());
             }
           )
