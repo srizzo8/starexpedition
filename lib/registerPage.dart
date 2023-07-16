@@ -28,7 +28,7 @@ class MyRegisterPage extends StatelessWidget{
   @override
   Widget build(BuildContext buildC){
     return MaterialApp(
-      title: "Registration Page",
+      title: "Registration Page", //Page for registering
     );
   }
 }
