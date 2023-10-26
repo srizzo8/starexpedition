@@ -21,13 +21,19 @@ String correctPlanet = "";
 List<String> informationAboutPlanet = [];
 List<String> starInfo = [];
 
+late DatabaseReference secondDatabase = FirebaseDatabase.instanceFor(
+    app: Firebase.app(),
+    databaseURL: 'https://star-expedition-accounts-default-rtdb.firebaseio.com/'
+).ref();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
+  secondDatabase = FirebaseDatabase.instance.ref().child("Users");
 }
 
-class myStars{
+class myStars {
   String? starName;
   String? imagePath;
   myStars({

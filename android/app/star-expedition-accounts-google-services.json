@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1004486689657",
+    "project_id": "star-expedition-accounts",
+    "storage_bucket": "star-expedition-accounts.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004486689657:android:9f606b8da60da237d725a8",
+        "android_client_info": {
+          "package_name": "com.srizzo.starexpedition4"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAExtFxpx52-yW4vnK7Q8xw1wLp1b05Jxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
