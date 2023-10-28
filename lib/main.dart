@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:starexpedition4/spectralClassPage.dart';
 import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 //import 'package:starexpedition4/spectralClassPage.dart';
 
@@ -21,16 +23,111 @@ String correctPlanet = "";
 List<String> informationAboutPlanet = [];
 List<String> starInfo = [];
 
-late DatabaseReference secondDatabase = FirebaseDatabase.instanceFor(
+class Users{
+  String? username;
+  String? email;
+  String? password;
+
+  Users({
+    this.username,
+    this.email,
+    this.password
+  });
+
+  Users.fromJson(Map<String, dynamic> info){
+    username = info['users']['username'];
+    email = info['users']['email'];
+    password = info['users']['password'];
+  }
+
+  Map<String, dynamic> toJsonFile(){
+    final Map<String, dynamic> myData = <String, dynamic>{};
+    myData['users']['username'] = username;
+    myData['users']['email'] = email;
+    myData['users']['password'] = password;
+    return myData;
+  }
+}
+
+/*
+Future<List<dynamic>> loadAccountsData() async{
+  final String accountsDataString = await rootBundle.loadString('assets/accountsData.json');
+  var data = jsonDecode(accountsDataString);
+  var accounts = data["users"];
+  return accounts;
+}*/
+
+//String starsAndPlanetsDatabase = "https://star-expedition-default-rtdb.firebaseio.com/";
+
+/*late DatabaseReference starsAndPlanetsDatabase = FirebaseDatabase.instanceFor(
+  app: Firebase.app(),
+  databaseURL: 'https://star-expedition-default-rtdb.firebaseio.com/'
+).ref();*/
+
+/*late DatabaseReference theAccountsDatabase = FirebaseDatabase.instanceFor(
     app: Firebase.app(),
     databaseURL: 'https://star-expedition-accounts-default-rtdb.firebaseio.com/'
-).ref();
+).ref();*/
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
-  secondDatabase = FirebaseDatabase.instance.ref().child("Users");
+  final String accountsDataString = await rootBundle.loadString('assets/accountsData.json');
+  Users users = Users.fromJson(jsonDecode(accountsDataString));
+  print(users.email);
+
+  /*WidgetsBinding.instance.addPostFrameCallback((_) async{
+    await loadAccountsData();
+  });*/
+  //Firebase
+  //late final accountsApp = Firebase.app();
+  //late final accountsAppRTDB = FirebaseDatabase.instanceFor(app: accountsApp, databaseURL:'https://star-expedition-accounts-default-rtdb.firebaseio.com/');
+  //late FirebaseDatabase accountsDB = FirebaseDatabase(app: accountsApp, );
+  /*
+  await Firebase.initializeApp(
+    name: 'AccountsApp',
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyAExtFxpx52-yW4vnK7Q8xw1wLp1b05Jxk",
+      appId: "1:1004486689657:android:9f606b8da60da237d725a8",
+      messagingSenderId: "1004486689657",
+      projectId: "star-expedition-accounts",
+      databaseURL: "https://star-expedition-accounts-default-rtdb.firebaseio.com/",
+    )
+  );
+  FirebaseApp accountApp = Firebase.app('AccountsApp');
+  FirebaseDatabase accountsDatabase = FirebaseDatabase.instanceFor(app: accountApp);
+
+  print(accountsDatabase.toString());
+
+  final reff = FirebaseDatabase.instance.ref();
+  final mySnapshot = await reff.child('users/username').get();
+  if(mySnapshot.exists){
+    print("It exists");
+  }
+  else{
+    print("It doesn't exist");
+  }
+
+   */
+
+  /*
+  FirebaseDatabase dd = FirebaseDatabase.instanceFor(app: accountsInfo);
+  DatabaseReference dr = FirebaseDatabase.instance.ref("users");
+  DatabaseReference child = dr.child("username");
+  print(child);
+  DatabaseEvent e = await dr.once();
+  print(e);
+  */
+  //FirebaseApp secondDB = Firebase.app('AccountsApp');
+  //print(secondDB);
+  /*
+  List<FirebaseApp> myApps = Firebase.apps;
+  myApps.forEach((i){
+    print("Name of app: " + i.name);
+  });
+   */
+  //theAccountsDatabase = FirebaseDatabase.instance.ref().child("Users");
 }
 
 class myStars {

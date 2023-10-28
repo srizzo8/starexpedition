@@ -117,7 +117,7 @@ class registerPageState extends State<registerPage>{
               myNewUsername = theUsername.text;
               Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
               userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-              myMain.secondDatabase.push().set([theUsername.text, email.text, password.text]);
+              myMain.Users theUser = myMain.Users(username: theUsername.text, email: email.text, password: password.text);
               print("Registering successfully as: " + userEmailPasswordList.toString());
             }
           )
