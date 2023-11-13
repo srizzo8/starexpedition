@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/gestures.dart';
@@ -117,7 +118,18 @@ class registerPageState extends State<registerPage>{
               myNewUsername = theUsername.text;
               Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
               userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-              myMain.Users theUser = myMain.Users(username: theUsername.text, email: email.text, password: password.text);
+              myMain.Users theUser = myMain.Users(theUsername.text, email.text, password.text);
+              myMain.theUsers.add(theUser);
+              print(myMain.theUsers.length.toString());
+              myMain.theUsers.map((guy) => guy.toJsonFile(),).toList();
+              //myMain.main().myFile.writeAsStringSync(jsonEncode(myMain.theUsers));
+              /*print(myMain.myData["users"].length.toString());
+              myMain.myData["users"].length += 1;
+              print(myMain.myData["users"].length.toString());
+              myMain.myData["users"]["users".length - 1]["username"].add(theUsername.text);
+              myMain.myData["users"]["users".length - 1]["email"].add(email.text);
+              myMain.myData["users"]["users".length - 1]["password"].add(password.text);
+              */
               print("Registering successfully as: " + userEmailPasswordList.toString());
             }
           )

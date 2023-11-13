@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -22,30 +23,44 @@ String correctStar = "";
 String correctPlanet = "";
 List<String> informationAboutPlanet = [];
 List<String> starInfo = [];
+String accountsDataString = "";
+//var myData;
+List<Users> theUsers = [];
+final File myFile = File('assets/accountsData.json');
 
 class Users{
   String? username;
   String? email;
   String? password;
 
-  Users({
+  Users(
     this.username,
     this.email,
     this.password
-  });
+  );
 
   Users.fromJson(Map<String, dynamic> info){
-    username = info['users']['username'];
-    email = info['users']['email'];
-    password = info['users']['password'];
+    username = info['username'];
+    email = info['email'];
+    password = info['password'];
   }
 
   Map<String, dynamic> toJsonFile(){
     final Map<String, dynamic> myData = <String, dynamic>{};
-    myData['users']['username'] = username;
-    myData['users']['email'] = email;
-    myData['users']['password'] = password;
+    myData['username'] = username;
+    myData['email'] = email;
+    myData['password'] = password;
     return myData;
+  }
+}
+
+Future<void> readUserData(File f) async{
+  String information = await f.readAsString();
+  var responseToString = await jsonDecode(information);
+
+  for(var v in responseToString){
+    Users u = Users(v['username'], v['email'], v['password']);
+    theUsers.add(u);
   }
 }
 
@@ -73,9 +88,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
-  final String accountsDataString = await rootBundle.loadString('assets/accountsData.json');
-  Users users = Users.fromJson(jsonDecode(accountsDataString));
-  print(users.email);
+  //accountsDataString = await rootBundle.loadString('assets/accountsData.json');
+  await readUserData(myFile);
+
+  //var myData = await json.decode(accountsDataString);
+
 
   /*WidgetsBinding.instance.addPostFrameCallback((_) async{
     await loadAccountsData();
