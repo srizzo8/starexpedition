@@ -39,6 +39,7 @@ dependencies:
   google_sign_in: ^6.0.2
   firebase_database: ^10.0.16
   firebase_core: ^2.8.0
+  path_provider: ^2.0.15
 
 dev_dependencies:
   flutter_test:
@@ -64,7 +65,7 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/accountsData.json
+    - assets/jsonfiles/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

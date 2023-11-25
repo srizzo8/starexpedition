@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
 
 import 'package:starexpedition4/discussionBoardPage.dart';
@@ -23,10 +24,57 @@ String correctStar = "";
 String correctPlanet = "";
 List<String> informationAboutPlanet = [];
 List<String> starInfo = [];
-String accountsDataString = "";
+//String accountsDataString = "";
 //var myData;
-List<Users> theUsers = [];
-final File myFile = File('assets/accountsData.json');
+//List<Users> theUsers = [];
+final File myFile = File('C:/Users/Owner/starexpedition_jsonfiles/accountsData.json');
+
+/*
+Future<String> get myDirectoryPath async{
+  Directory d = await getApplicationDocumentsDirectory();
+  return d.path;
+}
+
+Future<File> get accountsJsonFile async{
+  final filePath = await myDirectoryPath;
+  return File('$filePath/accountsData.json');
+}
+
+ */
+/*
+readFilesFromAsset() async{
+  String accountsDataString = await rootBundle.loadString('assets/accountsData.json');
+  print("accountsDataString:  ${accountsDataString}");
+}
+
+readFilesFromDevicePath() async{
+  /*Directory d = await getApplicationSupportDirectory();
+  print(d);*/
+  //File myFile = await File("${d.path}/accountsData.json").create();
+
+  Directory d = new Directory("assets");
+  File myFile = await File("$d/accountsData2.json").create();
+  String contentOfAccountsFile = await myFile.readAsString();
+  print("contentOfAccountsFile: ${contentOfAccountsFile}");
+}
+
+writeFilesToCustomDevicePath() async{
+  /*Directory sd = await getApplicationSupportDirectory();
+  print(sd);
+  File sMyFile = await File("${sd.path}/accountsData.json").create();*/
+  Directory d2 = new Directory("assets");
+  File sMyFile = await File("$d2/accountsData2.json").create();
+  String contentOfAccountsFile = jsonEncode({
+    "username": "Ken",
+    "email": "ken@test.com",
+    "password": "kenworth"
+  });
+
+  return await sMyFile.writeAsString(contentOfAccountsFile);
+}
+*/
+
+//For reference
 
 class Users{
   String? username;
@@ -54,15 +102,40 @@ class Users{
   }
 }
 
-Future<void> readUserData(File f) async{
-  String information = await f.readAsString();
-  var responseToString = await jsonDecode(information);
+/*
+Future<void> readUserData(String userInfo) async{
+  var responseToString = await jsonDecode(userInfo);
 
   for(var v in responseToString){
     Users u = Users(v['username'], v['email'], v['password']);
     theUsers.add(u);
   }
+}*/
+
+/*
+readUserData() async{
+  String fileInfo = "User Information";
+  File f = await accountsJsonFile;
+
+  if(await f.exists()){
+    try{
+      fileInfo = await f.readAsString();
+    }
+    catch(e){
+      print(e);
+    }
+  }
+
+  return json.decode(fileInfo);
 }
+
+writeUserData() async{
+  final Users us = Users(registerPage.theUsername.text.toString(), registerPage.email.text.toString(), registerPage.password.text.toString());
+  File theFile = await accountsJsonFile;
+  await theFile.writeAsString(jsonEncode(us));
+  return us;
+}
+*/
 
 /*
 Future<List<dynamic>> loadAccountsData() async{
@@ -88,8 +161,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
-  //accountsDataString = await rootBundle.loadString('assets/accountsData.json');
-  await readUserData(myFile);
+  //readFilesFromAsset();
+  //readFilesFromDevicePath();
+  //writeFilesToCustomDevicePath();
+  final String accountsDataString = await rootBundle.loadString('assets/jsonfiles/accountsData.json');
+  //await readUserData(accountsDataString);
+  print(accountsDataString);
 
   //var myData = await json.decode(accountsDataString);
 

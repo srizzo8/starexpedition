@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+//import 'package:backendless_sdk/backendless_sdk.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
@@ -114,14 +116,24 @@ class registerPageState extends State<registerPage>{
                 child: Text("Sign Up for Star Expedition", style: TextStyle(fontSize: 14.0)),
               ),
             ),
-            onTap: (){
+            onTap: () async{
               myNewUsername = theUsername.text;
               Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
               userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-              myMain.Users theUser = myMain.Users(theUsername.text, email.text, password.text);
-              myMain.theUsers.add(theUser);
-              print(myMain.theUsers.length.toString());
-              myMain.theUsers.map((guy) => guy.toJsonFile(),).toList();
+              String myData = "{'username': ${theUsername.text},\n 'email': ${email.text},\n 'password': ${password.text}}";
+              //await File('jsonfiles/accountsData.json').writeAsString(myData);
+              myMain.myFile.writeAsStringSync(jsonEncode(myData));
+              print(myData);
+              //var myDataToJson = jsonDecode(myData) as List;
+              //List<myMain.Users> userObjects = myDataToJson.map(())
+              //JSONUpdateBuilder.insert().addArgument("\$.username", theUsername.text).addArgument("\$.email", email.text).addArgument("\$.password", password.text).create();
+              //print("${myData}: myData");
+              //myMain.Users theUser = myMain.Users(theUsername.text, email.text, password.text);
+
+              //myMain.theUsers.add(theUser);
+              //print(myMain.theUsers.length.toString());
+
+              //myMain.theUsers.map((guy) => guy.toJsonFile(),).toList();
               //myMain.main().myFile.writeAsStringSync(jsonEncode(myMain.theUsers));
               /*print(myMain.myData["users"].length.toString());
               myMain.myData["users"].length += 1;
