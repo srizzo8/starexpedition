@@ -40,6 +40,7 @@ dependencies:
   firebase_database: ^10.0.16
   firebase_core: ^2.8.0
   path_provider: ^2.0.15
+  json_editor: ^0.0.1
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +67,7 @@ flutter:
   assets:
     - assets/images/
     - assets/jsonfiles/
+    - json/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

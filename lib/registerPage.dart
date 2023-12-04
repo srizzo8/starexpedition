@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 //import 'package:backendless_sdk/backendless_sdk.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
+import 'main.dart';
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
@@ -120,10 +121,15 @@ class registerPageState extends State<registerPage>{
               myNewUsername = theUsername.text;
               Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
               userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-              String myData = "{'username': ${theUsername.text},\n 'email': ${email.text},\n 'password': ${password.text}}";
+              myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+              myMain.theUsers!.add(dasUser);
+              print(myMain.theUsers);
+              //String myData = "{'username': ${theUsername.text},\n 'email': ${email.text},\n 'password': ${password.text}}";
+              //myMain.data.length()
               //await File('jsonfiles/accountsData.json').writeAsString(myData);
-              myMain.myFile.writeAsStringSync(jsonEncode(myData));
-              print(myData);
+              //myMain.myFile.writeAsStringSync(jsonEncode(myData));
+
+              //print(myData);
               //var myDataToJson = jsonDecode(myData) as List;
               //List<myMain.Users> userObjects = myDataToJson.map(())
               //JSONUpdateBuilder.insert().addArgument("\$.username", theUsername.text).addArgument("\$.email", email.text).addArgument("\$.password", password.text).create();

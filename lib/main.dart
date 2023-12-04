@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+//import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +14,9 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/src/services/asset_bundle.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:json_editor/json_editor.dart';
 
 //import 'package:starexpedition4/spectralClassPage.dart';
 
@@ -26,8 +30,8 @@ List<String> informationAboutPlanet = [];
 List<String> starInfo = [];
 //String accountsDataString = "";
 //var myData;
-//List<Users> theUsers = [];
-final File myFile = File('C:/Users/Owner/starexpedition_jsonfiles/accountsData.json');
+List<Users>? theUsers = [];
+//final File myFile = File('C:/Users/Owner/starexpedition_jsonfiles/accountsData.json');
 
 /*
 Future<String> get myDirectoryPath async{
@@ -74,6 +78,34 @@ writeFilesToCustomDevicePath() async{
 }
 */
 
+//Trying to find local path
+Future<String> get findLocalPath async{
+  final theDirectory = await getApplicationDocumentsDirectory();
+  return (theDirectory.path).toString();
+}
+
+Future<File> get findLocalFile async{
+  final myPath = await findLocalPath;
+  return File('$myPath/accountsData.json');
+}
+
+Future<File> insertData(String name, String email, String pword) async{
+  final theFile = await findLocalFile;
+  return theFile.writeAsString("$name " + "$email " + "$pword ");
+}
+
+Future<String> readTheInfo() async{
+  try{
+    final jsonFile = await findLocalFile;
+    final users = await jsonFile.readAsString();
+    return users;
+  }
+  catch(e){
+    return "No users";
+  }
+}
+
+
 //For reference
 
 class Users{
@@ -81,12 +113,18 @@ class Users{
   String? email;
   String? password;
 
-  Users(
-    this.username,
-    this.email,
-    this.password
-  );
+  Users({
+    required this.username,
+    required this.email,
+    required this.password
+  });
 
+  @override
+  String toString(){
+    return "username: $username, email: $email, password: $password";
+  }
+
+  /*
   Users.fromJson(Map<String, dynamic> info){
     username = info['username'];
     email = info['email'];
@@ -99,7 +137,7 @@ class Users{
     myData['email'] = email;
     myData['password'] = password;
     return myData;
-  }
+  } */
 }
 
 /*
@@ -161,12 +199,55 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
+  Users u1 = new Users(username: "John", email: "john@testing.com", password: "johnnycomehome");
+  theUsers!.add(u1);
+  print(theUsers);
+
+
+  //Directory d = await getTemporaryDirectory();
+  //String dPath = "d/"
+
+  //json information
+  /*
+  var accountsDataString = await rootBundle.loadString('json/accountsData.json');
+  var data = jsonDecode(accountsDataString);
+  print("Username: " + data[0]["username"].toString());
+  data.length = data.length + 1;
+  data[1]["username"] = "hans";
+  data[1]["email"] = "hans@test.com";
+  data[1]["password"] = "kenworth";
+  print(data[1]["username"]);
+  //data["username"] = "hans";
+  //var data2 = jsonEncode(data);
+  //print(data2);*/
+
+  /*
+  var myDirectory = await getApplicationDocumentsDirectory();
+  var myPath = (myDirectory.path + "/accountsData.json");
+  print(myPath);
+  final accountsFile = File("assets/jsonfiles/accountsData.json");
+  print(accountsFile.existsSync());
+  final accountsData = await accountsFile.readAsString();
+  final fileInstance = jsonDecode(accountsData);
+  print(fileInstance);*/
+
   //readFilesFromAsset();
   //readFilesFromDevicePath();
   //writeFilesToCustomDevicePath();
-  final String accountsDataString = await rootBundle.loadString('assets/jsonfiles/accountsData.json');
+  //await findLocalPath;
+  //await findLocalFile;
+  //print(findLocalPath);
+  //print(findLocalFile);
+
+  //final myDir = await getApplicationDocumentsDirectory();
+  //File accountsDataJsonFile = await File("C:/Users/Owner/starexpedition_jsonfiles/accountsData.json");
+  //var accountsData = jsonDecode(accountsDataJsonFile.readAsStringSync());
+  //print(accountsData);
+
+  //final String accountsDataString = await rootBundle.loadString('assets/jsonfiles/accountsData.json');
+  //final myAccountsData = jsonDecode(accountsDataString);
   //await readUserData(accountsDataString);
-  print(accountsDataString);
+  //print(myAccountsData);
 
   //var myData = await json.decode(accountsDataString);
 
