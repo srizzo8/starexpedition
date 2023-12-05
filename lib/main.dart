@@ -202,6 +202,7 @@ Future<void> main() async {
   Users u1 = new Users(username: "John", email: "john@testing.com", password: "johnnycomehome");
   theUsers!.add(u1);
   print(theUsers);
+  print(theUsers![0].username); //one's username
 
 
   //Directory d = await getTemporaryDirectory();
@@ -468,10 +469,10 @@ class theStarExpeditionState extends State<StarExpedition> {
           ): myUsername == "" && myNewUsername != ""?
               Container(
                 alignment: Alignment.topRight,
-                child: Text('Hi ' + myNewUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                child: Text('Howdy ' + myNewUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                 height: 25,
               ):
-              Container(
+              Container( //If login is not successful
                 alignment: Alignment.topRight,
                 child: Text('Hi ' + myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                 height: 25,

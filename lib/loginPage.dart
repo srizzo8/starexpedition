@@ -16,6 +16,9 @@ import 'main.dart' as myMain;
 
 String myUsername = "";
 
+//Accessing users array from main.dart:
+//print(myMain.theUsers.toString());
+
 class loginPage extends StatefulWidget{
   const loginPage ({Key? key}) : super(key: key);
 
@@ -105,10 +108,21 @@ class loginPageState extends State<loginPage>{
             ),
             onTap: (){
               if(usernameController.text != "" && passwordController.text != "") {
-                print("Logging in123");
-                myUsername = usernameController.text;
-                print("Logging in as " + myUsername);
-                Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                int u1 = myMain.theUsers!.indexWhere((person) => person.username == usernameController.text);
+                int p1 = myMain.theUsers!.indexWhere((pass) => pass.password == passwordController.text);
+                if(u1 == p1 && u1 != -1 && p1 != -1) { //If u1 and p1 have matching numbers, but if u1 and p1 do not equal -1.
+                  //if(myMain.theUsers!.){
+                    print("Logging in123");
+                    myUsername = usernameController.text;
+                    print("Logging in as " + myUsername);
+                    Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                  //}
+                }
+                else{
+                  //int n = myMain.theUsers!.indexWhere((person) => person.username == "John");
+                  print(u1);
+                  print(p1);
+                }
               }
             }
           ),
