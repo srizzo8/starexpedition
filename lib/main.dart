@@ -13,6 +13,7 @@ import 'package:starexpedition4/spectralClassPage.dart';
 import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
+import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:path_provider/path_provider.dart';
@@ -199,7 +200,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
-  Users u1 = new Users(username: "John", email: "john@testing.com", password: "johnnycomehome");
+  Users u1 = new Users(username: "John", email: "john@testing.com", password: "123");
   theUsers!.add(u1);
   print(theUsers);
   print(theUsers![0].username); //one's username
@@ -466,16 +467,31 @@ class theStarExpeditionState extends State<StarExpedition> {
               print('Logging in');
               Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
             }
-          ): myUsername == "" && myNewUsername != ""?
-              Container(
-                alignment: Alignment.topRight,
-                child: Text('Howdy ' + myNewUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
-                height: 25,
+          ): (myUsername == "" && myNewUsername != "") || theLoginPage.loginBool == true?
+              Row( //If login is successful
+                children: <Widget>[
+                  FittedBox(
+                    alignment: Alignment.topRight,
+                    child: Text('Hi ' + myNewUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                    fit: BoxFit.fitWidth,
+                    //height: 25,
+                  ),
+                  FittedBox(
+                    alignment: Alignment.topRight,
+                    child: Text('Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                    fit: BoxFit.fitWidth,
+                    //height: 25,
+                  ),
+                ],
               ):
-              Container( //If login is not successful
-                alignment: Alignment.topRight,
-                child: Text('Hi ' + myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
-                height: 25,
+              Row(
+                children: <Widget>[
+                  Container( //If login is not successful
+                    alignment: Alignment.topRight,
+                    child: Text('Hello ' + myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                    height: 25,
+                  ),
+                ],
               ),
           Container(
             alignment: Alignment.topCenter,

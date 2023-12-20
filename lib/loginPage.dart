@@ -15,6 +15,7 @@ import 'registerPage.dart' as theRegisterPage;
 import 'main.dart' as myMain;
 
 String myUsername = "";
+bool loginBool = false;
 
 //Accessing users array from main.dart:
 //print(myMain.theUsers.toString());
@@ -116,7 +117,10 @@ class loginPageState extends State<loginPage>{
                     myUsername = usernameController.text;
                     print("Logging in as " + myUsername);
                     Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
-                  //}
+                    print("myUsername: " + myUsername);
+                    print("myNewUsername: " + theRegisterPage.myNewUsername);
+                    loginBool = true;
+                    //}
                 }
                 else{
                   //int n = myMain.theUsers!.indexWhere((person) => person.username == "John");
