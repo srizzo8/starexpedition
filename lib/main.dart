@@ -401,7 +401,6 @@ class theStarExpeditionState extends State<StarExpedition> {
   @override
   Widget build(BuildContext context) {
     DateTime? timeNow = DateTime.now();
-    //var nextMidnight = DateTime(timeNow.year, timeNow.month, timeNow.day + 1);
 
     int numberOfDays = timeNow.day;
     numberOfDays = endOfMonthAdjustment(numberOfDays);
@@ -409,7 +408,6 @@ class theStarExpeditionState extends State<StarExpedition> {
     int numberOfStars = starsForSearchBar.length;
     int randomNumber = numberOfDays % numberOfStars;
     //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
-    // I am currently testing the if statement with testTime.
     print(timeNow);
 
     return Scaffold(
@@ -487,6 +485,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                         myUsername = "";
                         myNewUsername = "";
                         theLoginPage.loginBool = false;
+                        Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
                         print("Logging out from already existing account");
                       }
                     ),
@@ -513,23 +512,7 @@ class theStarExpeditionState extends State<StarExpedition> {
               child: Image.asset(starsForSearchBar[randomNumber].imagePath!, height: 150, width: 150),
             )
           ),
-          /*Container(
-            alignment: Alignment.topCenter,
-            child: const Text('Featured Star of the Day', style: TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 20.0)),
-            height: 25,
-          ),
-          Container( // This will eventually have a method that will have generate an image of a star and its name randomly.
-            alignment: Alignment.topCenter,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(starsForSearchBar[randomNumber].imagePath!),
-                fit: BoxFit.fill,
-                alignment: Alignment.topCenter,
-              ),
-            ),
-          height: 150,
-            width: 150,
-          ),*/
+
           GestureDetector(
             child: Container(
               alignment: Alignment.topCenter,
@@ -809,7 +792,6 @@ class articlePage extends StatelessWidget{
     theStar = info.arguments as myStars;
     //ref = FirebaseDatabase.instance.ref(theStar.starName!);
 
-
     return Scaffold(
       appBar: AppBar(
         title: Text(theStar.starName!),
@@ -923,17 +905,9 @@ class planetArticle extends StatelessWidget{
                   "Earth masses: " + informationAboutPlanet[2].toString() + '\n' +
                   "Orbital period: " + informationAboutPlanet[3].toString() + '\n' +
                   "Temperature (in Kelvin): " + informationAboutPlanet[4].toString()),
-
           ),
         ],
       ),
     );
   }
-        /*children: <Widget>[
-          Container(
-            informationAboutPlanet = await ap.getPlanetData(),
-            print('Testing information about the planet'),
-            print(informationAboutPlanet.toString())
-            ),
-        ],*/
 }
