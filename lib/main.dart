@@ -432,76 +432,61 @@ class theStarExpeditionState extends State<StarExpedition> {
         ],
       ),
       body: Wrap(
-        //heightFactor: 15,
-        /*child: (
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: const <Widget>[
-              Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Railway')),
-              Text('Star Expedition is an app that allows its users to view and research stars with terrestrial planets and the terrestrial planets that orbit those stars. Star Expedition will include stars whose spectral classes range from M8 to A5 and are within 100 light-years from Earth.', style: TextStyle(color: Colors.black, fontFamily: 'Railway'))
-            ]
-          )
-          /*SizedBox(
-            width: 100,
-            child: Center(
-              child: Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'))
-            ),
-          )*/
-        ),*/
-
-          /*SizedBox(height: 20),
-          Text('Star Expedition is an app that allows its users to view and research stars with terrestrial planets and the terrestrial planets that orbit those stars. Star Expedition will include stars whose spectral classes range from M8 to A5 and are within 100 light-years from Earth.'),
-          */
-          //heightFactor: 20,
         children: <Widget>[
           myUsername == "" && myNewUsername == ""? // If myUsername is empty, it will show the Login container. If myUsername is not empty, it will show an empty SizedBox.
             GestureDetector(
-              child: Container(
-                alignment: Alignment.topRight,
-                child: Text('Login', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
-                height: 25,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    FittedBox(
+                      child: Text('Login', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                      fit: BoxFit.contain,
+                    ),
+                  ],
               ),
               onTap: (){
                 print('Logging in');
                 Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
               }
-          ): (myUsername == "" && myNewUsername != "")?
+            ): (myUsername == "" && myNewUsername != "")?
               Row( //If login is successful
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   FittedBox( //For new users, not those that logged into already existing accounts
                     alignment: Alignment.topRight,
                     child: Text('Hi ' + myNewUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                     fit: BoxFit.contain,
-                    //height: 25,
                   ),
                   GestureDetector(
                     child: FittedBox(
                       alignment: Alignment.topRight,
                       child: Text(' Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                       fit: BoxFit.contain,
-                      //height: 25,
                     ),
                     onTap: (){
+                      myUsername = "";
+                      myNewUsername = "";
                       print("Logging out");
                     }
                   ),
                 ],
               ): (myUsername != "" && myNewUsername == "") && theLoginPage.loginBool == true?
                 Row( //For returning users
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    FittedBox( //If login is not successful
-                      alignment: Alignment.topRight,
+                    FittedBox(
                       child: Text('Hi ' + myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                       fit: BoxFit.contain,
                     ),
                     GestureDetector(
                       child: FittedBox(
-                        alignment: Alignment.topRight,
                         child: Text(' Logout now', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                         fit: BoxFit.contain,
                       ),
                       onTap: (){
+                        myUsername = "";
+                        myNewUsername = "";
+                        theLoginPage.loginBool = false;
                         print("Logging out from already existing account");
                       }
                     ),
