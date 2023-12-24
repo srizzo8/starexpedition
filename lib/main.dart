@@ -464,6 +464,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                     onTap: (){
                       myUsername = "";
                       myNewUsername = "";
+                      Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
                       print("Logging out");
                     }
                   ),
