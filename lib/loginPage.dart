@@ -11,6 +11,7 @@ import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
 import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 import 'registerPage.dart' as theRegisterPage;
+import 'discussionBoardPage.dart' as theDiscussionBoardPage;
 
 import 'main.dart' as myMain;
 
@@ -37,6 +38,7 @@ class MyLoginPage extends StatelessWidget{
       routes: {
         loginPageRoutes.homePage: (context) => myMain.StarExpedition(),
         loginPageRoutes.myRegisterPage: (context) => theRegisterPage.registerPage(),
+        loginPageRoutes.discussionBoard: (context) => theDiscussionBoardPage.discussionBoardPage(),
       }
     );
   }
@@ -45,6 +47,7 @@ class MyLoginPage extends StatelessWidget{
 class loginPageRoutes{
   static String homePage = myMain.theStarExpeditionState.nameOfRoute;
   static String myRegisterPage = theRegisterPage.registerPageState.nameOfRoute;
+  static String discussionBoard = theDiscussionBoardPage.discussionBoardPageState.nameOfRoute;
 }
 
 class loginPageState extends State<loginPage>{
@@ -113,14 +116,23 @@ class loginPageState extends State<loginPage>{
                 int p1 = myMain.theUsers!.indexWhere((pass) => pass.password == passwordController.text);
                 if(u1 == p1 && u1 != -1 && p1 != -1) { //If u1 and p1 have matching numbers, but if u1 and p1 do not equal -1.
                   //if(myMain.theUsers!.){
-                    print("Logging in123");
-                    myUsername = usernameController.text;
-                    print("Logging in as " + myUsername);
-                    Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
-                    print("myUsername: " + myUsername);
-                    print("myNewUsername: " + theRegisterPage.myNewUsername);
-                    loginBool = true;
-                    //}
+                    if(myMain.discussionBoardLogin == true){
+                      myUsername = usernameController.text;
+                      print("Logging in as " + myUsername);
+                      print("myNewUsername: " + theRegisterPage.myNewUsername);
+                      Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
+                      myMain.discussionBoardLogin = false;
+                      loginBool = true;
+                    }
+                    else{
+                      print("Logging in123");
+                      myUsername = usernameController.text;
+                      print("Logging in as " + myUsername);
+                      Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                      print("myUsername: " + myUsername);
+                      print("myNewUsername: " + theRegisterPage.myNewUsername);
+                      loginBool = true;
+                    }
                 }
                 else{
                   //int n = myMain.theUsers!.indexWhere((person) => person.username == "John");

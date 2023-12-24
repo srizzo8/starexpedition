@@ -31,6 +31,8 @@ List<String> starInfo = [];
 //String accountsDataString = "";
 //var myData;
 List<Users>? theUsers = [];
+
+bool discussionBoardLogin = false;
 //final File myFile = File('C:/Users/Owner/starexpedition_jsonfiles/accountsData.json');
 
 /*
@@ -479,7 +481,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                     ),
                     GestureDetector(
                       child: FittedBox(
-                        child: Text(' Logout now', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                        child: Text(' Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                         fit: BoxFit.contain,
                       ),
                       onTap: (){
@@ -584,7 +586,13 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
               ListTile(
                   title: Text("Discussion Board"),
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, routesToOtherPages.discussionBoard);
+                    discussionBoardLogin = true;
+                    if(theLoginPage.loginBool == true){
+                      Navigator.pushReplacementNamed(context, routesToOtherPages.discussionBoard);
+                    }
+                    else{
+                      Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
+                    }
                   }
               )
             ]
