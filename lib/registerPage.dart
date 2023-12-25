@@ -16,8 +16,10 @@ import 'projectsPage.dart' as projectsPage;
 import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 
 import 'main.dart' as myMain;
+import 'discussionBoardPage.dart' as theDiscussionBoardPage;
 
 String myNewUsername = "";
+bool registerBool = false;
 
 class registerPage extends StatefulWidget{
   const registerPage ({Key? key}) : super(key: key);
@@ -39,6 +41,7 @@ class MyRegisterPage extends StatelessWidget{
 
 class registerPageRoutes{
   static String homePage = myMain.theStarExpeditionState.nameOfRoute;
+  static String discussionBoard = theDiscussionBoardPage.discussionBoardPageState.nameOfRoute;
 }
 
 class registerPageState extends State<registerPage>{
@@ -118,37 +121,28 @@ class registerPageState extends State<registerPage>{
               ),
             ),
             onTap: () async{
-              myNewUsername = theUsername.text;
-              Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
-              userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-              myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
-              myMain.theUsers!.add(dasUser);
-              print(myMain.theUsers);
-              //String myData = "{'username': ${theUsername.text},\n 'email': ${email.text},\n 'password': ${password.text}}";
-              //myMain.data.length()
-              //await File('jsonfiles/accountsData.json').writeAsString(myData);
-              //myMain.myFile.writeAsStringSync(jsonEncode(myData));
-
-              //print(myData);
-              //var myDataToJson = jsonDecode(myData) as List;
-              //List<myMain.Users> userObjects = myDataToJson.map(())
-              //JSONUpdateBuilder.insert().addArgument("\$.username", theUsername.text).addArgument("\$.email", email.text).addArgument("\$.password", password.text).create();
-              //print("${myData}: myData");
-              //myMain.Users theUser = myMain.Users(theUsername.text, email.text, password.text);
-
-              //myMain.theUsers.add(theUser);
-              //print(myMain.theUsers.length.toString());
-
-              //myMain.theUsers.map((guy) => guy.toJsonFile(),).toList();
-              //myMain.main().myFile.writeAsStringSync(jsonEncode(myMain.theUsers));
-              /*print(myMain.myData["users"].length.toString());
-              myMain.myData["users"].length += 1;
-              print(myMain.myData["users"].length.toString());
-              myMain.myData["users"]["users".length - 1]["username"].add(theUsername.text);
-              myMain.myData["users"]["users".length - 1]["email"].add(email.text);
-              myMain.myData["users"]["users".length - 1]["password"].add(password.text);
-              */
-              print("Registering successfully as: " + userEmailPasswordList.toString());
+              if(myMain.discussionBoardLogin == true){
+                myNewUsername = theUsername.text;
+                Navigator.pushReplacementNamed(context, registerPageRoutes.discussionBoard);
+                userEmailPasswordList.add([theUsername.text, email.text, password.text]);
+                myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                myMain.theUsers!.add(dasUser);
+                print(myMain.theUsers);
+                myMain.discussionBoardLogin = false;
+                registerBool = true;
+                print("Registering successfully as: " + userEmailPasswordList.toString());
+              }
+              else{
+                myNewUsername = theUsername.text;
+                Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
+                userEmailPasswordList.add([theUsername.text, email.text, password.text]);
+                myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                myMain.theUsers!.add(dasUser);
+                print(myMain.theUsers);
+                myMain.discussionBoardLogin = false;
+                registerBool = true;
+                print("Registering successfully as: " + userEmailPasswordList.toString());
+              }
             }
           )
         ]

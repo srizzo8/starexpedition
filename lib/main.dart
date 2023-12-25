@@ -466,6 +466,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                     onTap: (){
                       myUsername = "";
                       myNewUsername = "";
+                      registerBool = false;
                       Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
                       print("Logging out");
                     }
@@ -587,7 +588,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                   title: Text("Discussion Board"),
                   onTap: () {
                     discussionBoardLogin = true;
-                    if(theLoginPage.loginBool == true){
+                    if(theLoginPage.loginBool == true || registerBool == true){
                       Navigator.pushReplacementNamed(context, routesToOtherPages.discussionBoard);
                     }
                     else{
