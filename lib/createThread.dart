@@ -10,7 +10,7 @@ import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
 import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
-
+import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'main.dart' as myMain;
 
 class createThread extends StatefulWidget{
@@ -52,7 +52,8 @@ class createThreadState extends State<createThread>{
                 ),
                 maxLines: 1,
                 maxLength: 30,
-                controller: usernameController,
+                enabled: false,
+                controller: TextEditingController()..text = theLoginPage.myUsername,
               ),
             ),
             Padding(
@@ -88,6 +89,7 @@ class createThreadState extends State<createThread>{
               onTap: (){
                 //print('Posting the thread');
                 print(discussionBoardUpdatesPage.discussionBoardUpdatesBool);
+                usernameController.text = theLoginPage.myUsername;
                 if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != ""){
                   //print(usernameController.text);
                   if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false) {
