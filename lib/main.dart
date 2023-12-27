@@ -568,6 +568,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
               ListTile(
                 title: Text("Home"),
                 onTap: (){
+                  discussionBoardLogin = false;
                   Navigator.pushReplacementNamed(context, routesToOtherPages.homePage);
                 }
               ),
