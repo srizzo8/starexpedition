@@ -9,6 +9,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'createThread.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'main.dart' as myMain;
+import 'package:starexpedition4/loginPage.dart' as theLoginPage;
+import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
 
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
@@ -39,14 +41,25 @@ class replyThreadPageState extends State<replyThreadPage>{
             ),
             Padding(
               padding: EdgeInsets.all(20.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: "Username",
-                ),
-                maxLines: 1,
-                maxLength: 30,
-                controller: usernameReplyController,
-              ),
+              child: (theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == "")?
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: "Username",
+                  ),
+                  maxLines: 1,
+                  maxLength: 30,
+                  enabled: false,
+                  controller: TextEditingController()..text = theLoginPage.myUsername,
+                ): (theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != "")?
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: "Username",
+                    ),
+                    maxLines: 1,
+                    maxLength: 30,
+                    enabled: false,
+                    controller: TextEditingController()..text = theRegisterPage.myNewUsername,
+                  ): TextField(),
             ),
             Padding(
               padding: EdgeInsets.all(20.0),
@@ -68,6 +81,12 @@ class replyThreadPageState extends State<replyThreadPage>{
                 alignment: Alignment.center,
               ),
               onTap: (){
+                if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
+                  usernameReplyController.text = theLoginPage.myUsername;
+                }
+                else if(theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != ""){
+                  usernameReplyController.text = theRegisterPage.myNewUsername;
+                }
                 if(usernameReplyController.text != "" && replyContentController.text != ""){
                   if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool == true){
                     threadNumber = int.parse(discussionBoardUpdatesPage.threadID);
