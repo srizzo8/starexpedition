@@ -12,6 +12,7 @@ import 'projectsPage.dart' as projectsPage;
 import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'main.dart' as myMain;
+import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
 
 class createThread extends StatefulWidget{
   const createThread ({Key? key}) : super(key: key);
@@ -45,17 +46,27 @@ class createThreadState extends State<createThread>{
               alignment: Alignment.center,
             ),
             Padding(
-              padding: EdgeInsets.all(20.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: "Username",
-                ),
-                maxLines: 1,
-                maxLength: 30,
-                enabled: false,
-                controller: TextEditingController()..text = theLoginPage.myUsername,
+                padding: EdgeInsets.all(20.0),
+                child: theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""?
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: "Username",
+                  ),
+                  maxLines: 1,
+                  maxLength: 30,
+                  enabled: false,
+                  controller: TextEditingController()..text = theLoginPage.myUsername,
+                ): (theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != "")?
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: "Username",
+                    ),
+                    maxLines: 1,
+                    maxLength: 30,
+                    enabled: false,
+                    controller: TextEditingController()..text = theRegisterPage.myNewUsername,
+                  ): TextField(),
               ),
-            ),
             Padding(
               padding: EdgeInsets.all(20.0),
               child: TextField(
@@ -89,7 +100,12 @@ class createThreadState extends State<createThread>{
               onTap: (){
                 //print('Posting the thread');
                 print(discussionBoardUpdatesPage.discussionBoardUpdatesBool);
-                usernameController.text = theLoginPage.myUsername;
+                if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
+                  usernameController.text = theLoginPage.myUsername;
+                }
+                else if(theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != ""){
+                  usernameController.text = theRegisterPage.myNewUsername;
+                }
                 if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != ""){
                   //print(usernameController.text);
                   if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false) {
