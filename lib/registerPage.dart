@@ -20,7 +20,6 @@ import 'discussionBoardPage.dart' as theDiscussionBoardPage;
 
 String myNewUsername = "";
 bool registerBool = false;
-bool clickedRegisterButton = false;
 
 class registerPage extends StatefulWidget{
   const registerPage ({Key? key}) : super(key: key);
@@ -44,14 +43,6 @@ class registerPageRoutes{
   static String homePage = myMain.theStarExpeditionState.nameOfRoute;
   static String discussionBoard = theDiscussionBoardPage.discussionBoardPageState.nameOfRoute;
 }
-
-/*
-void registrationErrorsDialog(){
-  showDialog(
-    context: ,
-
-  );
-}*/
 
 class registerPageState extends State<registerPage>{
   List userEmailPasswordList = [];
@@ -130,7 +121,7 @@ class registerPageState extends State<registerPage>{
               ),
             ),
             onTap: () async{
-              if(theUsername.text != "" && email.text != "" && password.text != ""){
+              if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text != "" && password.text != ""){
                 if(myMain.discussionBoardLogin == true){
                   myNewUsername = theUsername.text;
                   Navigator.pushReplacementNamed(context, registerPageRoutes.discussionBoard);
@@ -155,25 +146,34 @@ class registerPageState extends State<registerPage>{
                 }
               }
               else{
+                print(myMain.theUsers!.indexWhere((person) => person.username == theUsername.text));
                 showDialog(
                   context: context,
                   builder: (myContent) => AlertDialog(
                     title: const Text("Registration unsuccessful"),
-                    content: theUsername.text == "" && email.text != "" && password.text != ""?
-                        Text("Username empty") :
-                        theUsername.text != "" && email.text == "" && password.text != ""?
-                          Text("Email empty"):
-                            theUsername.text != "" && email.text != "" && password.text == ""?
-                            Text("Password empty"):
-                                theUsername.text == "" && email.text == "" && password.text != ""?
-                                    Text("Username empty\nEmail empty"):
-                                    theUsername.text == "" && email.text != "" && password.text == ""?
-                                        Text("Username empty\nPassword empty"):
-                                        theUsername.text != "" && email.text == "" && password.text == ""?
-                                            Text("Email empty\nPassword empty"):
-                                            theUsername.text == "" && email.text == "" && password.text == ""?
-                                                Text("Username empty\nEmail empty\nPassword empty"):
-                                                Text(""),
+                    content: theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text != "" && password.text != ""?
+                        Text("Username empty"):
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) != -1 && email.text != "" && password.text != ""?
+                        Text("Username already exists"):
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text == "" && password.text != ""?
+                        Text("Email empty"):
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text != "" && password.text == ""?
+                        Text("Password empty"):
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text == "" && password.text != ""?
+                        Text("Username empty\nEmail empty"):
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) != -1 && email.text == "" && password.text != ""?
+                        Text("Username already exists\nEmail empty"):
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text != "" && password.text == ""?
+                        Text("Username empty\nPassword empty"):
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) != -1 && email.text != "" && password.text == ""?
+                        Text("Username already exists\nPassword empty"):
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text == "" && password.text == ""?
+                        Text("Email empty\nPassword empty"):
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text == "" && password.text == ""?
+                        Text("Username empty\nEmail empty\nPassword empty"):
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) != -1 && email.text == "" && password.text == ""?
+                        Text("Username already exists\nEmail empty\nPassword empty"):
+                        Text(""),
                     actions: <Widget>[
                       TextButton(
                         onPressed: (){
