@@ -112,7 +112,7 @@ class loginPageState extends State<loginPage>{
             ),
             onTap: (){
               if(usernameController.text != "" && passwordController.text != "") {
-                int u1 = myMain.theUsers!.indexWhere((person) => person.username == usernameController.text); //checks what the index number is when person.username equals usernameController.text.
+                int u1 = myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()); //checks what the index number is when person.username equals usernameController.text.
                 int p1 = myMain.theUsers!.indexWhere((pass) => pass.password == passwordController.text);
                 if(u1 == p1 && u1 != -1 && p1 != -1) { //If u1 and p1 have matching numbers, but if u1 and p1 do not equal -1.
                   //if(myMain.theUsers!.){
