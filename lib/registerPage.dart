@@ -121,7 +121,7 @@ class registerPageState extends State<registerPage>{
               ),
             ),
             onTap: () async{
-              if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text != "" && password.text != ""){
+              if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != ""){
                 if(myMain.discussionBoardLogin == true){
                   myNewUsername = theUsername.text;
                   Navigator.pushReplacementNamed(context, registerPageRoutes.discussionBoard);
@@ -151,27 +151,27 @@ class registerPageState extends State<registerPage>{
                   context: context,
                   builder: (myContent) => AlertDialog(
                     title: const Text("Registration unsuccessful"),
-                    content: theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text != "" && password.text != ""?
+                    content: theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != ""?
                         Text("Username empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) != -1 && email.text != "" && password.text != ""?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != ""?
                         Text("Username already exists"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text == "" && password.text != ""?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != ""?
                         Text("Email empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text != "" && password.text == ""?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text == ""?
                         Text("Password empty"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text == "" && password.text != ""?
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != ""?
                         Text("Username empty\nEmail empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) != -1 && email.text == "" && password.text != ""?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != ""?
                         Text("Username already exists\nEmail empty"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text != "" && password.text == ""?
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text == ""?
                         Text("Username empty\nPassword empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) != -1 && email.text != "" && password.text == ""?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text == ""?
                         Text("Username already exists\nPassword empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text == "" && password.text == ""?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text == ""?
                         Text("Email empty\nPassword empty"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) == -1 && email.text == "" && password.text == ""?
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text == ""?
                         Text("Username empty\nEmail empty\nPassword empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username == theUsername.text)) != -1 && email.text == "" && password.text == ""?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text == ""?
                         Text("Username already exists\nEmail empty\nPassword empty"):
                         Text(""),
                     actions: <Widget>[
