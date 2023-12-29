@@ -117,7 +117,8 @@ class loginPageState extends State<loginPage>{
                 if(u1 == p1 && u1 != -1 && p1 != -1) { //If u1 and p1 have matching numbers, but if u1 and p1 do not equal -1.
                   //if(myMain.theUsers!.){
                     if(myMain.discussionBoardLogin == true){
-                      myUsername = usernameController.text;
+                      print(myMain.theUsers!.elementAt(u1).username.toString());
+                      myUsername = myMain.theUsers!.elementAt(u1).username.toString();
                       print("Logging in as " + myUsername);
                       print("myNewUsername: " + theRegisterPage.myNewUsername);
                       Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
@@ -125,8 +126,9 @@ class loginPageState extends State<loginPage>{
                       loginBool = true;
                     }
                     else{
+                      print(myMain.theUsers!.elementAt(u1).username.toString());
                       print("Logging in123");
-                      myUsername = usernameController.text;
+                      myUsername = myMain.theUsers!.elementAt(u1).username.toString();//usernameController.text;
                       print("Logging in as " + myUsername);
                       Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
                       print("myUsername: " + myUsername);
