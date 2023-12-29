@@ -20,6 +20,7 @@ import 'discussionBoardPage.dart' as theDiscussionBoardPage;
 
 String myNewUsername = "";
 bool registerBool = false;
+bool clickedRegisterButton = false;
 
 class registerPage extends StatefulWidget{
   const registerPage ({Key? key}) : super(key: key);
@@ -43,6 +44,14 @@ class registerPageRoutes{
   static String homePage = myMain.theStarExpeditionState.nameOfRoute;
   static String discussionBoard = theDiscussionBoardPage.discussionBoardPageState.nameOfRoute;
 }
+
+/*
+void registrationErrorsDialog(){
+  showDialog(
+    context: ,
+
+  );
+}*/
 
 class registerPageState extends State<registerPage>{
   List userEmailPasswordList = [];
@@ -121,27 +130,63 @@ class registerPageState extends State<registerPage>{
               ),
             ),
             onTap: () async{
-              if(myMain.discussionBoardLogin == true){
-                myNewUsername = theUsername.text;
-                Navigator.pushReplacementNamed(context, registerPageRoutes.discussionBoard);
-                userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-                myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
-                myMain.theUsers!.add(dasUser);
-                print(myMain.theUsers);
-                myMain.discussionBoardLogin = false;
-                registerBool = true;
-                print("Registering successfully as: " + userEmailPasswordList.toString());
+              if(theUsername.text != "" && email.text != "" && password.text != ""){
+                if(myMain.discussionBoardLogin == true){
+                  myNewUsername = theUsername.text;
+                  Navigator.pushReplacementNamed(context, registerPageRoutes.discussionBoard);
+                  userEmailPasswordList.add([theUsername.text, email.text, password.text]);
+                  myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                  myMain.theUsers!.add(dasUser);
+                  print(myMain.theUsers);
+                  myMain.discussionBoardLogin = false;
+                  registerBool = true;
+                  print("Registering successfully as: " + userEmailPasswordList.toString());
+                }
+                else{
+                  myNewUsername = theUsername.text;
+                  Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
+                  userEmailPasswordList.add([theUsername.text, email.text, password.text]);
+                  myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                  myMain.theUsers!.add(dasUser);
+                  print(myMain.theUsers);
+                  myMain.discussionBoardLogin = false;
+                  registerBool = true;
+                  print("Registering successfully as: " + userEmailPasswordList.toString());
+                }
               }
               else{
-                myNewUsername = theUsername.text;
-                Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
-                userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-                myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
-                myMain.theUsers!.add(dasUser);
-                print(myMain.theUsers);
-                myMain.discussionBoardLogin = false;
-                registerBool = true;
-                print("Registering successfully as: " + userEmailPasswordList.toString());
+                showDialog(
+                  context: context,
+                  builder: (myContent) => AlertDialog(
+                    title: const Text("Registration unsuccessful"),
+                    content: theUsername.text == "" && email.text != "" && password.text != ""?
+                        Text("Username empty") :
+                        theUsername.text != "" && email.text == "" && password.text != ""?
+                          Text("Email empty"):
+                            theUsername.text != "" && email.text != "" && password.text == ""?
+                            Text("Password empty"):
+                                theUsername.text == "" && email.text == "" && password.text != ""?
+                                    Text("Username empty\nEmail empty"):
+                                    theUsername.text == "" && email.text != "" && password.text == ""?
+                                        Text("Username empty\nPassword empty"):
+                                        theUsername.text != "" && email.text == "" && password.text == ""?
+                                            Text("Email empty\nPassword empty"):
+                                            theUsername.text == "" && email.text == "" && password.text == ""?
+                                                Text("Username empty\nEmail empty\nPassword empty"):
+                                                Text(""),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: (){
+                          Navigator.of(myContent).pop();
+                        },
+                        child: Container(
+                          child: const Text("Ok"),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+                print("Registration incomplete");
               }
             }
           )
