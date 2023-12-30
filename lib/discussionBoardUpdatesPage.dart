@@ -174,6 +174,19 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                             color: Colors.tealAccent,
                             width: 360,
                           ),
+                          GestureDetector(
+                            child: Container(
+                              child: Text("Reply"),
+                              color: Colors.purple.shade200,
+                              width: 360,
+                            ),
+                            onTap: (){
+                              discussionBoardUpdatesReplyBool = true;
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                              print('Reply no. ' + index.toString());
+                              print('Replying to a reply number ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString());
+                            }
+                          ),
                       ],
                     );
                   }
