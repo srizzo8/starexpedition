@@ -97,10 +97,12 @@ class replyThreadPageState extends State<replyThreadPage>{
                     pendingDiscussionBoardUpdatesReply.add(replyContentController.text);
                     if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool == true){
                       discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool = false;
+                      pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][1].toString());
                       pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][2].toString());
-                      print('Do I exist? ' + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][3].toString());
+                      print('Do we exist? ' + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][3].toString() + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][4].toString());
                     }
                     else{
+                      pendingDiscussionBoardUpdatesReply.add("");
                       pendingDiscussionBoardUpdatesReply.add("");
                       print("I do not exist");
                     }

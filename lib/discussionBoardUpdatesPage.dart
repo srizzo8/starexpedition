@@ -167,14 +167,14 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                     itemBuilder: (context, index){
                       return Column(
                         children: <Widget>[
-                          discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != ""?
+                          discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
                           Column(
                           children: <Widget>[
                             Container(
                               height: 5,
                             ),
                             Container(
-                              child: Text("Reply to: \n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString()),
+                              child: Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
                               color: Colors.teal,
                               width: 360,
                             ),
