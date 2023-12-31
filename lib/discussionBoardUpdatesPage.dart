@@ -12,8 +12,10 @@ import 'main.dart' as myMain;
 
 bool discussionBoardUpdatesBool = false;
 bool discussionBoardUpdatesReplyBool = false;
+bool discussionBoardUpdatesReplyingToReplyBool = false;
 var discussionBoardUpdatesThreads = [];
 var discussionBoardUpdatesReplies = [];
+int myIndex = -1;
 //List<List> reversedDiscussionBoardUpdatesThreadsList = discussionBoardUpdatesThreads.reversed.toList();
 var reversedDiscussionBoardUpdatesThreadsIterable = discussionBoardUpdatesThreads.reversed;
 var reversedDiscussionBoardUpdatesRepliesIterable = discussionBoardUpdatesReplies.reversed;
@@ -146,6 +148,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                 height: 20,
               ),
               onTap: (){
+                discussionBoardUpdatesReplyingToReplyBool = false;
                 discussionBoardUpdatesReplyBool = true;
                 print(reversedDiscussionBoardUpdatesThreadsIterable.toList());
                 //myIndexPlace = discussionBoardUpdatesPageState.index;
@@ -164,28 +167,68 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                     itemBuilder: (context, index){
                       return Column(
                         children: <Widget>[
-                          Container(
-                            height: 5,
-                          ),
-                      //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
-                          Container(
-                            //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
-                            child: Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
-                            color: Colors.tealAccent,
-                            width: 360,
-                          ),
-                          GestureDetector(
-                            child: Container(
-                              child: Text("Reply"),
-                              color: Colors.purple.shade200,
+                          discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != ""?
+                          Column(
+                          children: <Widget>[
+                            Container(
+                              height: 5,
+                            ),
+                            Container(
+                              child: Text("Reply to: \n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString()),
+                              color: Colors.teal,
                               width: 360,
                             ),
-                            onTap: (){
-                              discussionBoardUpdatesReplyBool = true;
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                              print('Reply no. ' + index.toString());
-                              print('Replying to a reply number ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString());
-                            }
+                            //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
+                            Container(
+                              //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
+                              child: Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
+                              color: Colors.tealAccent,
+                              width: 360,
+                            ),
+                            GestureDetector(
+                              child: Container(
+                                child: Text("Reply"),
+                                color: Colors.purple.shade200,
+                                width: 360,
+                              ),
+                              onTap: (){
+                                myIndex = index;
+                                discussionBoardUpdatesReplyBool = true;
+                                discussionBoardUpdatesReplyingToReplyBool = true;
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                print('Reply no. ' + index.toString());
+                                print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                              }
+                            ),
+                          ]
+                          ): Column(
+                              children: <Widget>[
+                                Container(
+                                  height: 5,
+                                ),
+                                //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
+                                Container(
+                                  //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
+                                  child: Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
+                                  color: Colors.tealAccent,
+                                  width: 360,
+                                ),
+                                GestureDetector(
+                                    child: Container(
+                                      child: Text("Reply"),
+                                      color: Colors.purple.shade200,
+                                      width: 360,
+                                    ),
+                                    onTap: (){
+                                      myIndex = index;
+                                      discussionBoardUpdatesReplyBool = true;
+                                      discussionBoardUpdatesReplyingToReplyBool = true;
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                      print('Reply no. ' + index.toString());
+                                      print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                    }
+                                ),
+                              ]
                           ),
                       ],
                     );

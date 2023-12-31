@@ -95,6 +95,15 @@ class replyThreadPageState extends State<replyThreadPage>{
                     pendingDiscussionBoardUpdatesReply.add(DateTime.now().toString());
                     pendingDiscussionBoardUpdatesReply.add(usernameReplyController.text);
                     pendingDiscussionBoardUpdatesReply.add(replyContentController.text);
+                    if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool == true){
+                      discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool = false;
+                      pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][2].toString());
+                      print('Do I exist? ' + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][3].toString());
+                    }
+                    else{
+                      pendingDiscussionBoardUpdatesReply.add("");
+                      print("I do not exist");
+                    }
                     discussionBoardUpdatesPage.discussionBoardUpdatesThreads.toList()[threadNumber][4].add(pendingDiscussionBoardUpdatesReply);
                     //= discussionBoardUpdatesPage.discussionBoardUpdatesReplies.toString();
                     //print(pendingDiscussionBoardUpdatesReply);
