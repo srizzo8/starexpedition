@@ -406,13 +406,18 @@ class theStarExpeditionState extends State<StarExpedition> {
 
   @override
   Widget build(BuildContext context) {
+    final dateForUse = DateTime(2020, 1, 1);
     DateTime? timeNow = DateTime.now();
-
+    int numberOfDays = daysSinceJanOneTwenty(dateForUse, timeNow);
+    print(numberOfDays.toString());
+    int numberOfStars = starsForSearchBar.length;
+    int randomNumber = numberOfDays % numberOfStars;
+    /*
     int numberOfDays = timeNow.day;
     numberOfDays = endOfMonthAdjustment(numberOfDays);
     print(numberOfDays.toString());
     int numberOfStars = starsForSearchBar.length;
-    int randomNumber = numberOfDays % numberOfStars;
+    int randomNumber = numberOfDays % numberOfStars;*/
     //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
     print(timeNow);
 
@@ -547,13 +552,19 @@ class theStarExpeditionState extends State<StarExpedition> {
       );
   }
 
-  int endOfMonthAdjustment(int numberOfDays) {
+  int daysSinceJanOneTwenty(DateTime a, DateTime b){
+    a = DateTime(a.year, a.month, a.day);
+    b = DateTime(b.year, b.month, b.day);
+    return (b.difference(a).inHours / 24).round();
+  }
+
+  /*int endOfMonthAdjustment(int numberOfDays) {
     if(numberOfDays == 31)
     {
       numberOfDays = 32;
     }
     return numberOfDays;
-  }
+  }*/
 }
 
 class starExpeditionNavigationDrawer extends StatelessWidget{
