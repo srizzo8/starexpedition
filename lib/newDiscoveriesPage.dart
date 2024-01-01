@@ -139,6 +139,7 @@ class newDiscoveriesThreadContent extends StatelessWidget{
           ),
           GestureDetector(
             child: Container(
+              alignment: Alignment.topCenter,
               child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
               color: Colors.deepPurpleAccent,
               height: 20,
