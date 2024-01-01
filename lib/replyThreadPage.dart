@@ -8,6 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'createThread.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
+import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 import 'main.dart' as myMain;
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
@@ -24,6 +25,7 @@ class replyThreadPageState extends State<replyThreadPage>{
   final usernameReplyController = TextEditingController();
   final replyContentController = TextEditingController();
   List<String> pendingDiscussionBoardUpdatesReply = [];
+  List<String> pendingNewDiscoveriesReply = [];
   int threadNumber = 0;
 
   Widget build(BuildContext bc){
@@ -116,6 +118,30 @@ class replyThreadPageState extends State<replyThreadPage>{
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][1]);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                     discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;
+                  }
+                  else if(newDiscoveriesPage.newDiscoveriesReplyBool == true){
+                    threadNumber = int.parse(newDiscoveriesPage.threadID);
+                    assert(threadNumber is int);
+                    print(threadNumber.runtimeType);
+                    pendingNewDiscoveriesReply.add(DateTime.now().toString());
+                    pendingNewDiscoveriesReply.add(usernameReplyController.text);
+                    pendingNewDiscoveriesReply.add(replyContentController.text);
+                    if(newDiscoveriesPage.newDiscoveriesReplyingToReplyBool == true){
+                      newDiscoveriesPage.newDiscoveriesReplyingToReplyBool = false;
+                      pendingNewDiscoveriesReply.add(newDiscoveriesPage.newDiscoveriesThreads[int.parse(newDiscoveriesPage.threadID)][4][newDiscoveriesPage.myIndex][1].toString());
+                      pendingNewDiscoveriesReply.add(newDiscoveriesPage.newDiscoveriesThreads[int.parse(newDiscoveriesPage.threadID)][4][newDiscoveriesPage.myIndex][2].toString());
+                      print('Do we exist? ' + newDiscoveriesPage.newDiscoveriesThreads[int.parse(newDiscoveriesPage.threadID)][4][newDiscoveriesPage.myIndex][3].toString() + newDiscoveriesPage.newDiscoveriesThreads[int.parse(newDiscoveriesPage.threadID)][4][newDiscoveriesPage.myIndex][4].toString());
+                    }
+                    else{
+                      pendingNewDiscoveriesReply.add("");
+                      pendingNewDiscoveriesReply.add("");
+                      print("I do not exist");
+                    }
+                    newDiscoveriesPage.newDiscoveriesThreads.toList()[threadNumber][4].add(pendingNewDiscoveriesReply);
+                    print(newDiscoveriesPage.reversedNewDiscoveriesThreadsIterable);
+                    print(newDiscoveriesPage.newDiscoveriesReplies);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
+                    newDiscoveriesPage.newDiscoveriesReplyBool = false;
                   }
                 }
               }

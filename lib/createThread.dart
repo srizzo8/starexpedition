@@ -30,7 +30,7 @@ class createThreadState extends State<createThread>{
   List<String> questionsAndAnswersPendingThreads = [];
   List<String> technologiesPendingThreads = [];
   List<String> projectsPendingThreads = [];
-  List<String> newDiscoveriesPendingThreads = [];
+  var newDiscoveriesPendingThreads = [];
 
   Widget build(BuildContext createThreadBuildContext){
     return Scaffold(
@@ -153,12 +153,25 @@ class createThreadState extends State<createThread>{
                         }
                         else{
                           if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == true){
-                            newDiscoveriesPendingThreads.add(usernameController.text);
+                            /*newDiscoveriesPendingThreads.add(usernameController.text);
                             newDiscoveriesPendingThreads.add(threadNameController.text);
                             newDiscoveriesPendingThreads.add(threadContentController.text);
                             newDiscoveriesPage.newDiscoveriesThreads.add(newDiscoveriesPendingThreads);
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
+                            newDiscoveriesPage.newDiscoveriesBool = false;*/
+                            print('You are ready to post this thread');
+                            newDiscoveriesPendingThreads.add(usernameController.text);
+                            newDiscoveriesPendingThreads.add(threadNameController.text);
+                            newDiscoveriesPendingThreads.add(threadContentController.text);
+                            newDiscoveriesPendingThreads.add(newDiscoveriesPage.newDiscoveriesThreads.length.toString());
+                            newDiscoveriesPendingThreads.add(List.empty(growable: true));
+                            print(newDiscoveriesPendingThreads);
+                            newDiscoveriesPage.newDiscoveriesThreads.add(newDiscoveriesPendingThreads);
+                            print("Threads in discussion board updates subforum: " + newDiscoveriesPage.newDiscoveriesThreads.toString());
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
                             newDiscoveriesPage.newDiscoveriesBool = false;
+                            //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsList);
+                            print(newDiscoveriesPage.reversedNewDiscoveriesThreadsIterable.toList());
                           }
                         }
                       }

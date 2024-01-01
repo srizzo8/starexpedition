@@ -7,14 +7,21 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'createThread.dart';
+import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 
 bool newDiscoveriesBool = false;
-List<List> newDiscoveriesThreads = [];
-Iterable<List> reversedNewDiscoveriesThreadsIterable = newDiscoveriesThreads.reversed;
-String threadAuthorNewDiscoveries = "";
-String threadTitleNewDiscoveries = "";
-String threadContentNewDiscoveries = "";
+bool newDiscoveriesReplyBool = false;
+bool newDiscoveriesReplyingToReplyBool = false;
+var newDiscoveriesThreads = [];
+var newDiscoveriesReplies = [];
+int myIndex = -1;
+var reversedNewDiscoveriesThreadsIterable = newDiscoveriesThreads.reversed;
+var reversedNewDiscoveriesRepliesIterable = newDiscoveriesReplies.reversed;
+String threadAuthorNd = "";
+String threadTitleNd = "";
+String threadContentNd = "";
+String threadID = "";
 
 class newDiscoveriesPage extends StatefulWidget{
   const newDiscoveriesPage ({Key? key}) : super(key: key);
@@ -32,6 +39,7 @@ class MyNewDiscoveriesPage extends StatelessWidget{
       title: "New Discoveries Page",
       routes: {
         routeToCreateThreadNewDiscoveriesPage.createThreadPage: (context) => createThread(),
+        routeToReplyToThreadNewDiscoveriesPage.replyThreadPage: (context) => replyThreadPage(),
       }
     );
   }
@@ -39,6 +47,10 @@ class MyNewDiscoveriesPage extends StatelessWidget{
 
 class routeToCreateThreadNewDiscoveriesPage{
   static String createThreadPage = createThreadState.threadCreator;
+}
+
+class routeToReplyToThreadNewDiscoveriesPage{
+  static String replyThreadPage = replyThreadPageState.replyThread;
 }
 
 class newDiscoveriesPageState extends State<newDiscoveriesPage>{
@@ -64,13 +76,16 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
               alignment: Alignment.center,
             ),
             onTap: (){
+              print(newDiscoveriesBool);
               newDiscoveriesBool = true;
+              print(newDiscoveriesBool);
               Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+              print("I am going to write a new thread.");
             }
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: reversedNewDiscoveriesThreadsIterable.toList().length,
+                itemCount: newDiscoveriesThreads.reversed.toList().length,
                 itemBuilder: (context, index){
                   return Column(
                     children: <Widget>[
@@ -85,10 +100,13 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                             color: Colors.tealAccent,
                           ),
                           onTap: (){
+                            print("I clicked on a thread");
+                            print('You clicked on: ' + reversedNewDiscoveriesThreadsIterable.toList()[index][1]);
+                            threadAuthorNd = reversedNewDiscoveriesThreadsIterable.toList()[index][0];
+                            threadTitleNd = reversedNewDiscoveriesThreadsIterable.toList()[index][1];
+                            threadContentNd = reversedNewDiscoveriesThreadsIterable.toList()[index][2];
+                            threadID = reversedNewDiscoveriesThreadsIterable.toList()[index][3];
                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => newDiscoveriesThreadContent()));
-                            threadAuthorNewDiscoveries = reversedNewDiscoveriesThreadsIterable.toList()[index][0];
-                            threadTitleNewDiscoveries = reversedNewDiscoveriesThreadsIterable.toList()[index][1];
-                            threadContentNewDiscoveries = reversedNewDiscoveriesThreadsIterable.toList()[index][2];
                           }
                       ),
                     ],
@@ -104,7 +122,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
 
 class newDiscoveriesThreadContent extends StatelessWidget{
   @override
-  Widget build(BuildContext bc){
+  Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
@@ -114,10 +132,100 @@ class newDiscoveriesThreadContent extends StatelessWidget{
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              child: Text("Thread title: " + threadTitleNewDiscoveries + "\n" + "Posted by: " + threadAuthorNewDiscoveries + "\n" + threadContentNewDiscoveries),
+              child: Text("Thread title: " + threadTitleNd + "\n" + "Posted by: " + threadAuthorNd + "\n" + threadContentNd),
               color: Colors.tealAccent,
               alignment: Alignment.topLeft,
             ),
+          ),
+          GestureDetector(
+            child: Container(
+              child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+              color: Colors.deepPurpleAccent,
+              height: 20,
+            ),
+            onTap: (){
+              newDiscoveriesReplyingToReplyBool = false;
+              newDiscoveriesReplyBool = true;
+              print(reversedNewDiscoveriesThreadsIterable.toList());
+              print(threadID);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+              //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+              print('Replying to the thread');
+            }
+          ),
+          Column(
+            children: <Widget>[
+              ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: newDiscoveriesThreads[int.parse(threadID)][4].length,
+                itemBuilder: (context, index){
+                  return Column(
+                    children: <Widget>[
+                      newDiscoveriesThreads[int.parse(threadID)][4][index][3] != "" && newDiscoveriesThreads[int.parse(threadID)][4][index][4] != ""?
+                        Column(
+                          children: <Widget>[
+                            Container(
+                              height: 5,
+                            ),
+                            Container(
+                              child: Text("Reply to: \n" + "Posted by: " + newDiscoveriesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + newDiscoveriesThreads[int.parse(threadID)][4][index][4].toString()),
+                              color: Colors.teal,
+                              width: 360,
+                            ),
+                            Container(
+                              child: Text("Posted on: " + newDiscoveriesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + newDiscoveriesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + newDiscoveriesThreads[int.parse(threadID)][4][index][2].toString()),
+                              color: Colors.tealAccent,
+                              width: 360,
+                            ),
+                            GestureDetector(
+                              child: Container(
+                                child: Text("Reply"),
+                                color: Colors.purple.shade200,
+                                width: 360,
+                              ),
+                              onTap: (){
+                                myIndex = index;
+                                newDiscoveriesReplyBool = true;
+                                newDiscoveriesReplyingToReplyBool = true;
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                print('Reply no. ' + index.toString());
+                                print('Replying to this reply: ' + newDiscoveriesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                              }
+                            ),
+                          ]
+                        ): Column(
+                            children: <Widget>[
+                              Container(
+                                height: 5,
+                              ),
+                              Container(
+                                child: Text("Posted on: " + newDiscoveriesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + newDiscoveriesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + newDiscoveriesThreads[int.parse(threadID)][4][index][2].toString()),
+                                color: Colors.tealAccent,
+                                width: 360,
+                              ),
+                              GestureDetector(
+                                child: Container(
+                                  child: Text("Reply"),
+                                  color: Colors.purple.shade200,
+                                  width: 360,
+                                ),
+                                onTap: (){
+                                  myIndex = index;
+                                  newDiscoveriesReplyBool = true;
+                                  newDiscoveriesReplyingToReplyBool = true;
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                  print('Reply no. ' + index.toString());
+                                  print('Replying to this reply: ' + newDiscoveriesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                }
+                              ),
+                            ]
+                      ),
+                    ],
+                  );
+                }
+              ),
+            ],
           ),
         ],
       ),
