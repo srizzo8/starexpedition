@@ -28,7 +28,7 @@ class createThreadState extends State<createThread>{
   final threadContentController = TextEditingController();
   var discussionBoardUpdatesPendingThreads = [];
   var questionsAndAnswersPendingThreads = [];
-  List<String> technologiesPendingThreads = [];
+  var technologiesPendingThreads = [];
   List<String> projectsPendingThreads = [];
   var newDiscoveriesPendingThreads = [];
 
@@ -142,9 +142,14 @@ class createThreadState extends State<createThread>{
                         technologiesPendingThreads.add(usernameController.text);
                         technologiesPendingThreads.add(threadNameController.text);
                         technologiesPendingThreads.add(threadContentController.text);
+                        technologiesPendingThreads.add(technologiesPage.technologiesThreads.length.toString());
+                        technologiesPendingThreads.add(List.empty(growable: true));
+                        print(technologiesPendingThreads);
                         technologiesPage.technologiesThreads.add(technologiesPendingThreads);
+                        print("Threads in technologies subforum: " + technologiesPage.technologiesThreads.toString());
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
                         technologiesPage.technologiesBool = false;
+                        print(technologiesPage.reversedTechnologiesThreadsIterable.toList());
                       }
                       else{
                         if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == true && newDiscoveriesPage.newDiscoveriesBool == false){

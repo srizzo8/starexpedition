@@ -8,8 +8,9 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'createThread.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
-import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
+import 'technologiesPage.dart' as technologiesPage;
+import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 import 'main.dart' as myMain;
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
@@ -27,6 +28,8 @@ class replyThreadPageState extends State<replyThreadPage>{
   final replyContentController = TextEditingController();
   List<String> pendingDiscussionBoardUpdatesReply = [];
   List<String> pendingQuestionsAndAnswersReply = [];
+  List<String> pendingTechnologiesReply = [];
+  List<String> pendingProjectsReply = [];
   List<String> pendingNewDiscoveriesReply = [];
   int threadNumber = 0;
 
@@ -144,6 +147,30 @@ class replyThreadPageState extends State<replyThreadPage>{
                     print(questionsAndAnswersPage.questionsAndAnswersReplies);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
                     questionsAndAnswersPage.questionsAndAnswersReplyBool = false;
+                  }
+                  else if(technologiesPage.technologiesReplyBool == true){
+                    threadNumber = int.parse(technologiesPage.threadID);
+                    assert(threadNumber is int);
+                    print(threadNumber.runtimeType);
+                    pendingTechnologiesReply.add(DateTime.now().toString());
+                    pendingTechnologiesReply.add(usernameReplyController.text);
+                    pendingTechnologiesReply.add(replyContentController.text);
+                    if(technologiesPage.technologiesReplyingToReplyBool == true){
+                      technologiesPage.technologiesReplyingToReplyBool = false;
+                      pendingTechnologiesReply.add(technologiesPage.technologiesThreads[int.parse(technologiesPage.threadID)][4][technologiesPage.myIndex][1].toString());
+                      pendingTechnologiesReply.add(technologiesPage.technologiesThreads[int.parse(technologiesPage.threadID)][4][technologiesPage.myIndex][2].toString());
+                      print('Do we exist? ' + technologiesPage.technologiesThreads[int.parse(technologiesPage.threadID)][4][technologiesPage.myIndex][3].toString() + technologiesPage.technologiesThreads[int.parse(technologiesPage.threadID)][4][technologiesPage.myIndex][4].toString());
+                    }
+                    else{
+                      pendingTechnologiesReply.add("");
+                      pendingTechnologiesReply.add("");
+                      print("I do not exist");
+                    }
+                    technologiesPage.technologiesThreads.toList()[threadNumber][4].add(pendingTechnologiesReply);
+                    print(technologiesPage.reversedTechnologiesThreadsIterable);
+                    print(technologiesPage.technologiesReplies);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
+                    technologiesPage.technologiesReplyBool = false;
                   }
                   else if(newDiscoveriesPage.newDiscoveriesReplyBool == true){
                     threadNumber = int.parse(newDiscoveriesPage.threadID);
