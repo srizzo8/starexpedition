@@ -29,7 +29,7 @@ class createThreadState extends State<createThread>{
   var discussionBoardUpdatesPendingThreads = [];
   var questionsAndAnswersPendingThreads = [];
   var technologiesPendingThreads = [];
-  List<String> projectsPendingThreads = [];
+  var projectsPendingThreads = [];
   var newDiscoveriesPendingThreads = [];
 
   Widget build(BuildContext createThreadBuildContext){
@@ -156,9 +156,14 @@ class createThreadState extends State<createThread>{
                           projectsPendingThreads.add(usernameController.text);
                           projectsPendingThreads.add(threadNameController.text);
                           projectsPendingThreads.add(threadContentController.text);
+                          projectsPendingThreads.add(projectsPage.projectsThreads.length.toString());
+                          projectsPendingThreads.add(List.empty(growable: true));
+                          print(projectsPendingThreads);
                           projectsPage.projectsThreads.add(projectsPendingThreads);
+                          print("Threads in questions and answers subforum: " + projectsPage.projectsThreads.toString());
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
                           projectsPage.projectsBool = false;
+                          print(projectsPage.reversedProjectsThreadsIterable.toList());
                         }
                         else{
                           if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == true){

@@ -42,7 +42,7 @@ class discussionBoardRoutes{
   static String updatesSubforum = discussionBoardUpdatesPageState.dBoardRoute;
   static String questionsAndAnswersSubforum = questionsAndAnswersPageState.questionsAndAnswersRoute;
   static String technologiesSubforum = technologiesPageState.technologiesRoute;
-  static String projectsSubforum = projectsPageState.projectsSubforumRoute;
+  static String projectsSubforum = projectsPageState.projectsRoute;
   static String newDiscoveriesSubforum = newDiscoveriesPageState.newDiscoveriesRoute;
 }
 

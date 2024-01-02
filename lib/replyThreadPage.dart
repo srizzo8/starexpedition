@@ -10,6 +10,7 @@ import 'createThread.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
+import 'projectsPage.dart' as projectsPage;
 import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 import 'main.dart' as myMain;
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
@@ -171,6 +172,30 @@ class replyThreadPageState extends State<replyThreadPage>{
                     print(technologiesPage.technologiesReplies);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
                     technologiesPage.technologiesReplyBool = false;
+                  }
+                  else if(projectsPage.projectsReplyBool == true){
+                    threadNumber = int.parse(projectsPage.threadID);
+                    assert(threadNumber is int);
+                    print(threadNumber.runtimeType);
+                    pendingProjectsReply.add(DateTime.now().toString());
+                    pendingProjectsReply.add(usernameReplyController.text);
+                    pendingProjectsReply.add(replyContentController.text);
+                    if(projectsPage.projectsReplyingToReplyBool == true){
+                      projectsPage.projectsReplyingToReplyBool = false;
+                      pendingProjectsReply.add(projectsPage.projectsThreads[int.parse(projectsPage.threadID)][4][projectsPage.myIndex][1].toString());
+                      pendingProjectsReply.add(projectsPage.projectsThreads[int.parse(projectsPage.threadID)][4][projectsPage.myIndex][2].toString());
+                      print('Do we exist? ' + projectsPage.projectsThreads[int.parse(projectsPage.threadID)][4][projectsPage.myIndex][3].toString() + projectsPage.projectsThreads[int.parse(projectsPage.threadID)][4][projectsPage.myIndex][4].toString());
+                    }
+                    else{
+                      pendingProjectsReply.add("");
+                      pendingProjectsReply.add("");
+                      print("I do not exist");
+                    }
+                    projectsPage.projectsThreads.toList()[threadNumber][4].add(pendingProjectsReply);
+                    print(projectsPage.reversedProjectsThreadsIterable);
+                    print(projectsPage.projectsReplies);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
+                    projectsPage.projectsReplyBool = false;
                   }
                   else if(newDiscoveriesPage.newDiscoveriesReplyBool == true){
                     threadNumber = int.parse(newDiscoveriesPage.threadID);
