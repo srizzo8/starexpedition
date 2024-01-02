@@ -27,7 +27,7 @@ class createThreadState extends State<createThread>{
   final threadNameController = TextEditingController();
   final threadContentController = TextEditingController();
   var discussionBoardUpdatesPendingThreads = [];
-  List<String> questionsAndAnswersPendingThreads = [];
+  var questionsAndAnswersPendingThreads = [];
   List<String> technologiesPendingThreads = [];
   List<String> projectsPendingThreads = [];
   var newDiscoveriesPendingThreads = [];
@@ -128,10 +128,14 @@ class createThreadState extends State<createThread>{
                       questionsAndAnswersPendingThreads.add(usernameController.text);
                       questionsAndAnswersPendingThreads.add(threadNameController.text);
                       questionsAndAnswersPendingThreads.add(threadContentController.text);
-                      print(usernameController.text);
+                      questionsAndAnswersPendingThreads.add(questionsAndAnswersPage.questionsAndAnswersThreads.length.toString());
+                      questionsAndAnswersPendingThreads.add(List.empty(growable: true));
+                      print(questionsAndAnswersPendingThreads);
                       questionsAndAnswersPage.questionsAndAnswersThreads.add(questionsAndAnswersPendingThreads);
+                      print("Threads in questions and answers subforum: " + questionsAndAnswersPage.questionsAndAnswersThreads.toString());
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
                       questionsAndAnswersPage.questionsAndAnswersBool = false;
+                      print(questionsAndAnswersPage.reversedQuestionsAndAnswersThreadsIterable.toList());
                     }
                     else{
                       if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == true && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false){

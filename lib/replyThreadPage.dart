@@ -9,6 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'createThread.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
+import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'main.dart' as myMain;
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
@@ -25,6 +26,7 @@ class replyThreadPageState extends State<replyThreadPage>{
   final usernameReplyController = TextEditingController();
   final replyContentController = TextEditingController();
   List<String> pendingDiscussionBoardUpdatesReply = [];
+  List<String> pendingQuestionsAndAnswersReply = [];
   List<String> pendingNewDiscoveriesReply = [];
   int threadNumber = 0;
 
@@ -118,6 +120,30 @@ class replyThreadPageState extends State<replyThreadPage>{
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][1]);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                     discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;
+                  }
+                  else if(questionsAndAnswersPage.questionsAndAnswersReplyBool == true){
+                    threadNumber = int.parse(questionsAndAnswersPage.threadID);
+                    assert(threadNumber is int);
+                    print(threadNumber.runtimeType);
+                    pendingQuestionsAndAnswersReply.add(DateTime.now().toString());
+                    pendingQuestionsAndAnswersReply.add(usernameReplyController.text);
+                    pendingQuestionsAndAnswersReply.add(replyContentController.text);
+                    if(questionsAndAnswersPage.questionsAndAnswersReplyingToReplyBool == true){
+                      questionsAndAnswersPage.questionsAndAnswersReplyingToReplyBool = false;
+                      pendingQuestionsAndAnswersReply.add(questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][1].toString());
+                      pendingQuestionsAndAnswersReply.add(questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][2].toString());
+                      print('Do we exist? ' + questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][3].toString() + questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][4].toString());
+                    }
+                    else{
+                      pendingQuestionsAndAnswersReply.add("");
+                      pendingQuestionsAndAnswersReply.add("");
+                      print("I do not exist");
+                    }
+                    questionsAndAnswersPage.questionsAndAnswersThreads.toList()[threadNumber][4].add(pendingQuestionsAndAnswersReply);
+                    print(questionsAndAnswersPage.reversedQuestionsAndAnswersThreadsIterable);
+                    print(questionsAndAnswersPage.questionsAndAnswersReplies);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
+                    questionsAndAnswersPage.questionsAndAnswersReplyBool = false;
                   }
                   else if(newDiscoveriesPage.newDiscoveriesReplyBool == true){
                     threadNumber = int.parse(newDiscoveriesPage.threadID);

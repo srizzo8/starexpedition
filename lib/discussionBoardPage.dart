@@ -40,7 +40,7 @@ class MyDiscussionBoard extends StatelessWidget{
 
 class discussionBoardRoutes{
   static String updatesSubforum = discussionBoardUpdatesPageState.dBoardRoute;
-  static String questionsAndAnswersSubforum = questionsAndAnswersPageState.nameOfRoute;
+  static String questionsAndAnswersSubforum = questionsAndAnswersPageState.questionsAndAnswersRoute;
   static String technologiesSubforum = technologiesPageState.technologiesRoute;
   static String projectsSubforum = projectsPageState.projectsSubforumRoute;
   static String newDiscoveriesSubforum = newDiscoveriesPageState.newDiscoveriesRoute;
