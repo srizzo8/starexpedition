@@ -17,6 +17,7 @@ import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
+import 'package:starexpedition4/whyStarExpeditionWasMade.dart';
 
 //import 'package:starexpedition4/spectralClassPage.dart';
 
@@ -348,6 +349,7 @@ class MyApp extends StatelessWidget {
       home: StarExpedition(),
       routes:{
         routesToOtherPages.spectralClass: (context) => spectralClassPage(),
+        routesToOtherPages.whyMade: (context) => whyStarExpeditionWasMadePage(),
         routesToOtherPages.discussionBoard: (context) => discussionBoardPage(),
         routesToOtherPages.homePage: (context) => StarExpedition(),
         routesToOtherPages.theLoginPage: (context) => loginPage(),
@@ -359,6 +361,7 @@ class MyApp extends StatelessWidget {
 
 class routesToOtherPages{
   static String spectralClass = spectralClassPageState.nameOfRoute;
+  static String whyMade = whyStarExpeditionWasMadePageState.nameOfRoute;
   static String discussionBoard = discussionBoardPageState.nameOfRoute;
   static String homePage = theStarExpeditionState.nameOfRoute;
   static String theLoginPage = loginPageState.nameOfRoute;
@@ -557,14 +560,6 @@ class theStarExpeditionState extends State<StarExpedition> {
     b = DateTime(b.year, b.month, b.day);
     return (b.difference(a).inHours / 24).round();
   }
-
-  /*int endOfMonthAdjustment(int numberOfDays) {
-    if(numberOfDays == 31)
-    {
-      numberOfDays = 32;
-    }
-    return numberOfDays;
-  }*/
 }
 
 class starExpeditionNavigationDrawer extends StatelessWidget{
@@ -590,7 +585,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
               ListTile(
                   title: Text("Why Star Expedition Was Made"),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, routesToOtherPages.whyMade);
                   }
               ),
               ListTile(
@@ -629,35 +624,6 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
 class CustomSearchDelegate extends SearchDelegate {
 
   List<String> starInfo = [];
-  //const CustomSearchDelegate({super.key, required this.starsForSearch});
-  // final List<myStars> starsForSearch;
-  // This is a demo list to show querying
-  // late final myStars outcome;
-  /*List<String> searchTerms = [
-    "Proxima Centauri",
-    "Alpha Centauri",
-    "Tau Ceti",
-    "Ross 128",
-    "Luyten's Star",
-    "Kapteyn's Star",
-    "Wolf 1061",
-    "Gliese 876",
-    "Gliese 581",
-    "Lacaille 9352",*/
-  //];
-
-  /*List<String> theImages = [
-    'assets/images/proxima_centauri.jpg',
-    'assets/images/alpha_centauri.jpg',
-    'assets/images/tau_ceti.jpg',
-    'assets/images/ross_128.jpg',
-    'assets/images/luytens_star.jpg',
-    'assets/images/kapteyns_star.jpg',
-    'assets/images/wolf_1061.jpg',
-    'assets/images/gliese_876.jpg',
-    'assets/images/gliese_581.jpg',
-    'assets/images/lacaille_9352.jpg'
-  ];*/
 
   // This is the first overwrite (to clear the search text)
   @override
@@ -673,6 +639,7 @@ class CustomSearchDelegate extends SearchDelegate {
   }
 
   // This is the second overwrite (to pop out of search menu)
+  //The "back" button
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
