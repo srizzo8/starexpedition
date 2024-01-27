@@ -35,7 +35,7 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
         title: Text("Star Expedition"),
       ),
       body: Container(
-        child: Text("Coming Soon!"),
+        child: Text("As a young child, I always had an interest in the Universe and all of its celestial bodies.\nHowever, one thing that interested me the most was how stars and planets\nare capable of supporting life for flora and fauna."),
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
     );
