@@ -36,6 +36,11 @@ class createThreadState extends State<createThread>{
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () => print("Are you sure?"),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

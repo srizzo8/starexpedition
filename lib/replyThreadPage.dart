@@ -38,6 +38,11 @@ class replyThreadPageState extends State<replyThreadPage>{
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () => print("Are you sure you want to leave?"),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
