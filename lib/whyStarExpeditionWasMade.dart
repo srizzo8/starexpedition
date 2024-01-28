@@ -35,7 +35,10 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
         title: Text("Star Expedition"),
       ),
       body: Container(
-        child: Text("As a young child, I always had an interest in the Universe and all of its celestial bodies.\nHowever, one thing that interested me the most was how stars and planets\nare capable of supporting life for flora and fauna."),
+        child: Text("As a young child, I always had an interest in the Universe and all of its celestial bodies." +
+            "However, one thing that interested me the most was how stars and planets can be capable of supporting " +
+            "life for flora and fauna. This can take millions and even billions of years to accomplish, depending on " +
+            "the evolution of the star, planet, or both."),
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
     );
