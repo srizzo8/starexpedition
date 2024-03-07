@@ -39,7 +39,26 @@ class createThreadState extends State<createThread>{
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
-          onPressed: () => print("Are you sure?"),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (BuildContext myContext) {
+              return AlertDialog(
+                title: const Text("Are you sure?"),
+                content: const Text("Your thread will not be saved."),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("Yes"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("No"),
+                  ),
+                ],
+              );
+              //print("Are you sure?")
+            },
+          ),
         ),
       ),
       body: SingleChildScrollView(
