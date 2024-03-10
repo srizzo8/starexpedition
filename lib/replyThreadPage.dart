@@ -41,7 +41,30 @@ class replyThreadPageState extends State<replyThreadPage>{
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
-          onPressed: () => print("Are you sure you want to leave?"),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (BuildContext myReplyContext){
+              return AlertDialog(
+                title: const Text("Are you sure?"),
+                content: const Text("Your reply will not be saved."),
+                actions: [
+                  TextButton(
+                    onPressed: () => {
+                      Navigator.pop(context),
+                      Navigator.pop(context),
+                    },
+                    child: const Text("Yes"),
+                  ),
+                  TextButton(
+                    onPressed: () => {
+                      Navigator.pop(context),
+                    },
+                    child: const Text("No"),
+                  ),
+                ],
+              );
+            }
+          ),
         ),
       ),
       body: SingleChildScrollView(
