@@ -129,6 +129,13 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () => {
+            print("Howdy"),
+          }
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
