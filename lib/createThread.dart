@@ -29,6 +29,11 @@ class beingOnCreateThread{
   beingOnCreateThread({
     required this.onCreateThread,
   });
+
+  @override
+  String toString(){
+    return "$onCreateThread";
+  }
 }
 
 class createThreadState extends State<createThread>{

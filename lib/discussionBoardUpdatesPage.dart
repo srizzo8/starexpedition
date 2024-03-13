@@ -138,6 +138,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
               print("You are on create thread."),
             }
             else{
+              Navigator.pop(context),
               print("You are not on create thread."),
             }
             //Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage()))
