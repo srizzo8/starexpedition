@@ -14,11 +14,21 @@ import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'main.dart' as myMain;
 import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
 
+beingOnCreateThread boct = new beingOnCreateThread(onCreateThread: false);
+
 class createThread extends StatefulWidget{
   const createThread ({Key? key}) : super(key: key);
 
   @override
   createThreadState createState() => createThreadState();
+}
+
+class beingOnCreateThread{
+  bool onCreateThread = false;
+
+  beingOnCreateThread({
+    required this.onCreateThread,
+  });
 }
 
 class createThreadState extends State<createThread>{
@@ -31,6 +41,12 @@ class createThreadState extends State<createThread>{
   var technologiesPendingThreads = [];
   var projectsPendingThreads = [];
   var newDiscoveriesPendingThreads = [];
+
+  @override
+  void initState(){
+    boct = new beingOnCreateThread(onCreateThread: true);
+    print("onCreateThread is: ${boct}");
+  }
 
   Widget build(BuildContext createThreadBuildContext){
     return Scaffold(
@@ -48,6 +64,8 @@ class createThreadState extends State<createThread>{
                 actions: [
                   TextButton(
                     onPressed: () => {
+                      boct = new beingOnCreateThread(onCreateThread: false),
+                      print("This is boct: ${boct}"),
                       Navigator.pop(context),
                       Navigator.pop(context),
                     },
@@ -136,6 +154,8 @@ class createThreadState extends State<createThread>{
                   usernameController.text = theRegisterPage.myNewUsername;
                 }
                 if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != ""){
+                  boct = new beingOnCreateThread(onCreateThread: false);
+                  print("This is boct: ${boct}");
                   //print(usernameController.text);
                   if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false) {
                     print('You are ready to post this thread');
