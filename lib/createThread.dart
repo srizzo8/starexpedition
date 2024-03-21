@@ -47,13 +47,10 @@ class createThreadState extends State<createThread>{
   var projectsPendingThreads = [];
   var newDiscoveriesPendingThreads = [];
 
-  @override
-  void initState(){
+  Widget build(BuildContext createThreadBuildContext){
     boct = new beingOnCreateThread(onCreateThread: true);
     print("onCreateThread is: ${boct}");
-  }
 
-  Widget build(BuildContext createThreadBuildContext){
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
