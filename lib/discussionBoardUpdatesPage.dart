@@ -62,6 +62,19 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            if(beingOnCreateThread == true){
+              print("You are on create thread."),
+            }
+            else{
+              Navigator.pop(context),
+              print("You are not on create thread"),
+            }
+          }
+        ),
       ),
       body: Column(
         children: <Widget>[
