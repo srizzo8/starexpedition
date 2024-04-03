@@ -60,6 +60,13 @@ class projectsPageState extends State<projectsPage>{
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            Navigator.pushNamed(context, '/discussionBoardPage'),
+          }
+        )
       ),
       body: Column(
         children: <Widget>[
@@ -126,6 +133,13 @@ class projectsThreadContent extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            Navigator.pushNamed(context, '/discussionBoardPage'),
+          }
+        ),
       ),
       body: Wrap(
         children: <Widget>[
