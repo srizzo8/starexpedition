@@ -140,15 +140,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () => {
-            //if previous page was createThread or replyThread:
-            if(beingOnCreateThread == true){
-              print("You are on create thread."),
-            }
-            else{
-              Navigator.pop(context),
-              print("You are not on create thread."),
-            }
-            //Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage()))
+            Navigator.pop(context),
           }
         ),
       ),
