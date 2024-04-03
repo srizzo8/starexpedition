@@ -66,15 +66,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            if(beingOnCreateThread == true){
-              print(ModalRoute.of(context)!.settings.name!),
-              print("You are on create thread."),
-            }
-            else{
-              Navigator.pop(context),
-              print(ModalRoute.of(context)!.settings.name!),
-              print("You are not on create thread"),
-            }
+            Navigator.pushNamed(context, '/discussionBoardPage'),
           }
         ),
       ),
