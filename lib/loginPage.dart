@@ -140,6 +140,23 @@ class loginPageState extends State<loginPage>{
                   //int n = myMain.theUsers!.indexWhere((person) => person.username == "John");
                   print(u1);
                   print(p1);
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext theContext){
+                      return AlertDialog(
+                        title: const Text("Login Error"),
+                        content: const Text("Your username-password combination is not correct."),
+                        actions: [
+                          TextButton(
+                            onPressed: () => {
+                              Navigator.pop(context),
+                            },
+                            child: const Text("Ok"),
+                          )
+                        ],
+                      );
+                    }
+                  );
                 }
               }
             }
