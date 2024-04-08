@@ -811,8 +811,9 @@ class articlePage extends StatelessWidget{
                 ];*/
                 return Column(
                   children: [
-                    Container(
-                      child: Text("Star Information:", textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Center(
+                      child: Text("Star Information",
+                              style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
                     Container(
                       child: Text("Constellation: " + starInfo[0].toString() + '\n' +
@@ -828,8 +829,9 @@ class articlePage extends StatelessWidget{
                       height: 180,
                       width: 360,
                     ),
-                    Container(
-                      child: Text("Confirmed terrestrial planets:", textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Center(
+                      child: Text("\nConfirmed Terrestrial Planets",
+                              style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
                     Expanded(
                         child: ListView.builder(
@@ -857,7 +859,7 @@ class articlePage extends StatelessWidget{
                   ],
                 );
                 //];
-          }
+              }
               else{ // This else statement indicates what happens if the Firebase database returns nothing.
                 return Text("No data is available"); // If the snapshot does not have data, this will print.
               }
@@ -888,6 +890,10 @@ class planetArticle extends StatelessWidget{
       ),
       body: Wrap(
         children: <Widget>[
+          Center(
+            child: Text("Planet Information",
+                    style: TextStyle(fontWeight: FontWeight.bold))
+          ),
           Container(
             alignment: Alignment.center,
             height: 80,
