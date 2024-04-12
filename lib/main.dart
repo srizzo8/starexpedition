@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+//import 'dart:js';
 import 'dart:math';
 //import 'dart:html';
 
@@ -355,7 +356,7 @@ class MyApp extends StatelessWidget {
         routesToOtherPages.discussionBoard: (context) => discussionBoardPage(),
         routesToOtherPages.homePage: (context) => StarExpedition(),
         routesToOtherPages.theLoginPage: (context) => loginPage(),
-        routesToOtherPages.theRegisterPage: (context) => registerPage()
+        routesToOtherPages.theRegisterPage: (context) => registerPage(),
       }
     );
   }
@@ -718,19 +719,11 @@ class CustomSearchDelegate extends SearchDelegate {
 }
 
 class articlePage extends StatelessWidget{
-  //final myStars ms;
-  //articlePage({Key? key, required this.ms}) : super(key:key);
-  /*DatabaseReference dr = FirebaseDatabase.instance.ref("Ross 128");
-
-  _getStarInfo() async{
-    DatabaseEvent de = await dr.once();
-  }*/
   List<String> informationAboutPlanet = [];
   var myPlanet = <String>[];
 
   final List<String> starInfo;
   articlePage(this.starInfo);
-
 
   void getKeys(Map myMap){ // This is for getting planet names, which are keys
     myMap.keys.forEach((key) {
@@ -790,6 +783,13 @@ class articlePage extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: Text(theStar.starName!),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            Navigator.pop(bc),
+          }
+        ),
       ),
       body: FutureBuilder(
         builder: (bc, mySnapshot){
@@ -878,7 +878,6 @@ class articlePage extends StatelessWidget{
 }
 
 class planetArticle extends StatelessWidget{
-
   //final articlePage articlepage;
   final List<String> informationAboutPlanet;
   planetArticle(this.informationAboutPlanet);
@@ -889,6 +888,13 @@ class planetArticle extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: Text(correctPlanet),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            Navigator.pop(theContext),
+          }
+        ),
       ),
       body: Wrap(
         children: <Widget>[
