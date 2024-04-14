@@ -357,6 +357,8 @@ class MyApp extends StatelessWidget {
         routesToOtherPages.homePage: (context) => StarExpedition(),
         routesToOtherPages.theLoginPage: (context) => loginPage(),
         routesToOtherPages.theRegisterPage: (context) => registerPage(),
+        routesToOtherPages.theStarArticlePage: (context) => articlePage(starInfo),
+        routesToOtherPages.thePlanetArticlePage: (context) => planetArticle(informationAboutPlanet),
       }
     );
   }
@@ -369,6 +371,8 @@ class routesToOtherPages{
   static String homePage = theStarExpeditionState.nameOfRoute;
   static String theLoginPage = loginPageState.nameOfRoute;
   static String theRegisterPage = registerPageState.nameOfRoute;
+  static String theStarArticlePage = articlePage.nameOfRoute;
+  static String thePlanetArticlePage = planetArticle.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -719,6 +723,8 @@ class CustomSearchDelegate extends SearchDelegate {
 }
 
 class articlePage extends StatelessWidget{
+  static String nameOfRoute = '/articlePage';
+
   List<String> informationAboutPlanet = [];
   var myPlanet = <String>[];
 
@@ -878,6 +884,7 @@ class articlePage extends StatelessWidget{
 }
 
 class planetArticle extends StatelessWidget{
+  static String nameOfRoute = '/planetArticle';
   //final articlePage articlepage;
   final List<String> informationAboutPlanet;
   planetArticle(this.informationAboutPlanet);
@@ -892,7 +899,7 @@ class planetArticle extends StatelessWidget{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            Navigator.pop(theContext),
+          Navigator.of(theContext).push(MaterialPageRoute(builder: (context) => articlePage(starInfo))),
           }
         ),
       ),
