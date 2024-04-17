@@ -859,6 +859,7 @@ class articlePage extends StatelessWidget{
                                   informationAboutPlanet = await getPlanetData();
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
                                   //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
+                                  //Navigator.push(context, new MaterialPageRoute(builder: (context) => new planetArticle(starAndPlanetInfo: new starAndPlanetInformation)));
                                 },
                             ),
                           );
@@ -888,7 +889,25 @@ class planetArticle extends StatelessWidget{
   //final articlePage articlepage;
   final List<String> informationAboutPlanet;
   planetArticle(this.informationAboutPlanet);
-  //planetArticle({required Key key, required this.articlepage}) : super(key: key);
+  //planetArticle({required Key key, required this.starAndPlanetInfo, required this.informationAboutPlanet}) : super(key: key);
+
+  List<String> starList = [];
+  List<String> informationAboutStarsPlanets = [];
+  //String hostStar = "";
+
+  Future<List<String>> getPlanetList() async {
+    var planetList = <String>[];
+
+    var findingStar = FirebaseDatabase.instance.ref(correctStar);
+    DataSnapshot planetSnapshot = await findingStar.child("Planets").get();
+    (planetSnapshot.value as Map).keys.forEach((key) {
+      planetList.add(key);
+    });
+
+    print(planetList);
+
+    return planetList; //Unhandled exception error
+  }
 
   @override
   Widget build(BuildContext theContext) {
@@ -898,9 +917,11 @@ class planetArticle extends StatelessWidget{
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
-          onPressed: () =>{
-          Navigator.of(theContext).push(MaterialPageRoute(builder: (context) => articlePage(starInfo))),
-          }
+          onPressed: () async =>{
+          //Navigator.of(theContext).push(MaterialPageRoute(builder: (context) => articlePage(starInfo))),
+            informationAboutStarsPlanets = await getPlanetList(),
+            print(informationAboutStarsPlanets),
+          },
         ),
       ),
       body: Wrap(
