@@ -59,6 +59,13 @@ class loginPageState extends State<loginPage>{
     return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            Navigator.push(bc, MaterialPageRoute(builder: (bc) => const myMain.StarExpedition())),
+          }
+        )
       ),
       body: Wrap(
         children: <Widget>[
