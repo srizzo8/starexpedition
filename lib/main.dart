@@ -855,7 +855,6 @@ class articlePage extends StatelessWidget{
                                 child: Text(myData[index], textAlign: TextAlign.center),
                                 onTap: () async {
                                   correctPlanet = myData[index];
-                                  //getPlanetData();
                                   informationAboutPlanet = await getPlanetData();
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
                                   //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
@@ -886,28 +885,12 @@ class articlePage extends StatelessWidget{
 
 class planetArticle extends StatelessWidget{
   static String nameOfRoute = '/planetArticle';
-  //final articlePage articlepage;
+
   final List<String> informationAboutPlanet;
   planetArticle(this.informationAboutPlanet);
-  //planetArticle({required Key key, required this.starAndPlanetInfo, required this.informationAboutPlanet}) : super(key: key);
 
-  List<String> starList = [];
-  List<String> informationAboutStarsPlanets = [];
-  //String hostStar = "";
-
-  Future<List<String>> getPlanetList() async {
-    var planetList = <String>[];
-
-    var findingStar = FirebaseDatabase.instance.ref(correctStar);
-    DataSnapshot planetSnapshot = await findingStar.child("Planets").get();
-    (planetSnapshot.value as Map).keys.forEach((key) {
-      planetList.add(key);
-    });
-
-    print(planetList);
-
-    return planetList; //Unhandled exception error
-  }
+  List<String>? informationAboutStarsPlanets = [];
+  List<String> hostStarInformation = [];
 
   @override
   Widget build(BuildContext theContext) {
@@ -918,9 +901,9 @@ class planetArticle extends StatelessWidget{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () async =>{
-          //Navigator.of(theContext).push(MaterialPageRoute(builder: (context) => articlePage(starInfo))),
-            informationAboutStarsPlanets = await getPlanetList(),
-            print(informationAboutStarsPlanets),
+            hostStarInformation = await getStarInformation(),
+            print("The host star information: $hostStarInformation"),
+            Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images")))),
           },
         ),
       ),
