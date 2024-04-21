@@ -794,7 +794,12 @@ class articlePage extends StatelessWidget{
           color: Colors.white,
           onPressed: () =>{
             //Navigator.pop(bc),
-            Navigator.push(bc, MaterialPageRoute(builder: (bc) => const StarExpedition())),
+            //Navigator.push(bc, MaterialPageRoute(builder: (bc) => const StarExpedition())),
+            //Going from the star article page to the search suggestions page
+            showSearch(
+              context: bc,
+              delegate: CustomSearchDelegate(),
+            )
           }
         ),
       ),
