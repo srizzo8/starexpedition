@@ -651,7 +651,8 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget? buildLeading(BuildContext context) {
     return IconButton(
       onPressed: () {
-        close(context, null);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const StarExpedition()));
+        //close(context, null);
       },
       icon: Icon(Icons.arrow_back),
     );
