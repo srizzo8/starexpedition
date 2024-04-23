@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 //import 'dart:js';
@@ -414,6 +415,25 @@ class theStarExpeditionState extends State<StarExpedition> {
   theStarExpeditionState(this.starInfo);
   final CustomSearchDelegate csd = new CustomSearchDelegate();
 
+  Future<Map<String, List>> getOtherNames() async{
+    /*Finding if other star name leads user to star
+      name on the search suggestions*/
+    Map<String, List> otherNames = HashMap();
+    for(var star in starsForSearchBar){
+      var myStarReference = FirebaseDatabase.instance.ref(star.starName!);
+      var otherNamesForStar = await myStarReference.child("other_names").get();
+      var otherNamesSplit = otherNamesForStar.value.toString().split(",");
+      List<String> otherNamesList = [];
+      for(int i = 0; i < otherNamesSplit.length; i++){
+        otherNamesList.add(otherNamesSplit[i]);
+      }
+      otherNamesList.length = otherNamesSplit.length;
+      otherNames.addAll({star.starName!: otherNamesList});
+    }
+
+    return otherNames;
+  }
+
   @override
   Widget build(BuildContext context) {
     final dateForUse = DateTime(2020, 1, 1);
@@ -438,9 +458,15 @@ class theStarExpeditionState extends State<StarExpedition> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
+            onPressed: () async{
               // method to show the search bar
               //_getStars(); // I am putting it here is just for testing; it is just to see if we are getting any data from firebase (the data we want, such as data relating to Alpha Centauri).
+
+              //Other star names
+              var starOtherNames = await getOtherNames();
+              print(starOtherNames);
+
+              //showSearch
               showSearch(
                   context: context,
                   // delegate to customize the search bar
@@ -686,12 +712,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     List<myStars> myMatchQuery = [];
-    //String correctStar = "";
-    /*for (var stars in starsForSearchBar) {
-      /*if (stars.toLowerCase().contains(query.toLowerCase())) {
-        myMatchQuery.add(stars);
-      }*/
-    }*/
+
     for (var star in starsForSearchBar) {
       if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
         myMatchQuery.add(star!);
