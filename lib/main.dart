@@ -36,7 +36,9 @@ List<String> starInfo = [];
 List<Users>? theUsers = [];
 
 bool discussionBoardLogin = false;
-//final File myFile = File('C:/Users/Owner/starexpedition_jsonfiles/accountsData.json');
+
+Map<String, List> otherNamesMap = HashMap();
+Iterable<List> alternateNames = [];
 
 /*
 Future<String> get myDirectoryPath async{
@@ -409,30 +411,30 @@ Future<List<String>> getStarInformation() async{
   return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString()];
 }
 
+Future<Map<String, List>> getOtherNames() async{
+  /*Finding if other star name leads user to star
+      name on the search suggestions*/
+  Map<String, List> otherNames = HashMap();
+  for(var star in starsForSearchBar){
+    var myStarReference = FirebaseDatabase.instance.ref(star.starName!);
+    var otherNamesForStar = await myStarReference.child("other_names").get();
+    var otherNamesSplit = otherNamesForStar.value.toString().split(",");
+    List<String> otherNamesList = [];
+    for(int i = 0; i < otherNamesSplit.length; i++){
+      otherNamesList.add(otherNamesSplit[i]);
+    }
+    otherNamesList.length = otherNamesSplit.length;
+    otherNames.addAll({star.starName!: otherNamesList});
+  }
+
+  return otherNames;
+}
+
 class theStarExpeditionState extends State<StarExpedition> {
   static String nameOfRoute = '/StarExpedition';
   List<String> starInfo = [];
   theStarExpeditionState(this.starInfo);
   final CustomSearchDelegate csd = new CustomSearchDelegate();
-
-  Future<Map<String, List>> getOtherNames() async{
-    /*Finding if other star name leads user to star
-      name on the search suggestions*/
-    Map<String, List> otherNames = HashMap();
-    for(var star in starsForSearchBar){
-      var myStarReference = FirebaseDatabase.instance.ref(star.starName!);
-      var otherNamesForStar = await myStarReference.child("other_names").get();
-      var otherNamesSplit = otherNamesForStar.value.toString().split(",");
-      List<String> otherNamesList = [];
-      for(int i = 0; i < otherNamesSplit.length; i++){
-        otherNamesList.add(otherNamesSplit[i]);
-      }
-      otherNamesList.length = otherNamesSplit.length;
-      otherNames.addAll({star.starName!: otherNamesList});
-    }
-
-    return otherNames;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -463,8 +465,10 @@ class theStarExpeditionState extends State<StarExpedition> {
               //_getStars(); // I am putting it here is just for testing; it is just to see if we are getting any data from firebase (the data we want, such as data relating to Alpha Centauri).
 
               //Other star names
-              var starOtherNames = await getOtherNames();
-              print(starOtherNames);
+              //var starOtherNames = await getOtherNames();
+              otherNamesMap = await getOtherNames();
+              alternateNames = otherNamesMap.values;
+              print(alternateNames);
 
               //showSearch
               showSearch(
@@ -693,18 +697,24 @@ class CustomSearchDelegate extends SearchDelegate {
         myMatchQuery.add(star!);
       }
     }
+    for(List starOther in alternateNames) {
+      for(var starsName in starOther){
+        myStars theStar = myStars(starName: "", imagePath: "assets/images");
+        theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
+        //star = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
+        if(starsName.toLowerCase().contains(query.toLowerCase())){
+          myMatchQuery.add(theStar!);
+        }
+      }
+    }
     return ListView.builder(
       itemCount: myMatchQuery.length,
       itemBuilder: (context, index) {
         var result = myMatchQuery[index];
         return ListTile(
           title: Text(result.starName!), // The ! is there so that it can prevent errors, especially for variables that are set to null
-          /*onTap: () {
-            print('Testing pop-up');
-            showAlertDialog(context);
-          }*/
         );
-      },
+        },
     );
   }
 
@@ -718,6 +728,23 @@ class CustomSearchDelegate extends SearchDelegate {
         myMatchQuery.add(star!);
       }
     }
+    for(List starOther in alternateNames) {
+      for(var starsName in starOther){
+        myStars theStar = myStars(starName: "", imagePath: "assets/images");
+        theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
+        //star = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
+        if(starsName.toLowerCase().contains(query.toLowerCase())){
+          myMatchQuery.add(theStar!);
+        }
+      }
+    }
+    /*for(List starOther in alternateNames) {
+      for (var myStar in starOther) {
+        if (myStar.starName!.toLowerCase().contains(query.toLowerCase())) {
+          myMatchQuery.add(myStar!);
+        }
+      }
+    }*/
     return ListView.builder(
       itemCount: myMatchQuery.length,
       itemBuilder: (context, index) {
@@ -834,17 +861,6 @@ class articlePage extends StatelessWidget{
             else{
               if(mySnapshot.hasData){
                 final myData = mySnapshot.data as List<String>;
-                /*return new <Widget>[
-                  Container(
-                    child: Text("Information about the star"),
-                    height: 80,
-                    width: 360,
-                  ),*/
-                /*children: <Widget>[
-                  Container(
-                    child: Text("This is an article about a star"),
-                  );
-                ];*/
                 return Column(
                   children: [
                     Center(
