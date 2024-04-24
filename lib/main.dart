@@ -702,6 +702,10 @@ class CustomSearchDelegate extends SearchDelegate {
         myStars theStar = myStars(starName: "", imagePath: "assets/images");
         theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
         //star = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
+        //List<String> actualStarNames = otherNamesMap.keys.toList();
+        int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
+        theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
+        //theStar.imagePath = starsForSearchBar[starsForSearchBar.indexOf(myStars(starName: theStar.starName))].imagePath;
         if(starsName.toLowerCase().contains(query.toLowerCase())){
           myMatchQuery.add(theStar!);
         }
@@ -733,18 +737,15 @@ class CustomSearchDelegate extends SearchDelegate {
         myStars theStar = myStars(starName: "", imagePath: "assets/images");
         theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
         //star = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
+        //List<String> actualStarNames = otherNamesMap.keys.toList();
+        int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
+        theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
+        //theStar.imagePath = starsForSearchBar[starsForSearchBar.indexOf(myStars(starName: theStar.starName))].imagePath;
         if(starsName.toLowerCase().contains(query.toLowerCase())){
           myMatchQuery.add(theStar!);
         }
       }
     }
-    /*for(List starOther in alternateNames) {
-      for (var myStar in starOther) {
-        if (myStar.starName!.toLowerCase().contains(query.toLowerCase())) {
-          myMatchQuery.add(myStar!);
-        }
-      }
-    }*/
     return ListView.builder(
       itemCount: myMatchQuery.length,
       itemBuilder: (context, index) {
