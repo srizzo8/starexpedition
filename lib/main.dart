@@ -692,29 +692,140 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     List<myStars> myMatchQuery = [];
-    for (var star in starsForSearchBar) {
-      if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
+
+    for(var star in starsForSearchBar) {
+      if (star.starName!.toLowerCase().contains(query)) {
         myMatchQuery.add(star!);
       }
     }
+    otherNamesMap.forEach((key, value){
+      for(var v in value){
+        if(myMatchQuery.indexWhere((sa) => sa.starName == key) == -1){ //if the star is not in myMatchQuery
+          if(v!.toLowerCase().contains(query)){ //if the value contains query
+            int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
+            myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
+          }
+          else{
+            //continue
+          }
+        }
+        else{
+          //continue
+        }
+      }
+    });
+      /*
+      int indexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == key);
+      if(myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
+        print("Continue");
+      }
+      else{
+        for(var v in value){
+          if(v.toLowerCase().contains(query) && !myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
+            myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath));
+          }
+          else{
+            print("Continuing");
+          }
+        }
+      }*/
+    //myStars starInMatchQuery = myStars(starName: "", imagePath: "");
+    /*for (var star in starsForSearchBar) {
+      if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
+        myMatchQuery.add(star!);
+        //starInMatchQuery = myStars(starName: star!.starName, imagePath: star!.imagePath);
+      }
+      else{
+        otherNamesMap.forEach((key, value){
+          if(!value.contains("N/A")){
+            for(var other in value){
+              if((other.toLowerCase().contains(query.toLowerCase())) && !myMatchQuery.contains(myStars(starName: key, imagePath: star.imagePath))){
+                myMatchQuery.add(star!);
+              }
+            }
+          }
+          else{
+            print("Continue");
+          }
+        });
+      }
+    }*/
+
+    /*
+    otherNamesMap.forEach((key, value){
+      if(!value.contains("N/A")){
+        for(var s in value){
+          print("The key: ${key}. The value: ${value}. The other name: ${s}");
+          if(s.toLowerCase().contains(query.toLowerCase())){
+            String myImagePath = "";
+            for(var i in starsForSearchBar){
+              if(i.starName == key){
+                myImagePath = i.imagePath!;
+              }
+              else{
+                //continue
+              }
+            }
+            if(myMatchQuery.contains(myStars(starName: key, imagePath: myImagePath))){
+              print("Continue");
+            }
+            else{
+              myStars st = myStars(starName: "", imagePath: "");
+              st.starName = key;
+              int myIndexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == st.starName);
+              st.imagePath = starsForSearchBar[myIndexPlace].imagePath;
+              myMatchQuery.add(st!);
+            }
+          }
+        }
+      }
+      else{
+        //continue
+        print("Value is N/A.");
+      }
+    });*/
+
+    /*for(List starOther in alternateNames){
+      for(var s in starOther){
+        if(s.toLowerCase().contains(query.toLowerCase())){
+          //otherNamesMatchQuery.add(theStar!);
+        }
+      }
+    }*/
+    /*
+    for(var myStar in myMatchQuery){
+      for(List starOther in alternateNames){
+        //otherNamesMatchQuery.addEntries({myStar: starOther}.entries);
+        for(String otherStarName in starOther){
+          otherNamesMatchQuery.addEntries({myStar.starName: otherStarName}.entries);
+          if(otherStarName.toLowerCase().contains(query.toLowerCase()) && !myMatchQuery.contains(myStar!)){
+            myMatchQuery.add(myStar!);
+          }
+        }
+      }
+    }*/
+    /*
     for(List starOther in alternateNames) {
       for(var starsName in starOther){
         myStars theStar = myStars(starName: "", imagePath: "assets/images");
         theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
-        //star = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
-        //List<String> actualStarNames = otherNamesMap.keys.toList();
         int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
         theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
-        //theStar.imagePath = starsForSearchBar[starsForSearchBar.indexOf(myStars(starName: theStar.starName))].imagePath;
         if(starsName.toLowerCase().contains(query.toLowerCase())){
-          myMatchQuery.add(theStar!);
+          otherNamesMatchQuery.add(theStar!);
         }
       }
-    }
+    }*/
     return ListView.builder(
       itemCount: myMatchQuery.length,
       itemBuilder: (context, index) {
-        var result = myMatchQuery[index];
+        var result = myMatchQuery[index]; //If user enters in a key, the result is the key.
+        /*for(var s in otherNamesMatchQuery.values){
+          if((otherNamesMatchQuery.entries.firstWhere((element) => element.value == s)) == myMatchQuery[index]){
+            result = myMatchQuery[index]; //If user enters in a value, it will find the value's key and the result will be the key.
+          }
+        }*/
+        //otherNamesMatchQuery.keys.elementAt(index);
         return ListTile(
           title: Text(result.starName!), // The ! is there so that it can prevent errors, especially for variables that are set to null
         );
@@ -726,35 +837,151 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     List<myStars> myMatchQuery = [];
+    //HashMap<String?, String> otherNamesMatchQuery = new HashMap();
+    //myStars starInMatchQuery = myStars(starName: "", imagePath: "");
 
-    for (var star in starsForSearchBar) {
-      if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
+
+    for(var star in starsForSearchBar) {
+      if (star.starName!.toLowerCase().contains(query)) {
         myMatchQuery.add(star!);
       }
     }
+
+    //IMPORTANT:
+    otherNamesMap.forEach((key, value){
+      for(var v in value){
+        if(myMatchQuery.indexWhere((sa) => sa.starName == key) == -1){ //if the star is not in myMatchQuery
+          if(v!.toLowerCase().contains(query)){ //if the value contains query
+            int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
+            myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
+          }
+          else{
+            //continue
+          }
+        }
+        else{
+          //continue
+        }
+      }
+    });
+    //
+
+    /*
+    for(var star in starsForSearchBar) {
+      if (star.starName!.toLowerCase().contains(query)) {
+        myMatchQuery.add(star!);
+        print("This is in myMatchQuery: ${myMatchQuery}");
+      }
+    }
+    otherNamesMap.forEach((key, value){
+      print("Key: $key. Value: $value.");
+      int indexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == key);
+      if(myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
+        print("Continue");
+      }
+      else{
+        for(var v in value){
+          if(v.toLowerCase().contains(query) && !myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
+            myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath));
+            print("This is in myMatchQuery: ${myMatchQuery}");
+          }
+          else{
+            print("Key: $key. Value: $v. Continuing");
+          }
+        }
+      }
+    });*/
+
+    //THIS STARTS SOMETHING IMPORTANT
+    /*for (var star in starsForSearchBar) {
+      if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
+        myMatchQuery.add(star!);
+        print("myMatchQuery size: ${myMatchQuery.length}");
+        //starInMatchQuery = myStars(starName: star!.starName, imagePath: star!.imagePath);
+      }
+    }*/
+    //IMPORTANT CONTENT ENDS
+
+    /*for(var myStar in myMatchQuery){
+      for(List starOther in alternateNames){
+        //otherNamesMatchQuery.addEntries({myStar: starOther}.entries);
+        for(String otherStarName in starOther){
+          otherNamesMatchQuery.addEntries({myStar.starName: otherStarName}.entries);
+          print(otherNamesMatchQuery);
+          if(otherStarName.toLowerCase().contains(query.toLowerCase()) && !myMatchQuery.contains(myStar!)){
+            myMatchQuery.add(myStar!);
+          }
+        }
+      }
+    }*/
+    /*otherNamesMap.forEach((key, value){
+      if(!value.contains("N/A")){
+        for(var s in value){
+          print("The key: ${key}. The value: ${value}. The other name: ${s}");
+          if(s.toLowerCase().contains(query.toLowerCase())){
+            String myImagePath = "";
+            for(var i in starsForSearchBar){
+              if(i.starName == key){
+                myImagePath = i.imagePath!;
+              }
+              else{
+                //continue
+              }
+            }
+            if(myMatchQuery.contains(myStars(starName: key, imagePath: myImagePath))){
+              print("Continue");
+            }
+            else{
+              myStars st = myStars(starName: "", imagePath: "");
+              st.starName = key;
+              int myIndexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == st.starName);
+              st.imagePath = starsForSearchBar[myIndexPlace].imagePath;
+              myMatchQuery.add(st!);
+            }
+          }
+        }
+      }
+      else{
+        //continue
+        print("Value is N/A.");
+      }
+    });*/
+
+    /*
     for(List starOther in alternateNames) {
       for(var starsName in starOther){
         myStars theStar = myStars(starName: "", imagePath: "assets/images");
         theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
-        //star = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
-        //List<String> actualStarNames = otherNamesMap.keys.toList();
         int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
         theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
-        //theStar.imagePath = starsForSearchBar[starsForSearchBar.indexOf(myStars(starName: theStar.starName))].imagePath;
         if(starsName.toLowerCase().contains(query.toLowerCase())){
-          myMatchQuery.add(theStar!);
+          otherNamesMatchQuery.add(theStar!);
+          print("otherNamesMatchQuery size: ${otherNamesMatchQuery.length}");
         }
       }
-    }
+    }*/
+    /*for(List starOther in alternateNames) {
+      for(var starsName in starOther){
+        myStars theStar = myStars(starName: "", imagePath: "assets/images");
+        theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
+        int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
+        theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
+          if(starsName.toLowerCase().contains(query.toLowerCase())){
+            myMatchQuery.add(theStar!);
+            print("myMatchQuery size: ${myMatchQuery.length}");
+          }
+      }
+    }*/
+
     return ListView.builder(
       itemCount: myMatchQuery.length,
       itemBuilder: (context, index) {
         return ListTile(
-            title: Text(myMatchQuery[index].starName!,
+            title: Text(myMatchQuery[index].starName!,//Text(otherNamesMatchQuery.keys.elementAt(index).starName!,
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () async{
-              correctStar = myMatchQuery[index].starName!;
+              correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
               print(correctStar);
               //showAlertDialog(context);
              // Navigator.push(context, MaterialPageRoute(builder: (context) => articlePage(ms: ));
