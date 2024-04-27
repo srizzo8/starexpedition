@@ -700,10 +700,15 @@ class CustomSearchDelegate extends SearchDelegate {
     }
     otherNamesMap.forEach((key, value){
       for(var v in value){
-        if(myMatchQuery.indexWhere((sa) => sa.starName == key) == -1){ //if the star is not in myMatchQuery
-          if(v!.toLowerCase().contains(query)){ //if the value contains query
-            int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
-            myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
+        if(v != "N/A"){
+          if(myMatchQuery.indexWhere((sa) => sa.starName == key) == -1){ //if the star is not in myMatchQuery
+            if(v!.toLowerCase().contains(query)){ //if the value contains query
+              int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
+              myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
+            }
+            else{
+              //continue
+            }
           }
           else{
             //continue
@@ -850,10 +855,15 @@ class CustomSearchDelegate extends SearchDelegate {
     //IMPORTANT:
     otherNamesMap.forEach((key, value){
       for(var v in value){
-        if(myMatchQuery.indexWhere((sa) => sa.starName == key) == -1){ //if the star is not in myMatchQuery
-          if(v!.toLowerCase().contains(query)){ //if the value contains query
-            int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
-            myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
+        if(v != "N/A"){
+          if(myMatchQuery.indexWhere((sa) => sa.starName == key) == -1){ //if the star is not in myMatchQuery
+            if(v!.toLowerCase().contains(query)){ //if the value contains query
+              int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
+              myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
+            }
+            else{
+              //continue
+            }
           }
           else{
             //continue
