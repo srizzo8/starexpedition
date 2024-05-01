@@ -19,6 +19,7 @@ import 'main.dart' as myMain;
 import 'discussionBoardPage.dart' as theDiscussionBoardPage;
 
 String myNewUsername = "";
+String myNewEmail = "";
 bool registerBool = false;
 
 class registerPage extends StatefulWidget{
@@ -124,6 +125,7 @@ class registerPageState extends State<registerPage>{
               if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != ""){
                 if(myMain.discussionBoardLogin == true){
                   myNewUsername = theUsername.text;
+                  myNewEmail = email.text;
                   Navigator.pushReplacementNamed(context, registerPageRoutes.discussionBoard);
                   userEmailPasswordList.add([theUsername.text, email.text, password.text]);
                   myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
@@ -135,6 +137,7 @@ class registerPageState extends State<registerPage>{
                 }
                 else{
                   myNewUsername = theUsername.text;
+                  myNewEmail = email.text;
                   Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
                   userEmailPasswordList.add([theUsername.text, email.text, password.text]);
                   myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
