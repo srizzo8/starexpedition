@@ -17,6 +17,7 @@ import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 
 import 'main.dart' as myMain;
 import 'discussionBoardPage.dart' as theDiscussionBoardPage;
+import 'emailNotifications.dart' as emailNotifications;
 
 String myNewUsername = "";
 String myNewEmail = "";
@@ -134,6 +135,7 @@ class registerPageState extends State<registerPage>{
                   myMain.discussionBoardLogin = false;
                   registerBool = true;
                   print("Registering successfully as: " + userEmailPasswordList.toString());
+                  emailNotifications.registrationConfirmationEmail();
                 }
                 else{
                   myNewUsername = theUsername.text;
@@ -146,6 +148,7 @@ class registerPageState extends State<registerPage>{
                   myMain.discussionBoardLogin = false;
                   registerBool = true;
                   print("Registering successfully as: " + userEmailPasswordList.toString());
+                  emailNotifications.registrationConfirmationEmail();
                 }
               }
               else{
