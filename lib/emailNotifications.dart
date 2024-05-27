@@ -51,7 +51,7 @@ Future<void> registrationConfirmationEmail() async{
   final Email myEmail = Email(
     subject: "Welcome to Star Expedition!",
     body: "I hope you enjoy your time on here!",
-    recipients: [registerPage.myNewUsername],
+    recipients: [registerPage.myNewEmail],
     isHTML: false
   );
 
