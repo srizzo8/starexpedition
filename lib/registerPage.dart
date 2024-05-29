@@ -21,6 +21,7 @@ import 'emailNotifications.dart' as emailNotifications;
 
 String myNewUsername = "";
 String myNewEmail = "";
+String myNewPassword = "";
 bool registerBool = false;
 
 class registerPage extends StatefulWidget{
@@ -127,6 +128,7 @@ class registerPageState extends State<registerPage>{
                 if(myMain.discussionBoardLogin == true){
                   myNewUsername = theUsername.text;
                   myNewEmail = email.text;
+                  myNewPassword = password.text;
                   Navigator.pushReplacementNamed(context, registerPageRoutes.discussionBoard);
                   userEmailPasswordList.add([theUsername.text, email.text, password.text]);
                   myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
@@ -140,6 +142,7 @@ class registerPageState extends State<registerPage>{
                 else{
                   myNewUsername = theUsername.text;
                   myNewEmail = email.text;
+                  myNewPassword = password.text;
                   Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
                   userEmailPasswordList.add([theUsername.text, email.text, password.text]);
                   myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);

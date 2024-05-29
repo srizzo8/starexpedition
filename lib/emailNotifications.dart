@@ -48,6 +48,8 @@ Future<void> registrationConfirmationEmail() async{
     print("Unable to launch the Url, which is ${par.toString()}");
   }*/
 
+  //Second attempt (with the Email class):
+  /*
   final Email myEmail = Email(
     subject: "Welcome to Star Expedition!",
     body: "I hope you enjoy your time on here!",
@@ -57,5 +59,39 @@ Future<void> registrationConfirmationEmail() async{
 
   print("Sending email");
 
-  await FlutterEmailSender.send(myEmail);
+  await FlutterEmailSender.send(myEmail);*/
+
+  var smtpServer = hotmail(registerPage.myNewEmail, registerPage.myNewPassword);
+
+  if(registerPage.myNewEmail.contains("@gmail.com")){
+    smtpServer = gmail(registerPage.myNewEmail, registerPage.myNewPassword);
+  }
+  else if(registerPage.myNewEmail.contains("@yahoo.com")){
+    smtpServer = yahoo(registerPage.myNewEmail, registerPage.myNewPassword);
+  }
+  else if(registerPage.myNewEmail.contains("@hotmail.com")){
+    smtpServer = hotmail(registerPage.myNewEmail, registerPage.myNewPassword);
+  }
+  else{
+    print("Email is invalid.");
+  }
+
+  var myMessage = Message()
+    ..from = Address("starexpedition@hotmail.com")
+    ..recipients.add(registerPage.myNewEmail)
+    ..subject = "Welcome to Star Expedition!"
+    ..text = "We hope you enjoy your time on here!"
+  ;
+
+  try{
+    final sendingReport = await send(myMessage, smtpServer);
+    print("The message sent: ${sendingReport.toString()}");
+  }
+  on MailerException catch(e){
+    print("The message was not sent: ${e.toString()}");
+  }
+
+  var theConnection = PersistentConnection(smtpServer);
+  await theConnection.send(myMessage);
+  await theConnection.close();
 }
