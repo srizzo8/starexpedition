@@ -61,8 +61,9 @@ Future<void> registrationConfirmationEmail() async{
 
   await FlutterEmailSender.send(myEmail);*/
 
-  var smtpServer = hotmail(registerPage.myNewEmail, registerPage.myNewPassword);
+  var smtpServer = hotmail("starexpedition@hotmail.com", "Betelgeuse24!");
 
+  /*
   if(registerPage.myNewEmail.contains("@gmail.com")){
     smtpServer = gmail(registerPage.myNewEmail, registerPage.myNewPassword);
   }
@@ -74,7 +75,7 @@ Future<void> registrationConfirmationEmail() async{
   }
   else{
     print("Email is invalid.");
-  }
+  }*/
 
   var myMessage = Message()
     ..from = Address("starexpedition@hotmail.com")
@@ -92,6 +93,6 @@ Future<void> registrationConfirmationEmail() async{
   }
 
   var theConnection = PersistentConnection(smtpServer);
-  await theConnection.send(myMessage);
+  //await theConnection.send(myMessage);
   await theConnection.close();
 }
