@@ -8,18 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mailer/mailer.dart';
-//import 'package:url_launcher/url_launcher.dart';
-//import 'package:mailer/mailer.dart';
-//import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-//import 'package:backendless_sdk/backendless_sdk.dart';
 import 'googleAuthApi.dart';
 import 'main.dart' as myMain;
 import 'registerPage.dart' as registerPage;
-//import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+//import 'package:flutter_secure_storage/flutter_secure_storage.dart' as secureStorage;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class emailNotifications extends StatelessWidget {
   const emailNotifications ({Key? key}) : super(key: key);
@@ -61,7 +59,18 @@ Future<void> registrationConfirmationEmail() async{
 
   await FlutterEmailSender.send(myEmail);*/
 
-  var smtpServer = hotmail("starexpedition@hotmail.com", "Betelgeuse24!");
+  await dotenv.load(fileName: "dotenv.env");
+
+  var emailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
+  var passwordForSmtpServer = dotenv.env["PASS"];
+
+  /*
+  var myStorage = FlutterSecureStorage();
+  await myStorage.write(key: emailForSmtpServer, value: passwordForSmtpServer);
+  print("This is myStorage: ${myStorage!.toString()}");*/
+
+
+  var smtpServer = hotmail(emailForSmtpServer!, passwordForSmtpServer!);
 
   /*
   if(registerPage.myNewEmail.contains("@gmail.com")){

@@ -43,6 +43,8 @@ dependencies:
   path_provider: ^2.0.15
   json_editor: ^0.0.1
   flutter_email_sender: ^6.0.3
+  flutter_secure_storage: ^8.1.0
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +72,7 @@ flutter:
     - assets/images/
     - assets/jsonfiles/
     - json/
+    - dotenv.env
 
   # To add assets to your application, add an assets section, like this:
   # assets:
