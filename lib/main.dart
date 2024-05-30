@@ -1020,11 +1020,17 @@ class articlePage extends StatelessWidget{
   articlePage(this.starInfo);
 
   void getKeys(Map myMap){ // This is for getting planet names, which are keys
-    myMap.keys.forEach((key) {
+    //Making the star's planets in alphabetical order
+    var planetsList = myMap.keys.toList()..sort();
+    for(var planet in planetsList){
+      myPlanet.add(planet);
+      print("The key (or planet) is: " + planet);
+    }
+    /*myMap.keys.forEach((key) {
       //print(key);
       myPlanet.add(key);
       print("The key is " + key);
-    });
+    });*/
   }
 
   Future<List<String>> getStarData() async{
