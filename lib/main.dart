@@ -1024,7 +1024,7 @@ class articlePage extends StatelessWidget{
     var planetsList = myMap.keys.toList()..sort();
     for(var planet in planetsList){
       myPlanet.add(planet);
-      print("The key (or planet) is: " + planet);
+      print("The key (or planet's name) is: " + planet);
     }
     /*myMap.keys.forEach((key) {
       //print(key);
