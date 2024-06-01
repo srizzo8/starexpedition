@@ -18,6 +18,9 @@ import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 import 'main.dart' as myMain;
 import 'discussionBoardPage.dart' as theDiscussionBoardPage;
 import 'emailNotifications.dart' as emailNotifications;
+import 'package:flutter/widgets.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 String myNewUsername = "";
 String myNewEmail = "";
@@ -129,7 +132,7 @@ class registerPageState extends State<registerPage>{
                   myNewUsername = theUsername.text;
                   myNewEmail = email.text;
                   myNewPassword = password.text;
-                  Navigator.pushReplacementNamed(context, registerPageRoutes.discussionBoard);
+                  Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
                   userEmailPasswordList.add([theUsername.text, email.text, password.text]);
                   myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
                   myMain.theUsers!.add(dasUser);
@@ -143,7 +146,7 @@ class registerPageState extends State<registerPage>{
                   myNewUsername = theUsername.text;
                   myNewEmail = email.text;
                   myNewPassword = password.text;
-                  Navigator.pushReplacementNamed(context, registerPageRoutes.homePage);
+                  Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
                   userEmailPasswordList.add([theUsername.text, email.text, password.text]);
                   myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
                   myMain.theUsers!.add(dasUser);
@@ -157,7 +160,7 @@ class registerPageState extends State<registerPage>{
               else{
                 print(myMain.theUsers!.indexWhere((person) => person.username == theUsername.text));
                 showDialog(
-                  context: context,
+                  context: buildContext,
                   builder: (myContent) => AlertDialog(
                     title: const Text("Registration unsuccessful"),
                     content: theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != ""?

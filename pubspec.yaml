@@ -45,6 +45,7 @@ dependencies:
   flutter_email_sender: ^6.0.3
   flutter_secure_storage: ^8.1.0
   flutter_dotenv: ^5.1.0
+  sqflite: ^2.0.3+1
 
 dev_dependencies:
   flutter_test:
