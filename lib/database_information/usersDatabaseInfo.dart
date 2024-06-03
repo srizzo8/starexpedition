@@ -17,12 +17,19 @@ class User{
     required this.password,
   });
 
-  factory User.fromSqfliteDatabase(Map<String, dynamic> map) => User(
-    id: map['id']?.toInt() ?? 0,
-    username: map['username'] ?? "",
-    emailAddress: map['emailAddress'] ?? "",
-    password: map['password'] ?? ""
+  factory User.fromJson(Map<String, dynamic> map) => User(
+    id: map['id'],
+    username: map['username'],
+    emailAddress: map['emailAddress'],
+    password: map['password'],
   );
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'username': username,
+    'emailAddress': emailAddress,
+    'password': password,
+  };
 
   /*Map<String, Object?> toMap(){
     return{

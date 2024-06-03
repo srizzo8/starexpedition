@@ -21,11 +21,15 @@ import 'emailNotifications.dart' as emailNotifications;
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'database_information/databaseService.dart';
+import 'database_information/usersDatabaseInfo.dart';
+
 
 String myNewUsername = "";
 String myNewEmail = "";
 String myNewPassword = "";
 bool registerBool = false;
+int userId = 0;
 
 class registerPage extends StatefulWidget{
   const registerPage ({Key? key}) : super(key: key);
@@ -56,6 +60,7 @@ class registerPageState extends State<registerPage>{
   TextEditingController theUsername = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  final dbService = databaseService();
 
   Widget build(BuildContext buildContext){
     return Scaffold(
@@ -129,10 +134,19 @@ class registerPageState extends State<registerPage>{
             onTap: () async{
               if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != ""){
                 if(myMain.discussionBoardLogin == true){
+                  userId = userId + 1;
                   myNewUsername = theUsername.text;
                   myNewEmail = email.text;
                   myNewPassword = password.text;
                   Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
+                  var theNewUser = User(
+                    id: userId,
+                    username: theUsername.text,
+                    emailAddress: email.text,
+                    password: password.text,
+                  );
+                  dbService.addUser(theNewUser);
+                  dbService.getUsers();
                   userEmailPasswordList.add([theUsername.text, email.text, password.text]);
                   myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
                   myMain.theUsers!.add(dasUser);
@@ -143,10 +157,19 @@ class registerPageState extends State<registerPage>{
                   emailNotifications.registrationConfirmationEmail();
                 }
                 else{
+                  userId = userId + 1;
                   myNewUsername = theUsername.text;
                   myNewEmail = email.text;
                   myNewPassword = password.text;
                   Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
+                  var theNewUser = User(
+                    id: userId,
+                    username: theUsername.text,
+                    emailAddress: email.text,
+                    password: password.text,
+                  );
+                  dbService.addUser(theNewUser);
+                  dbService.getUsers();
                   userEmailPasswordList.add([theUsername.text, email.text, password.text]);
                   myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
                   myMain.theUsers!.add(dasUser);

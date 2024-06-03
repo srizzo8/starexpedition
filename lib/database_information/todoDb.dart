@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:starexpedition4/database_information/usersDatabaseInfo.dart';
 import 'databaseService.dart';
-
+/*
 class todoDb{
   final tableName = "users";
 
@@ -58,4 +58,4 @@ class todoDb{
     final myDb = await databaseService().database;
     await myDb.rawDelete('''DELETE FROM $tableName WHERE id = ?'''[id]);
   }
-}
+*/

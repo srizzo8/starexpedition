@@ -12,6 +12,8 @@ import 'projectsPage.dart' as projectsPage;
 import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 import 'registerPage.dart' as theRegisterPage;
 import 'discussionBoardPage.dart' as theDiscussionBoardPage;
+import 'database_information/databaseService.dart';
+import 'database_information/usersDatabaseInfo.dart';
 
 import 'main.dart' as myMain;
 
@@ -180,8 +182,9 @@ class loginPageState extends State<loginPage>{
                 child: Text("Sign up", style: TextStyle(fontSize: 14.0)),
               ),
             ),
-            onTap: (){
+            onTap: () async{
               //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
+              databaseService().initMyDatabase();
               Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => theRegisterPage.registerPage()));
               print("Signing up");
             }
