@@ -47,6 +47,8 @@ dependencies:
   flutter_dotenv: ^5.1.0
   sqflite: ^2.0.3+1
   path: 1.8.1
+  cloud_firestore: ^4.2.0
+  get: ^4.6.0
 
 dev_dependencies:
   flutter_test:

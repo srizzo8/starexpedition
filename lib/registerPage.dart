@@ -7,6 +7,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 //import 'package:backendless_sdk/backendless_sdk.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'main.dart';
@@ -21,8 +23,9 @@ import 'emailNotifications.dart' as emailNotifications;
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'database_information/databaseService.dart';
-import 'database_information/usersDatabaseInfo.dart';
+import 'firestore_database_information/theUserInformation.dart';
+import 'firestore_database_information/userDatabaseFirestoreInfo.dart';
+//import 'database_information/usersDatabaseInfo.dart';
 
 
 String myNewUsername = "";
@@ -60,7 +63,13 @@ class registerPageState extends State<registerPage>{
   TextEditingController theUsername = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-  final dbService = databaseService();
+  //final dbService = databaseService();
+
+  final userInfo = Get.put(theUserInformation());
+
+  Future<void> createUser(User u) async{
+      await userInfo.createMyUser(u);
+  }
 
   Widget build(BuildContext buildContext){
     return Scaffold(
@@ -145,8 +154,9 @@ class registerPageState extends State<registerPage>{
                     emailAddress: email.text,
                     password: password.text,
                   );
-                  dbService.addUser(theNewUser);
-                  dbService.getUsers();
+                  createUser(theNewUser);
+                  //dbService.addUser(theNewUser);
+                  //dbService.getUsers();
                   userEmailPasswordList.add([theUsername.text, email.text, password.text]);
                   myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
                   myMain.theUsers!.add(dasUser);
@@ -168,8 +178,9 @@ class registerPageState extends State<registerPage>{
                     emailAddress: email.text,
                     password: password.text,
                   );
-                  dbService.addUser(theNewUser);
-                  dbService.getUsers();
+                  createUser(theNewUser);
+                  //dbService.addUser(theNewUser);
+                  //dbService.getUsers();
                   userEmailPasswordList.add([theUsername.text, email.text, password.text]);
                   myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
                   myMain.theUsers!.add(dasUser);
