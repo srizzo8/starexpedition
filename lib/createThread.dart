@@ -5,14 +5,19 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
 import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
+import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
+import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesDatabaseFirestoreInfo.dart';
+import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesInformation.dart';
 
 class createThread extends StatefulWidget{
   const createThread ({Key? key}) : super(key: key);
@@ -26,6 +31,11 @@ class createThreadState extends State<createThread>{
   final usernameController = TextEditingController();
   final threadNameController = TextEditingController();
   final threadContentController = TextEditingController();
+  int discussionBoardUpdatesThreadId = 0;
+  int questionsAndAnswersThreadId = 0;
+  int technologiesThreadId = 0;
+  int projectsThreadId = 0;
+  int newDiscoveriesThreadId = 0;
   var discussionBoardUpdatesPendingThreads = [];
   var questionsAndAnswersPendingThreads = [];
   var technologiesPendingThreads = [];
@@ -138,6 +148,25 @@ class createThreadState extends State<createThread>{
                 if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != ""){
                   //print(usernameController.text);
                   if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false) {
+                    final discussionBoardUpdatesThreadsInfo = Get.put(discussionBoardUpdatesInformation());
+
+                    Future<void> createDiscussionBoardUpdatesThread(DiscussionBoardUpdatesThreads dbut) async{
+                      await discussionBoardUpdatesThreadsInfo.createMyDiscussionBoardUpdatesThread(dbut);
+                    }
+
+                    discussionBoardUpdatesThreadId = discussionBoardUpdatesThreadId + 1;
+                    Map<String, List<String>> dbuReplies = new Map<String, List<String>>();
+
+                    var theNewDiscussionBoardUpdatesThread = DiscussionBoardUpdatesThreads(
+                      threadId: discussionBoardUpdatesThreadId,
+                      poster: usernameController.text,
+                      threadTitle: threadNameController.text,
+                      threadContent: threadContentController.text,
+                      replies: dbuReplies
+                    );
+
+                    createDiscussionBoardUpdatesThread(theNewDiscussionBoardUpdatesThread);
+
                     print('You are ready to post this thread');
                     discussionBoardUpdatesPendingThreads.add(usernameController.text);
                     discussionBoardUpdatesPendingThreads.add(threadNameController.text);

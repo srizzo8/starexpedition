@@ -23,8 +23,8 @@ import 'emailNotifications.dart' as emailNotifications;
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'firestore_database_information/theUserInformation.dart';
-import 'firestore_database_information/userDatabaseFirestoreInfo.dart';
+import 'users_firestore_database_information/theUserInformation.dart';
+import 'users_firestore_database_information/userDatabaseFirestoreInfo.dart';
 //import 'database_information/usersDatabaseInfo.dart';
 
 
