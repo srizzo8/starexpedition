@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
@@ -14,6 +17,8 @@ import 'registerPage.dart' as theRegisterPage;
 import 'discussionBoardPage.dart' as theDiscussionBoardPage;
 import 'database_information/databaseService.dart';
 import 'database_information/usersDatabaseInfo.dart';
+import 'users_firestore_database_information/theUserInformation.dart';
+import 'users_firestore_database_information/userDatabaseFirestoreInfo.dart';
 
 import 'main.dart' as myMain;
 
@@ -56,6 +61,8 @@ class loginPageState extends State<loginPage>{
   static String nameOfRoute = '/loginPage';
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  final userInfo = Get.put(theUserInformation());
 
   Widget build(BuildContext bc){
     return Scaffold(
@@ -119,8 +126,56 @@ class loginPageState extends State<loginPage>{
                 child: Text("Log in", style: TextStyle(fontSize: 14.0, color: Colors.white)),
               ),
             ),
-            onTap: (){
+            onTap: () async{
               if(usernameController.text != "" && passwordController.text != "") {
+                Map<String, String> userAndPass = new Map<String, String>();
+
+                //Finding what document a username belongs in
+                /*FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).snapshots().listen((data){
+                  data.docs.forEach((doc){
+                    var enteredUsername = doc.data()["username"].toString();
+                    var enteredPassword = doc.data()["password"].toString();
+                    print(enteredUsername);
+                    userAndPass["username"] = enteredUsername;
+                    userAndPass["password"] = enteredPassword;
+                    print("This is userAndPass: ${userAndPass.toString()}");
+                    print("This is a doc: ${doc.data()}");
+                  });
+                });
+
+                print("This is userAndPass: ${userAndPass.toString()}");*/
+                Map<String, dynamic> myDoc = new Map<String, dynamic>();
+                /*await FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).get().then((value) async{
+                  //print("This is value: ${value.docs.first.data()}");
+                  myDoc = value.docs.first.data();
+                  //print(myDoc.toString());
+                });*/
+                var userDocument;
+                var userResult = await FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).get();
+                userResult.docs.forEach((outcome){
+                  userDocument = outcome.data();
+                  print("This is the outcome: ${outcome.data()}");
+                });
+
+                var passwordDocument;
+                var passwordResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: passwordController.text).get();
+                passwordResult.docs.forEach((outcome){
+                  passwordDocument = outcome.data();
+                });
+
+                print("userDocument: $userDocument");
+                print("passwordDocument: $passwordDocument");
+
+                print(myDoc.toString());
+
+                var userDoc = myDoc["username"];
+                var passDoc = myDoc["password"];
+
+                //print("Username: $userD")
+
+                //Checking if a username matches with a password
+                //var aUsername = userAndPass["Username"];
+                //print("aUsername: $aUsername");
                 int u1 = myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()); //checks what the index number is when person.username equals usernameController.text.
                 int p1 = myMain.theUsers!.indexWhere((pass) => pass.password == passwordController.text);
                 if(u1 == p1 && u1 != -1 && p1 != -1) { //If u1 and p1 have matching numbers, but if u1 and p1 do not equal -1.
@@ -149,6 +204,7 @@ class loginPageState extends State<loginPage>{
                   //int n = myMain.theUsers!.indexWhere((person) => person.username == "John");
                   print(u1);
                   print(p1);
+                  //print(uu1.toString());
                   showDialog(
                     context: context,
                     builder: (BuildContext theContext){
