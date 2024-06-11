@@ -146,7 +146,7 @@ class loginPageState extends State<loginPage>{
 
                 if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
                   if(myMain.discussionBoardLogin == true){
-                    await FirebaseFirestore.instance.collection("User").get().then((theUn){
+                    await FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).get().then((theUn){
                       myUsername = theUn.docs.first.data()["username"];
                     });
                     print("Logging in as " + myUsername);
@@ -157,7 +157,7 @@ class loginPageState extends State<loginPage>{
                   }
                   else{
                     print("Logging in123");
-                    await FirebaseFirestore.instance.collection("User").get().then((theUn){
+                    await FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).get().then((theUn){
                       myUsername = theUn.docs.first.data()["username"];
                     });
 
