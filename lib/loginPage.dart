@@ -128,28 +128,6 @@ class loginPageState extends State<loginPage>{
             ),
             onTap: () async{
               if(usernameController.text != "" && passwordController.text != "") {
-                //Map<String, String> userAndPass = new Map<String, String>();
-
-                //Finding what document a username belongs in
-                /*FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).snapshots().listen((data){
-                  data.docs.forEach((doc){
-                    var enteredUsername = doc.data()["username"].toString();
-                    var enteredPassword = doc.data()["password"].toString();
-                    print(enteredUsername);
-                    userAndPass["username"] = enteredUsername;
-                    userAndPass["password"] = enteredPassword;
-                    print("This is userAndPass: ${userAndPass.toString()}");
-                    print("This is a doc: ${doc.data()}");
-                  });
-                });
-
-                print("This is userAndPass: ${userAndPass.toString()}");*/
-                //Map<String, dynamic> myDoc = new Map<String, dynamic>();
-                /*await FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).get().then((value) async{
-                  //print("This is value: ${value.docs.first.data()}");
-                  myDoc = value.docs.first.data();
-                  //print(myDoc.toString());
-                });*/
                 var userDocument;
                 var userResult = await FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).get();
                 userResult.docs.forEach((outcome){
@@ -168,8 +146,6 @@ class loginPageState extends State<loginPage>{
 
                 if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
                   if(myMain.discussionBoardLogin == true){
-                    //print(myMain.theUsers!.elementAt(u1).username.toString());
-                    //myUsername = myMain.theUsers!.elementAt(u1).username.toString();
                     await FirebaseFirestore.instance.collection("User").get().then((theUn){
                       myUsername = theUn.docs.first.data()["username"];
                     });
@@ -180,12 +156,11 @@ class loginPageState extends State<loginPage>{
                     loginBool = true;
                   }
                   else{
-                    //print(myMain.theUsers!.elementAt(u1).username.toString());
                     print("Logging in123");
                     await FirebaseFirestore.instance.collection("User").get().then((theUn){
                       myUsername = theUn.docs.first.data()["username"];
                     });
-                    //myUsername = myMain.theUsers!.elementAt(u1).username.toString();//usernameController.text;
+
                     print("Logging in as " + myUsername);
                     Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
                     print("myUsername: " + myUsername);
@@ -214,66 +189,6 @@ class loginPageState extends State<loginPage>{
                       }
                   );
                 }
-
-                //print(myDoc.toString());
-
-                //var userDoc = myDoc["username"];
-                //var passDoc = myDoc["password"];
-
-                //print("Username: $userD")
-
-                //Checking if a username matches with a password
-                //var aUsername = userAndPass["Username"];
-                //print("aUsername: $aUsername");
-
-                //Previous login code (lines 229-276):
-                /*int u1 = myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()); //checks what the index number is when person.username equals usernameController.text.
-                int p1 = myMain.theUsers!.indexWhere((pass) => pass.password == passwordController.text);
-                if(u1 == p1 && u1 != -1 && p1 != -1) { //If u1 and p1 have matching numbers, but if u1 and p1 do not equal -1.
-                  //if(myMain.theUsers!.){
-                    if(myMain.discussionBoardLogin == true){
-                      print(myMain.theUsers!.elementAt(u1).username.toString());
-                      myUsername = myMain.theUsers!.elementAt(u1).username.toString();
-                      print("Logging in as " + myUsername);
-                      print("myNewUsername: " + theRegisterPage.myNewUsername);
-                      Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
-                      myMain.discussionBoardLogin = false;
-                      loginBool = true;
-                    }
-                    else{
-                      print(myMain.theUsers!.elementAt(u1).username.toString());
-                      print("Logging in123");
-                      myUsername = myMain.theUsers!.elementAt(u1).username.toString();//usernameController.text;
-                      print("Logging in as " + myUsername);
-                      Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
-                      print("myUsername: " + myUsername);
-                      print("myNewUsername: " + theRegisterPage.myNewUsername);
-                      loginBool = true;
-                    }
-                }
-                else{
-                  //int n = myMain.theUsers!.indexWhere((person) => person.username == "John");
-                  print(u1);
-                  print(p1);
-                  //print(uu1.toString());
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext theContext){
-                      return AlertDialog(
-                        title: const Text("Login Error"),
-                        content: const Text("Your username-password combination is not correct."),
-                        actions: [
-                          TextButton(
-                            onPressed: () => {
-                              Navigator.pop(context),
-                            },
-                            child: const Text("Ok"),
-                          )
-                        ],
-                      );
-                    }
-                  );
-                }*/
               }
             }
           ),
