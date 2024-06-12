@@ -31,11 +31,11 @@ class createThreadState extends State<createThread>{
   final usernameController = TextEditingController();
   final threadNameController = TextEditingController();
   final threadContentController = TextEditingController();
-  int discussionBoardUpdatesThreadId = -1;
-  int questionsAndAnswersThreadId = -1;
-  int technologiesThreadId = -1;
-  int projectsThreadId = -1;
-  int newDiscoveriesThreadId = -1;
+  int discussionBoardUpdatesThreadId = 0;
+  int questionsAndAnswersThreadId = 0;
+  int technologiesThreadId = 0;
+  int projectsThreadId = 0;
+  int newDiscoveriesThreadId = 0;
   var discussionBoardUpdatesPendingThreads = [];
   var questionsAndAnswersPendingThreads = [];
   var technologiesPendingThreads = [];
@@ -155,7 +155,7 @@ class createThreadState extends State<createThread>{
                       await discussionBoardUpdatesThreadsInfo.createMyDiscussionBoardUpdatesThread(dbut);
                     }
 
-                    discussionBoardUpdatesThreadId = discussionBoardUpdatesThreadId + 1;
+                    discussionBoardUpdatesThreadId++;
                     Map<String, List<String>> dbuReplies = new Map<String, List<String>>();
 
                     var theNewDiscussionBoardUpdatesThread = DiscussionBoardUpdatesThreads(
@@ -171,7 +171,7 @@ class createThreadState extends State<createThread>{
                     discussionBoardUpdatesPendingThreads.add(usernameController.text);
                     discussionBoardUpdatesPendingThreads.add(threadNameController.text);
                     discussionBoardUpdatesPendingThreads.add(threadContentController.text);
-                    discussionBoardUpdatesPendingThreads.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads.length.toString());
+                    discussionBoardUpdatesPendingThreads.add((discussionBoardUpdatesPage.discussionBoardUpdatesThreads.length).toString());
                     discussionBoardUpdatesPendingThreads.add(List.empty(growable: true));
                     print(discussionBoardUpdatesPendingThreads);
                     discussionBoardUpdatesPage.discussionBoardUpdatesThreads.add(discussionBoardUpdatesPendingThreads);

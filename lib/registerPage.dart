@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,7 +33,7 @@ String myNewUsername = "";
 String myNewEmail = "";
 String myNewPassword = "";
 bool registerBool = false;
-int userId = 0;
+var userId;
 
 class registerPage extends StatefulWidget{
   const registerPage ({Key? key}) : super(key: key);
@@ -143,7 +144,10 @@ class registerPageState extends State<registerPage>{
             onTap: () async{
               if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != ""){
                 if(myMain.discussionBoardLogin == true){
-                  userId = userId + 1;
+                  //userId = userId + 1;
+                  await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
+                    userId = myNumber.docs.first.data()["id"] + 1;
+                  });
                   myNewUsername = theUsername.text;
                   myNewEmail = email.text;
                   myNewPassword = password.text;
@@ -167,7 +171,10 @@ class registerPageState extends State<registerPage>{
                   emailNotifications.registrationConfirmationEmail();
                 }
                 else{
-                  userId = userId + 1;
+                  //userId = userId + 1;
+                  await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
+                    userId = myNumber.docs.first.data()["id"] + 1;
+                  });
                   myNewUsername = theUsername.text;
                   myNewEmail = email.text;
                   myNewPassword = password.text;
