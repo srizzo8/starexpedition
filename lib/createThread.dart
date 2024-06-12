@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -136,7 +137,7 @@ class createThreadState extends State<createThread>{
                 width: 140,
                 alignment: Alignment.center,
               ),
-              onTap: (){
+              onTap: () async{
 
                 //print('Posting the thread');
                 print(discussionBoardUpdatesPage.discussionBoardUpdatesBool);
@@ -155,8 +156,11 @@ class createThreadState extends State<createThread>{
                       await discussionBoardUpdatesThreadsInfo.createMyDiscussionBoardUpdatesThread(dbut);
                     }
 
-                    discussionBoardUpdatesThreadId++;
-                    Map<String, List<String>> dbuReplies = new Map<String, List<String>>();
+                    //discussionBoardUpdatesThreadId++;
+                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").orderBy("threadId", descending: true).limit(1).get().then((myId){
+                      discussionBoardUpdatesThreadId = myId.docs.first.data()["threadId"] + 1;
+                    });
+                    //Map<String, List<String>> dbuReplies = new Map<String, List<String>>();
 
                     var theNewDiscussionBoardUpdatesThread = DiscussionBoardUpdatesThreads(
                       threadId: discussionBoardUpdatesThreadId,
