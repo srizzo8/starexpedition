@@ -31,11 +31,11 @@ class createThreadState extends State<createThread>{
   final usernameController = TextEditingController();
   final threadNameController = TextEditingController();
   final threadContentController = TextEditingController();
-  int discussionBoardUpdatesThreadId = 0;
-  int questionsAndAnswersThreadId = 0;
-  int technologiesThreadId = 0;
-  int projectsThreadId = 0;
-  int newDiscoveriesThreadId = 0;
+  int discussionBoardUpdatesThreadId = -1;
+  int questionsAndAnswersThreadId = -1;
+  int technologiesThreadId = -1;
+  int projectsThreadId = -1;
+  int newDiscoveriesThreadId = -1;
   var discussionBoardUpdatesPendingThreads = [];
   var questionsAndAnswersPendingThreads = [];
   var technologiesPendingThreads = [];
@@ -137,6 +137,7 @@ class createThreadState extends State<createThread>{
                 alignment: Alignment.center,
               ),
               onTap: (){
+
                 //print('Posting the thread');
                 print(discussionBoardUpdatesPage.discussionBoardUpdatesBool);
                 if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
@@ -162,7 +163,6 @@ class createThreadState extends State<createThread>{
                       poster: usernameController.text,
                       threadTitle: threadNameController.text,
                       threadContent: threadContentController.text,
-                      replies: dbuReplies
                     );
 
                     createDiscussionBoardUpdatesThread(theNewDiscussionBoardUpdatesThread);

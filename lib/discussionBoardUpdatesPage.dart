@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,6 +25,7 @@ String threadTitleDbu = "";
 String threadContentDbu = "";
 //int threadsIndex = reversedDiscussionBoardUpdatesThreadsIterable.
 String threadID = "";
+int discussionBoardUpdatesThreadId = -1;
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -108,13 +110,17 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       width: 360,
                       color: Colors.tealAccent,
                     ),
-                    onTap: (){
+                    onTap: () async {
                       print("I clicked on a thread");
                       print('You clicked on: ' + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1]);
                       threadAuthorDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0];
                       threadTitleDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1];
                       threadContentDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][2];
                       threadID = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3];
+                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3])).get().then((num){
+                        discussionBoardUpdatesThreadId = num.docs.first.data()["threadId"];
+                      });
+                      print("This is discussionBoardUpdatesThreadId: ${discussionBoardUpdatesThreadId}");
                       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadContent()));
                       //myIndexPlace = index;
                     }

@@ -5,6 +5,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import 'createThread.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
@@ -15,6 +17,9 @@ import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
 import 'main.dart' as myMain;
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
+
+import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesDatabaseFirestoreInfo.dart';
+import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesInformation.dart';
 
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
@@ -117,6 +122,12 @@ class replyThreadPageState extends State<replyThreadPage>{
                 alignment: Alignment.center,
               ),
               onTap: (){
+                final discussionBoardUpdatesRepliesInfo = Get.put(discussionBoardUpdatesInformation());
+
+                Future<void> createDiscussionBoardUpdatesReply(DiscussionBoardUpdatesThreads dbut) async{
+                  await discussionBoardUpdatesRepliesInfo.createMyDiscussionBoardUpdatesThread(dbut);
+                }
+
                 if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
                   usernameReplyController.text = theLoginPage.myUsername;
                 }
