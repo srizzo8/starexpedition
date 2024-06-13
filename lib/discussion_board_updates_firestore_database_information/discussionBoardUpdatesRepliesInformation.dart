@@ -21,7 +21,7 @@ class discussionBoardUpdatesRepliesInformation extends GetxController{
 
   final myDb = FirebaseFirestore.instance;
 
-  createMyDiscussionBoardUpdatesThread(DiscussionBoardUpdatesReplies dbur, var docName) async{
+  createMyDiscussionBoardUpdatesReply(DiscussionBoardUpdatesReplies dbur, var docName) async{
     await myDb.collection("Discussion_Board_Updates").doc(docName).collection("Replies").add(dbur.toJson()).whenComplete(
           () => print("Reply added!"),
     )
