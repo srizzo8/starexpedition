@@ -10,6 +10,8 @@ import 'package:get/get_core/src/get_main.dart';
 
 import 'createThread.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
+import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesDatabaseFirestoreInfo.dart';
+import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesInformation.dart';
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
@@ -122,10 +124,10 @@ class replyThreadPageState extends State<replyThreadPage>{
                 alignment: Alignment.center,
               ),
               onTap: (){
-                final discussionBoardUpdatesRepliesInfo = Get.put(discussionBoardUpdatesInformation());
+                final discussionBoardUpdatesRepliesInfo = Get.put(discussionBoardUpdatesRepliesInformation());
 
-                Future<void> createDiscussionBoardUpdatesReply(DiscussionBoardUpdatesThreads dbut) async{
-                  await discussionBoardUpdatesRepliesInfo.createMyDiscussionBoardUpdatesThread(dbut);
+                Future<void> createDiscussionBoardUpdatesReply(DiscussionBoardUpdatesReplies dbur, var docName) async{
+                  await discussionBoardUpdatesRepliesInfo.createMyDiscussionBoardUpdatesReply(dbur, docName);
                 }
 
                 if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
