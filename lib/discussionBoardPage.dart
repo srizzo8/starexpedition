@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,6 +13,17 @@ import 'technologiesPage.dart';
 import 'projectsPage.dart';
 import 'newDiscoveriesPage.dart';
 import 'main.dart' as myMain;
+
+var discussionBoardUpdatesThreadCount;
+var discussionBoardUpdatesThreads;
+var questionsAndAnswersThreadCount;
+var questionsAndAnswersThreads;
+var technologiesThreadCount;
+var technologiesThreads;
+var projectsThreadCount;
+var projectsThreads;
+var newDiscoveriesThreadCount;
+var newDiscoveriesThreads;
 
 class discussionBoardPage extends StatefulWidget{
   const discussionBoardPage ({Key? key}) : super(key: key);
@@ -70,7 +82,12 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                     height: 15,
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () async{
+                      //Getting the amount of threads that are in a subforum
+                      discussionBoardUpdatesThreadCount = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").count().get();
+                      QuerySnapshot dbuQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").get();
+                      discussionBoardUpdatesThreads = dbuQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                      //Going to a certain subforum
                       print("Testing subforum button");
                       switch(subforumList[index]){
                         case "Discussion Board Updates":

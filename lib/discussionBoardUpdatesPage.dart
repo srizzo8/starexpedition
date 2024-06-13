@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'createThread.dart';
+import 'discussionBoardPage.dart' as discussionBoardPage;
 import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 
@@ -96,7 +97,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: discussionBoardUpdatesThreads.reversed.toList().length,
+              itemCount: discussionBoardPage.discussionBoardUpdatesThreads.length,//discussionBoardUpdatesThreads.reversed.toList().length,
               itemBuilder: (context, index){
               return Column(
                 children: <Widget>[
@@ -105,7 +106,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                   ),
                   GestureDetector(
                     child: Container(
-                      child: Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
+                      child: Text(discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString()),//Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
                       height: 30,
                       width: 360,
                       color: Colors.tealAccent,
