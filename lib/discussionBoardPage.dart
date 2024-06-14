@@ -87,6 +87,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                       discussionBoardUpdatesThreadCount = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").count().get();
                       QuerySnapshot dbuQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").get();
                       discussionBoardUpdatesThreads = dbuQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                      //print(discussionBoardUpdatesThreads.toString());
                       //Going to a certain subforum
                       print("Testing subforum button");
                       switch(subforumList[index]){

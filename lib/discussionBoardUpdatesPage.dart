@@ -112,18 +112,30 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       color: Colors.tealAccent,
                     ),
                     onTap: () async {
+                      print("This is index: $index");
+                      print("discussionBoardPage.discussionBoardUpdatesThreads is null? ${discussionBoardPage.discussionBoardUpdatesThreads == null}");
                       print("I clicked on a thread");
-                      print('You clicked on: ' + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1]);
-                      threadAuthorDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0];
-                      threadTitleDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1];
-                      threadContentDbu = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][2];
-                      threadID = reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3];
-                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3])).get().then((num){
-                        discussionBoardUpdatesThreadId = num.docs.first.data()["threadId"];
+                      //print('You clicked on: ' + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1]);
+                      //if(discussionBoardPage.discussionBoardUpdatesThreads[index].isNotEmpty){
+                      threadAuthorDbu = discussionBoardPage.discussionBoardUpdatesThreads![index]["poster"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0];
+                      threadTitleDbu = discussionBoardPage.discussionBoardUpdatesThreads![index]["threadTitle"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1];
+                      threadContentDbu = discussionBoardPage.discussionBoardUpdatesThreads![index]["threadContent"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][2];
+                      threadID = discussionBoardPage.discussionBoardUpdatesThreads![index]["threadId"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3];
+                      print("${threadAuthorDbu} + ${threadTitleDbu} + ${threadContentDbu} + ${threadID}");
+                      print("context: ${context}");
+                      var myDoc;
+                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                        myDoc = d.docs.first.id;
+                        print(myDoc);
                       });
-                      print("This is discussionBoardUpdatesThreadId: ${discussionBoardUpdatesThreadId}");
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadContent()));
-                      //myIndexPlace = index;
+                      var oneReply = {"animal": "dog", "breed": "belgian tervuren"};
+                      FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").add(oneReply);
+                      //}
+                      /*await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3])).get().then((num){
+                        discussionBoardUpdatesThreadId = num.docs.first.data()["threadId"];
+                      });*/
+                      //print("This is discussionBoardUpdatesThreadId: ${discussionBoardUpdatesThreadId}");
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => discussionBoardUpdatesThreadContent()));//myIndexPlace = index;
                     }
                   ),
                 ],
@@ -185,7 +197,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                   ListView.builder(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    itemCount: discussionBoardUpdatesThreads[int.parse(threadID)][4].length,
+                    itemCount: 5,//discussionBoardUpdatesThreads[int.parse(threadID)][4].length,
                     itemBuilder: (context, index){
                       return Column(
                         children: <Widget>[
