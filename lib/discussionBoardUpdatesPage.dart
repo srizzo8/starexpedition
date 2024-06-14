@@ -27,6 +27,7 @@ String threadContentDbu = "";
 //int threadsIndex = reversedDiscussionBoardUpdatesThreadsIterable.
 String threadID = "";
 int discussionBoardUpdatesThreadId = -1;
+var theDbuThreadReplies;
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -128,8 +129,14 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                         myDoc = d.docs.first.id;
                         print(myDoc);
                       });
-                      var oneReply = {"animal": "dog", "breed": "belgian tervuren"};
-                      FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").add(oneReply);
+                      //var oneReply = {"animal": "dog", "breed": "belgian tervuren"};
+
+                      //Getting the replies of a thread
+                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies");//.add(oneReply);
+
+                      QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                      theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                      print("Number of theDbuThreadReplies: ${theDbuThreadReplies.length}");
                       //}
                       /*await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3])).get().then((num){
                         discussionBoardUpdatesThreadId = num.docs.first.data()["threadId"];
@@ -197,11 +204,11 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                   ListView.builder(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    itemCount: 5,//discussionBoardUpdatesThreads[int.parse(threadID)][4].length,
+                    itemCount: theDbuThreadReplies.length,//FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").length//5,//discussionBoardUpdatesThreads[int.parse(threadID)][4].length,
                     itemBuilder: (context, index){
                       return Column(
                         children: <Widget>[
-                          discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
+                          theDbuThreadReplies.length > -1?//discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
                           Column(
                           children: <Widget>[
                             Container(
