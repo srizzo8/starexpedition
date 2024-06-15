@@ -28,6 +28,7 @@ String threadContentDbu = "";
 String threadID = "";
 int discussionBoardUpdatesThreadId = -1;
 var theDbuThreadReplies;
+var myDoc;
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -124,7 +125,6 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       threadID = discussionBoardPage.discussionBoardUpdatesThreads![index]["threadId"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3];
                       print("${threadAuthorDbu} + ${threadTitleDbu} + ${threadContentDbu} + ${threadID}");
                       print("context: ${context}");
-                      var myDoc;
                       await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
                         myDoc = d.docs.first.id;
                         print(myDoc);
@@ -215,14 +215,14 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                               height: 5,
                             ),
                             Container(
-                              child: Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
+                              child: Text("Reply to: " + threadContentDbu + "\n" + "Posted by: " + threadAuthorDbu),//Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
                               color: Colors.teal,
                               width: 360,
                             ),
                             //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
                             Container(
                               //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
-                              child: Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
+                              child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),//Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
                               color: Colors.tealAccent,
                               width: 360,
                             ),

@@ -39,7 +39,7 @@ class replyThreadPageState extends State<replyThreadPage>{
   List<String> pendingTechnologiesReply = [];
   List<String> pendingProjectsReply = [];
   List<String> pendingNewDiscoveriesReply = [];
-  int threadNumber = 0;
+  int threadNum = 0;
 
   Widget build(BuildContext bc){
     return Scaffold(
@@ -138,14 +138,32 @@ class replyThreadPageState extends State<replyThreadPage>{
                 }
                 if(usernameReplyController.text != "" && replyContentController.text != ""){
                   if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool == true){
-                    threadNumber = int.parse(discussionBoardUpdatesPage.threadID);
-                    assert(threadNumber is int);
-                    print(threadNumber.runtimeType);
+                    threadNum = int.parse(discussionBoardUpdatesPage.threadID);
+                    //threadNumber = int.parse(discussionBoardUpdatesPage.threadID);
+                    assert(threadNum is int);
+                    print(threadNum.runtimeType);
+                    var myReply = DiscussionBoardUpdatesReplies(
+                      threadNumber: threadNum,
+                      time: (DateTime.now()).toString(),
+                      replier: usernameReplyController.text,
+                      replyContent: replyContentController.text
+                    );
+                    createDiscussionBoardUpdatesReply(myReply, discussionBoardUpdatesPage.myDoc);
                     pendingDiscussionBoardUpdatesReply.add(DateTime.now().toString());
                     pendingDiscussionBoardUpdatesReply.add(usernameReplyController.text);
                     pendingDiscussionBoardUpdatesReply.add(replyContentController.text);
                     if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool == true){
                       discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool = false;
+                      threadNum = int.parse(discussionBoardUpdatesPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      var myReply = DiscussionBoardUpdatesReplies(
+                          threadNumber: threadNum,
+                          time: (DateTime.now()).toString(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text
+                      );
+                      createDiscussionBoardUpdatesReply(myReply, discussionBoardUpdatesPage.myDoc);
                       pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][1].toString());
                       pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][2].toString());
                       print('Do we exist? ' + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][3].toString() + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][4].toString());
@@ -155,7 +173,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                       pendingDiscussionBoardUpdatesReply.add("");
                       print("I do not exist");
                     }
-                    discussionBoardUpdatesPage.discussionBoardUpdatesThreads.toList()[threadNumber][4].add(pendingDiscussionBoardUpdatesReply);
+                    //discussionBoardUpdatesPage.discussionBoardUpdatesThreads.toList()[threadNum][4].add(pendingDiscussionBoardUpdatesReply);
                     //= discussionBoardUpdatesPage.discussionBoardUpdatesReplies.toString();
                     //print(pendingDiscussionBoardUpdatesReply);
                     //discussionBoardUpdatesPage.discussionBoardUpdatesReplies.add(pendingDiscussionBoardUpdatesReply);
@@ -167,9 +185,9 @@ class replyThreadPageState extends State<replyThreadPage>{
                     discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;
                   }
                   else if(questionsAndAnswersPage.questionsAndAnswersReplyBool == true){
-                    threadNumber = int.parse(questionsAndAnswersPage.threadID);
-                    assert(threadNumber is int);
-                    print(threadNumber.runtimeType);
+                    threadNum = int.parse(questionsAndAnswersPage.threadID);
+                    assert(threadNum is int);
+                    print(threadNum.runtimeType);
                     pendingQuestionsAndAnswersReply.add(DateTime.now().toString());
                     pendingQuestionsAndAnswersReply.add(usernameReplyController.text);
                     pendingQuestionsAndAnswersReply.add(replyContentController.text);
@@ -184,16 +202,16 @@ class replyThreadPageState extends State<replyThreadPage>{
                       pendingQuestionsAndAnswersReply.add("");
                       print("I do not exist");
                     }
-                    questionsAndAnswersPage.questionsAndAnswersThreads.toList()[threadNumber][4].add(pendingQuestionsAndAnswersReply);
+                    questionsAndAnswersPage.questionsAndAnswersThreads.toList()[threadNum][4].add(pendingQuestionsAndAnswersReply);
                     print(questionsAndAnswersPage.reversedQuestionsAndAnswersThreadsIterable);
                     print(questionsAndAnswersPage.questionsAndAnswersReplies);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
                     questionsAndAnswersPage.questionsAndAnswersReplyBool = false;
                   }
                   else if(technologiesPage.technologiesReplyBool == true){
-                    threadNumber = int.parse(technologiesPage.threadID);
-                    assert(threadNumber is int);
-                    print(threadNumber.runtimeType);
+                    threadNum = int.parse(technologiesPage.threadID);
+                    assert(threadNum is int);
+                    print(threadNum.runtimeType);
                     pendingTechnologiesReply.add(DateTime.now().toString());
                     pendingTechnologiesReply.add(usernameReplyController.text);
                     pendingTechnologiesReply.add(replyContentController.text);
@@ -208,16 +226,16 @@ class replyThreadPageState extends State<replyThreadPage>{
                       pendingTechnologiesReply.add("");
                       print("I do not exist");
                     }
-                    technologiesPage.technologiesThreads.toList()[threadNumber][4].add(pendingTechnologiesReply);
+                    technologiesPage.technologiesThreads.toList()[threadNum][4].add(pendingTechnologiesReply);
                     print(technologiesPage.reversedTechnologiesThreadsIterable);
                     print(technologiesPage.technologiesReplies);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
                     technologiesPage.technologiesReplyBool = false;
                   }
                   else if(projectsPage.projectsReplyBool == true){
-                    threadNumber = int.parse(projectsPage.threadID);
-                    assert(threadNumber is int);
-                    print(threadNumber.runtimeType);
+                    threadNum = int.parse(projectsPage.threadID);
+                    assert(threadNum is int);
+                    print(threadNum.runtimeType);
                     pendingProjectsReply.add(DateTime.now().toString());
                     pendingProjectsReply.add(usernameReplyController.text);
                     pendingProjectsReply.add(replyContentController.text);
@@ -232,16 +250,16 @@ class replyThreadPageState extends State<replyThreadPage>{
                       pendingProjectsReply.add("");
                       print("I do not exist");
                     }
-                    projectsPage.projectsThreads.toList()[threadNumber][4].add(pendingProjectsReply);
+                    projectsPage.projectsThreads.toList()[threadNum][4].add(pendingProjectsReply);
                     print(projectsPage.reversedProjectsThreadsIterable);
                     print(projectsPage.projectsReplies);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
                     projectsPage.projectsReplyBool = false;
                   }
                   else if(newDiscoveriesPage.newDiscoveriesReplyBool == true){
-                    threadNumber = int.parse(newDiscoveriesPage.threadID);
-                    assert(threadNumber is int);
-                    print(threadNumber.runtimeType);
+                    threadNum = int.parse(newDiscoveriesPage.threadID);
+                    assert(threadNum is int);
+                    print(threadNum.runtimeType);
                     pendingNewDiscoveriesReply.add(DateTime.now().toString());
                     pendingNewDiscoveriesReply.add(usernameReplyController.text);
                     pendingNewDiscoveriesReply.add(replyContentController.text);
@@ -256,7 +274,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                       pendingNewDiscoveriesReply.add("");
                       print("I do not exist");
                     }
-                    newDiscoveriesPage.newDiscoveriesThreads.toList()[threadNumber][4].add(pendingNewDiscoveriesReply);
+                    newDiscoveriesPage.newDiscoveriesThreads.toList()[threadNum][4].add(pendingNewDiscoveriesReply);
                     print(newDiscoveriesPage.reversedNewDiscoveriesThreadsIterable);
                     print(newDiscoveriesPage.newDiscoveriesReplies);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
