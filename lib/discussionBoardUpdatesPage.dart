@@ -17,7 +17,7 @@ bool discussionBoardUpdatesReplyBool = false;
 bool discussionBoardUpdatesReplyingToReplyBool = false;
 var discussionBoardUpdatesThreads = [];
 var discussionBoardUpdatesReplies = [];
-int myIndex = -1;
+int myIndex = -1;// = -1;
 //List<List> reversedDiscussionBoardUpdatesThreadsList = discussionBoardUpdatesThreads.reversed.toList();
 var reversedDiscussionBoardUpdatesThreadsIterable = discussionBoardUpdatesThreads.reversed;
 var reversedDiscussionBoardUpdatesRepliesIterable = discussionBoardUpdatesReplies.reversed;
@@ -29,6 +29,10 @@ String threadID = "";
 int discussionBoardUpdatesThreadId = -1;
 var theDbuThreadReplies;
 var myDoc;
+var replyToReplyDoc;
+var replyToReplyTime;
+var replyToReplyContent;
+var replyToReplyPoster;
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -136,6 +140,8 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
 
                       QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
                       theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                      //print(theDbuThreadReplies[0]["threadNumber"]);
+                      //print(theDbuThreadReplies.where((sr) => sr.replyContent == "Four!"));
                       print("Number of theDbuThreadReplies: ${theDbuThreadReplies.length}");
                       //}
                       /*await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3])).get().then((num){
@@ -208,14 +214,15 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                     itemBuilder: (context, index){
                       return Column(
                         children: <Widget>[
-                          theDbuThreadReplies.length > -1?//discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
+                          replyToReplyContent != null && replyToReplyPoster != null?//theDbuThreadReplies.length > 0?//discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
                           Column(
                           children: <Widget>[
                             Container(
                               height: 5,
                             ),
                             Container(
-                              child: Text("Reply to: " + threadContentDbu + "\n" + "Posted by: " + threadAuthorDbu),//Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
+                              //Reply to: Reply content, reply poster
+                              child: Text("Reply to: " + theDbuThreadReplies[myIndex]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[myIndex]["replier"]),//Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
                               color: Colors.teal,
                               width: 360,
                             ),
@@ -232,13 +239,46 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                 color: Colors.purple.shade200,
                                 width: 360,
                               ),
-                              onTap: (){
-                                myIndex = index;
+                              onTap: () async{
+                                replyToReplyTime = theDbuThreadReplies![index]["time"].toString();
+                                replyToReplyContent = theDbuThreadReplies![index]["replyContent"].toString();
+                                replyToReplyPoster = theDbuThreadReplies![index]["replier"].toString();
+                                print("This is replyToReplyTime: $replyToReplyTime");
+
+                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                  myDoc = d.docs.first.id;
+                                  print(myDoc);
+                                });
+                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where("time", isEqualTo: replyToReplyTime).get().then((rd) {
+                                  replyToReplyDoc = rd.docs.first.id;
+                                  //replyToReplyTime = rd.docs.first["time"];
+                                  //print("This is t: $replyToReplyTime");
+                                  //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                                  print(replyToReplyDoc);
+                                });
+
+                                //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
+
+                                //.add(oneReply);
+
+                                //QuerySnapshot dbuRepliesQuerySnapshot = (await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get()) as QuerySnapshot<Object?>;//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                                //theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                                print(theDbuThreadReplies);
+                                print(replyToReplyDoc);
+                                //print(replyToReplyDoc.snapshot);
+                                //print(replyContent);
+                                DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get();
+                                print(ds.data());
+                                print(ds.data().runtimeType);
+                                print(theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTime));
+                                myIndex = theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTime); //where replyToReplyDoc is in theDbuThreadReplies.
+                                print("This is myIndex: $myIndex");
                                 discussionBoardUpdatesReplyBool = true;
                                 discussionBoardUpdatesReplyingToReplyBool = true;
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                print('Reply no. ' + index.toString());
-                                print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                //print('Reply no. ' + index.toString());
+                                //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
                               }
                             ),
                           ]
@@ -250,7 +290,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                 //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
                                 Container(
                                   //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
-                                  child: Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
+                                  child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),//Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
                                   color: Colors.tealAccent,
                                   width: 360,
                                 ),
@@ -260,13 +300,81 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                       color: Colors.purple.shade200,
                                       width: 360,
                                     ),
-                                    onTap: (){
-                                      myIndex = index;
+                                    onTap: () async{
+                                      replyToReplyTime = theDbuThreadReplies![index]["time"].toString();
+                                      replyToReplyContent = theDbuThreadReplies![index]["replyContent"].toString();
+                                      replyToReplyPoster = theDbuThreadReplies![index]["replier"].toString();
+                                      print("This is replyToReplyTime: $replyToReplyTime");
+
+                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                        myDoc = d.docs.first.id;
+                                        print(myDoc);
+                                      });
+                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where("time", isEqualTo: replyToReplyTime).get().then((rd) {
+                                        replyToReplyDoc = rd.docs.first.id;
+                                        //replyToReplyTime = rd.docs.first["time"];
+                                        //print("This is t: $replyToReplyTime");
+                                        //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                                        print(replyToReplyDoc);
+                                      });
+
+                                      //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
+
+                                      //.add(oneReply);
+
+                                      //QuerySnapshot dbuRepliesQuerySnapshot = (await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get()) as QuerySnapshot<Object?>;//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                                      //theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                                      print(theDbuThreadReplies);
+                                      print(replyToReplyDoc);
+                                      //print(replyToReplyDoc.snapshot);
+                                      //print(replyContent);
+                                      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get();
+                                      print(ds.data());
+                                      print(ds.data().runtimeType);
+                                      print(theDbuThreadReplies[1].runtimeType);
+                                      myIndex = theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTime);
+                                      //where replyToReplyDoc is in theDbuThreadReplies.
+                                      print(theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTime));
+                                      print("This is myIndex: $myIndex");
+                                      discussionBoardUpdatesReplyBool = true;
+                                      discussionBoardUpdatesReplyingToReplyBool = true;
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                      //print('Reply no. ' + index.toString());
+                                      //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                      //print('Reply no. ' + index.toString());
+                                      //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                      /*var replyContent;
+                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                        myDoc = d.docs.first.id;
+                                        print(myDoc);
+                                      });
+                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").get().then((secondRd) {
+                                        replyContent = secondRd.docs.first;
+                                        replyToReplyDoc = secondRd.docs.first.id;
+
+                                        replyToReplyTime = secondRd.docs.first["time"];
+                                        print("This is t: $replyToReplyTime");
+
+                                        print(replyToReplyDoc);
+                                      });
+                                      print(theDbuThreadReplies);
+                                      print(replyToReplyDoc);
+                                      print(replyContent);
+                                      myIndex = theDbuThreadReplies.indexOf(replyToReplyDoc); //where replyToReplyDoc is in theDbuThreadReplies.
+                                      print("This is myIndex: $myIndex");
+                                      discussionBoardUpdatesReplyBool = true;
+                                      discussionBoardUpdatesReplyingToReplyBool = true;
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                      //print('Reply no. ' + index.toString());
+                                      //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                      /*myIndex = index;
                                       discussionBoardUpdatesReplyBool = true;
                                       discussionBoardUpdatesReplyingToReplyBool = true;
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                                       print('Reply no. ' + index.toString());
-                                      print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                      print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());*/
+                                      print(theDbuThreadReplies.length);*/
                                     }
                                 ),
                               ]
