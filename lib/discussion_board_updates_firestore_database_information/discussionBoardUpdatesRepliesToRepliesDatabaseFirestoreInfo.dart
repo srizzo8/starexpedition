@@ -3,6 +3,7 @@ class DiscussionBoardUpdatesRepliesToReplies{
   final String time;
   final String replier;
   final String replyContent;
+  final List originalReplyInfo;
   final int replyId;
 
   const DiscussionBoardUpdatesRepliesToReplies({
@@ -10,7 +11,8 @@ class DiscussionBoardUpdatesRepliesToReplies{
     required this.time,
     required this.replier,
     required this.replyContent,
-    required this.replyId,
+    required this.originalReplyInfo,
+    required this.replyId
   });
 
   toJson(){
@@ -19,7 +21,8 @@ class DiscussionBoardUpdatesRepliesToReplies{
       "time": time,
       "replier": replier,
       "replyContent": replyContent,
-      "replyId": replyId,
+      "originalReplyInfo": originalReplyInfo,
+      "replyId": replyId
     };
   }
 }

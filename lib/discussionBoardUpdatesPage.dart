@@ -6,9 +6,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:starexpedition4/replyThreadPage.dart';
 
 import 'createThread.dart';
 import 'discussionBoardPage.dart' as discussionBoardPage;
+import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesDatabaseFirestoreInfo.dart';
 import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 
@@ -28,11 +30,13 @@ String threadContentDbu = "";
 String threadID = "";
 int discussionBoardUpdatesThreadId = -1;
 var theDbuThreadReplies;
-var myDoc;
-var replyToReplyDoc;
-var replyToReplyTime;
-var replyToReplyContent;
-var replyToReplyPoster;
+var myDocDbu;
+var replyToReplyDocDbu;
+var replyToReplyTimeDbu;
+var replyToReplyContentDbu;
+var replyToReplyPosterDbu;
+var myReplyToReplyDbu;
+List<List> dbuRepliesToReplies = [];
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -130,15 +134,15 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       print("${threadAuthorDbu} + ${threadTitleDbu} + ${threadContentDbu} + ${threadID}");
                       print("context: ${context}");
                       await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                        myDoc = d.docs.first.id;
-                        print(myDoc);
+                        myDocDbu = d.docs.first.id;
+                        print(myDocDbu);
                       });
                       //var oneReply = {"animal": "dog", "breed": "belgian tervuren"};
 
                       //Getting the replies of a thread
-                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies");//.add(oneReply);
+                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies");//.add(oneReply);
 
-                      QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                      QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
                       theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
                       //print(theDbuThreadReplies[0]["threadNumber"]);
                       //print(theDbuThreadReplies.where((sr) => sr.replyContent == "Four!"));
@@ -214,7 +218,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                     itemBuilder: (context, index){
                       return Column(
                         children: <Widget>[
-                          replyToReplyContent != null && replyToReplyPoster != null?//theDbuThreadReplies.length > 0?//discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
+                          replyToReplyContentDbu != null && replyToReplyPosterDbu != null?//theDbuThreadReplies.length > 0?//discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
                           Column(
                           children: <Widget>[
                             Container(
@@ -222,7 +226,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                             ),
                             Container(
                               //Reply to: Reply content, reply poster
-                              child: Text("Reply to: " + theDbuThreadReplies[myIndex]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[myIndex]["replier"]),//Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
+                              child: Text("Reply to: " + dbuRepliesToReplies[index][0] + "\n" + "Posted by: " + dbuRepliesToReplies[index][1]),//Text("Reply to: " + replyToReplyContentDbu + "\n" + "Posted by: " + replyToReplyPosterDbu),//Text("Reply to: " + theDbuThreadReplies[replyNum]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[replyNum]["replier"]),//Text("Reply to: " + theDbuThreadReplies[myIndex]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[myIndex]["replier"]),//Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
                               color: Colors.teal,
                               width: 360,
                             ),
@@ -240,22 +244,25 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                 width: 360,
                               ),
                               onTap: () async{
-                                replyToReplyTime = theDbuThreadReplies![index]["time"].toString();
-                                replyToReplyContent = theDbuThreadReplies![index]["replyContent"].toString();
-                                replyToReplyPoster = theDbuThreadReplies![index]["replier"].toString();
-                                print("This is replyToReplyTime: $replyToReplyTime");
+                                replyToReplyTimeDbu = theDbuThreadReplies![index]["time"].toString();
+                                replyToReplyContentDbu = theDbuThreadReplies![index]["replyContent"].toString();
+                                replyToReplyPosterDbu = theDbuThreadReplies![index]["replier"].toString();
+                                print("This is replyToReplyTime: $replyToReplyTimeDbu");
 
                                 await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                  myDoc = d.docs.first.id;
-                                  print(myDoc);
+                                  myDocDbu = d.docs.first.id;
+                                  print(myDocDbu);
                                 });
-                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where("time", isEqualTo: replyToReplyTime).get().then((rd) {
-                                  replyToReplyDoc = rd.docs.first.id;
+                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
+                                  replyToReplyDocDbu = rd.docs.first.id;
                                   //replyToReplyTime = rd.docs.first["time"];
                                   //print("This is t: $replyToReplyTime");
                                   //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-                                  print(replyToReplyDoc);
+                                  print(replyToReplyDocDbu);
                                 });
+
+                                List<String> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu];
+                                dbuRepliesToReplies.add(tempReplyToReplyList);
 
                                 //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
 
@@ -265,14 +272,21 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                 //theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
 
                                 print(theDbuThreadReplies);
-                                print(replyToReplyDoc);
+                                print(replyToReplyDocDbu);
                                 //print(replyToReplyDoc.snapshot);
                                 //print(replyContent);
-                                DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get();
+                                DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
                                 print(ds.data());
                                 print(ds.data().runtimeType);
-                                print(theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTime));
-                                myIndex = theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTime); //where replyToReplyDoc is in theDbuThreadReplies.
+                                print(theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeDbu));
+                                myIndex = theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeDbu); //where replyToReplyDoc is in theDbuThreadReplies.
+                                myReplyToReplyDbu = theDbuThreadReplies[myIndex];
+                                //print("myReplyToReplyDbu runtime type: ${myReplyToReplyDbu.runtimeType}");
+                                Map<String, dynamic> myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
+                                print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
+                                print(myReplyToReplyDbuMap["replyContent"]);
+
+                                print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
                                 print("This is myIndex: $myIndex");
                                 discussionBoardUpdatesReplyBool = true;
                                 discussionBoardUpdatesReplyingToReplyBool = true;
@@ -301,22 +315,25 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                       width: 360,
                                     ),
                                     onTap: () async{
-                                      replyToReplyTime = theDbuThreadReplies![index]["time"].toString();
-                                      replyToReplyContent = theDbuThreadReplies![index]["replyContent"].toString();
-                                      replyToReplyPoster = theDbuThreadReplies![index]["replier"].toString();
-                                      print("This is replyToReplyTime: $replyToReplyTime");
+                                      replyToReplyTimeDbu = theDbuThreadReplies![index]["time"].toString();
+                                      replyToReplyContentDbu = theDbuThreadReplies![index]["replyContent"].toString();
+                                      replyToReplyPosterDbu = theDbuThreadReplies![index]["replier"].toString();
+                                      print("This is replyToReplyTime: $replyToReplyTimeDbu");
 
                                       await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                        myDoc = d.docs.first.id;
-                                        print(myDoc);
+                                        myDocDbu = d.docs.first.id;
+                                        print(myDocDbu);
                                       });
-                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where("time", isEqualTo: replyToReplyTime).get().then((rd) {
-                                        replyToReplyDoc = rd.docs.first.id;
+                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
+                                        replyToReplyDocDbu = rd.docs.first.id;
                                         //replyToReplyTime = rd.docs.first["time"];
                                         //print("This is t: $replyToReplyTime");
                                         //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-                                        print(replyToReplyDoc);
+                                        print(replyToReplyDocDbu);
                                       });
+
+                                      List<String> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu];
+                                      dbuRepliesToReplies.add(tempReplyToReplyList);
 
                                       //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
 
@@ -326,16 +343,24 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                       //theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
 
                                       print(theDbuThreadReplies);
-                                      print(replyToReplyDoc);
+                                      print(replyToReplyDocDbu);
                                       //print(replyToReplyDoc.snapshot);
                                       //print(replyContent);
-                                      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get();
+                                      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
                                       print(ds.data());
                                       print(ds.data().runtimeType);
-                                      print(theDbuThreadReplies[1].runtimeType);
-                                      myIndex = theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTime);
+                                      //print(theDbuThreadReplies[1].runtimeType);
+                                      myIndex = theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeDbu);
                                       //where replyToReplyDoc is in theDbuThreadReplies.
-                                      print(theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTime));
+                                      print(theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeDbu));
+                                      myReplyToReplyDbu = theDbuThreadReplies[myIndex];
+                                      //print("myReplyToReplyDbu runtime type: ${myReplyToReplyDbu.runtimeType}");
+                                      Map<String, dynamic> myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
+                                      print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
+                                      print(myReplyToReplyDbuMap["replyContent"]);
+                                      //print("myReplyToReplyDbuList: ${myReplyToReplyDbuList}");
+
+                                      print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
                                       print("This is myIndex: $myIndex");
                                       discussionBoardUpdatesReplyBool = true;
                                       discussionBoardUpdatesReplyingToReplyBool = true;

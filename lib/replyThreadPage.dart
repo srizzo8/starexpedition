@@ -10,8 +10,11 @@ import 'package:get/get_core/src/get_main.dart';
 
 import 'createThread.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
+//import 'discussionBoardUpdatesPage.dart';
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesDatabaseFirestoreInfo.dart';
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesInformation.dart';
+import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesToRepliesDatabaseFirestoreInfo.dart';
+import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesToRepliesInformation.dart';
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
@@ -22,6 +25,8 @@ import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
 
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesDatabaseFirestoreInfo.dart';
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesInformation.dart';
+
+int replyNum = 0;
 
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
@@ -126,8 +131,14 @@ class replyThreadPageState extends State<replyThreadPage>{
               onTap: (){
                 final discussionBoardUpdatesRepliesInfo = Get.put(discussionBoardUpdatesRepliesInformation());
 
+                final discussionBoardUpdatesRepliesToRepliesInfo = Get.put(discussionBoardUpdatesRepliesToRepliesInformation());
+
                 Future<void> createDiscussionBoardUpdatesReply(DiscussionBoardUpdatesReplies dbur, var docName) async{
                   await discussionBoardUpdatesRepliesInfo.createMyDiscussionBoardUpdatesReply(dbur, docName);
+                }
+
+                Future<void> createDiscussionBoardUpdatesReplyToReply(DiscussionBoardUpdatesRepliesToReplies dburr, var secondDocName) async{
+                  await discussionBoardUpdatesRepliesToRepliesInfo.createMyDiscussionBoardUpdatesReplyToReply(dburr, secondDocName);
                 }
 
                 if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
@@ -143,12 +154,12 @@ class replyThreadPageState extends State<replyThreadPage>{
                     assert(threadNum is int);
                     print(threadNum.runtimeType);
                     var myReply = DiscussionBoardUpdatesReplies(
-                      threadNumber: threadNum,
-                      time: (DateTime.now()).toString(),
-                      replier: usernameReplyController.text,
-                      replyContent: replyContentController.text
+                        threadNumber: threadNum,
+                        time: (DateTime.now()).toString(),
+                        replier: usernameReplyController.text,
+                        replyContent: replyContentController.text
                     );
-                    createDiscussionBoardUpdatesReply(myReply, discussionBoardUpdatesPage.myDoc);
+                    createDiscussionBoardUpdatesReply(myReply, discussionBoardUpdatesPage.myDocDbu);
                     pendingDiscussionBoardUpdatesReply.add(DateTime.now().toString());
                     pendingDiscussionBoardUpdatesReply.add(usernameReplyController.text);
                     pendingDiscussionBoardUpdatesReply.add(replyContentController.text);
@@ -157,13 +168,16 @@ class replyThreadPageState extends State<replyThreadPage>{
                       threadNum = int.parse(discussionBoardUpdatesPage.threadID);
                       assert(threadNum is int);
                       print(threadNum.runtimeType);
-                      var myReply = DiscussionBoardUpdatesReplies(
+                      replyNum = discussionBoardUpdatesPage.myIndex;
+                      var myReply = DiscussionBoardUpdatesRepliesToReplies(
                           threadNumber: threadNum,
                           time: (DateTime.now()).toString(),
                           replier: usernameReplyController.text,
-                          replyContent: replyContentController.text
+                          replyContent: replyContentController.text,
+                          originalReplyInfo: (discussionBoardUpdatesPage.myReplyToReplyDbu as List<dynamic>),
+                          replyId: replyNum
                       );
-                      createDiscussionBoardUpdatesReply(myReply, discussionBoardUpdatesPage.replyToReplyDoc);
+                      createDiscussionBoardUpdatesReplyToReply(myReply, discussionBoardUpdatesPage.replyToReplyDocDbu);
                       //pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][1].toString());
                       //pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][2].toString());
                       //print('Do we exist? ' + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][3].toString() + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][4].toString());
