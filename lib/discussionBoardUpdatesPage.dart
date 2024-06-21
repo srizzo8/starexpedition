@@ -220,7 +220,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                     itemBuilder: (context, index){
                       return Column(
                         children: <Widget>[
-                          replyToReplyContentDbu != null && replyToReplyPosterDbu != null?//theDbuThreadReplies.length > 0?//discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
+                          theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"] != null && theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"] != null?//theDbuThreadReplies.length > 0?//discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
                           Column(
                           children: <Widget>[
                             Container(
