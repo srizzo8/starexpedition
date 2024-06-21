@@ -3,7 +3,7 @@ class DiscussionBoardUpdatesRepliesToReplies{
   final String time;
   final String replier;
   final String replyContent;
-  final List originalReplyInfo;
+  final List<dynamic> originalReplyInfo;
   final int replyId;
 
   const DiscussionBoardUpdatesRepliesToReplies({

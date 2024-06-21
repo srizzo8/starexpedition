@@ -184,7 +184,7 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Reply to: \n" + "Posted by: " + questionsAndAnswersThreads[int.parse(threadID)][4][index][3].toString() + "\n" + questionsAndAnswersThreads[int.parse(threadID)][4][index][4].toString()),
+                                child: Text("Reply to: \n" + "Posted by: " + questionsAndAnswersThreads[int.parse(threadID)][4][index][3].toString() + "\n" + questionsAndAnswersThreads[int.parse(threadID)][4][index][4].toString() + "INFO: ${questionsAndAnswersThreads}, ${questionsAndAnswersThreads[int.parse(threadID)]}, ${questionsAndAnswersThreads[int.parse(threadID)][4]}, ${questionsAndAnswersThreads[int.parse(threadID)][4][index]}, ${questionsAndAnswersThreads[int.parse(threadID)][4][index][4]}"),
                                 color: Colors.teal,
                                 width: 360,
                               ),

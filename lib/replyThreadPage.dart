@@ -27,6 +27,7 @@ import 'discussion_board_updates_firestore_database_information/discussionBoardU
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesInformation.dart';
 
 int replyNum = 0;
+List<dynamic> info = [];
 
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
@@ -137,8 +138,8 @@ class replyThreadPageState extends State<replyThreadPage>{
                   await discussionBoardUpdatesRepliesInfo.createMyDiscussionBoardUpdatesReply(dbur, docName);
                 }
 
-                Future<void> createDiscussionBoardUpdatesReplyToReply(DiscussionBoardUpdatesRepliesToReplies dburr, var secondDocName) async{
-                  await discussionBoardUpdatesRepliesToRepliesInfo.createMyDiscussionBoardUpdatesReplyToReply(dburr, secondDocName);
+                Future<void> createDiscussionBoardUpdatesReplyToReply(DiscussionBoardUpdatesReplies dbur, var secondDocName) async{
+                  await discussionBoardUpdatesRepliesToRepliesInfo.createMyDiscussionBoardUpdatesReplyToReply(dbur, secondDocName);
                 }
 
                 if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
@@ -149,39 +150,44 @@ class replyThreadPageState extends State<replyThreadPage>{
                 }
                 if(usernameReplyController.text != "" && replyContentController.text != ""){
                   if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool == true){
-                    threadNum = int.parse(discussionBoardUpdatesPage.threadID);
-                    //threadNumber = int.parse(discussionBoardUpdatesPage.threadID);
-                    assert(threadNum is int);
-                    print(threadNum.runtimeType);
-                    var myReply = DiscussionBoardUpdatesReplies(
+                    if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool == false){
+                      threadNum = int.parse(discussionBoardUpdatesPage.threadID);
+                      //threadNumber = int.parse(discussionBoardUpdatesPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      var myReply = DiscussionBoardUpdatesReplies(
                         threadNumber: threadNum,
                         time: (DateTime.now()).toString(),
                         replier: usernameReplyController.text,
-                        replyContent: replyContentController.text
-                    );
-                    createDiscussionBoardUpdatesReply(myReply, discussionBoardUpdatesPage.myDocDbu);
-                    pendingDiscussionBoardUpdatesReply.add(DateTime.now().toString());
-                    pendingDiscussionBoardUpdatesReply.add(usernameReplyController.text);
-                    pendingDiscussionBoardUpdatesReply.add(replyContentController.text);
-                    if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool == true){
+                        replyContent: replyContentController.text,
+                        theOriginalReplyInfo: []
+                      );
+                      createDiscussionBoardUpdatesReply(myReply, discussionBoardUpdatesPage.myDocDbu);
+                      pendingDiscussionBoardUpdatesReply.add(DateTime.now().toString());
+                      pendingDiscussionBoardUpdatesReply.add(usernameReplyController.text);
+                      pendingDiscussionBoardUpdatesReply.add(replyContentController.text);
+                    }
+                    else if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool == true){
                       discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool = false;
                       threadNum = int.parse(discussionBoardUpdatesPage.threadID);
                       assert(threadNum is int);
                       print(threadNum.runtimeType);
                       replyNum = discussionBoardUpdatesPage.myIndex;
-                      var myReply = DiscussionBoardUpdatesRepliesToReplies(
+                      var myReply = DiscussionBoardUpdatesReplies(
                           threadNumber: threadNum,
                           time: (DateTime.now()).toString(),
                           replier: usernameReplyController.text,
                           replyContent: replyContentController.text,
-                          originalReplyInfo: (discussionBoardUpdatesPage.myReplyToReplyDbu as List<dynamic>),
-                          replyId: replyNum
+                          theOriginalReplyInfo: discussionBoardUpdatesPage.myReplyToReplyDbuList
                       );
-                      createDiscussionBoardUpdatesReplyToReply(myReply, discussionBoardUpdatesPage.replyToReplyDocDbu);
+                      print("This is theOriginalReplyInfo: ${discussionBoardUpdatesPage.myReplyToReplyDbuList}");
+                      createDiscussionBoardUpdatesReplyToReply(myReply, discussionBoardUpdatesPage.myDocDbu); //replyToReplyDocDbu//discussionBoardUpdatesPage.replyToReplyDocDbu
+                      info = discussionBoardUpdatesPage.myReplyToReplyDbuList;
                       //pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][1].toString());
                       //pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][2].toString());
                       //print('Do we exist? ' + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][3].toString() + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][4].toString());
                     }
+                  }
                     else{
                       pendingDiscussionBoardUpdatesReply.add("");
                       pendingDiscussionBoardUpdatesReply.add("");
@@ -295,7 +301,6 @@ class replyThreadPageState extends State<replyThreadPage>{
                     newDiscoveriesPage.newDiscoveriesReplyBool = false;
                   }
                 }
-              }
             ),
           ],
         ),
