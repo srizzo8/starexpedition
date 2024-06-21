@@ -160,7 +160,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         time: (DateTime.now()).toString(),
                         replier: usernameReplyController.text,
                         replyContent: replyContentController.text,
-                        theOriginalReplyInfo: []
+                        theOriginalReplyInfo: {}
                       );
                       createDiscussionBoardUpdatesReply(myReply, discussionBoardUpdatesPage.myDocDbu);
                       pendingDiscussionBoardUpdatesReply.add(DateTime.now().toString());
@@ -178,11 +178,11 @@ class replyThreadPageState extends State<replyThreadPage>{
                           time: (DateTime.now()).toString(),
                           replier: usernameReplyController.text,
                           replyContent: replyContentController.text,
-                          theOriginalReplyInfo: discussionBoardUpdatesPage.myReplyToReplyDbuList
+                          theOriginalReplyInfo: discussionBoardUpdatesPage.myReplyToReplyDbuMap
                       );
-                      print("This is theOriginalReplyInfo: ${discussionBoardUpdatesPage.myReplyToReplyDbuList}");
+                      print("This is theOriginalReplyInfo: ${discussionBoardUpdatesPage.myReplyToReplyDbuMap}");
                       createDiscussionBoardUpdatesReplyToReply(myReply, discussionBoardUpdatesPage.myDocDbu); //replyToReplyDocDbu//discussionBoardUpdatesPage.replyToReplyDocDbu
-                      info = discussionBoardUpdatesPage.myReplyToReplyDbuList;
+                      //info = discussionBoardUpdatesPage.myReplyToReplyDbuMap as List;
                       //pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][1].toString());
                       //pendingDiscussionBoardUpdatesReply.add(discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][2].toString());
                       //print('Do we exist? ' + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][3].toString() + discussionBoardUpdatesPage.discussionBoardUpdatesThreads[int.parse(discussionBoardUpdatesPage.threadID)][4][discussionBoardUpdatesPage.myIndex][4].toString());

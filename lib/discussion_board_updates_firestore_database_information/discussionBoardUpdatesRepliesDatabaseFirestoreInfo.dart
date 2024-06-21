@@ -3,7 +3,7 @@ class DiscussionBoardUpdatesReplies{
   final String time;
   final String replier;
   final String replyContent;
-  final List<dynamic> theOriginalReplyInfo;
+  final Map<String, dynamic> theOriginalReplyInfo;
 
   const DiscussionBoardUpdatesReplies({
     required this.threadNumber,

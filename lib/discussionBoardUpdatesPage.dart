@@ -38,7 +38,7 @@ var replyToReplyPosterDbu;
 var myReplyToReplyDbu;
 var replyToReplyOriginalInfoDbu;
 List<List> dbuRepliesToReplies = [];
-List<dynamic> myReplyToReplyDbuList = [];
+Map<String, dynamic> myReplyToReplyDbuMap = {};
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -228,7 +228,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                             ),
                             Container(
                               //Reply to: Reply content, reply poster
-                              child: Text("Reply to: " + theDbuThreadReplies[index]["theOriginalReplyInfo"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index][1].toString()),//Text("Reply to: " + replyToReplyContentDbu + "\n" + "Posted by: " + replyToReplyPosterDbu),//Text("Reply to: " + theDbuThreadReplies[replyNum]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[replyNum]["replier"]),//Text("Reply to: " + theDbuThreadReplies[myIndex]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[myIndex]["replier"]),//Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
+                              child: Text("Reply to: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),//Text("Reply to: " + replyToReplyContentDbu + "\n" + "Posted by: " + replyToReplyPosterDbu),//Text("Reply to: " + theDbuThreadReplies[replyNum]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[replyNum]["replier"]),//Text("Reply to: " + theDbuThreadReplies[myIndex]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[myIndex]["replier"]),//Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
                               color: Colors.teal, //theDbuThreadReplies[index]["theOriginalReplyInfo"].toString(), theDbuThreadReplies[index]["theOriginalReplyInfo"].toString()
                               width: 360,
                             ),
@@ -284,13 +284,13 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                 myReplyToReplyDbu = theDbuThreadReplies[myIndex];
                                 //print("myReplyToReplyDbu runtime type: ${myReplyToReplyDbu.runtimeType}");
                                 //myReplyToReplyDbu.forEach((k, v) => myReplyToReplyDbuList.);//List.from(myReplyToReplyDbu);//Map.from(myReplyToReplyDbu);
-                                var myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
-                                myReplyToReplyDbuList = myReplyToReplyDbuMap.entries.map((myEntry) => "${myEntry.key}: ${myEntry.value}").toList();
+                                myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
+                                //myReplyToReplyDbuList = myReplyToReplyDbuMap.entries.map((myEntry) => "${myEntry.key}: ${myEntry.value}").toList();
 
-                                List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuList];
+                                List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuMap];
                                 dbuRepliesToReplies.add(tempReplyToReplyList);
 
-                                print("myReplyToReplyDbuList: ${myReplyToReplyDbuList}");
+                                print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
 
                                 print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
                                 print("This is myIndex: $myIndex");
@@ -360,15 +360,15 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                       print(theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeDbu));
                                       myReplyToReplyDbu = theDbuThreadReplies[myIndex];
                                       //print("myReplyToReplyDbu runtime type: ${myReplyToReplyDbu.runtimeType}");
-                                      var myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
-                                      myReplyToReplyDbuList = myReplyToReplyDbuMap.entries.map((myEntry) => "${myEntry.key}: ${myEntry.value}").toList();
+                                      myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
+                                      //myReplyToReplyDbuList = myReplyToReplyDbuMap.entries.map((myEntry) => "${myEntry.key}: ${myEntry.value}").toList();
 
-                                      List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuList];
+                                      List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuMap];
                                       dbuRepliesToReplies.add(tempReplyToReplyList);
 
                                       //print("This is replyToReplyOriginalInfoDbu: ${replyToReplyOriginalInfoDbu["replyContent"]}");
                                       //print(myReplyToReplyDbuList["replyContent"]);
-                                      print("myReplyToReplyDbuList: ${myReplyToReplyDbuList}");
+                                      print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
 
                                       print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
                                       print("This is myIndex: $myIndex");
