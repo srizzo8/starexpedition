@@ -157,7 +157,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                       print(threadNum.runtimeType);
                       var myReply = DiscussionBoardUpdatesReplies(
                         threadNumber: threadNum,
-                        time: (DateTime.now()).toString(),
+                        time: DateTime.now(),
                         replier: usernameReplyController.text,
                         replyContent: replyContentController.text,
                         theOriginalReplyInfo: {}
@@ -175,7 +175,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                       replyNum = discussionBoardUpdatesPage.myIndex;
                       var myReply = DiscussionBoardUpdatesReplies(
                           threadNumber: threadNum,
-                          time: (DateTime.now()).toString(),
+                          time: DateTime.now(),
                           replier: usernameReplyController.text,
                           replyContent: replyContentController.text,
                           theOriginalReplyInfo: discussionBoardUpdatesPage.myReplyToReplyDbuMap

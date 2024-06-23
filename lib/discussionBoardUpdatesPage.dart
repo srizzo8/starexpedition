@@ -146,6 +146,55 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
 
                       QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
                       theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                      print(theDbuThreadReplies.runtimeType);
+                      print(theDbuThreadReplies[0]["time"].runtimeType);
+                      //print(theDbuThreadReplies((a, b) => a[0]["time"].compareTo(b[0]["time"])));
+
+                      print(DateTime.now().runtimeType);
+
+                      //theDbuThreadReplies.sort((a, b) => a["time"].isBefore(b["time"]));
+                      //print("theDbuThreadRepliesSorted: ${theDbuThreadReplies}");
+
+                      for(var t in theDbuThreadReplies){
+                        print(t["time"].runtimeType);
+                      }
+
+                      if(theDbuThreadReplies.length >= 2){
+                      theDbuThreadReplies.sort((r1, r2){
+                        print("r1 and r2: ${r1}, ${r2}");
+                        if(r1["time"].isBefore(r2["time"]) && !(r2["time"].isBefore(r1["time"]))){
+                          return 1;
+                        }
+                        else if(r2["time"].isBefore(r1["time"]) && !(r1["time"].isBefore(r2["time"]))){
+                          return -1;
+                        }
+                        return r1["time"].compareTo(r2["time"]);
+                      });
+                      }
+                      else{
+                        print("You need at least two elements in theDbuThreadReplies! ${theDbuThreadReplies.length}");
+                      }
+
+                      if(theDbuThreadReplies.length >= 2){
+                        print("theDbuThreadReplies: $theDbuThreadReplies");
+                        var i = theDbuThreadReplies.sort((r1, r2) => r1["time"].toString().compareTo(r2["time"].toString()));
+                        print("Value of i: $i");
+                      }
+                      else{
+                        print("theDbuThreadReplies: $theDbuThreadReplies");
+                        print("theDbuThreadReplies[0][time]: ${theDbuThreadReplies[0]["time"]}");
+                      }
+
+                      //Sorting Discussion Board Updates threads replies based on time
+                      if(theDbuThreadReplies.length >= 2){
+                        print("theDbuThreadReplies: $theDbuThreadReplies");
+                        //theDbuThreadReplies.sort((r1, r2) => r1.time.compareTo(r2.time));
+                      }
+                      else{
+                        print("theDbuThreadReplies: $theDbuThreadReplies");
+                      }
+
                       //print(theDbuThreadReplies[0]["threadNumber"]);
                       //print(theDbuThreadReplies.where((sr) => sr.replyContent == "Four!"));
                       print("Number of theDbuThreadReplies: ${theDbuThreadReplies.length}");
