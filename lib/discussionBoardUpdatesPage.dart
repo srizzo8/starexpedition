@@ -148,17 +148,14 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
 
                       print(theDbuThreadReplies.runtimeType);
+                      print(theDbuThreadReplies[0]["time"].toDate().runtimeType);
                       //print(theDbuThreadReplies[0]["time"].runtimeType);
                       //print(theDbuThreadReplies((a, b) => a[0]["time"].compareTo(b[0]["time"])));
 
                       print(DateTime.now().runtimeType);
 
-                      //theDbuThreadReplies.sort((a, b) => a["time"].isBefore(b["time"]));
-                      //print("theDbuThreadRepliesSorted: ${theDbuThreadReplies}");
-
-                      for(var t in theDbuThreadReplies){
-                        print(t["time"].runtimeType);
-                      }
+                      (theDbuThreadReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+                      //print("theDbuThreadRepliesSorted: ${sortedList}");
 
                       /*
                       if(theDbuThreadReplies.length >= 2){
@@ -287,7 +284,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                 width: 360,
                               ),
                               onTap: () async{
-                                replyToReplyTimeDbu = theDbuThreadReplies![index]["time"].toString();
+                                replyToReplyTimeDbu = theDbuThreadReplies![index]["time"];//.toString();
                                 replyToReplyContentDbu = theDbuThreadReplies![index]["replyContent"].toString();
                                 replyToReplyPosterDbu = theDbuThreadReplies![index]["replier"].toString();
                                 //replyToReplyOriginalInfoDbu = theDbuThreadReplies![index]["originalReplyInfo"].toString();
@@ -362,7 +359,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                       width: 360,
                                     ),
                                     onTap: () async{
-                                      replyToReplyTimeDbu = theDbuThreadReplies![index]["time"].toString();
+                                      replyToReplyTimeDbu = theDbuThreadReplies![index]["time"];//.toString();
                                       replyToReplyContentDbu = theDbuThreadReplies![index]["replyContent"].toString();
                                       replyToReplyPosterDbu = theDbuThreadReplies![index]["replier"].toString();
                                       //replyToReplyOriginalInfoDbu = theDbuThreadReplies![index]["originalReplyInfo"].toString();
