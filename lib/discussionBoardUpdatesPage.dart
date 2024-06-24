@@ -148,7 +148,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
 
                       print(theDbuThreadReplies.runtimeType);
-                      print(theDbuThreadReplies[0]["time"].runtimeType);
+                      //print(theDbuThreadReplies[0]["time"].runtimeType);
                       //print(theDbuThreadReplies((a, b) => a[0]["time"].compareTo(b[0]["time"])));
 
                       print(DateTime.now().runtimeType);
@@ -160,6 +160,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                         print(t["time"].runtimeType);
                       }
 
+                      /*
                       if(theDbuThreadReplies.length >= 2){
                       theDbuThreadReplies.sort((r1, r2){
                         print("r1 and r2: ${r1}, ${r2}");
@@ -183,17 +184,8 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       }
                       else{
                         print("theDbuThreadReplies: $theDbuThreadReplies");
-                        print("theDbuThreadReplies[0][time]: ${theDbuThreadReplies[0]["time"]}");
-                      }
-
-                      //Sorting Discussion Board Updates threads replies based on time
-                      if(theDbuThreadReplies.length >= 2){
-                        print("theDbuThreadReplies: $theDbuThreadReplies");
-                        //theDbuThreadReplies.sort((r1, r2) => r1.time.compareTo(r2.time));
-                      }
-                      else{
-                        print("theDbuThreadReplies: $theDbuThreadReplies");
-                      }
+                        //print("theDbuThreadReplies[0][time]: ${theDbuThreadReplies[0]["time"]}");
+                      }*/
 
                       //print(theDbuThreadReplies[0]["threadNumber"]);
                       //print(theDbuThreadReplies.where((sr) => sr.replyContent == "Four!"));
@@ -284,7 +276,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                             //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
                             Container(
                               //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
-                              child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),//Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
+                              child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),//Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
                               color: Colors.tealAccent,
                               width: 360,
                             ),
@@ -359,7 +351,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                 //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
                                 Container(
                                   //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
-                                  child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),//Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
+                                  child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),//Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
                                   color: Colors.tealAccent,
                                   width: 360,
                                 ),
