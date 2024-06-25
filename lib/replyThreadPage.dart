@@ -205,13 +205,15 @@ class replyThreadPageState extends State<replyThreadPage>{
                     discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;
                   }
                   else if(questionsAndAnswersPage.questionsAndAnswersReplyBool == true){
-                    threadNum = int.parse(questionsAndAnswersPage.threadID);
-                    assert(threadNum is int);
-                    print(threadNum.runtimeType);
-                    pendingQuestionsAndAnswersReply.add(DateTime.now().toString());
-                    pendingQuestionsAndAnswersReply.add(usernameReplyController.text);
-                    pendingQuestionsAndAnswersReply.add(replyContentController.text);
-                    if(questionsAndAnswersPage.questionsAndAnswersReplyingToReplyBool == true){
+                    if(questionsAndAnswersPage.questionsAndAnswersReplyingToReplyBool == false){
+                      threadNum = int.parse(questionsAndAnswersPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      pendingQuestionsAndAnswersReply.add(DateTime.now().toString());
+                      pendingQuestionsAndAnswersReply.add(usernameReplyController.text);
+                      pendingQuestionsAndAnswersReply.add(replyContentController.text);
+                    }
+                    else if(questionsAndAnswersPage.questionsAndAnswersReplyingToReplyBool == true){
                       questionsAndAnswersPage.questionsAndAnswersReplyingToReplyBool = false;
                       pendingQuestionsAndAnswersReply.add(questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][1].toString());
                       pendingQuestionsAndAnswersReply.add(questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][2].toString());
@@ -229,13 +231,15 @@ class replyThreadPageState extends State<replyThreadPage>{
                     questionsAndAnswersPage.questionsAndAnswersReplyBool = false;
                   }
                   else if(technologiesPage.technologiesReplyBool == true){
-                    threadNum = int.parse(technologiesPage.threadID);
-                    assert(threadNum is int);
-                    print(threadNum.runtimeType);
-                    pendingTechnologiesReply.add(DateTime.now().toString());
-                    pendingTechnologiesReply.add(usernameReplyController.text);
-                    pendingTechnologiesReply.add(replyContentController.text);
-                    if(technologiesPage.technologiesReplyingToReplyBool == true){
+                    if(technologiesPage.technologiesReplyingToReplyBool == false){
+                      threadNum = int.parse(technologiesPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      pendingTechnologiesReply.add(DateTime.now().toString());
+                      pendingTechnologiesReply.add(usernameReplyController.text);
+                      pendingTechnologiesReply.add(replyContentController.text);
+                    }
+                    else if(technologiesPage.technologiesReplyingToReplyBool == true){
                       technologiesPage.technologiesReplyingToReplyBool = false;
                       pendingTechnologiesReply.add(technologiesPage.technologiesThreads[int.parse(technologiesPage.threadID)][4][technologiesPage.myIndex][1].toString());
                       pendingTechnologiesReply.add(technologiesPage.technologiesThreads[int.parse(technologiesPage.threadID)][4][technologiesPage.myIndex][2].toString());
@@ -253,13 +257,15 @@ class replyThreadPageState extends State<replyThreadPage>{
                     technologiesPage.technologiesReplyBool = false;
                   }
                   else if(projectsPage.projectsReplyBool == true){
-                    threadNum = int.parse(projectsPage.threadID);
-                    assert(threadNum is int);
-                    print(threadNum.runtimeType);
-                    pendingProjectsReply.add(DateTime.now().toString());
-                    pendingProjectsReply.add(usernameReplyController.text);
-                    pendingProjectsReply.add(replyContentController.text);
-                    if(projectsPage.projectsReplyingToReplyBool == true){
+                    if(projectsPage.projectsReplyingToReplyBool == false){
+                      threadNum = int.parse(projectsPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      pendingProjectsReply.add(DateTime.now().toString());
+                      pendingProjectsReply.add(usernameReplyController.text);
+                      pendingProjectsReply.add(replyContentController.text);
+                    }
+                    else if(projectsPage.projectsReplyingToReplyBool == true){
                       projectsPage.projectsReplyingToReplyBool = false;
                       pendingProjectsReply.add(projectsPage.projectsThreads[int.parse(projectsPage.threadID)][4][projectsPage.myIndex][1].toString());
                       pendingProjectsReply.add(projectsPage.projectsThreads[int.parse(projectsPage.threadID)][4][projectsPage.myIndex][2].toString());
@@ -277,13 +283,15 @@ class replyThreadPageState extends State<replyThreadPage>{
                     projectsPage.projectsReplyBool = false;
                   }
                   else if(newDiscoveriesPage.newDiscoveriesReplyBool == true){
-                    threadNum = int.parse(newDiscoveriesPage.threadID);
-                    assert(threadNum is int);
-                    print(threadNum.runtimeType);
-                    pendingNewDiscoveriesReply.add(DateTime.now().toString());
-                    pendingNewDiscoveriesReply.add(usernameReplyController.text);
-                    pendingNewDiscoveriesReply.add(replyContentController.text);
-                    if(newDiscoveriesPage.newDiscoveriesReplyingToReplyBool == true){
+                    if(newDiscoveriesPage.newDiscoveriesReplyingToReplyBool == false){
+                      threadNum = int.parse(newDiscoveriesPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      pendingNewDiscoveriesReply.add(DateTime.now().toString());
+                      pendingNewDiscoveriesReply.add(usernameReplyController.text);
+                      pendingNewDiscoveriesReply.add(replyContentController.text);
+                    }
+                    else if(newDiscoveriesPage.newDiscoveriesReplyingToReplyBool == true){
                       newDiscoveriesPage.newDiscoveriesReplyingToReplyBool = false;
                       pendingNewDiscoveriesReply.add(newDiscoveriesPage.newDiscoveriesThreads[int.parse(newDiscoveriesPage.threadID)][4][newDiscoveriesPage.myIndex][1].toString());
                       pendingNewDiscoveriesReply.add(newDiscoveriesPage.newDiscoveriesThreads[int.parse(newDiscoveriesPage.threadID)][4][newDiscoveriesPage.myIndex][2].toString());
