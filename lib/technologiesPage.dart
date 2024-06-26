@@ -319,7 +319,7 @@ class technologiesThreadContent extends StatelessWidget{
                                     myIndex = theTThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeT);
 
                                     print(theTThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeT));
-                                    myReplyToReplyT= theTThreadReplies[myIndex];
+                                    myReplyToReplyT = theTThreadReplies[myIndex];
 
                                     myReplyToReplyTMap = Map.from(myReplyToReplyT);
 
@@ -328,7 +328,7 @@ class technologiesThreadContent extends StatelessWidget{
 
                                     print("myReplyToReplyTMap: ${myReplyToReplyTMap}");
 
-                                    print("myReplyToReplyQaa: ${myReplyToReplyT["replyContent"]}");
+                                    print("myReplyToReplyT: ${myReplyToReplyT["replyContent"]}");
                                     print("This is myIndex: $myIndex");
 
                                     technologiesReplyBool = true;

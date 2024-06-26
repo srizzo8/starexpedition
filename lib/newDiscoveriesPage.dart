@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'createThread.dart';
 import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
+import 'discussionBoardPage.dart' as discussionBoardPage;
 
 bool newDiscoveriesBool = false;
 bool newDiscoveriesReplyBool = false;
@@ -22,6 +24,16 @@ String threadAuthorNd = "";
 String threadTitleNd = "";
 String threadContentNd = "";
 String threadID = "";
+var theNdThreadReplies;
+var myDocNd;
+var replyToReplyDocNd;
+var replyToReplyTimeNd;
+var replyToReplyContentNd;
+var replyToReplyPosterNd;
+var myReplyToReplyNd;
+var replyToReplyOriginalInfoNd;
+List<List> ndRepliesToReplies = [];
+Map<String, dynamic> myReplyToReplyNdMap = {};
 
 class newDiscoveriesPage extends StatefulWidget{
   const newDiscoveriesPage ({Key? key}) : super(key: key);
@@ -92,7 +104,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: newDiscoveriesThreads.reversed.toList().length,
+                itemCount: discussionBoardPage.newDiscoveriesThreads.length,
                 itemBuilder: (context, index){
                   return Column(
                     children: <Widget>[
@@ -101,18 +113,41 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                       ),
                       GestureDetector(
                           child: Container(
-                            child: Text(reversedNewDiscoveriesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedNewDiscoveriesThreadsIterable.toList()[index][0]),
+                            child: Text(discussionBoardPage.newDiscoveriesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString()),
                             height: 30,
                             width: 360,
                             color: Colors.tealAccent,
                           ),
-                          onTap: (){
+                          onTap: () async{
+                            print("This is index: $index");
+                            print("discussionBoardPage.newDiscoveriesThreads is null? ${discussionBoardPage.newDiscoveriesThreads == null}");
                             print("I clicked on a thread");
-                            print('You clicked on: ' + reversedNewDiscoveriesThreadsIterable.toList()[index][1]);
-                            threadAuthorNd = reversedNewDiscoveriesThreadsIterable.toList()[index][0];
-                            threadTitleNd = reversedNewDiscoveriesThreadsIterable.toList()[index][1];
-                            threadContentNd = reversedNewDiscoveriesThreadsIterable.toList()[index][2];
-                            threadID = reversedNewDiscoveriesThreadsIterable.toList()[index][3];
+                            threadAuthorNd = discussionBoardPage.newDiscoveriesThreads![index]["poster"].toString();
+                            threadTitleNd = discussionBoardPage.newDiscoveriesThreads![index]["threadTitle"].toString();
+                            threadContentNd = discussionBoardPage.newDiscoveriesThreads![index]["threadContent"].toString();
+                            threadID = discussionBoardPage.newDiscoveriesThreads![index]["threadId"].toString();
+
+                            print(discussionBoardPage.newDiscoveriesThreads![index]);
+                            print("${threadAuthorNd} + ${threadTitleNd} + ${threadContentNd} + ${threadID}");
+                            print("context: ${context}");
+                            await FirebaseFirestore.instance.collection("New_Discoveries").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                              myDocNd = d.docs.first.id;
+                              print(myDocNd);
+                            });
+
+                            await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies");
+
+                            QuerySnapshot ndRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies").get();
+                            theNdThreadReplies = ndRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                            print(theNdThreadReplies.runtimeType);
+
+                            print(DateTime.now().runtimeType);
+
+                            (theNdThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
+
+                            print("Number of theNdThreadReplies: ${theNdThreadReplies.length}");
+
                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => newDiscoveriesThreadContent()));
                           }
                       ),
@@ -164,7 +199,6 @@ class newDiscoveriesThreadContent extends StatelessWidget{
               print(reversedNewDiscoveriesThreadsIterable.toList());
               print(threadID);
               Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-              //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
               print('Replying to the thread');
             }
           ),
@@ -173,23 +207,23 @@ class newDiscoveriesThreadContent extends StatelessWidget{
               ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemCount: newDiscoveriesThreads[int.parse(threadID)][4].length,
+                itemCount: theNdThreadReplies.length,
                 itemBuilder: (context, index){
                   return Column(
                     children: <Widget>[
-                      newDiscoveriesThreads[int.parse(threadID)][4][index][3] != "" && newDiscoveriesThreads[int.parse(threadID)][4][index][4] != ""?
+                      theNdThreadReplies[index]["theOriginalReplyInfo"]["replyContent"] != null && theNdThreadReplies[index]["theOriginalReplyInfo"]["replier"] != null?
                         Column(
                           children: <Widget>[
                             Container(
                               height: 5,
                             ),
                             Container(
-                              child: Text("Reply to: \n" + "Posted by: " + newDiscoveriesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + newDiscoveriesThreads[int.parse(threadID)][4][index][4].toString()),
+                              child: Text("Reply to: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
                               color: Colors.teal,
                               width: 360,
                             ),
                             Container(
-                              child: Text("Posted on: " + newDiscoveriesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + newDiscoveriesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + newDiscoveriesThreads[int.parse(threadID)][4][index][2].toString()),
+                              child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
                               color: Colors.tealAccent,
                               width: 360,
                             ),
@@ -199,13 +233,45 @@ class newDiscoveriesThreadContent extends StatelessWidget{
                                 color: Colors.purple.shade200,
                                 width: 360,
                               ),
-                              onTap: (){
-                                myIndex = index;
+                              onTap: () async{
+                                replyToReplyTimeNd = theNdThreadReplies![index]["time"];
+                                replyToReplyContentNd = theNdThreadReplies![index]["replyContent"].toString();
+                                replyToReplyPosterNd = theNdThreadReplies![index]["replier"].toString();
+
+                                print("This is replyToReplyTime: $replyToReplyTimeNd");
+
+                                await FirebaseFirestore.instance.collection("New_Discoveries").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                  myDocNd = d.docs.first.id;
+                                  print(myDocNd);
+                                });
+
+                                await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies").where("time", isEqualTo: replyToReplyTimeNd).get().then((rd) {
+                                  replyToReplyDocNd = rd.docs.first.id;
+                                  print(replyToReplyDocNd);
+                                });
+
+                                print(theNdThreadReplies);
+                                print(replyToReplyDocNd);
+
+                                DocumentSnapshot ds = await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies").doc(replyToReplyDocNd).get();
+                                print(ds.data());
+                                print(ds.data().runtimeType);
+                                print(theNdThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeNd));
+
+                                myIndex = theNdThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeNd);
+                                myReplyToReplyNd = theNdThreadReplies[myIndex];
+                                myReplyToReplyNdMap = Map.from(myReplyToReplyNd);
+
+                                List<dynamic> tempReplyToReplyList = [replyToReplyContentNd, replyToReplyPosterNd, myReplyToReplyNdMap];
+                                ndRepliesToReplies.add(tempReplyToReplyList);
+
+                                print("myReplyToReplyNdMap: ${myReplyToReplyNdMap}");
+                                print("myReplyToReplyNd: ${myReplyToReplyNd["replyContent"]}");
+                                print("This is myIndex: $myIndex");
+
                                 newDiscoveriesReplyBool = true;
                                 newDiscoveriesReplyingToReplyBool = true;
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                print('Reply no. ' + index.toString());
-                                print('Replying to this reply: ' + newDiscoveriesThreads[int.parse(threadID)][4][myIndex][2].toString());
                               }
                             ),
                           ]
@@ -215,7 +281,7 @@ class newDiscoveriesThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Posted on: " + newDiscoveriesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + newDiscoveriesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + newDiscoveriesThreads[int.parse(threadID)][4][index][2].toString()),
+                                child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
                                 color: Colors.tealAccent,
                                 width: 360,
                               ),
@@ -225,13 +291,48 @@ class newDiscoveriesThreadContent extends StatelessWidget{
                                   color: Colors.purple.shade200,
                                   width: 360,
                                 ),
-                                onTap: (){
-                                  myIndex = index;
+                                onTap: () async{
+                                  replyToReplyTimeNd = theNdThreadReplies![index]["time"];
+                                  replyToReplyContentNd = theNdThreadReplies![index]["replyContent"].toString();
+                                  replyToReplyPosterNd = theNdThreadReplies![index]["replier"].toString();
+
+                                  print("This is replyToReplyTime: $replyToReplyTimeNd");
+
+                                  await FirebaseFirestore.instance.collection("New_Discoveries").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                    myDocNd = d.docs.first.id;
+                                    print(myDocNd);
+                                  });
+
+                                  await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies").where("time", isEqualTo: replyToReplyTimeNd).get().then((rd) {
+                                    replyToReplyDocNd = rd.docs.first.id;
+                                    print(replyToReplyDocNd);
+                                  });
+
+                                  print(theNdThreadReplies);
+                                  print(replyToReplyDocNd);
+
+                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies").doc(replyToReplyDocNd).get();
+                                  print(ds.data());
+                                  print(ds.data().runtimeType);
+
+                                  myIndex = theNdThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeNd);
+
+                                  print(theNdThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeNd));
+                                  myReplyToReplyNd = theNdThreadReplies[myIndex];
+
+                                  myReplyToReplyNdMap = Map.from(myReplyToReplyNd);
+
+                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentNd, replyToReplyPosterNd, myReplyToReplyNdMap];
+                                  ndRepliesToReplies.add(tempReplyToReplyList);
+
+                                  print("myReplyToReplyNdMap: ${myReplyToReplyNdMap}");
+
+                                  print("myReplyToReplyNd: ${myReplyToReplyNd["replyContent"]}");
+                                  print("This is myIndex: $myIndex");
+
                                   newDiscoveriesReplyBool = true;
                                   newDiscoveriesReplyingToReplyBool = true;
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                  print('Reply no. ' + index.toString());
-                                  print('Replying to this reply: ' + newDiscoveriesThreads[int.parse(threadID)][4][myIndex][2].toString());
                                 }
                               ),
                             ]

@@ -323,7 +323,7 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
                                     myIndex = theQaaThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeQaa);
 
                                     print(theQaaThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeQaa));
-                                    myReplyToReplyQaa= theQaaThreadReplies[myIndex];
+                                    myReplyToReplyQaa = theQaaThreadReplies[myIndex];
 
                                     myReplyToReplyQaaMap = Map.from(myReplyToReplyQaa);
 

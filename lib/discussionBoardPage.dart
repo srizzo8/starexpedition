@@ -102,6 +102,11 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                       projectsThreadCount = await FirebaseFirestore.instance.collection("Projects").count().get();
                       QuerySnapshot pQuerySnapshot = await FirebaseFirestore.instance.collection("Projects").get();
                       projectsThreads = pQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+
+                      //Getting the amount of threads that are in the New Discoveries subforum:
+                      newDiscoveriesThreadCount = await FirebaseFirestore.instance.collection("New_Discoveries").count().get();
+                      QuerySnapshot ndQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").get();
+                      newDiscoveriesThreads = ndQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
                       //print(discussionBoardUpdatesThreads.toString());
                       //Going to a certain subforum
                       print("Testing subforum button");

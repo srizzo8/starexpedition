@@ -318,16 +318,16 @@ class projectsThreadContent extends StatelessWidget{
                                     myIndex = thePThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeP);
 
                                     print(thePThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeP));
-                                    myReplyToReplyP= thePThreadReplies[myIndex];
+                                    myReplyToReplyP = thePThreadReplies[myIndex];
 
                                     myReplyToReplyPMap = Map.from(myReplyToReplyP);
 
                                     List<dynamic> tempReplyToReplyList = [replyToReplyContentP, replyToReplyPosterP, myReplyToReplyPMap];
                                     pRepliesToReplies.add(tempReplyToReplyList);
 
-                                    print("myReplyToReplyTMap: ${myReplyToReplyPMap}");
+                                    print("myReplyToReplyPMap: ${myReplyToReplyPMap}");
 
-                                    print("myReplyToReplyQaa: ${myReplyToReplyP["replyContent"]}");
+                                    print("myReplyToReplyP: ${myReplyToReplyP["replyContent"]}");
                                     print("This is myIndex: $myIndex");
 
                                     projectsReplyBool = true;

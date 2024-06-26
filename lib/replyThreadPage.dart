@@ -24,6 +24,9 @@ import 'discussion_board_updates_firestore_database_information/discussionBoardU
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesInformation.dart';
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesToRepliesDatabaseFirestoreInfo.dart';
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesToRepliesInformation.dart';
+import 'new_discoveries_firestore_database_information/newDiscoveriesRepliesDatabaseFirestoreInfo.dart';
+import 'new_discoveries_firestore_database_information/newDiscoveriesRepliesInformation.dart';
+import 'new_discoveries_firestore_database_information/newDiscoveriesRepliesToRepliesInformation.dart';
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
@@ -381,26 +384,54 @@ class replyThreadPageState extends State<replyThreadPage>{
                     projectsPage.projectsReplyBool = false;
                   }
                   if(newDiscoveriesPage.newDiscoveriesReplyBool == true){
+                    final newDiscoveriesRepliesInfo = Get.put(newDiscoveriesRepliesInformation());
+
+                    final newDiscoveriesRepliesToRepliesInfo = Get.put(newDiscoveriesRepliesToRepliesInformation());
+
+                    Future<void> createNewDiscoveriesReply(NewDiscoveriesReplies ndr, var docName) async{
+                      await newDiscoveriesRepliesInfo.createMyNewDiscoveriesReply(ndr, docName);
+                    }
+
+                    Future<void> createNewDiscoveriesReplyToReply(NewDiscoveriesReplies ndr, var secondDocName) async{
+                      await newDiscoveriesRepliesToRepliesInfo.createMyNewDiscoveriesReplyToReply(ndr, secondDocName);
+                    }
                     if(newDiscoveriesPage.newDiscoveriesReplyingToReplyBool == false){
                       threadNum = int.parse(newDiscoveriesPage.threadID);
                       assert(threadNum is int);
                       print(threadNum.runtimeType);
+                      var myReplyNewDiscoveries = NewDiscoveriesReplies(
+                          threadNumber: threadNum,
+                          time: DateTime.now(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text,
+                          theOriginalReplyInfo: {}
+                      );
+                      createNewDiscoveriesReply(myReplyNewDiscoveries, newDiscoveriesPage.myDocNd);
                       pendingNewDiscoveriesReply.add(DateTime.now().toString());
                       pendingNewDiscoveriesReply.add(usernameReplyController.text);
                       pendingNewDiscoveriesReply.add(replyContentController.text);
                     }
                     else if(newDiscoveriesPage.newDiscoveriesReplyingToReplyBool == true){
                       newDiscoveriesPage.newDiscoveriesReplyingToReplyBool = false;
-                      pendingNewDiscoveriesReply.add(newDiscoveriesPage.newDiscoveriesThreads[int.parse(newDiscoveriesPage.threadID)][4][newDiscoveriesPage.myIndex][1].toString());
-                      pendingNewDiscoveriesReply.add(newDiscoveriesPage.newDiscoveriesThreads[int.parse(newDiscoveriesPage.threadID)][4][newDiscoveriesPage.myIndex][2].toString());
-                      print('Do we exist? ' + newDiscoveriesPage.newDiscoveriesThreads[int.parse(newDiscoveriesPage.threadID)][4][newDiscoveriesPage.myIndex][3].toString() + newDiscoveriesPage.newDiscoveriesThreads[int.parse(newDiscoveriesPage.threadID)][4][newDiscoveriesPage.myIndex][4].toString());
+                      threadNum = int.parse(newDiscoveriesPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      replyNum = newDiscoveriesPage.myIndex;
+                      var myReplyNewDiscoveries = NewDiscoveriesReplies(
+                          threadNumber: threadNum,
+                          time: DateTime.now(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text,
+                          theOriginalReplyInfo: newDiscoveriesPage.myReplyToReplyNdMap
+                      );
+                      print("This is theOriginalReplyInfo: ${newDiscoveriesPage.myReplyToReplyNdMap}");
+                      createNewDiscoveriesReplyToReply(myReplyNewDiscoveries, newDiscoveriesPage.myDocNd);
                     }
                     else{
                       pendingNewDiscoveriesReply.add("");
                       pendingNewDiscoveriesReply.add("");
                       print("I do not exist");
                     }
-                    newDiscoveriesPage.newDiscoveriesThreads.toList()[threadNum][4].add(pendingNewDiscoveriesReply);
                     print(newDiscoveriesPage.reversedNewDiscoveriesThreadsIterable);
                     print(newDiscoveriesPage.newDiscoveriesReplies);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));

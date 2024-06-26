@@ -16,6 +16,8 @@ import 'package:starexpedition4/technologies_firestore_database_information/tech
 import 'package:starexpedition4/technologies_firestore_database_information/technologiesInformation.dart';
 import 'discussionBoardPage.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
+import 'new_discoveries_firestore_database_information/newDiscoveriesDatabaseFirestoreInfo.dart';
+import 'new_discoveries_firestore_database_information/newDiscoveriesInformation.dart';
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
@@ -301,13 +303,27 @@ class createThreadState extends State<createThread>{
                         }
                         else{
                           if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == true){
-                            /*newDiscoveriesPendingThreads.add(usernameController.text);
-                            newDiscoveriesPendingThreads.add(threadNameController.text);
-                            newDiscoveriesPendingThreads.add(threadContentController.text);
-                            newDiscoveriesPage.newDiscoveriesThreads.add(newDiscoveriesPendingThreads);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
-                            newDiscoveriesPage.newDiscoveriesBool = false;*/
-                            print('You are ready to post this thread');
+                            final newDiscoveriesThreadsInfo = Get.put(newDiscoveriesInformation());
+
+                            Future<void> createNewDiscoveriesThread(NewDiscoveriesThreads ndt) async{
+                              await newDiscoveriesThreadsInfo.createMyNewDiscoveriesThread(ndt);
+                            }
+
+                            if(newDiscoveriesThreads.length > 0){
+                              await FirebaseFirestore.instance.collection("New_Discoveries").orderBy("threadId", descending: true).limit(1).get().then((myId){
+                                newDiscoveriesThreadId = myId.docs.first.data()["threadId"] + 1;
+                              });
+                            }
+
+                            var theNewNewDiscoveriesThread = NewDiscoveriesThreads(
+                              threadId: newDiscoveriesThreadId,
+                              poster: usernameController.text,
+                              threadTitle: threadNameController.text,
+                              threadContent: threadContentController.text,
+                            );
+
+                            createNewDiscoveriesThread(theNewNewDiscoveriesThread);
+
                             newDiscoveriesPendingThreads.add(usernameController.text);
                             newDiscoveriesPendingThreads.add(threadNameController.text);
                             newDiscoveriesPendingThreads.add(threadContentController.text);
@@ -318,7 +334,6 @@ class createThreadState extends State<createThread>{
                             print("Threads in discussion board updates subforum: " + newDiscoveriesPage.newDiscoveriesThreads.toString());
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
                             newDiscoveriesPage.newDiscoveriesBool = false;
-                            //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsList);
                             print(newDiscoveriesPage.reversedNewDiscoveriesThreadsIterable.toList());
                           }
                         }
