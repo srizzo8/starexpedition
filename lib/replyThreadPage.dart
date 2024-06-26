@@ -339,7 +339,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                       await projectsRepliesToRepliesInfo.createMyProjectsReplyToReply(pr, secondDocName);
                     }
                     if(projectsPage.projectsReplyingToReplyBool == false){
-                      threadNum = int.parse(technologiesPage.threadID);
+                      threadNum = int.parse(projectsPage.threadID);
                       assert(threadNum is int);
                       print(threadNum.runtimeType);
                       var myReplyProjects = ProjectsReplies(
