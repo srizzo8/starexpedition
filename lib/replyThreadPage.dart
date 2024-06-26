@@ -10,6 +10,9 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersRepliesDatabaseFirestoreInfo.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersRepliesInformation.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersRepliesToRepliesInformation.dart';
+import 'package:starexpedition4/technologies_firestore_database_information/technologiesRepliesDatabaseFirestoreInfo.dart';
+import 'package:starexpedition4/technologies_firestore_database_information/technologiesRepliesInformation.dart';
+import 'package:starexpedition4/technologies_firestore_database_information/technologiesRepliesToRepliesInformation.dart';
 
 import 'createThread.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
@@ -208,18 +211,18 @@ class replyThreadPageState extends State<replyThreadPage>{
                     discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;
                   }
                   if(questionsAndAnswersPage.questionsAndAnswersReplyBool == true){
-                  //For the Questions and Answers subforum:
-                  final questionsAndAnswersRepliesInfo = Get.put(questionsAndAnswersRepliesInformation());
+                    //For the Questions and Answers subforum:
+                    final questionsAndAnswersRepliesInfo = Get.put(questionsAndAnswersRepliesInformation());
 
-                  final questionsAndAnswersRepliesToRepliesInfo = Get.put(questionsAndAnswersRepliesToRepliesInformation());
+                    final questionsAndAnswersRepliesToRepliesInfo = Get.put(questionsAndAnswersRepliesToRepliesInformation());
 
-                  Future<void> createQuestionsAndAnswersReply(QuestionsAndAnswersReplies qaar, var docName) async{
-                    await questionsAndAnswersRepliesInfo.createMyQuestionsAndAnswersReply(qaar, docName);
-                  }
+                    Future<void> createQuestionsAndAnswersReply(QuestionsAndAnswersReplies qaar, var docName) async{
+                      await questionsAndAnswersRepliesInfo.createMyQuestionsAndAnswersReply(qaar, docName);
+                    }
 
-                  Future<void> createQuestionsAndAnswersReplyToReply(QuestionsAndAnswersReplies qaar, var secondDocName) async{
-                    await questionsAndAnswersRepliesToRepliesInfo.createMyQuestionsAndAnswersReplyToReply(qaar, secondDocName);
-                  }
+                    Future<void> createQuestionsAndAnswersReplyToReply(QuestionsAndAnswersReplies qaar, var secondDocName) async{
+                      await questionsAndAnswersRepliesToRepliesInfo.createMyQuestionsAndAnswersReplyToReply(qaar, secondDocName);
+                    }
                     if(questionsAndAnswersPage.questionsAndAnswersReplyingToReplyBool == false){
                       threadNum = int.parse(questionsAndAnswersPage.threadID);
                       assert(threadNum is int);
@@ -267,26 +270,54 @@ class replyThreadPageState extends State<replyThreadPage>{
                     questionsAndAnswersPage.questionsAndAnswersReplyBool = false;
                   }
                   if(technologiesPage.technologiesReplyBool == true){
+                    final technologiesRepliesInfo = Get.put(technologiesRepliesInformation());
+
+                    final technologiesRepliesToRepliesInfo = Get.put(technologiesRepliesToRepliesInformation());
+
+                    Future<void> createTechnologiesReply(TechnologiesReplies tr, var docName) async{
+                      await technologiesRepliesInfo.createMyTechnologiesReply(tr, docName);
+                    }
+
+                    Future<void> createTechnologiesReplyToReply(TechnologiesReplies tr, var secondDocName) async{
+                      await technologiesRepliesToRepliesInfo.createMyTechnologiesReplyToReply(tr, secondDocName);
+                    }
                     if(technologiesPage.technologiesReplyingToReplyBool == false){
                       threadNum = int.parse(technologiesPage.threadID);
                       assert(threadNum is int);
                       print(threadNum.runtimeType);
+                      var myReplyTechnologies = TechnologiesReplies(
+                          threadNumber: threadNum,
+                          time: DateTime.now(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text,
+                          theOriginalReplyInfo: {}
+                      );
+                      createTechnologiesReply(myReplyTechnologies, technologiesPage.myDocT);
                       pendingTechnologiesReply.add(DateTime.now().toString());
                       pendingTechnologiesReply.add(usernameReplyController.text);
                       pendingTechnologiesReply.add(replyContentController.text);
                     }
                     else if(technologiesPage.technologiesReplyingToReplyBool == true){
                       technologiesPage.technologiesReplyingToReplyBool = false;
-                      pendingTechnologiesReply.add(technologiesPage.technologiesThreads[int.parse(technologiesPage.threadID)][4][technologiesPage.myIndex][1].toString());
-                      pendingTechnologiesReply.add(technologiesPage.technologiesThreads[int.parse(technologiesPage.threadID)][4][technologiesPage.myIndex][2].toString());
-                      print('Do we exist? ' + technologiesPage.technologiesThreads[int.parse(technologiesPage.threadID)][4][technologiesPage.myIndex][3].toString() + technologiesPage.technologiesThreads[int.parse(technologiesPage.threadID)][4][technologiesPage.myIndex][4].toString());
+                      threadNum = int.parse(technologiesPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      replyNum = technologiesPage.myIndex;
+                      var myReplyTechnologies = TechnologiesReplies(
+                          threadNumber: threadNum,
+                          time: DateTime.now(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text,
+                          theOriginalReplyInfo: technologiesPage.myReplyToReplyTMap
+                      );
+                      print("This is theOriginalReplyInfo: ${technologiesPage.myReplyToReplyTMap}");
+                      createTechnologiesReplyToReply(myReplyTechnologies, technologiesPage.myDocT);
                     }
                     else{
                       pendingTechnologiesReply.add("");
                       pendingTechnologiesReply.add("");
                       print("I do not exist");
                     }
-                    technologiesPage.technologiesThreads.toList()[threadNum][4].add(pendingTechnologiesReply);
                     print(technologiesPage.reversedTechnologiesThreadsIterable);
                     print(technologiesPage.technologiesReplies);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'createThread.dart';
 import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
+import 'discussionBoardPage.dart' as discussionBoardPage;
 
 bool technologiesBool = false;
 bool technologiesReplyBool = false;
@@ -18,10 +20,20 @@ var technologiesReplies = [];
 int myIndex = -1;
 var reversedTechnologiesThreadsIterable = technologiesThreads.reversed;
 var reversedTechnologiesRepliesIterable = technologiesReplies.reversed;
-String threadAuthorTechnologies = "";
-String threadTitleTechnologies = "";
-String threadContentTechnologies = "";
+String threadAuthorT = "";
+String threadTitleT = "";
+String threadContentT = "";
 String threadID = "";
+var theTThreadReplies;
+var myDocT;
+var replyToReplyDocT;
+var replyToReplyTimeT;
+var replyToReplyContentT;
+var replyToReplyPosterT;
+var myReplyToReplyT;
+var replyToReplyOriginalInfoT;
+List<List> tRepliesToReplies = [];
+Map<String, dynamic> myReplyToReplyTMap = {};
 
 class technologiesPage extends StatefulWidget{
   const technologiesPage ({Key? key}) : super(key: key);
@@ -92,7 +104,7 @@ class technologiesPageState extends State<technologiesPage>{
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: technologiesThreads.reversed.toList().length,
+                itemCount: discussionBoardPage.technologiesThreads.length,
                 itemBuilder: (context, index){
                   return Column(
                     children: <Widget>[
@@ -101,18 +113,41 @@ class technologiesPageState extends State<technologiesPage>{
                       ),
                       GestureDetector(
                           child: Container(
-                            child: Text(reversedTechnologiesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedTechnologiesThreadsIterable.toList()[index][0]),
+                            child: Text(discussionBoardPage.technologiesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.technologiesThreads[index]["poster"].toString()),
                             height: 30,
                             width: 360,
                             color: Colors.tealAccent,
                           ),
-                          onTap: (){
+                          onTap: () async{
+                            print("This is index: $index");
+                            print("discussionBoardPage.technologiesThreads is null? ${discussionBoardPage.technologiesThreads == null}");
                             print("I clicked on a thread");
-                            print('You clicked on: ' + reversedTechnologiesThreadsIterable.toList()[index][1]);
-                            threadAuthorTechnologies = reversedTechnologiesThreadsIterable.toList()[index][0];
-                            threadTitleTechnologies = reversedTechnologiesThreadsIterable.toList()[index][1];
-                            threadContentTechnologies = reversedTechnologiesThreadsIterable.toList()[index][2];
-                            threadID = reversedTechnologiesThreadsIterable.toList()[index][3];
+                            threadAuthorT = discussionBoardPage.technologiesThreads![index]["poster"].toString();
+                            threadTitleT = discussionBoardPage.technologiesThreads![index]["threadTitle"].toString();
+                            threadContentT = discussionBoardPage.technologiesThreads![index]["threadContent"].toString();
+                            threadID = discussionBoardPage.technologiesThreads![index]["threadId"].toString();
+
+                            print(discussionBoardPage.technologiesThreads![index]);
+                            print("${threadAuthorT} + ${threadTitleT} + ${threadContentT} + ${threadID}");
+                            print("context: ${context}");
+                            await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                              myDocT = d.docs.first.id;
+                              print(myDocT);
+                            });
+
+                            await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies");
+
+                            QuerySnapshot tRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").get();
+                            theTThreadReplies = tRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                            print(theTThreadReplies.runtimeType);
+
+                            print(DateTime.now().runtimeType);
+
+                            (theTThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
+
+                            print("Number of theTThreadReplies: ${theTThreadReplies.length}");
+
                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => technologiesThreadContent()));
                           }
                       ),
@@ -146,7 +181,7 @@ class technologiesThreadContent extends StatelessWidget{
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              child: Text("Thread title: " + threadTitleTechnologies + "\n" + "Posted by: " + threadAuthorTechnologies + "\n" + threadContentTechnologies),
+              child: Text("Thread title: " + threadTitleT + "\n" + "Posted by: " + threadAuthorT + "\n" + threadContentT),
               color: Colors.tealAccent,
               alignment: Alignment.topLeft,
             ),
@@ -173,23 +208,23 @@ class technologiesThreadContent extends StatelessWidget{
               ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: technologiesThreads[int.parse(threadID)][4].length,
+                  itemCount: theTThreadReplies.length,
                   itemBuilder: (context, index){
                     return Column(
                       children: <Widget>[
-                        technologiesThreads[int.parse(threadID)][4][index][3] != "" && technologiesThreads[int.parse(threadID)][4][index][4] != ""?
+                        theTThreadReplies[index]["theOriginalReplyInfo"]["replyContent"] != null && theTThreadReplies[index]["theOriginalReplyInfo"]["replier"] != null?
                         Column(
                             children: <Widget>[
                               Container(
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Reply to: \n" + "Posted by: " + technologiesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + technologiesThreads[int.parse(threadID)][4][index][4].toString()),
+                                child: Text("Reply to: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
                                 color: Colors.teal,
                                 width: 360,
                               ),
                               Container(
-                                child: Text("Posted on: " + technologiesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + technologiesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + technologiesThreads[int.parse(threadID)][4][index][2].toString()),
+                                child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
                                 color: Colors.tealAccent,
                                 width: 360,
                               ),
@@ -199,13 +234,45 @@ class technologiesThreadContent extends StatelessWidget{
                                     color: Colors.purple.shade200,
                                     width: 360,
                                   ),
-                                  onTap: (){
-                                    myIndex = index;
+                                  onTap: () async{
+                                    replyToReplyTimeT = theTThreadReplies![index]["time"];
+                                    replyToReplyContentT = theTThreadReplies![index]["replyContent"].toString();
+                                    replyToReplyPosterT = theTThreadReplies![index]["replier"].toString();
+
+                                    print("This is replyToReplyTime: $replyToReplyTimeT");
+
+                                    await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                      myDocT = d.docs.first.id;
+                                      print(myDocT);
+                                    });
+
+                                    await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").where("time", isEqualTo: replyToReplyTimeT).get().then((rd) {
+                                      replyToReplyDocT = rd.docs.first.id;
+                                      print(replyToReplyDocT);
+                                    });
+
+                                    print(theTThreadReplies);
+                                    print(replyToReplyDocT);
+
+                                    DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").doc(replyToReplyDocT).get();
+                                    print(ds.data());
+                                    print(ds.data().runtimeType);
+                                    print(theTThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeT));
+
+                                    myIndex = theTThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeT);
+                                    myReplyToReplyT = theTThreadReplies[myIndex];
+                                    myReplyToReplyTMap = Map.from(myReplyToReplyT);
+
+                                    List<dynamic> tempReplyToReplyList = [replyToReplyContentT, replyToReplyPosterT, myReplyToReplyTMap];
+                                    tRepliesToReplies.add(tempReplyToReplyList);
+
+                                    print("myReplyToReplyTMap: ${myReplyToReplyTMap}");
+                                    print("myReplyToReplyT: ${myReplyToReplyT["replyContent"]}");
+                                    print("This is myIndex: $myIndex");
+
                                     technologiesReplyBool = true;
                                     technologiesReplyingToReplyBool = true;
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                    print('Reply no. ' + index.toString());
-                                    print('Replying to this reply: ' + technologiesThreads[int.parse(threadID)][4][myIndex][2].toString());
                                   }
                               ),
                             ]
@@ -215,7 +282,7 @@ class technologiesThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Posted on: " + technologiesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + technologiesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + technologiesThreads[int.parse(threadID)][4][index][2].toString()),
+                                child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
                                 color: Colors.tealAccent,
                                 width: 360,
                               ),
@@ -225,13 +292,48 @@ class technologiesThreadContent extends StatelessWidget{
                                     color: Colors.purple.shade200,
                                     width: 360,
                                   ),
-                                  onTap: (){
-                                    myIndex = index;
+                                  onTap: () async{
+                                    replyToReplyTimeT = theTThreadReplies![index]["time"];
+                                    replyToReplyContentT = theTThreadReplies![index]["replyContent"].toString();
+                                    replyToReplyPosterT = theTThreadReplies![index]["replier"].toString();
+
+                                    print("This is replyToReplyTime: $replyToReplyTimeT");
+
+                                    await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                      myDocT = d.docs.first.id;
+                                      print(myDocT);
+                                    });
+
+                                    await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").where("time", isEqualTo: replyToReplyTimeT).get().then((rd) {
+                                      replyToReplyDocT = rd.docs.first.id;
+                                      print(replyToReplyDocT);
+                                    });
+
+                                    print(theTThreadReplies);
+                                    print(replyToReplyDocT);
+
+                                    DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").doc(replyToReplyDocT).get();
+                                    print(ds.data());
+                                    print(ds.data().runtimeType);
+
+                                    myIndex = theTThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeT);
+
+                                    print(theTThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeT));
+                                    myReplyToReplyT= theTThreadReplies[myIndex];
+
+                                    myReplyToReplyTMap = Map.from(myReplyToReplyT);
+
+                                    List<dynamic> tempReplyToReplyList = [replyToReplyContentT, replyToReplyPosterT, myReplyToReplyTMap];
+                                    tRepliesToReplies.add(tempReplyToReplyList);
+
+                                    print("myReplyToReplyTMap: ${myReplyToReplyTMap}");
+
+                                    print("myReplyToReplyQaa: ${myReplyToReplyT["replyContent"]}");
+                                    print("This is myIndex: $myIndex");
+
                                     technologiesReplyBool = true;
                                     technologiesReplyingToReplyBool = true;
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                    print('Reply no. ' + index.toString());
-                                    print('Replying to this reply: ' + technologiesThreads[int.parse(threadID)][4][myIndex][2].toString());
                                   }
                               ),
                             ]

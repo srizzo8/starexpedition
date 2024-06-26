@@ -10,6 +10,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersDatabaseFirestoreInfo.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersInformation.dart';
+import 'package:starexpedition4/technologies_firestore_database_information/technologiesDatabaseFirestoreInfo.dart';
+import 'package:starexpedition4/technologies_firestore_database_information/technologiesInformation.dart';
 import 'discussionBoardPage.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
@@ -227,6 +229,27 @@ class createThreadState extends State<createThread>{
                     }
                     else{
                       if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == true && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false){
+                        final technologiesThreadsInfo = Get.put(technologiesInformation());
+
+                        Future<void> createTechnologiesThread(TechnologiesThreads tt) async{
+                          await technologiesThreadsInfo.createMyTechnologiesThread(tt);
+                        }
+
+                        if(technologiesThreads.length > 0){
+                          await FirebaseFirestore.instance.collection("Technologies").orderBy("threadId", descending: true).limit(1).get().then((myId){
+                            technologiesThreadId = myId.docs.first.data()["threadId"] + 1;
+                          });
+                        }
+
+                        var theNewTechnologiesThread = TechnologiesThreads(
+                          threadId: technologiesThreadId,
+                          poster: usernameController.text,
+                          threadTitle: threadNameController.text,
+                          threadContent: threadContentController.text,
+                        );
+
+                        createTechnologiesThread(theNewTechnologiesThread);
+
                         technologiesPendingThreads.add(usernameController.text);
                         technologiesPendingThreads.add(threadNameController.text);
                         technologiesPendingThreads.add(threadContentController.text);
