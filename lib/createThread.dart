@@ -8,6 +8,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:starexpedition4/projects_firestore_database_information/projectsDatabaseFirestoreInfo.dart';
+import 'package:starexpedition4/projects_firestore_database_information/projectsInformation.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersDatabaseFirestoreInfo.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersInformation.dart';
 import 'package:starexpedition4/technologies_firestore_database_information/technologiesDatabaseFirestoreInfo.dart';
@@ -264,6 +266,27 @@ class createThreadState extends State<createThread>{
                       }
                       else{
                         if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == true && newDiscoveriesPage.newDiscoveriesBool == false){
+                          final projectsThreadsInfo = Get.put(projectsInformation());
+
+                          Future<void> createProjectsThread(ProjectsThreads pt) async{
+                            await projectsThreadsInfo.createMyProjectsThread(pt);
+                          }
+
+                          if(projectsThreads.length > 0){
+                            await FirebaseFirestore.instance.collection("Projects").orderBy("threadId", descending: true).limit(1).get().then((myId){
+                              projectsThreadId = myId.docs.first.data()["threadId"] + 1;
+                            });
+                          }
+
+                          var theNewProjectsThread = ProjectsThreads(
+                            threadId: projectsThreadId,
+                            poster: usernameController.text,
+                            threadTitle: threadNameController.text,
+                            threadContent: threadContentController.text,
+                          );
+
+                          createProjectsThread(theNewProjectsThread);
+
                           projectsPendingThreads.add(usernameController.text);
                           projectsPendingThreads.add(threadNameController.text);
                           projectsPendingThreads.add(threadContentController.text);

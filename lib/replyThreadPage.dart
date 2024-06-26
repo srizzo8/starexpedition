@@ -7,6 +7,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:starexpedition4/projects_firestore_database_information/projectsRepliesDatabaseFirestoreInfo.dart';
+import 'package:starexpedition4/projects_firestore_database_information/projectsRepliesInformation.dart';
+import 'package:starexpedition4/projects_firestore_database_information/projectsRepliesToRepliesInformation.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersRepliesDatabaseFirestoreInfo.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersRepliesInformation.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersRepliesToRepliesInformation.dart';
@@ -324,26 +327,54 @@ class replyThreadPageState extends State<replyThreadPage>{
                     technologiesPage.technologiesReplyBool = false;
                   }
                   if(projectsPage.projectsReplyBool == true){
+                    final projectsRepliesInfo = Get.put(projectsRepliesInformation());
+
+                    final projectsRepliesToRepliesInfo = Get.put(projectsRepliesToRepliesInformation());
+
+                    Future<void> createProjectsReply(ProjectsReplies pr, var docName) async{
+                      await projectsRepliesInfo.createMyProjectsReply(pr, docName);
+                    }
+
+                    Future<void> createProjectsReplyToReply(ProjectsReplies pr, var secondDocName) async{
+                      await projectsRepliesToRepliesInfo.createMyProjectsReplyToReply(pr, secondDocName);
+                    }
                     if(projectsPage.projectsReplyingToReplyBool == false){
-                      threadNum = int.parse(projectsPage.threadID);
+                      threadNum = int.parse(technologiesPage.threadID);
                       assert(threadNum is int);
                       print(threadNum.runtimeType);
+                      var myReplyProjects = ProjectsReplies(
+                          threadNumber: threadNum,
+                          time: DateTime.now(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text,
+                          theOriginalReplyInfo: {}
+                      );
+                      createProjectsReply(myReplyProjects, projectsPage.myDocP);
                       pendingProjectsReply.add(DateTime.now().toString());
                       pendingProjectsReply.add(usernameReplyController.text);
                       pendingProjectsReply.add(replyContentController.text);
                     }
                     else if(projectsPage.projectsReplyingToReplyBool == true){
                       projectsPage.projectsReplyingToReplyBool = false;
-                      pendingProjectsReply.add(projectsPage.projectsThreads[int.parse(projectsPage.threadID)][4][projectsPage.myIndex][1].toString());
-                      pendingProjectsReply.add(projectsPage.projectsThreads[int.parse(projectsPage.threadID)][4][projectsPage.myIndex][2].toString());
-                      print('Do we exist? ' + projectsPage.projectsThreads[int.parse(projectsPage.threadID)][4][projectsPage.myIndex][3].toString() + projectsPage.projectsThreads[int.parse(projectsPage.threadID)][4][projectsPage.myIndex][4].toString());
+                      threadNum = int.parse(projectsPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      replyNum = projectsPage.myIndex;
+                      var myReplyProjects = ProjectsReplies(
+                          threadNumber: threadNum,
+                          time: DateTime.now(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text,
+                          theOriginalReplyInfo: projectsPage.myReplyToReplyPMap
+                      );
+                      print("This is theOriginalReplyInfo: ${projectsPage.myReplyToReplyPMap}");
+                      createProjectsReplyToReply(myReplyProjects, projectsPage.myDocP);
                     }
                     else{
                       pendingProjectsReply.add("");
                       pendingProjectsReply.add("");
                       print("I do not exist");
                     }
-                    projectsPage.projectsThreads.toList()[threadNum][4].add(pendingProjectsReply);
                     print(projectsPage.reversedProjectsThreadsIterable);
                     print(projectsPage.projectsReplies);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
