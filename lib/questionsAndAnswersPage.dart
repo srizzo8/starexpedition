@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'discussionBoardPage.dart' as discussionBoardPage;
 import 'createThread.dart';
 import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
@@ -22,6 +24,16 @@ String threadAuthorQaa = "";
 String threadTitleQaa = "";
 String threadContentQaa = "";
 String threadID = "";
+var theQaaThreadReplies;
+var myDocQaa;
+var replyToReplyDocQaa;
+var replyToReplyTimeQaa;
+var replyToReplyContentQaa;
+var replyToReplyPosterQaa;
+var myReplyToReplyQaa;
+var replyToReplyOriginalInfoQaa;
+List<List> qaaRepliesToReplies = [];
+Map<String, dynamic> myReplyToReplyQaaMap = {};
 
 class questionsAndAnswersPage extends StatefulWidget{
   const questionsAndAnswersPage ({Key? key}) : super(key: key);
@@ -92,7 +104,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: questionsAndAnswersThreads.reversed.toList().length,
+                itemCount: discussionBoardPage.questionsAndAnswersThreads.length,//questionsAndAnswersThreads.reversed.toList().length,
                 itemBuilder: (context, index){
                   return Column(
                     children: <Widget>[
@@ -101,18 +113,43 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                       ),
                       GestureDetector(
                           child: Container(
-                            child: Text(reversedQuestionsAndAnswersThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedQuestionsAndAnswersThreadsIterable.toList()[index][0]),
+                            child: Text(discussionBoardPage.questionsAndAnswersThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString()),//Text(reversedQuestionsAndAnswersThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedQuestionsAndAnswersThreadsIterable.toList()[index][0]),
                             height: 30,
                             width: 360,
                             color: Colors.tealAccent,
                           ),
-                          onTap: (){
+                          onTap: () async {
+                            print("This is index: $index");
+                            print("discussionBoardPage.questionsAndAnswersThreads is null? ${discussionBoardPage.questionsAndAnswersThreads == null}");
                             print("I clicked on a thread");
-                            print('You clicked on: ' + reversedQuestionsAndAnswersThreadsIterable.toList()[index][1]);
-                            threadAuthorQaa = reversedQuestionsAndAnswersThreadsIterable.toList()[index][0];
-                            threadTitleQaa = reversedQuestionsAndAnswersThreadsIterable.toList()[index][1];
-                            threadContentQaa = reversedQuestionsAndAnswersThreadsIterable.toList()[index][2];
-                            threadID = reversedQuestionsAndAnswersThreadsIterable.toList()[index][3];
+                            threadAuthorQaa = discussionBoardPage.questionsAndAnswersThreads![index]["poster"].toString();
+                            threadTitleQaa = discussionBoardPage.questionsAndAnswersThreads![index]["threadTitle"].toString();
+                            threadContentQaa = discussionBoardPage.questionsAndAnswersThreads![index]["threadContent"].toString();
+                            threadID = discussionBoardPage.questionsAndAnswersThreads![index]["threadId"].toString();
+
+                            print(discussionBoardPage.questionsAndAnswersThreads![index]);
+                            print("${threadAuthorQaa} + ${threadTitleQaa} + ${threadContentQaa} + ${threadID}");
+                            print("context: ${context}");
+                            await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                              myDocQaa = d.docs.first.id;
+                              print(myDocQaa);
+                            });
+
+                            await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies");
+
+                            QuerySnapshot qaaRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").get();
+                            theQaaThreadReplies = qaaRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                            print(theQaaThreadReplies.runtimeType);
+                            //print(theQaaThreadReplies[0]["time"].toDate().runtimeType);
+
+                            print(DateTime.now().runtimeType);
+
+                            (theQaaThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
+
+                            print("Number of theQaaThreadReplies: ${theQaaThreadReplies.length}");
+                            //}
+
                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => questionsAndAnswersThreadContent()));
                           }
                       ),
@@ -173,23 +210,23 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
               ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: questionsAndAnswersThreads[int.parse(threadID)][4].length,
+                  itemCount: theQaaThreadReplies.length,
                   itemBuilder: (context, index){
                     return Column(
                       children: <Widget>[
-                        questionsAndAnswersThreads[int.parse(threadID)][4][index][3] != "" && questionsAndAnswersThreads[int.parse(threadID)][4][index][4] != ""?
+                        theQaaThreadReplies[index]["theOriginalReplyInfo"]["replyContent"] != null && theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"] != null?
                         Column(
                             children: <Widget>[
                               Container(
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Reply to: \n" + "Posted by: " + questionsAndAnswersThreads[int.parse(threadID)][4][index][3].toString() + "\n" + questionsAndAnswersThreads[int.parse(threadID)][4][index][4].toString() + "INFO: ${questionsAndAnswersThreads}, ${questionsAndAnswersThreads[int.parse(threadID)]}, ${questionsAndAnswersThreads[int.parse(threadID)][4]}, ${questionsAndAnswersThreads[int.parse(threadID)][4][index]}, ${questionsAndAnswersThreads[int.parse(threadID)][4][index][4]}"),
+                                child: Text("Reply to: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
                                 color: Colors.teal,
                                 width: 360,
                               ),
                               Container(
-                                child: Text("Posted on: " + questionsAndAnswersThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + questionsAndAnswersThreads[int.parse(threadID)][4][index][1].toString() + "\n" + questionsAndAnswersThreads[int.parse(threadID)][4][index][2].toString()),
+                                child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
                                 color: Colors.tealAccent,
                                 width: 360,
                               ),
@@ -199,13 +236,47 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
                                     color: Colors.purple.shade200,
                                     width: 360,
                                   ),
-                                  onTap: (){
-                                    myIndex = index;
+                                  onTap: () async{
+                                    replyToReplyTimeQaa = theQaaThreadReplies![index]["time"];
+                                    replyToReplyContentQaa = theQaaThreadReplies![index]["replyContent"].toString();
+                                    replyToReplyPosterQaa = theQaaThreadReplies![index]["replier"].toString();
+
+                                    print("This is replyToReplyTime: $replyToReplyTimeQaa");
+
+                                    await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                      myDocQaa = d.docs.first.id;
+                                      print(myDocQaa);
+                                    });
+
+                                    await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").where("time", isEqualTo: replyToReplyTimeQaa).get().then((rd) {
+                                      replyToReplyDocQaa = rd.docs.first.id;
+                                      print(replyToReplyDocQaa);
+                                    });
+
+                                    print(theQaaThreadReplies);
+                                    print(replyToReplyDocQaa);
+
+                                    DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").doc(replyToReplyDocQaa).get();
+                                    print(ds.data());
+                                    print(ds.data().runtimeType);
+                                    print(theQaaThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeQaa));
+
+                                    myIndex = theQaaThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeQaa);
+                                    myReplyToReplyQaa = theQaaThreadReplies[myIndex];
+                                    myReplyToReplyQaaMap = Map.from(myReplyToReplyQaa);
+
+                                    List<dynamic> tempReplyToReplyList = [replyToReplyContentQaa, replyToReplyPosterQaa, myReplyToReplyQaaMap];
+                                    qaaRepliesToReplies.add(tempReplyToReplyList);
+
+                                    print("myReplyToReplyQaaMap: ${myReplyToReplyQaaMap}");
+                                    print("myReplyToReplyQaa: ${myReplyToReplyQaa["replyContent"]}");
+                                    print("This is myIndex: $myIndex");
+
                                     questionsAndAnswersReplyBool = true;
                                     questionsAndAnswersReplyingToReplyBool = true;
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                    print('Reply no. ' + index.toString());
-                                    print('Replying to this reply: ' + questionsAndAnswersThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                    //print('Reply no. ' + index.toString());
+                                    //print('Replying to this reply: ' + questionsAndAnswersThreads[int.parse(threadID)][4][myIndex][2].toString());
                                   }
                               ),
                             ]
@@ -215,7 +286,7 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Posted on: " + questionsAndAnswersThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + questionsAndAnswersThreads[int.parse(threadID)][4][index][1].toString() + "\n" + questionsAndAnswersThreads[int.parse(threadID)][4][index][2].toString()),
+                                child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
                                 color: Colors.tealAccent,
                                 width: 360,
                               ),
@@ -225,13 +296,48 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
                                     color: Colors.purple.shade200,
                                     width: 360,
                                   ),
-                                  onTap: (){
-                                    myIndex = index;
+                                  onTap: () async{
+                                    replyToReplyTimeQaa = theQaaThreadReplies![index]["time"];
+                                    replyToReplyContentQaa = theQaaThreadReplies![index]["replyContent"].toString();
+                                    replyToReplyPosterQaa = theQaaThreadReplies![index]["replier"].toString();
+
+                                    print("This is replyToReplyTime: $replyToReplyTimeQaa");
+
+                                    await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                      myDocQaa = d.docs.first.id;
+                                      print(myDocQaa);
+                                    });
+
+                                    await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").where("time", isEqualTo: replyToReplyTimeQaa).get().then((rd) {
+                                      replyToReplyDocQaa = rd.docs.first.id;
+                                      print(replyToReplyDocQaa);
+                                    });
+
+                                    print(theQaaThreadReplies);
+                                    print(replyToReplyDocQaa);
+
+                                    DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").doc(replyToReplyDocQaa).get();
+                                    print(ds.data());
+                                    print(ds.data().runtimeType);
+
+                                    myIndex = theQaaThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeQaa);
+
+                                    print(theQaaThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeQaa));
+                                    myReplyToReplyQaa= theQaaThreadReplies[myIndex];
+
+                                    myReplyToReplyQaaMap = Map.from(myReplyToReplyQaa);
+
+                                    List<dynamic> tempReplyToReplyList = [replyToReplyContentQaa, replyToReplyPosterQaa, myReplyToReplyQaaMap];
+                                    qaaRepliesToReplies.add(tempReplyToReplyList);
+
+                                    print("myReplyToReplyQaaMap: ${myReplyToReplyQaaMap}");
+
+                                    print("myReplyToReplyQaa: ${myReplyToReplyQaa["replyContent"]}");
+                                    print("This is myIndex: $myIndex");
+
                                     questionsAndAnswersReplyBool = true;
                                     questionsAndAnswersReplyingToReplyBool = true;
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                    print('Reply no. ' + index.toString());
-                                    print('Replying to this reply: ' + questionsAndAnswersThreads[int.parse(threadID)][4][myIndex][2].toString());
                                   }
                               ),
                             ]

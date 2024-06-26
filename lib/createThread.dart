@@ -8,6 +8,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersDatabaseFirestoreInfo.dart';
+import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersInformation.dart';
+import 'discussionBoardPage.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
@@ -157,9 +160,11 @@ class createThreadState extends State<createThread>{
                     }
 
                     //discussionBoardUpdatesThreadId++;
-                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").orderBy("threadId", descending: true).limit(1).get().then((myId){
-                      discussionBoardUpdatesThreadId = myId.docs.first.data()["threadId"] + 1;
-                    });
+                    if(discussionBoardUpdatesThreads.length > 0){
+                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").orderBy("threadId", descending: true).limit(1).get().then((myId){
+                        discussionBoardUpdatesThreadId = myId.docs.first.data()["threadId"] + 1;
+                      });
+                    }
                     //Map<String, List<String>> dbuReplies = new Map<String, List<String>>();
 
                     var theNewDiscussionBoardUpdatesThread = DiscussionBoardUpdatesThreads(
@@ -187,6 +192,27 @@ class createThreadState extends State<createThread>{
                   }
                   else{
                     if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == true && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false){
+                      final questionsAndAnswersThreadsInfo = Get.put(questionsAndAnswersInformation());
+
+                      Future<void> createQuestionsAndAnswersThread(QuestionsAndAnswersThreads qaat) async{
+                        await questionsAndAnswersThreadsInfo.createMyQuestionsAndAnswersThread(qaat);
+                      }
+
+                      if(questionsAndAnswersThreads.length > 0){
+                        await FirebaseFirestore.instance.collection("Questions_And_Answers").orderBy("threadId", descending: true).limit(1).get().then((myId){
+                          questionsAndAnswersThreadId = myId.docs.first.data()["threadId"] + 1;
+                        });
+                      }
+
+                      var theNewQuestionsAndAnswersThread = QuestionsAndAnswersThreads(
+                        threadId: questionsAndAnswersThreadId,
+                        poster: usernameController.text,
+                        threadTitle: threadNameController.text,
+                        threadContent: threadContentController.text,
+                      );
+
+                      createQuestionsAndAnswersThread(theNewQuestionsAndAnswersThread);
+
                       questionsAndAnswersPendingThreads.add(usernameController.text);
                       questionsAndAnswersPendingThreads.add(threadNameController.text);
                       questionsAndAnswersPendingThreads.add(threadContentController.text);

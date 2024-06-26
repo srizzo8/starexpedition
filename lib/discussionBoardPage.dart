@@ -83,10 +83,15 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                   ),
                   GestureDetector(
                     onTap: () async{
-                      //Getting the amount of threads that are in a subforum
+                      //Getting the amount of threads that are in the Discussion Board Updates subforum:
                       discussionBoardUpdatesThreadCount = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").count().get();
                       QuerySnapshot dbuQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").get();
                       discussionBoardUpdatesThreads = dbuQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+
+                      //Getting the amount of threads that are in the Questions and Answers subforum:
+                      questionsAndAnswersThreadCount = await FirebaseFirestore.instance.collection("Questions_And_Answers").count().get();
+                      QuerySnapshot qaaQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").get();
+                      questionsAndAnswersThreads = qaaQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
                       //print(discussionBoardUpdatesThreads.toString());
                       //Going to a certain subforum
                       print("Testing subforum button");

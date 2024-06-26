@@ -148,7 +148,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
 
                       print(theDbuThreadReplies.runtimeType);
-                      print(theDbuThreadReplies[0]["time"].toDate().runtimeType);
+                      //print(theDbuThreadReplies[0]["time"].toDate().runtimeType);
                       //print(theDbuThreadReplies[0]["time"].runtimeType);
                       //print(theDbuThreadReplies((a, b) => a[0]["time"].compareTo(b[0]["time"])));
 

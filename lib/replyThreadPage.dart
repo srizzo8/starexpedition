@@ -7,6 +7,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersRepliesDatabaseFirestoreInfo.dart';
+import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersRepliesInformation.dart';
+import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersRepliesToRepliesInformation.dart';
 
 import 'createThread.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
@@ -130,18 +133,6 @@ class replyThreadPageState extends State<replyThreadPage>{
                 alignment: Alignment.center,
               ),
               onTap: (){
-                final discussionBoardUpdatesRepliesInfo = Get.put(discussionBoardUpdatesRepliesInformation());
-
-                final discussionBoardUpdatesRepliesToRepliesInfo = Get.put(discussionBoardUpdatesRepliesToRepliesInformation());
-
-                Future<void> createDiscussionBoardUpdatesReply(DiscussionBoardUpdatesReplies dbur, var docName) async{
-                  await discussionBoardUpdatesRepliesInfo.createMyDiscussionBoardUpdatesReply(dbur, docName);
-                }
-
-                Future<void> createDiscussionBoardUpdatesReplyToReply(DiscussionBoardUpdatesReplies dbur, var secondDocName) async{
-                  await discussionBoardUpdatesRepliesToRepliesInfo.createMyDiscussionBoardUpdatesReplyToReply(dbur, secondDocName);
-                }
-
                 if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
                   usernameReplyController.text = theLoginPage.myUsername;
                 }
@@ -150,6 +141,18 @@ class replyThreadPageState extends State<replyThreadPage>{
                 }
                 if(usernameReplyController.text != "" && replyContentController.text != ""){
                   if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool == true){
+                    //For the Discussion Board Updates subforum:
+                    final discussionBoardUpdatesRepliesInfo = Get.put(discussionBoardUpdatesRepliesInformation());
+
+                    final discussionBoardUpdatesRepliesToRepliesInfo = Get.put(discussionBoardUpdatesRepliesToRepliesInformation());
+
+                    Future<void> createDiscussionBoardUpdatesReply(DiscussionBoardUpdatesReplies dbur, var docName) async{
+                      await discussionBoardUpdatesRepliesInfo.createMyDiscussionBoardUpdatesReply(dbur, docName);
+                    }
+
+                    Future<void> createDiscussionBoardUpdatesReplyToReply(DiscussionBoardUpdatesReplies dbur, var secondDocName) async{
+                      await discussionBoardUpdatesRepliesToRepliesInfo.createMyDiscussionBoardUpdatesReplyToReply(dbur, secondDocName);
+                    }
                     if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyingToReplyBool == false){
                       threadNum = int.parse(discussionBoardUpdatesPage.threadID);
                       //threadNumber = int.parse(discussionBoardUpdatesPage.threadID);
@@ -204,33 +207,66 @@ class replyThreadPageState extends State<replyThreadPage>{
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                     discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;
                   }
-                  else if(questionsAndAnswersPage.questionsAndAnswersReplyBool == true){
+                  if(questionsAndAnswersPage.questionsAndAnswersReplyBool == true){
+                  //For the Questions and Answers subforum:
+                  final questionsAndAnswersRepliesInfo = Get.put(questionsAndAnswersRepliesInformation());
+
+                  final questionsAndAnswersRepliesToRepliesInfo = Get.put(questionsAndAnswersRepliesToRepliesInformation());
+
+                  Future<void> createQuestionsAndAnswersReply(QuestionsAndAnswersReplies qaar, var docName) async{
+                    await questionsAndAnswersRepliesInfo.createMyQuestionsAndAnswersReply(qaar, docName);
+                  }
+
+                  Future<void> createQuestionsAndAnswersReplyToReply(QuestionsAndAnswersReplies qaar, var secondDocName) async{
+                    await questionsAndAnswersRepliesToRepliesInfo.createMyQuestionsAndAnswersReplyToReply(qaar, secondDocName);
+                  }
                     if(questionsAndAnswersPage.questionsAndAnswersReplyingToReplyBool == false){
                       threadNum = int.parse(questionsAndAnswersPage.threadID);
                       assert(threadNum is int);
                       print(threadNum.runtimeType);
+                      var myReplyQuestionsAndAnswers = QuestionsAndAnswersReplies(
+                          threadNumber: threadNum,
+                          time: DateTime.now(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text,
+                          theOriginalReplyInfo: {}
+                      );
+                      createQuestionsAndAnswersReply(myReplyQuestionsAndAnswers, questionsAndAnswersPage.myDocQaa);
                       pendingQuestionsAndAnswersReply.add(DateTime.now().toString());
                       pendingQuestionsAndAnswersReply.add(usernameReplyController.text);
                       pendingQuestionsAndAnswersReply.add(replyContentController.text);
                     }
                     else if(questionsAndAnswersPage.questionsAndAnswersReplyingToReplyBool == true){
                       questionsAndAnswersPage.questionsAndAnswersReplyingToReplyBool = false;
-                      pendingQuestionsAndAnswersReply.add(questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][1].toString());
-                      pendingQuestionsAndAnswersReply.add(questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][2].toString());
-                      print('Do we exist? ' + questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][3].toString() + questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][4].toString());
+                      threadNum = int.parse(questionsAndAnswersPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      replyNum = questionsAndAnswersPage.myIndex;
+                      var myReplyQuestionsAndAnswers = QuestionsAndAnswersReplies(
+                          threadNumber: threadNum,
+                          time: DateTime.now(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text,
+                          theOriginalReplyInfo: questionsAndAnswersPage.myReplyToReplyQaaMap
+                      );
+                      print("This is theOriginalReplyInfo: ${questionsAndAnswersPage.myReplyToReplyQaaMap}");
+                      createQuestionsAndAnswersReplyToReply(myReplyQuestionsAndAnswers, questionsAndAnswersPage.myDocQaa);
+                      //pendingQuestionsAndAnswersReply.add(questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][1].toString());
+                      //pendingQuestionsAndAnswersReply.add(questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][2].toString());
+                      //print('Do we exist? ' + questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][3].toString() + questionsAndAnswersPage.questionsAndAnswersThreads[int.parse(questionsAndAnswersPage.threadID)][4][questionsAndAnswersPage.myIndex][4].toString());
                     }
                     else{
                       pendingQuestionsAndAnswersReply.add("");
                       pendingQuestionsAndAnswersReply.add("");
                       print("I do not exist");
                     }
-                    questionsAndAnswersPage.questionsAndAnswersThreads.toList()[threadNum][4].add(pendingQuestionsAndAnswersReply);
+                    //questionsAndAnswersPage.questionsAndAnswersThreads.toList()[threadNum][4].add(pendingQuestionsAndAnswersReply);
                     print(questionsAndAnswersPage.reversedQuestionsAndAnswersThreadsIterable);
                     print(questionsAndAnswersPage.questionsAndAnswersReplies);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
                     questionsAndAnswersPage.questionsAndAnswersReplyBool = false;
                   }
-                  else if(technologiesPage.technologiesReplyBool == true){
+                  if(technologiesPage.technologiesReplyBool == true){
                     if(technologiesPage.technologiesReplyingToReplyBool == false){
                       threadNum = int.parse(technologiesPage.threadID);
                       assert(threadNum is int);
@@ -256,7 +292,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
                     technologiesPage.technologiesReplyBool = false;
                   }
-                  else if(projectsPage.projectsReplyBool == true){
+                  if(projectsPage.projectsReplyBool == true){
                     if(projectsPage.projectsReplyingToReplyBool == false){
                       threadNum = int.parse(projectsPage.threadID);
                       assert(threadNum is int);
@@ -282,7 +318,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
                     projectsPage.projectsReplyBool = false;
                   }
-                  else if(newDiscoveriesPage.newDiscoveriesReplyBool == true){
+                  if(newDiscoveriesPage.newDiscoveriesReplyBool == true){
                     if(newDiscoveriesPage.newDiscoveriesReplyingToReplyBool == false){
                       threadNum = int.parse(newDiscoveriesPage.threadID);
                       assert(threadNum is int);
