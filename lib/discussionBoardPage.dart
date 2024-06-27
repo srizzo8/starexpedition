@@ -87,26 +87,31 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                       discussionBoardUpdatesThreadCount = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").count().get();
                       QuerySnapshot dbuQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").get();
                       discussionBoardUpdatesThreads = dbuQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                      (discussionBoardUpdatesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
 
                       //Getting the amount of threads that are in the Questions and Answers subforum:
                       questionsAndAnswersThreadCount = await FirebaseFirestore.instance.collection("Questions_And_Answers").count().get();
                       QuerySnapshot qaaQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").get();
                       questionsAndAnswersThreads = qaaQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                      (questionsAndAnswersThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
 
                       //Getting the amount of threads that are in the Technologies subforum:
                       technologiesThreadCount = await FirebaseFirestore.instance.collection("Technologies").count().get();
                       QuerySnapshot tQuerySnapshot = await FirebaseFirestore.instance.collection("Technologies").get();
                       technologiesThreads = tQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                      (technologiesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
 
                       //Getting the amount of threads that are in the Projects subforum:
                       projectsThreadCount = await FirebaseFirestore.instance.collection("Projects").count().get();
                       QuerySnapshot pQuerySnapshot = await FirebaseFirestore.instance.collection("Projects").get();
                       projectsThreads = pQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                      (projectsThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
 
                       //Getting the amount of threads that are in the New Discoveries subforum:
                       newDiscoveriesThreadCount = await FirebaseFirestore.instance.collection("New_Discoveries").count().get();
                       QuerySnapshot ndQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").get();
                       newDiscoveriesThreads = ndQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                      (newDiscoveriesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
                       //print(discussionBoardUpdatesThreads.toString());
                       //Going to a certain subforum
                       print("Testing subforum button");
