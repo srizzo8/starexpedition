@@ -129,11 +129,25 @@ class loginPageState extends State<loginPage>{
             onTap: () async{
               if(usernameController.text != "" && passwordController.text != "") {
                 var userDocument;
+
+                //Finding lower case version of usernames
+                List<String> usernameList = [];
+                await FirebaseFirestore.instance.collection("User").get().then((v){
+                  for(var item in v.docs){
+                    usernameList.add(item.data()["username"].toLowerCase());
+                    print("Item: ${usernameList}");
+                  }
+                });
+
+                //userResult
                 var userResult = await FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).get();
                 userResult.docs.forEach((outcome){
                   userDocument = outcome.data();
+                  //userLowercased = outcome.data()["username"].toLowerCase();
                   print("This is the outcome: ${outcome.data()}");
                 });
+
+                //if(usernameList.contains(usernameController.text.toLowerCase())
 
                 var passwordDocument;
                 var passwordResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: passwordController.text).get();
@@ -144,6 +158,7 @@ class loginPageState extends State<loginPage>{
                 print("userDocument: $userDocument");
                 print("passwordDocument: $passwordDocument");
 
+                //if(userLowercased == usernameController.text.toLowerCase())
                 if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
                   if(myMain.discussionBoardLogin == true){
                     await FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).get().then((theUn){

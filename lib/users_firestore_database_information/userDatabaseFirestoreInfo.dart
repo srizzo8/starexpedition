@@ -3,12 +3,14 @@ class User{
   final String username;
   final String emailAddress;
   final String password;
+  final String usernameLowercased;
 
   const User({
     required this.id,
     required this.username,
     required this.emailAddress,
-    required this.password
+    required this.password,
+    required this.usernameLowercased
   });
 
   toJson(){
@@ -16,7 +18,8 @@ class User{
       "id": id,
       "username": username,
       "emailAddress": emailAddress,
-      "password": password
+      "password": password,
+      "usernameLowercased": usernameLowercased
     };
   }
 }
