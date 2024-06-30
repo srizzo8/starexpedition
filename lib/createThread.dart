@@ -191,6 +191,7 @@ class createThreadState extends State<createThread>{
                     print(discussionBoardUpdatesPendingThreads);
                     discussionBoardUpdatesPage.discussionBoardUpdatesThreads.add(discussionBoardUpdatesPendingThreads);
                     print("Threads in discussion board updates subforum: " + discussionBoardUpdatesPage.discussionBoardUpdatesThreads.toString());
+                    print("Length: ${discussionBoardUpdatesThreads.length}");
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                     discussionBoardUpdatesPage.discussionBoardUpdatesBool = false;
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsList);
