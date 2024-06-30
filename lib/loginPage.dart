@@ -131,16 +131,16 @@ class loginPageState extends State<loginPage>{
                 var userDocument;
 
                 //Finding lower case version of usernames
-                List<String> usernameList = [];
+                /*List<String> usernameList = [];
                 await FirebaseFirestore.instance.collection("User").get().then((v){
                   for(var item in v.docs){
                     usernameList.add(item.data()["username"].toLowerCase());
                     print("Item: ${usernameList}");
                   }
-                });
+                });*/
 
                 //userResult
-                var userResult = await FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).get();
+                var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
                 userResult.docs.forEach((outcome){
                   userDocument = outcome.data();
                   //userLowercased = outcome.data()["username"].toLowerCase();
@@ -172,7 +172,7 @@ class loginPageState extends State<loginPage>{
                   }
                   else{
                     print("Logging in123");
-                    await FirebaseFirestore.instance.collection("User").where("username", isEqualTo: usernameController.text).get().then((theUn){
+                    await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
                       myUsername = theUn.docs.first.data()["username"];
                     });
 
