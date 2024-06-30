@@ -192,7 +192,7 @@ class createThreadState extends State<createThread>{
                     discussionBoardUpdatesPage.discussionBoardUpdatesThreads.add(discussionBoardUpdatesPendingThreads);
                     print("Threads in discussion board updates subforum: " + discussionBoardUpdatesPage.discussionBoardUpdatesThreads.toString());
                     print("Length: ${discussionBoardUpdatesThreads.length}");
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardPage())); //originally going to discussionBoardUpdatesPage
                     discussionBoardUpdatesPage.discussionBoardUpdatesBool = false;
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsList);
                     print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsIterable.toList());
@@ -228,7 +228,8 @@ class createThreadState extends State<createThread>{
                       print(questionsAndAnswersPendingThreads);
                       questionsAndAnswersPage.questionsAndAnswersThreads.add(questionsAndAnswersPendingThreads);
                       print("Threads in questions and answers subforum: " + questionsAndAnswersPage.questionsAndAnswersThreads.toString());
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardPage()));
+                      //Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
                       questionsAndAnswersPage.questionsAndAnswersBool = false;
                       print(questionsAndAnswersPage.reversedQuestionsAndAnswersThreadsIterable.toList());
                     }
@@ -263,7 +264,8 @@ class createThreadState extends State<createThread>{
                         print(technologiesPendingThreads);
                         technologiesPage.technologiesThreads.add(technologiesPendingThreads);
                         print("Threads in technologies subforum: " + technologiesPage.technologiesThreads.toString());
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardPage()));
+                        //Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
                         technologiesPage.technologiesBool = false;
                         print(technologiesPage.reversedTechnologiesThreadsIterable.toList());
                       }
@@ -298,7 +300,8 @@ class createThreadState extends State<createThread>{
                           print(projectsPendingThreads);
                           projectsPage.projectsThreads.add(projectsPendingThreads);
                           print("Threads in questions and answers subforum: " + projectsPage.projectsThreads.toString());
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardPage()));
+                          //Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
                           projectsPage.projectsBool = false;
                           print(projectsPage.reversedProjectsThreadsIterable.toList());
                         }
@@ -333,7 +336,8 @@ class createThreadState extends State<createThread>{
                             print(newDiscoveriesPendingThreads);
                             newDiscoveriesPage.newDiscoveriesThreads.add(newDiscoveriesPendingThreads);
                             print("Threads in discussion board updates subforum: " + newDiscoveriesPage.newDiscoveriesThreads.toString());
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardPage()));
+                            //Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
                             newDiscoveriesPage.newDiscoveriesBool = false;
                             print(newDiscoveriesPage.reversedNewDiscoveriesThreadsIterable.toList());
                           }
