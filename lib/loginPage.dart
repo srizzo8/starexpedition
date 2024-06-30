@@ -164,7 +164,7 @@ class loginPageState extends State<loginPage>{
                     await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
                       myUsername = theUn.docs.first.data()["username"];
                     });
-                    print("Logging in as " + myUsername);
+                    print("Logging in as: " + myUsername);
                     print("myNewUsername: " + theRegisterPage.myNewUsername);
                     Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
                     myMain.discussionBoardLogin = false;
