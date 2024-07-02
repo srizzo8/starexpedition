@@ -40,7 +40,7 @@ final myRegExp = RegExp(
 );
 
 bool checkSpecialCharacters(String p){
-  var myPassList = json.decode(p).cast<String>().toList();
+  var myPassList = p.split("");//json.decode(p).cast<String>().toList();
   for(String i in regExp){
     if(myPassList.contains(i)){
       return true;
