@@ -34,9 +34,23 @@ String myNewEmail = "";
 String myNewPassword = "";
 bool registerBool = false;
 var userId;
+List<String> regExp = ['[', ']', '!', '@', '#', "%", '^', '&', '*', '(', ')', '<', '>', '?', '~', '_', '+', '-', '`', '{', '}', '[', ']', ':'];
 final myRegExp = RegExp(
     r'[\^$*.\[\]{}()?\-"!@#%&/\,><:;_~`+='
 );
+
+bool checkSpecialCharacters(String p){
+  var myPassList = json.decode(p).cast<String>().toList();
+  for(String i in regExp){
+    if(myPassList.contains(i)){
+      return true;
+    }
+    else{
+      //continue
+    }
+  }
+  return false;
+}
 
 class registerPage extends StatefulWidget{
   const registerPage ({Key? key}) : super(key: key);
@@ -145,7 +159,7 @@ class registerPageState extends State<registerPage>{
               ),
             ),
             onTap: () async{
-              if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && password.text.contains(myRegExp)){
+              if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true){
                 if(myMain.discussionBoardLogin == true){
                   //userId = userId + 1;
                   await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
@@ -209,39 +223,39 @@ class registerPageState extends State<registerPage>{
                   context: buildContext,
                   builder: (myContent) => AlertDialog(
                     title: const Text("Registration unsuccessful"),
-                    content: theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && password.text.contains(myRegExp)?
+                    content: theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true?
                         Text("Username empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && password.text.contains(myRegExp)?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true?
                         Text("Username already exists"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && password.text.contains(myRegExp)?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true?
                         Text("Email empty"):
                         theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text == ""?
                         Text("Password empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && !(password.text.contains(myRegExp))?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false?
                         Text("Password must contain at least one special character"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && password.text.contains(myRegExp)?
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true?
                         Text("Username empty\nEmail empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && password.text.contains(myRegExp)?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true?
                         Text("Username already exists\nEmail empty"):
                         theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text == ""?
                         Text("Username empty\nPassword empty"):
                         theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text == ""?
                         Text("Username already exists\nPassword empty"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && !(password.text.contains(myRegExp))?
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false?
                         Text("Username empty\nPassword must contain at least one special character"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && !(password.text.contains(myRegExp))?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false?
                         Text("Username already exists\nPassword must contain at least one special character"):
                         theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text == ""?
                         Text("Email empty\nPassword empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && !(password.text.contains(myRegExp))?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false?
                         Text("Email empty\nPassword must contain at least one special character"):
                         theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text == ""?
                         Text("Username empty\nEmail empty\nPassword empty"):
                         theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text == ""?
                         Text("Username already exists\nEmail empty\nPassword empty"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && !(password.text.contains(myRegExp))?
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false?
                         Text("Username empty\nEmail empty\nPassword must contain at least one special character"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && !(password.text.contains(myRegExp))?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false?
                         Text("Username already exists\nEmail empty\nPassword must contain at least one special character"):
                         Text(""),
                     actions: <Widget>[
