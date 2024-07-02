@@ -231,7 +231,7 @@ class registerPageState extends State<registerPage>{
                         Text("Email empty"):
                         theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text == ""?
                         Text("Password empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false?
+                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false?
                         Text("Password must contain at least one special character"):
                         theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true?
                         Text("Username empty\nEmail empty"):
