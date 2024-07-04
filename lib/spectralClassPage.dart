@@ -152,6 +152,7 @@ class spectralClassPageState extends State<spectralClassPage>{
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
       ),
       body: spectralClassOfStars.isEmpty || spectralClassCount.isEmpty? Center(child: CircularProgressIndicator()):
@@ -399,6 +400,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
     List<String> informationAboutClickedStar = [];
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
       ),
       body: Column(

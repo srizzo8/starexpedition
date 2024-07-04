@@ -32,6 +32,7 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
       ),
       body: Column(

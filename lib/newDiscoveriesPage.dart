@@ -71,6 +71,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
   Widget build(BuildContext buildContext){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -167,6 +168,7 @@ class newDiscoveriesThreadContent extends StatelessWidget{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

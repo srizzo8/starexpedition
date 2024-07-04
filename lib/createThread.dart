@@ -55,6 +55,7 @@ class createThreadState extends State<createThread>{
   Widget build(BuildContext createThreadBuildContext){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

@@ -71,6 +71,7 @@ class projectsPageState extends State<projectsPage>{
   Widget build(BuildContext buildContext){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -167,6 +168,7 @@ class projectsThreadContent extends StatelessWidget{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

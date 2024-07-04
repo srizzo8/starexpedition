@@ -65,6 +65,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
       ),
       body: Column(

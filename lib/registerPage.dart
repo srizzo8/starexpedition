@@ -92,6 +92,7 @@ class registerPageState extends State<registerPage>{
   Widget build(BuildContext buildContext){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
       ),
       body: Wrap(

@@ -71,6 +71,7 @@ class technologiesPageState extends State<technologiesPage>{
   Widget build(BuildContext buildContext){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -167,6 +168,7 @@ class technologiesThreadContent extends StatelessWidget{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

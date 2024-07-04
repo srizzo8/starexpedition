@@ -351,7 +351,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.red,//Colors.red,
       ),
       home: StarExpedition(),
       routes:{
@@ -456,6 +456,7 @@ class theStarExpeditionState extends State<StarExpedition> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           "Star Expedition",
         ),
@@ -1082,6 +1083,7 @@ class articlePage extends StatelessWidget{
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(theStar.starName!),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -1185,6 +1187,7 @@ class planetArticle extends StatelessWidget{
   Widget build(BuildContext theContext) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(correctPlanet),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

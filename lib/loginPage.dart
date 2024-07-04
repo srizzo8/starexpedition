@@ -67,6 +67,7 @@ class loginPageState extends State<loginPage>{
   Widget build(BuildContext bc){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

@@ -76,6 +76,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
   Widget build(BuildContext bc){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -211,6 +212,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
