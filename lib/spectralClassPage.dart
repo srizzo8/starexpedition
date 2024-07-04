@@ -419,10 +419,12 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
               child: spectralClassListInformation(),
             )*/
           switchOn? Expanded(
-            child: ListView.builder(
+            child: ListView.separated(
               itemCount: fullListOfStars[indexPlaceSpectralClass()].length,
+              separatorBuilder: (context, index) => Container(height: 10),
               itemBuilder: (context, index){
-                return Card(
+                return Container(
+                  color: Colors.white12, //add children here
                   child: InkWell(
                     onTap: () async{
                       //clickedStar.add(myMain.myStars(starName: fullListOfStars[indexPlaceSpectralClass()][index]));
