@@ -424,7 +424,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
               separatorBuilder: (context, index) => Container(height: 10),
               itemBuilder: (context, index){
                 return Container(
-                  color: Colors.white12, //add children here
+                  color: Colors.white12,
                   child: InkWell(
                     onTap: () async{
                       //clickedStar.add(myMain.myStars(starName: fullListOfStars[indexPlaceSpectralClass()][index]));
