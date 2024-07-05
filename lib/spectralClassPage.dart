@@ -22,7 +22,7 @@ class spectralClassPageState extends State<spectralClassPage>{
   static String nameOfRoute = '/spectralClassPage';
   //final spectralClassSnapshot = await spectralClassRef.get();
   List<String> spectralClassOfStars = [];
-  //String spectralClass = "";
+  //String spectralClass = " ";
   var scpNumberOfStars = myMain.starsForSearchBar.length;
   List<String> spectralClassCount = [];
   bool b = false;
