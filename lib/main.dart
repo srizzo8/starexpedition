@@ -19,9 +19,8 @@ import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
+import 'package:starexpedition4/spectralClassPage.dart';
 import 'package:starexpedition4/whyStarExpeditionWasMade.dart';
-
-//import 'package:starexpedition4/spectralClassPage.dart';
 
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -1092,10 +1091,16 @@ class articlePage extends StatelessWidget{
             //Navigator.pop(bc),
             //Navigator.push(bc, MaterialPageRoute(builder: (bc) => const StarExpedition())),
             //Going from the star article page to the search suggestions page
-            showSearch(
-              context: bc,
-              delegate: CustomSearchDelegate(),
-            )
+            if(fromSpectralClassPage == true){
+              fromSpectralClassPage = false,
+              Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage())),
+            }
+            else{
+              showSearch(
+                context: bc,
+                delegate: CustomSearchDelegate(),
+              )
+            }
           }
         ),
       ),

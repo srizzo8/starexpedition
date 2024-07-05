@@ -9,6 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'main.dart' as myMain;
 
 String mySpectralClass = "";
+bool fromSpectralClassPage = false;
 
 class spectralClassPage extends StatefulWidget{
   const spectralClassPage({Key? key}) : super(key: key);
@@ -154,6 +155,13 @@ class spectralClassPageState extends State<spectralClassPage>{
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            Navigator.push(bc, MaterialPageRoute(builder: (bc) => const myMain.StarExpedition())),
+          },
+        ),
       ),
       body: spectralClassOfStars.isEmpty || spectralClassCount.isEmpty? Center(child: CircularProgressIndicator()):
       Wrap(
@@ -437,6 +445,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
                       //print("This is the clicked star: " + clickedStar! as String);
                       informationAboutClickedStar = await myMain.getStarInformation();
                       print(informationAboutClickedStar);
+                      fromSpectralClassPage = true;
                       Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
                     },
                     child: Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
