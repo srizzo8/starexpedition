@@ -415,7 +415,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            Navigator.push(context, MaterialPageRoute(builder: (bc) => const myMain.StarExpedition())),
+            Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage())),
           }
         )
       ),
