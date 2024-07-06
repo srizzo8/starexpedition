@@ -159,6 +159,7 @@ class spectralClassPageState extends State<spectralClassPage>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
+            print("Going to home page"),
             Navigator.push(bc, MaterialPageRoute(builder: (bc) => const myMain.StarExpedition())),
           },
         ),
@@ -410,6 +411,13 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            Navigator.push(context, MaterialPageRoute(builder: (bc) => const myMain.StarExpedition())),
+          }
+        )
       ),
       body: Column(
         children: <Widget>[
