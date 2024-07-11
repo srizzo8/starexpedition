@@ -41,12 +41,12 @@ class MyLoginPage extends StatelessWidget{
   @override
   Widget build(BuildContext bContext){
     return MaterialApp(
-      title: 'The Login Page',
-      routes: {
-        loginPageRoutes.homePage: (context) => myMain.StarExpedition(),
-        loginPageRoutes.myRegisterPage: (context) => theRegisterPage.registerPage(),
-        loginPageRoutes.discussionBoard: (context) => theDiscussionBoardPage.discussionBoardPage(),
-      }
+        title: 'The Login Page',
+        routes: {
+          loginPageRoutes.homePage: (context) => myMain.StarExpedition(),
+          loginPageRoutes.myRegisterPage: (context) => theRegisterPage.registerPage(),
+          loginPageRoutes.discussionBoard: (context) => theDiscussionBoardPage.discussionBoardPage(),
+        }
     );
   }
 }
@@ -67,15 +67,15 @@ class loginPageState extends State<loginPage>{
   Widget build(BuildContext bc){
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text("Star Expedition"),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () =>{
-            Navigator.push(bc, MaterialPageRoute(builder: (bc) => const myMain.StarExpedition())),
-          }
-        )
+          centerTitle: true,
+          title: Text("Star Expedition"),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              color: Colors.white,
+              onPressed: () =>{
+                Navigator.push(bc, MaterialPageRoute(builder: (bc) => const myMain.StarExpedition())),
+              }
+          )
       ),
       body: Wrap(
         children: <Widget>[
@@ -102,13 +102,13 @@ class loginPageState extends State<loginPage>{
             ),
           ),
           Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("Password", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
-            )
+              child: Container(
+                padding: const EdgeInsets.all(0.0),
+                alignment: Alignment.centerLeft,
+                child: Text("Password", style: TextStyle(fontSize: 14.0)),
+                height: 20,
+                width: 380,
+              )
           ),
           Container(
             padding: const EdgeInsets.all(20.0),
@@ -120,19 +120,18 @@ class loginPageState extends State<loginPage>{
               ),
             ),
           ),
-          GestureDetector(
-            child: Center(
-              child: Container(
-                color: Colors.black,
-                child: Text("Log in", style: TextStyle(fontSize: 14.0, color: Colors.white)),
-              ),
-            ),
-            onTap: () async{
-              if(usernameController.text != "" && passwordController.text != "") {
-                var userDocument;
+          Center(
+              child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  child: Text("Log in", style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                ),
+                  onTap: () async{
+                    if(usernameController.text != "" && passwordController.text != "") {
+                      var userDocument;
 
-                //Finding lower case version of usernames
-                /*List<String> usernameList = [];
+                      //Finding lower case version of usernames
+                      /*List<String> usernameList = [];
                 await FirebaseFirestore.instance.collection("User").get().then((v){
                   for(var item in v.docs){
                     usernameList.add(item.data()["username"].toLowerCase());
@@ -140,92 +139,93 @@ class loginPageState extends State<loginPage>{
                   }
                 });*/
 
-                //userResult
-                var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
-                userResult.docs.forEach((outcome){
-                  userDocument = outcome.data();
-                  //userLowercased = outcome.data()["username"].toLowerCase();
-                  print("This is the outcome: ${outcome.data()}");
-                });
+                      //userResult
+                      var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
+                      userResult.docs.forEach((outcome){
+                        userDocument = outcome.data();
+                        //userLowercased = outcome.data()["username"].toLowerCase();
+                        print("This is the outcome: ${outcome.data()}");
+                      });
 
-                //if(usernameList.contains(usernameController.text.toLowerCase())
+                      //if(usernameList.contains(usernameController.text.toLowerCase())
 
-                var passwordDocument;
-                var passwordResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: passwordController.text).get();
-                passwordResult.docs.forEach((outcome){
-                  passwordDocument = outcome.data();
-                });
+                      var passwordDocument;
+                      var passwordResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: passwordController.text).get();
+                      passwordResult.docs.forEach((outcome){
+                        passwordDocument = outcome.data();
+                      });
 
-                print("userDocument: $userDocument");
-                print("passwordDocument: $passwordDocument");
+                      print("userDocument: $userDocument");
+                      print("passwordDocument: $passwordDocument");
 
-                //if(userLowercased == usernameController.text.toLowerCase())
-                if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
-                  if(myMain.discussionBoardLogin == true){
-                    await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
-                      myUsername = theUn.docs.first.data()["username"];
-                    });
-                    print("Logging in as: " + myUsername);
-                    print("myNewUsername: " + theRegisterPage.myNewUsername);
-                    Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
-                    myMain.discussionBoardLogin = false;
-                    loginBool = true;
-                  }
-                  else{
-                    print("Logging in123");
-                    await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
-                      myUsername = theUn.docs.first.data()["username"];
-                    });
+                      //if(userLowercased == usernameController.text.toLowerCase())
+                      if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
+                        if(myMain.discussionBoardLogin == true){
+                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
+                            myUsername = theUn.docs.first.data()["username"];
+                          });
+                          print("Logging in as: " + myUsername);
+                          print("myNewUsername: " + theRegisterPage.myNewUsername);
+                          Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
+                          myMain.discussionBoardLogin = false;
+                          loginBool = true;
+                        }
+                        else{
+                          print("Logging in123");
+                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
+                            myUsername = theUn.docs.first.data()["username"];
+                          });
 
-                    print("Logging in as " + myUsername);
-                    Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
-                    print("myUsername: " + myUsername);
-                    print("myNewUsername: " + theRegisterPage.myNewUsername);
-                    loginBool = true;
-                  }
-                }
-                else{
-                  print("userDocument: $userDocument");
-                  print("passwordDocument: $passwordDocument");
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext theContext){
-                        return AlertDialog(
-                          title: const Text("Login Error"),
-                          content: const Text("Your username-password combination is not correct."),
-                          actions: [
-                            TextButton(
-                              onPressed: () => {
-                                Navigator.pop(context),
-                              },
-                              child: const Text("Ok"),
-                            )
-                          ],
+                          print("Logging in as " + myUsername);
+                          Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                          print("myUsername: " + myUsername);
+                          print("myNewUsername: " + theRegisterPage.myNewUsername);
+                          loginBool = true;
+                        }
+                      }
+                      else{
+                        print("userDocument: $userDocument");
+                        print("passwordDocument: $passwordDocument");
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext theContext){
+                              return AlertDialog(
+                                title: const Text("Login Error"),
+                                content: const Text("Your username-password combination is not correct."),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => {
+                                      Navigator.pop(context),
+                                    },
+                                    child: const Text("Ok"),
+                                  )
+                                ],
+                              );
+                            }
                         );
                       }
-                  );
-                }
-              }
-            }
+                    }
+                  }
+              ),
           ),
           Center(
             child: Container(
               child: Text("If you do not have an account, you can create an account", style: TextStyle(fontSize: 14.0)),
             ),
           ),
-          GestureDetector(
-            child: Center(
-              child: Container(
-                color: Colors.tealAccent,
-                child: Text("Sign up", style: TextStyle(fontSize: 14.0)),
+          Center(
+              child: InkWell(
+                child: Ink(
+                  color: Colors.tealAccent,
+                  child: Text("Sign up", style: TextStyle(fontSize: 14.0)),
+                ),
+                  onTap: () async{
+                    //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
+                    databaseService().initMyDatabase();
+                    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => theRegisterPage.registerPage()));
+                    print("Signing up");
+                  }
               ),
-            ),
-            onTap: () async{
-              //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
-              databaseService().initMyDatabase();
-              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => theRegisterPage.registerPage()));
-              print("Signing up");
-            }
           ),
         ],
       ),

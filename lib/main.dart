@@ -485,20 +485,22 @@ class theStarExpeditionState extends State<StarExpedition> {
       body: Wrap(
         children: <Widget>[
           myUsername == "" && myNewUsername == ""? // If myUsername is empty, it will show the Login container. If myUsername is not empty, it will show an empty SizedBox.
-            GestureDetector(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    FittedBox(
-                      child: Text('Login', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  InkWell(
+                    child: FittedBox(
                       fit: BoxFit.contain,
+                      child: Ink(
+                        child: Text('Login', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                      ),
                     ),
-                  ],
-              ),
-              onTap: (){
-                print('Logging in');
-                Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
-              }
+                      onTap: (){
+                        print('Logging in');
+                        Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
+                      }
+                  )
+                ],
             ): (myUsername == "" && myNewUsername != "")?
               Row( //If login is successful
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -508,11 +510,13 @@ class theStarExpeditionState extends State<StarExpedition> {
                     child: Text('Hi ' + myNewUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                     fit: BoxFit.contain,
                   ),
-                  GestureDetector(
+                  InkWell(
                     child: FittedBox(
                       alignment: Alignment.topRight,
-                      child: Text(' Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                       fit: BoxFit.contain,
+                      child: Ink(
+                        child: Text(' Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                      ),
                     ),
                     onTap: (){
                       myUsername = "";
@@ -531,10 +535,12 @@ class theStarExpeditionState extends State<StarExpedition> {
                       child: Text('Hi ' + myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                       fit: BoxFit.contain,
                     ),
-                    GestureDetector(
+                    InkWell(
                       child: FittedBox(
-                        child: Text(' Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                         fit: BoxFit.contain,
+                        child: Ink(
+                          child: Text(' Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                        ),
                       ),
                       onTap: (){
                         myUsername = "";
@@ -568,25 +574,27 @@ class theStarExpeditionState extends State<StarExpedition> {
             )
           ),
 
-          GestureDetector(
-            child: Container(
-              alignment: Alignment.topCenter,
-              height: 30,
-              child: Text(starsForSearchBar[randomNumber].starName!),
+          Center(
+            child: InkWell(
+              //height: 20,
+              //alignment: Alignment.topCenter,
+              child: Ink(
+                child: Text(starsForSearchBar[randomNumber].starName!),
+              ),
+                onTap: () async{
+                  correctStar = starsForSearchBar[randomNumber].starName!;
+                  starInfo = await getStarInformation();
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
+                  // correctStar = starsForSearchBar[randomNumber].starName!;
+                  //starInfo = await getStarInformation();
+                  if(starInfo.length == 0){
+                    print("Sorry; the length is 0");
+                  }
+                  else{
+                    print(starInfo);
+                  }
+                }
             ),
-            onTap: () async{
-              correctStar = starsForSearchBar[randomNumber].starName!;
-              starInfo = await getStarInformation();
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
-              // correctStar = starsForSearchBar[randomNumber].starName!;
-              //starInfo = await getStarInformation();
-              if(starInfo.length == 0){
-                print("Sorry; the length is 0");
-              }
-              else{
-                print(starInfo);
-              }
-            }
           ),
         ],
       ),
