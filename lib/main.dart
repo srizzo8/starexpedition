@@ -39,6 +39,8 @@ bool discussionBoardLogin = false;
 Map<String, List> otherNamesMap = HashMap();
 Iterable<List> alternateNames = [];
 
+bool featuredStarOfTheDayBool = false;
+
 /*
 Future<String> get myDirectoryPath async{
   Directory d = await getApplicationDocumentsDirectory();
@@ -584,6 +586,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                 onTap: () async{
                   correctStar = starsForSearchBar[randomNumber].starName!;
                   starInfo = await getStarInformation();
+                  featuredStarOfTheDayBool = true;
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
                   // correctStar = starsForSearchBar[randomNumber].starName!;
                   //starInfo = await getStarInformation();
@@ -1103,6 +1106,10 @@ class articlePage extends StatelessWidget{
             if(fromSpectralClassPage == true){
               fromSpectralClassPage = false,
               Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage())),
+            }
+            else if(featuredStarOfTheDayBool == true){
+              featuredStarOfTheDayBool = false,
+              Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => StarExpedition())),
             }
             else{
               showSearch(
