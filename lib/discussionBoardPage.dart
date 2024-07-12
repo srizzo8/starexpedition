@@ -82,7 +82,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                   Container(
                     height: 15,
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () async{
                       //Getting the amount of threads that are in the Discussion Board Updates subforum:
                       discussionBoardUpdatesThreadCount = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").count().get();
@@ -138,12 +138,14 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                           break;
                       }
                     },
-                    child: Container(
+                    child: Ink(
                       height: 80,
                       width: 240,
-                      alignment: Alignment.center,
                       color: Colors.red,
-                      child: Text(subforumList[index], textAlign: TextAlign.center),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(subforumList[index], textAlign: TextAlign.center),
+                      ),
                     ),
                   ),
                 ],

@@ -152,79 +152,78 @@ class registerPageState extends State<registerPage>{
               ),
             ),
           ),
-          GestureDetector(
-            child: Center(
-              child: Container(
+          Center(
+            child: InkWell(
+              child: Ink(
                 color: Colors.tealAccent,
                 child: Text("Sign Up for Star Expedition", style: TextStyle(fontSize: 14.0)),
               ),
-            ),
-            onTap: () async{
-              if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true){
-                if(myMain.discussionBoardLogin == true){
-                  //userId = userId + 1;
-                  await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
-                    userId = myNumber.docs.first.data()["id"] + 1;
-                  });
-                  myNewUsername = theUsername.text;
-                  myNewEmail = email.text;
-                  myNewPassword = password.text;
-                  Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
-                  var theNewUser = User(
-                    id: userId,
-                    username: theUsername.text,
-                    emailAddress: email.text,
-                    password: password.text,
-                    usernameLowercased: theUsername.text.toLowerCase()
-                  );
-                  createUser(theNewUser);
-                  //dbService.addUser(theNewUser);
-                  //dbService.getUsers();
-                  userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-                  myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
-                  myMain.theUsers!.add(dasUser);
-                  print(myMain.theUsers);
-                  myMain.discussionBoardLogin = false;
-                  registerBool = true;
-                  print("Registering successfully as: " + userEmailPasswordList.toString());
-                  emailNotifications.registrationConfirmationEmail();
-                }
-                else{
-                  //userId = userId + 1;
-                  await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
-                    userId = myNumber.docs.first.data()["id"] + 1;
-                  });
-                  myNewUsername = theUsername.text;
-                  myNewEmail = email.text;
-                  myNewPassword = password.text;
-                  Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
-                  var theNewUser = User(
-                    id: userId,
-                    username: theUsername.text,
-                    emailAddress: email.text,
-                    password: password.text,
-                    usernameLowercased: theUsername.text.toLowerCase()
-                  );
-                  createUser(theNewUser);
-                  //dbService.addUser(theNewUser);
-                  //dbService.getUsers();
-                  userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-                  myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
-                  myMain.theUsers!.add(dasUser);
-                  print(myMain.theUsers);
-                  myMain.discussionBoardLogin = false;
-                  registerBool = true;
-                  print("Registering successfully as: " + userEmailPasswordList.toString());
-                  emailNotifications.registrationConfirmationEmail();
-                }
-              }
-              else{
-                print(myMain.theUsers!.indexWhere((person) => person.username == theUsername.text));
-                showDialog(
-                  context: buildContext,
-                  builder: (myContent) => AlertDialog(
-                    title: const Text("Registration unsuccessful"),
-                    content: theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true?
+                onTap: () async{
+                  if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true){
+                    if(myMain.discussionBoardLogin == true){
+                      //userId = userId + 1;
+                      await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
+                        userId = myNumber.docs.first.data()["id"] + 1;
+                      });
+                      myNewUsername = theUsername.text;
+                      myNewEmail = email.text;
+                      myNewPassword = password.text;
+                      Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
+                      var theNewUser = User(
+                          id: userId,
+                          username: theUsername.text,
+                          emailAddress: email.text,
+                          password: password.text,
+                          usernameLowercased: theUsername.text.toLowerCase()
+                      );
+                      createUser(theNewUser);
+                      //dbService.addUser(theNewUser);
+                      //dbService.getUsers();
+                      userEmailPasswordList.add([theUsername.text, email.text, password.text]);
+                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                      myMain.theUsers!.add(dasUser);
+                      print(myMain.theUsers);
+                      myMain.discussionBoardLogin = false;
+                      registerBool = true;
+                      print("Registering successfully as: " + userEmailPasswordList.toString());
+                      emailNotifications.registrationConfirmationEmail();
+                    }
+                    else{
+                      //userId = userId + 1;
+                      await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
+                        userId = myNumber.docs.first.data()["id"] + 1;
+                      });
+                      myNewUsername = theUsername.text;
+                      myNewEmail = email.text;
+                      myNewPassword = password.text;
+                      Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
+                      var theNewUser = User(
+                          id: userId,
+                          username: theUsername.text,
+                          emailAddress: email.text,
+                          password: password.text,
+                          usernameLowercased: theUsername.text.toLowerCase()
+                      );
+                      createUser(theNewUser);
+                      //dbService.addUser(theNewUser);
+                      //dbService.getUsers();
+                      userEmailPasswordList.add([theUsername.text, email.text, password.text]);
+                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                      myMain.theUsers!.add(dasUser);
+                      print(myMain.theUsers);
+                      myMain.discussionBoardLogin = false;
+                      registerBool = true;
+                      print("Registering successfully as: " + userEmailPasswordList.toString());
+                      emailNotifications.registrationConfirmationEmail();
+                    }
+                  }
+                  else{
+                    print(myMain.theUsers!.indexWhere((person) => person.username == theUsername.text));
+                    showDialog(
+                      context: buildContext,
+                      builder: (myContent) => AlertDialog(
+                        title: const Text("Registration unsuccessful"),
+                        content: theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true?
                         Text("Username empty"):
                         theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true?
                         Text("Username already exists"):
@@ -259,21 +258,22 @@ class registerPageState extends State<registerPage>{
                         theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false?
                         Text("Username already exists\nEmail empty\nPassword must contain at least one special character"):
                         Text(""),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: (){
-                          Navigator.of(myContent).pop();
-                        },
-                        child: Container(
-                          child: const Text("Ok"),
-                        ),
-                      )
-                    ],
-                  ),
-                );
-                print("Registration incomplete");
-              }
-            }
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: (){
+                              Navigator.of(myContent).pop();
+                            },
+                            child: Container(
+                              child: const Text("Ok"),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                    print("Registration incomplete");
+                  }
+                }
+            ),
           )
         ]
       ),
