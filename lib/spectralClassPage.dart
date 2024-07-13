@@ -189,7 +189,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                 DataCell(Text('M')),
                 DataCell(Text('2500-3800 K')),
                 //DataCell(Text('Proxima Centauri')),
-                DataCell(GestureDetector(
+                DataCell(InkWell(
                     onTap: (){
                       print("You clicked me!");
                       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
@@ -202,7 +202,7 @@ class spectralClassPageState extends State<spectralClassPage>{
               DataRow(cells: [
                 DataCell(Text('K')),
                 DataCell(Text('3800-5300 K')),
-                DataCell(GestureDetector(
+                DataCell(InkWell(
                     onTap: (){
                       print('You clicked me!');
                       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
@@ -215,7 +215,7 @@ class spectralClassPageState extends State<spectralClassPage>{
               DataRow(cells: [
                 DataCell(Text('G')),
                 DataCell(Text('5300-6000 K')),
-                DataCell(GestureDetector(
+                DataCell(InkWell(
                   onTap: (){
                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                     mySpectralClass = "G";
@@ -227,7 +227,7 @@ class spectralClassPageState extends State<spectralClassPage>{
               DataRow(cells: [
                 DataCell(Text('F')),
                 DataCell(Text('6000-7300 K')),
-                DataCell(GestureDetector(
+                DataCell(InkWell(
                   onTap: (){
                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                     mySpectralClass = "F";
@@ -239,7 +239,7 @@ class spectralClassPageState extends State<spectralClassPage>{
               DataRow(cells: [
                 DataCell(Text('A')),
                 DataCell(Text('7300-10000 K')),
-                DataCell(GestureDetector(
+                DataCell(InkWell(
                   onTap: (){
                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                     mySpectralClass = "A";
@@ -251,7 +251,7 @@ class spectralClassPageState extends State<spectralClassPage>{
               DataRow(cells: [
                 DataCell(Text('B')),
                 DataCell(Text('10000-30000 K')),
-                DataCell(GestureDetector(
+                DataCell(InkWell(
                   onTap: (){
                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                     mySpectralClass = "B";
@@ -263,7 +263,7 @@ class spectralClassPageState extends State<spectralClassPage>{
               DataRow(cells: [
                 DataCell(Text('O')),
                 DataCell(Text('30000+ K')),
-                DataCell(GestureDetector(
+                DataCell(InkWell(
                   onTap: (){
                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                     mySpectralClass = "O";

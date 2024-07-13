@@ -1157,22 +1157,22 @@ class articlePage extends StatelessWidget{
                         child: ListView.builder(
                         itemCount: myData.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                            height: 40,
-                            width: 15,
-                            color: Colors.grey,
-                            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                            child: InkWell(
-                                radius: 10, //const EdgeInsets.all(10),
-                                child: Text(myData[index], textAlign: TextAlign.center),
-                                onTap: () async {
-                                  correctPlanet = myData[index];
-                                  informationAboutPlanet = await getPlanetData();
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
-                                  //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
-                                  //Navigator.push(context, new MaterialPageRoute(builder: (context) => new planetArticle(starAndPlanetInfo: new starAndPlanetInformation)));
-                                },
+                          return InkWell(
+                            child: Container(
+                              height: 40,
+                              width: 15,
+                              color: Colors.grey,
+                              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                              //radius: 10, //const EdgeInsets.all(10),
+                              child: Text(myData[index], textAlign: TextAlign.center),
                             ),
+                            onTap: () async {
+                              correctPlanet = myData[index];
+                              informationAboutPlanet = await getPlanetData();
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                              //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
+                              //Navigator.push(context, new MaterialPageRoute(builder: (context) => new planetArticle(starAndPlanetInfo: new starAndPlanetInformation)));
+                            },
                           );
                         }),
                       ),
