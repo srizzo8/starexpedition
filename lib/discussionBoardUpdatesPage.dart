@@ -91,14 +91,15 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
           Container(
             child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
-          GestureDetector(
-            child: Container(
-              child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+          InkWell(
+            child: Ink(
               color: Colors.black,
               height: 20,
               width: 120,
-              margin: EdgeInsets.only(left: 250.0),
-              alignment: Alignment.center,
+              child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+                //margin: EdgeInsets.only(left: 250.0),
+                //alignment: Alignment.centerRight,
+              //padding: const EdgeInsets.all(20.0),
             ),
             onTap: (){
               print(discussionBoardUpdatesBool);
@@ -117,8 +118,8 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                   Container(
                     height: 10,
                   ),
-                  GestureDetector(
-                    child: Container(
+                  InkWell(
+                    child: Ink(
                       child: Text(discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString()),//Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
                       height: 30,
                       width: 360,
@@ -233,12 +234,14 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                 alignment: Alignment.topLeft,
               ),
             ),
-            GestureDetector(
-              child: Container(
-                alignment: Alignment.topCenter,
-                child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+            InkWell(
+              child: Ink(
                 color: Colors.deepPurpleAccent,
                 height: 20,
+                child: Container(
+                  alignment: Alignment.topCenter,
+                  child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
               ),
               onTap: (){
                 discussionBoardUpdatesReplyingToReplyBool = false;
@@ -279,8 +282,8 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                               color: Colors.tealAccent,
                               width: 360,
                             ),
-                            GestureDetector(
-                              child: Container(
+                            InkWell(
+                              child: Ink(
                                 child: Text("Reply"),
                                 color: Colors.purple.shade200,
                                 width: 360,
@@ -354,8 +357,8 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                   color: Colors.tealAccent,
                                   width: 360,
                                 ),
-                                GestureDetector(
-                                    child: Container(
+                                InkWell(
+                                    child: Ink(
                                       child: Text("Reply"),
                                       color: Colors.purple.shade200,
                                       width: 360,
