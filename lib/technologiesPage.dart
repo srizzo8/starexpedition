@@ -86,14 +86,14 @@ class technologiesPageState extends State<technologiesPage>{
           Container(
             child: Text("Technologies Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
-          GestureDetector(
-              child: Container(
+          InkWell(
+              child: Ink(
                 child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
                 color: Colors.black,
                 height: 20,
                 width: 120,
-                margin: EdgeInsets.only(left: 250.0),
-                alignment: Alignment.center,
+                //margin: EdgeInsets.only(left: 250.0),
+                //alignment: Alignment.center,
               ),
               onTap: (){
                 print(technologiesBool);
@@ -112,8 +112,8 @@ class technologiesPageState extends State<technologiesPage>{
                       Container(
                         height: 10,
                       ),
-                      GestureDetector(
-                          child: Container(
+                      InkWell(
+                          child: Ink(
                             child: Text(discussionBoardPage.technologiesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.technologiesThreads[index]["poster"].toString()),
                             height: 30,
                             width: 360,
@@ -188,12 +188,14 @@ class technologiesThreadContent extends StatelessWidget{
               alignment: Alignment.topLeft,
             ),
           ),
-          GestureDetector(
-              child: Container(
-                alignment: Alignment.topCenter,
-                child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+          InkWell(
+              child: Ink(
                 color: Colors.deepPurpleAccent,
                 height: 20,
+                child: Container(
+                  alignment: Alignment.topCenter,
+                  child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
               ),
               onTap: (){
                 technologiesReplyingToReplyBool = false;
@@ -230,8 +232,8 @@ class technologiesThreadContent extends StatelessWidget{
                                 color: Colors.tealAccent,
                                 width: 360,
                               ),
-                              GestureDetector(
-                                  child: Container(
+                              InkWell(
+                                  child: Ink(
                                     child: Text("Reply"),
                                     color: Colors.purple.shade200,
                                     width: 360,
@@ -288,8 +290,8 @@ class technologiesThreadContent extends StatelessWidget{
                                 color: Colors.tealAccent,
                                 width: 360,
                               ),
-                              GestureDetector(
-                                  child: Container(
+                              InkWell(
+                                  child: Ink(
                                     child: Text("Reply"),
                                     color: Colors.purple.shade200,
                                     width: 360,
