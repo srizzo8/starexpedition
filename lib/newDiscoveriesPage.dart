@@ -86,23 +86,28 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
           Container(
             child: Text("New Discoveries Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
-          GestureDetector(
-            child: Container(
-              child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
-              color: Colors.black,
+          //InkWell(
+            Container(
+              //color: Colors.black,
               height: 20,
-              width: 120,
+              width: 130,
               margin: EdgeInsets.only(left: 250.0),
               alignment: Alignment.center,
+              child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+                ),
+                onTap: (){
+                    print(newDiscoveriesBool);
+                    newDiscoveriesBool = true;
+                    print(newDiscoveriesBool);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+                    print("I am going to write a new thread.");
+                  }
+              ),
             ),
-            onTap: (){
-              print(newDiscoveriesBool);
-              newDiscoveriesBool = true;
-              print(newDiscoveriesBool);
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
-              print("I am going to write a new thread.");
-            }
-          ),
+          //),
           Expanded(
             child: ListView.builder(
                 itemCount: discussionBoardPage.newDiscoveriesThreads.length,
