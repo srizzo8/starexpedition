@@ -117,8 +117,8 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                       Container(
                         height: 10,
                       ),
-                      GestureDetector(
-                          child: Container(
+                      InkWell(
+                          child: Ink(
                             child: Text(discussionBoardPage.newDiscoveriesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString()),
                             height: 30,
                             width: 360,
@@ -193,12 +193,14 @@ class newDiscoveriesThreadContent extends StatelessWidget{
               alignment: Alignment.topLeft,
             ),
           ),
-          GestureDetector(
-            child: Container(
-              alignment: Alignment.topCenter,
-              child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+          InkWell(
+            child: Ink(
               color: Colors.deepPurpleAccent,
               height: 20,
+              child: Container(
+                alignment: Alignment.topCenter,
+                child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
             ),
             onTap: (){
               newDiscoveriesReplyingToReplyBool = false;
@@ -234,8 +236,8 @@ class newDiscoveriesThreadContent extends StatelessWidget{
                               color: Colors.tealAccent,
                               width: 360,
                             ),
-                            GestureDetector(
-                              child: Container(
+                            InkWell(
+                              child: Ink(
                                 child: Text("Reply"),
                                 color: Colors.purple.shade200,
                                 width: 360,
@@ -292,8 +294,8 @@ class newDiscoveriesThreadContent extends StatelessWidget{
                                 color: Colors.tealAccent,
                                 width: 360,
                               ),
-                              GestureDetector(
-                                child: Container(
+                              InkWell(
+                                child: Ink(
                                   child: Text("Reply"),
                                   color: Colors.purple.shade200,
                                   width: 360,
