@@ -86,22 +86,24 @@ class technologiesPageState extends State<technologiesPage>{
           Container(
             child: Text("Technologies Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
-          InkWell(
-              child: Ink(
-                child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
-                color: Colors.black,
-                height: 20,
-                width: 120,
-                //margin: EdgeInsets.only(left: 250.0),
-                //alignment: Alignment.center,
+          Container(
+              height: 20,
+              width: 120,
+              margin: EdgeInsets.only(left: 250.0),
+              alignment: Alignment.center,
+              child: InkWell(
+                child: Ink(
+                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+                  color: Colors.black,
+                ),
+                onTap: (){
+                  print(technologiesBool);
+                  technologiesBool = true;
+                  print(technologiesBool);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+                  print("I am going to write a new thread.");
+                }
               ),
-              onTap: (){
-                print(technologiesBool);
-                technologiesBool = true;
-                print(technologiesBool);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
-                print("I am going to write a new thread.");
-              }
           ),
           Expanded(
             child: ListView.builder(
