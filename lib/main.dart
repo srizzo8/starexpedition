@@ -572,7 +572,27 @@ class theStarExpeditionState extends State<StarExpedition> {
           Center(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(2.0, 4.0, 2.0, 2.0),
-              child: Image.asset(starsForSearchBar[randomNumber].imagePath!, height: 150, width: 150),
+              child: InkWell(
+                child: Ink.image(
+                  image: AssetImage(starsForSearchBar[randomNumber].imagePath!),//, height: 150, width: 150),
+                  height: 150,
+                  width: 150,
+                ),
+                onTap: () async{
+                  correctStar = starsForSearchBar[randomNumber].starName!;
+                  starInfo = await getStarInformation();
+                  featuredStarOfTheDayBool = true;
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
+                  // correctStar = starsForSearchBar[randomNumber].starName!;
+                  //starInfo = await getStarInformation();
+                  if(starInfo.length == 0){
+                    print("Sorry; the length is 0");
+                  }
+                  else{
+                    print(starInfo);
+                  }
+                }
+              ),
             )
           ),
 
