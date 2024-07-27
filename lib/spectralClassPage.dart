@@ -439,8 +439,8 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
               itemCount: fullListOfStars[indexPlaceSpectralClass()].length,
               separatorBuilder: (context, index) => Container(height: 10),
               itemBuilder: (context, index){
-                return Container(
-                  color: Colors.white12,
+                return UnconstrainedBox(
+                  //color: Colors.white12,
                   child: InkWell(
                     onTap: () async{
                       //clickedStar.add(myMain.myStars(starName: fullListOfStars[indexPlaceSpectralClass()][index]));
@@ -456,7 +456,14 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
                       fromSpectralClassPage = true;
                       Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
                     },
-                    child: Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
+                    child: Container(
+                      //child: Container(
+                        /*constraints: const BoxConstraints(
+                          maxWidth: 100,
+                        ),*/
+                        child: Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
+                      //),
+                    ),
                   ),
                   //Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
                 );
