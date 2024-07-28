@@ -575,6 +575,7 @@ class theStarExpeditionState extends State<StarExpedition> {
               child: InkWell(
                 child: Ink.image(
                   image: AssetImage(starsForSearchBar[randomNumber].imagePath!),//, height: 150, width: 150),
+                  fit: BoxFit.cover,
                   height: 150,
                   width: 150,
                 ),
