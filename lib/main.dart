@@ -1169,6 +1169,7 @@ class articlePage extends StatelessWidget{
                       "Temperature (in Kelvin): " + starInfo[9].toString()),
                       height: 180,
                       width: 360,
+                      alignment: Alignment.center,
                     ),
                     Center(
                       child: Text("\nConfirmed Terrestrial Planets",
