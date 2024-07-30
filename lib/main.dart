@@ -1154,8 +1154,112 @@ class articlePage extends StatelessWidget{
                   children: [
                     Center(
                       child: Text("Star Information",
-                              style: const TextStyle(fontWeight: FontWeight.bold)),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
                     ),
+                    Column(
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: "\nConstellation: ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: starInfo[0].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                        //Text("\n"),
+                        RichText(
+                          text: TextSpan(
+                            text: "Distance (in light-years): ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: starInfo[1].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                        //Text("\n"),
+                        RichText(
+                          text: TextSpan(
+                            text: "Other names: ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: starInfo[2].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                        //Text("\n"),
+                        RichText(
+                          text: TextSpan(
+                            text: "Spectral class: ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: starInfo[3].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                        //Text("\n"),
+                        RichText(
+                          text: TextSpan(
+                            text: "Absolute magnitude: ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: starInfo[4].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                        //Text("\n"),
+                        RichText(
+                          text: TextSpan(
+                            text: "Age of star: ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: starInfo[5].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                        //Text("\n"),
+                        RichText(
+                          text: TextSpan(
+                            text: "Apparent magnitude: ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: starInfo[6].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                        //Text("\n"),
+                        RichText(
+                          text: TextSpan(
+                            text: "Discoverer of star: ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: starInfo[7].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                        //Text("\n"),
+                        RichText(
+                          text: TextSpan(
+                            text: "Discovery date of star: ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: starInfo[8].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                        //Text("\n"),
+                        RichText(
+                          text: TextSpan(
+                            text: "Temperature (in Kelvin): ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: starInfo[9].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    /*
                     Container(
                       child: Text("Constellation: " + starInfo[0].toString() + '\n' +
                       "Distance (in light-years): " + starInfo[1].toString() + '\n' +
@@ -1170,10 +1274,10 @@ class articlePage extends StatelessWidget{
                       height: 180,
                       width: 360,
                       alignment: Alignment.center,
-                    ),
+                    ),*/
                     Center(
                       child: Text("\nConfirmed Terrestrial Planets",
-                              style: const TextStyle(fontWeight: FontWeight.bold)),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
                     ),
                     Expanded(
                         child: ListView.builder(
