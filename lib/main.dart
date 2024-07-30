@@ -1320,12 +1320,17 @@ class articlePage extends StatelessWidget{
                 //];
               }
               else{ // This else statement indicates what happens if the Firebase database returns nothing.
-                return Text("No data is available"); // If the snapshot does not have data, this will print.
+                return Center(
+                  child: Text("No data is available", textAlign: TextAlign.center), // If the snapshot does not have data, this will print.
+                );
+                //return Text("No data is available");
               }
             }
           }
-          else{
-            return Text("Star data is still loading", textAlign: TextAlign.center); //This represents a scenario where the connection has not finished yet.
+          else{ //This represents a scenario where the connection has not finished yet.
+            return Center(
+                child: Text("Star data is still loading", textAlign: TextAlign.center),
+            );
           }
         },
         future: getStarData(),
