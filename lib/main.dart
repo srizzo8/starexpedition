@@ -1325,7 +1325,7 @@ class articlePage extends StatelessWidget{
             }
           }
           else{
-            return Text("Star data is still loading"); //This represents a scenario where the connection has not finished yet.
+            return Text("Star data is still loading", textAlign: TextAlign.center); //This represents a scenario where the connection has not finished yet.
           }
         },
         future: getStarData(),
@@ -1359,22 +1359,68 @@ class planetArticle extends StatelessWidget{
           },
         ),
       ),
-      body: Wrap(
+      body: Column(
         children: <Widget>[
           Center(
             child: Text("Planet Information",
-                    style: TextStyle(fontWeight: FontWeight.bold))
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0))
           ),
-          Container(
-            alignment: Alignment.center,
-            height: 80,
-            width: 360,
-            child:
-              Text("Discovery date: " + informationAboutPlanet[0].toString() + '\n' +
+          Column(
+            //alignment: Alignment.center,
+            //height: 80,
+            //width: 360,
+            children: [
+              RichText(
+                text: TextSpan(
+                  text: "\nDiscovery date of planet: ",
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(text: informationAboutPlanet[0].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                  ],
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  text: "Distance from star: ",
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(text: informationAboutPlanet[1].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                  ],
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  text: "Earth masses: ",
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(text: informationAboutPlanet[2].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                  ],
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  text: "Orbital period: ",
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(text: informationAboutPlanet[3].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                  ],
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  text: "Temperature (in Kelvin): ",
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(text: informationAboutPlanet[4].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                  ],
+                ),
+              ),
+            ],
+              /*Text("Discovery date: " + informationAboutPlanet[0].toString() + '\n' +
                   "Distance from star: " + informationAboutPlanet[1].toString() + '\n' +
                   "Earth masses: " + informationAboutPlanet[2].toString() + '\n' +
                   "Orbital period: " + informationAboutPlanet[3].toString() + '\n' +
-                  "Temperature (in Kelvin): " + informationAboutPlanet[4].toString()),
+                  "Temperature (in Kelvin): " + informationAboutPlanet[4].toString()),*/
           ),
         ],
       ),
