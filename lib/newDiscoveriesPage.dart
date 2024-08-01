@@ -179,7 +179,7 @@ class newDiscoveriesThreadContent extends StatelessWidget{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            Navigator.pushNamed(context, '/discussionBoardPage'),
+            Navigator.pop(context),//Navigator.pushNamed(context, '/discussionBoardPage'),
           }
         ),
       ),
