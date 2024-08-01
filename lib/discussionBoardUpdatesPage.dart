@@ -124,7 +124,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       child: Text(discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString()),//Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
                       height: 30,
                       width: 360,
-                      color: Colors.tealAccent,
+                      color: Colors.grey[300],
                     ),
                     onTap: () async {
                       print("This is index: $index");
@@ -231,13 +231,13 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
               alignment: Alignment.topCenter,
               child: Container(
                 child: Text("Thread title: " + threadTitleDbu + "\n" + "Posted by: " + threadAuthorDbu + "\n" + threadContentDbu),
-                color: Colors.tealAccent,
+                color: Colors.grey[300],
                 alignment: Alignment.topLeft,
               ),
             ),
             InkWell(
               child: Ink(
-                color: Colors.deepPurpleAccent,
+                color: Colors.grey[500],
                 height: 20,
                 child: Container(
                   alignment: Alignment.topCenter,
@@ -273,20 +273,20 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                             Container(
                               //Reply to: Reply content, reply poster
                               child: Text("Reply to: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),//Text("Reply to: " + replyToReplyContentDbu + "\n" + "Posted by: " + replyToReplyPosterDbu),//Text("Reply to: " + theDbuThreadReplies[replyNum]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[replyNum]["replier"]),//Text("Reply to: " + theDbuThreadReplies[myIndex]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[myIndex]["replier"]),//Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
-                              color: Colors.teal, //theDbuThreadReplies[index]["theOriginalReplyInfo"].toString(), theDbuThreadReplies[index]["theOriginalReplyInfo"].toString()
+                              color: Colors.blueGrey[300], //theDbuThreadReplies[index]["theOriginalReplyInfo"].toString(), theDbuThreadReplies[index]["theOriginalReplyInfo"].toString()
                               width: 360,
                             ),
                             //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
                             Container(
                               //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
                               child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),//Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
-                              color: Colors.tealAccent,
+                              color: Colors.grey[300],
                               width: 360,
                             ),
                             InkWell(
                               child: Ink(
                                 child: Text("Reply"),
-                                color: Colors.purple.shade200,
+                                color: Colors.grey[500],
                                 width: 360,
                               ),
                               onTap: () async{
@@ -355,13 +355,13 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                 Container(
                                   //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
                                   child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),//Text("Posted on: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][0].toString() + "\n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][1].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][2].toString()),
-                                  color: Colors.tealAccent,
+                                  color: Colors.grey[300],
                                   width: 360,
                                 ),
                                 InkWell(
                                     child: Ink(
                                       child: Text("Reply"),
-                                      color: Colors.purple.shade200,
+                                      color: Colors.grey[500],
                                       width: 360,
                                     ),
                                     onTap: () async{
