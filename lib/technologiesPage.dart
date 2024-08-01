@@ -119,7 +119,7 @@ class technologiesPageState extends State<technologiesPage>{
                             child: Text(discussionBoardPage.technologiesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.technologiesThreads[index]["poster"].toString()),
                             height: 30,
                             width: 360,
-                            color: Colors.tealAccent,
+                            color: Colors.grey[300],
                           ),
                           onTap: () async{
                             print("This is index: $index");
@@ -186,13 +186,13 @@ class technologiesThreadContent extends StatelessWidget{
             alignment: Alignment.topCenter,
             child: Container(
               child: Text("Thread title: " + threadTitleT + "\n" + "Posted by: " + threadAuthorT + "\n" + threadContentT),
-              color: Colors.tealAccent,
+              color: Colors.grey[300],
               alignment: Alignment.topLeft,
             ),
           ),
           InkWell(
               child: Ink(
-                color: Colors.deepPurpleAccent,
+                color: Colors.grey[500],
                 height: 20,
                 child: Container(
                   alignment: Alignment.topCenter,
@@ -226,18 +226,18 @@ class technologiesThreadContent extends StatelessWidget{
                               ),
                               Container(
                                 child: Text("Reply to: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
-                                color: Colors.teal,
+                                color: Colors.blueGrey[300],
                                 width: 360,
                               ),
                               Container(
                                 child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
-                                color: Colors.tealAccent,
+                                color: Colors.grey[300],
                                 width: 360,
                               ),
                               InkWell(
                                   child: Ink(
                                     child: Text("Reply"),
-                                    color: Colors.purple.shade200,
+                                    color: Colors.grey[500],
                                     width: 360,
                                   ),
                                   onTap: () async{
@@ -289,13 +289,13 @@ class technologiesThreadContent extends StatelessWidget{
                               ),
                               Container(
                                 child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
-                                color: Colors.tealAccent,
+                                color: Colors.grey[300],
                                 width: 360,
                               ),
                               InkWell(
                                   child: Ink(
                                     child: Text("Reply"),
-                                    color: Colors.purple.shade200,
+                                    color: Colors.grey[500],
                                     width: 360,
                                   ),
                                   onTap: () async{

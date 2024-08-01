@@ -122,7 +122,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                             child: Text(discussionBoardPage.newDiscoveriesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString()),
                             height: 30,
                             width: 360,
-                            color: Colors.tealAccent,
+                            color: Colors.grey[300],
                           ),
                           onTap: () async{
                             print("This is index: $index");
@@ -189,13 +189,13 @@ class newDiscoveriesThreadContent extends StatelessWidget{
             alignment: Alignment.topCenter,
             child: Container(
               child: Text("Thread title: " + threadTitleNd + "\n" + "Posted by: " + threadAuthorNd + "\n" + threadContentNd),
-              color: Colors.tealAccent,
+              color: Colors.grey[300],
               alignment: Alignment.topLeft,
             ),
           ),
           InkWell(
             child: Ink(
-              color: Colors.deepPurpleAccent,
+              color: Colors.grey[500],
               height: 20,
               child: Container(
                 alignment: Alignment.topCenter,
@@ -228,18 +228,18 @@ class newDiscoveriesThreadContent extends StatelessWidget{
                             ),
                             Container(
                               child: Text("Reply to: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
-                              color: Colors.teal,
+                              color: Colors.blueGrey[300],
                               width: 360,
                             ),
                             Container(
                               child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
-                              color: Colors.tealAccent,
+                              color: Colors.grey[300],
                               width: 360,
                             ),
                             InkWell(
                               child: Ink(
                                 child: Text("Reply"),
-                                color: Colors.purple.shade200,
+                                color: Colors.grey[500],
                                 width: 360,
                               ),
                               onTap: () async{
@@ -291,13 +291,13 @@ class newDiscoveriesThreadContent extends StatelessWidget{
                               ),
                               Container(
                                 child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
-                                color: Colors.tealAccent,
+                                color: Colors.grey[300],
                                 width: 360,
                               ),
                               InkWell(
                                 child: Ink(
                                   child: Text("Reply"),
-                                  color: Colors.purple.shade200,
+                                  color: Colors.grey[500],
                                   width: 360,
                                 ),
                                 onTap: () async{
