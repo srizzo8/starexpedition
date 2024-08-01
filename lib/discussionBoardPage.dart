@@ -141,7 +141,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                     child: Ink(
                       height: 80,
                       width: 240,
-                      color: Colors.red,
+                      color: Colors.grey[300],
                       child: Container(
                         alignment: Alignment.center,
                         child: Text(subforumList[index], textAlign: TextAlign.center),
