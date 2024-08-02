@@ -51,7 +51,7 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
             "It is also intriguing to realize how far nature and civilization have progressed over the past 4.6 billion years."
             "I truly wonder if there are other suns and other Earths out there." +
             "I hope that Star Expedition can be helpful in providing people with information about " +
-            "nearby stars that have confirmed terrestrial planets that can potentially support life for the flora and fauna found in Earth."),
+            "nearby stars that have confirmed terrestrial planets that can potentially support life for the flora and fauna found in Earth.", textAlign: TextAlign.center),
           ),
           Center(
             child: Text("\nDisclaimer",
@@ -59,7 +59,8 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
           ),
           Container(
             child: Text("I do not own any of the star and planet information (like the constellation that a star belongs to) and photos used in Star Expediiton." +
-            "I got the star and planet information and photos from various websites, such as The Worlds of David Darling, Sol Station, and Universe Today."),
+            "The information about stars and planets and photos that I collected were based on the information about stars and planets and photos from various websites, " +
+                "such as The Worlds of David Darling, Sol Station, and Universe Today.", textAlign: TextAlign.center),
           ),
         ]
       ),
