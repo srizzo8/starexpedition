@@ -1037,7 +1037,7 @@ class CustomSearchDelegate extends SearchDelegate {
               starInfo = await getStarInformation();
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
             },
-            leading: Image.asset(myMatchQuery[index].imagePath!, height: 50, width: 50, scale: 1.5));
+            leading: Image.asset(myMatchQuery[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
             //trailing: Icon(Icons.whatshot_rounded));
       },
     );
