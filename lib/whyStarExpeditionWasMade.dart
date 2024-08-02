@@ -53,6 +53,14 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
             "I hope that Star Expedition can be helpful in providing people with information about " +
             "nearby stars that have confirmed terrestrial planets that can potentially support life for the flora and fauna found in Earth."),
           ),
+          Center(
+            child: Text("\nDisclaimer",
+                style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            child: Text("I do not own any of the star and planet information (like the constellation that a star belongs to) and photos used in Star Expediiton." +
+            "I got the star and planet information and photos from various websites, such as The Worlds of David Darling, Sol Station, and Universe Today."),
+          ),
         ]
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
