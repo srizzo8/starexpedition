@@ -1329,9 +1329,10 @@ class articlePage extends StatelessWidget{
             }
           }
           else{ //This represents a scenario where the connection has not finished yet.
-            return Center(
+            /*return Center(
                 child: Text("Star data is still loading", textAlign: TextAlign.center),
-            );
+            );*/
+            return Center(child: CircularProgressIndicator());
           }
         },
         future: getStarData(),
