@@ -55,8 +55,8 @@ bool checkSpecialCharacters(String p){
 
 bool checkNumbers(String p){
   var mySecondPassList = p.split("");
-  for(String s in mySecondPassList){
-    if(numRegExp.contains(s)){
+  for(String s in numRegExp){
+    if(mySecondPassList.contains(s)){
       return true;
     }
     else{
@@ -173,7 +173,7 @@ class registerPageState extends State<registerPage>{
                 child: Text("Sign Up for Star Expedition", style: TextStyle(fontSize: 14.0)),
               ),
                 onTap: () async{
-                  if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true){
+                  if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true){
                     if(myMain.discussionBoardLogin == true){
                       //userId = userId + 1;
                       await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
@@ -259,11 +259,11 @@ class registerPageState extends State<registerPage>{
                         Text("Username empty\nPassword empty"):
                         theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text == ""?
                         Text("Username already exists\nPassword empty"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true?
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true?
                         Text("Username empty\nPassword must contain at least one special character"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false?
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false?
                         Text("Username empty\nPassword must contain at least one number"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false?
+                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false?
                         Text("Username empty\nPassword must contain at least one special character\nPassword must contain at least one number"):
                         theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true?
                         Text("Username already exists\nPassword must contain at least one special character"):
