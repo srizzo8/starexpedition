@@ -90,7 +90,7 @@ Future<void> registrationConfirmationEmail() async{
     ..from = Address("starexpedition@hotmail.com")
     ..recipients.add(registerPage.myNewEmail)
     ..subject = "Welcome to Star Expedition!"
-    ..text = "We hope you enjoy your time on here!"
+    ..text = "We hope you enjoy your time on here, ${registerPage.myNewUsername}!\n\nIf you have any questions or concerns, please send an email to starexpedition@hotmail.com."
   ;
 
   try{
