@@ -123,8 +123,10 @@ class loginPageState extends State<loginPage>{
           Center(
               child: InkWell(
                 child: Ink(
-                  color: Colors.black,
-                  child: Text("Log in", style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                  color: Colors.grey[300],
+                  //height: 20,
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("Log in"),// style: TextStyle(fontSize: 12.0)), //style: TextStyle(fontSize: 14.0, color: Colors.white)),
                 ),
                   onTap: () async{
                     if(usernameController.text != "" && passwordController.text != "") {
@@ -210,14 +212,26 @@ class loginPageState extends State<loginPage>{
           ),
           Center(
             child: Container(
-              child: Text("If you do not have an account, you can create an account", style: TextStyle(fontSize: 14.0)),
+              height: 20,
+            )
+          ),
+          Center(
+            child: Container(
+              child: Text("If you do not have an account, you can create an account:", style: TextStyle(fontSize: 14.0)),
+            ),
+          ),
+          Center(
+            child: Container(
+              height: 5,
             ),
           ),
           Center(
               child: InkWell(
                 child: Ink(
-                  color: Colors.tealAccent,
-                  child: Text("Sign up", style: TextStyle(fontSize: 14.0)),
+                  color: Colors.grey[300],
+                  padding: EdgeInsets.all(5.0),
+                  //height: 20,
+                  child: Text("Sign up"), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                 ),
                   onTap: () async{
                     //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);

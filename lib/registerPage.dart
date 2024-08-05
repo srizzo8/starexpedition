@@ -169,8 +169,10 @@ class registerPageState extends State<registerPage>{
           Center(
             child: InkWell(
               child: Ink(
-                color: Colors.tealAccent,
-                child: Text("Sign Up for Star Expedition", style: TextStyle(fontSize: 14.0)),
+                color: Colors.grey[300],
+                padding: EdgeInsets.all(5.0),
+                //height: 20,
+                child: Text("Sign Up for Star Expedition"), //style: TextStyle(fontSize: 12.0)),
               ),
                 onTap: () async{
                   if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true){
