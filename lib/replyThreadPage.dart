@@ -141,7 +141,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                 child: Container(
                   alignment: Alignment.center,
                   //margin: EdgeInsets.only(left: 200.0),
-                  child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+                  child: Text("Reply to Thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
                 ),
               ),
               onTap: (){
