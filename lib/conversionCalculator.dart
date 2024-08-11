@@ -60,6 +60,9 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
             height: 10,
           ),
           Container(
+            child: Text("Converting Temperature", style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
+          ),
+          Container(
             padding: const EdgeInsets.all(10.0),
             alignment: Alignment.centerLeft,
             child: Text("Number"),
@@ -119,7 +122,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
               child: Ink(
                 color: Colors.black,
                 padding: EdgeInsets.all(5.0),
-                child: Text("Convert"),
+                child: Text("Convert", style: TextStyle(color: Colors.white)),
               ),
               onTap: (){
                 showDialog(
@@ -128,9 +131,33 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                     title: const Text("Conversion"),
                     content: dropdownTempValue == "Celsius" && secondDropdownTempValue == "Celsius"?
                     Text("You cannot convert Celsius to Celsius"):
+                    dropdownTempValue == "Celsius" && secondDropdownTempValue == "Fahrenheit"?
+                    Text("${int.parse(myTemperature.text)} degrees Celsius is: \n${((int.parse(myTemperature.text)) * (9/5) + 32)} degrees Fahrenheit"):
                     dropdownTempValue == "Celsius" && secondDropdownTempValue == "Kelvin"?
                     Text("${int.parse(myTemperature.text)} degrees Celsius is: \n${((int.parse(myTemperature.text)) + 273.15)} degrees Kelvin"):
+                    dropdownTempValue == "Fahrenheit" && secondDropdownTempValue == "Celsius"?
+                    Text("${int.parse(myTemperature.text)} degrees Fahrenheit is: \n${((int.parse(myTemperature.text)) - 32) * (5/9)} degrees Celsius"):
+                    dropdownTempValue == "Fahrenheit" && secondDropdownTempValue == "Fahrenheit"?
+                    Text("You cannot convert Fahrenheit to Fahrenheit"):
+                    dropdownTempValue == "Fahrenheit" && secondDropdownTempValue == "Kelvin"?
+                    Text("${int.parse(myTemperature.text)} degrees Fahrenheit is: \n${((((int.parse(myTemperature.text)) - 32) * (5/9)) + 273.15)} degrees Kelvin"):
+                    dropdownTempValue == "Kelvin" && secondDropdownTempValue == "Celsius"?
+                    Text("${int.parse(myTemperature.text)} degrees Kelvin is: \n${((int.parse(myTemperature.text)) - 273.15)} degrees Celsius"):
+                    dropdownTempValue == "Kelvin" && secondDropdownTempValue == "Kelvin"?
+                    Text("You cannot convert Kelvin to Kelvin"):
+                    dropdownTempValue == "Kelvin" && secondDropdownTempValue == "Fahrenheit"?
+                    Text("${int.parse(myTemperature.text)} degrees Kelvin is: \n${(((int.parse(myTemperature.text)) - 273.15) * 1.8) + 32} degrees Fahrenheit"):
                     Text(""),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          child: const Text("Ok"),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               }
