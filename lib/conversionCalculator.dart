@@ -178,7 +178,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
             ),
           ),
           Container(
-            height: 10,
+            height: 20,
           ),
           Center(
             child: Container(
@@ -298,19 +298,30 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                     dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Kilometers"?
                     Text("${int.parse(myLength.text)} parsecs is: \n${((int.parse(myLength.text)) * 30856775812800)} kilometers"):
                     dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Light-years"?
-                    Text("${int.parse(myLength.text)} parsecs is: \n${((int.parse(myLength.text)) * 0.0326156378)} light-years"):
+                    Text("${int.parse(myLength.text)} parsecs is: \n${((int.parse(myLength.text)) * 3.26156378)} light-years"):
                     dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Miles"?
                     Text("${int.parse(myLength.text)} parsecs is: \n${((int.parse(myLength.text)) * 19173511575400)} miles"):
                     dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Parsecs"?
                     Text("You cannot convert parsecs to parsecs"):
                     Text(""),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          child: const Text("Ok"),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               }
             ),
           ),
         ],
-      )
+      ),
+      drawer: myMain.starExpeditionNavigationDrawer(),
     );
   }
 }
