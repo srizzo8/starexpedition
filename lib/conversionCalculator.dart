@@ -15,7 +15,7 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show FilteringTextInputFormatter, rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 
@@ -26,14 +26,19 @@ class conversionCalculatorPage extends StatefulWidget{
   conversionCalculatorPageState createState() => conversionCalculatorPageState();
 }
 
-List<String> temperatureUnits = ["Celsius", "Kelvin", "Fahrenheit"];
-String dropdownTempValue = temperatureUnits[1];
-String secondDropdownTempValue = temperatureUnits[2];
+List<String> temperatureUnits = ["Celsius", "Fahrenheit", "Kelvin"];
+String dropdownTempValue = temperatureUnits[2];
+String secondDropdownTempValue = temperatureUnits[1];
+
+List<String> lengthUnits = ["AU", "Kilometers", "Light-years", "Miles", "Parsecs"];
+String dropdownLengthValue = lengthUnits[2];
+String secondDropdownLengthValue = lengthUnits[3];
 
 class conversionCalculatorPageState extends State<conversionCalculatorPage>{
   static String nameOfRoute = '/conversionCalculator';
 
   TextEditingController myTemperature = TextEditingController();
+  TextEditingController myLength = TextEditingController();
 
   Widget build(BuildContext context){
     return Scaffold(
@@ -59,8 +64,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
           Container(
             height: 10,
           ),
-          Container(
-            child: Text("Converting Temperature", style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
+          Center(
+            child: Container(
+              child: Text("Converting Temperature", style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
+            ),
           ),
           Container(
             padding: const EdgeInsets.all(10.0),
@@ -82,6 +89,13 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
               ),
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+              ]
+              /*inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],*/
             ),
           ),
           DropdownButton(
@@ -158,6 +172,98 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                         ),
                       ),
                     ],
+                  ),
+                );
+              }
+            ),
+          ),
+          Container(
+            height: 10,
+          ),
+          Center(
+            child: Container(
+              child: Text("Converting Length", style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(10.0),
+            alignment: Alignment.centerLeft,
+            child: Text("Number"),
+            height: 20,
+            width: 150,
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            padding: const EdgeInsets.all(10.0),
+            height: 50,
+            width: 150,
+            alignment: Alignment.centerLeft,
+            child: TextField(
+              controller: myLength,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+              ],
+            ),
+          ),
+          DropdownButton(
+              value: dropdownLengthValue,
+              icon: Icon(Icons.keyboard_arrow_down),
+              items: lengthUnits.map((String lu){
+                return DropdownMenuItem(
+                  value: lu,
+                  child: Text(lu),
+                );
+              }).toList(),
+              onChanged: (String? newLengthUnit){
+                setState((){
+                  dropdownLengthValue = newLengthUnit!;
+                });
+              }
+          ),
+          DropdownButton(
+              value: secondDropdownLengthValue,
+              icon: Icon(Icons.keyboard_arrow_down),
+              items: lengthUnits.map((String slu){
+                return DropdownMenuItem(
+                  value: slu,
+                  child: Text(slu),
+                );
+              }).toList(),
+              onChanged: (String? secondNewLengthUnit){
+                setState((){
+                  secondDropdownLengthValue = secondNewLengthUnit!;
+                });
+              }
+          ),
+          Center(
+            child: InkWell(
+              child: Ink(
+                color: Colors.black,
+                padding: EdgeInsets.all(5.0),
+                child: Text("Convert", style: TextStyle(color: Colors.white)),
+              ),
+              onTap: (){
+                showDialog(
+                  context: context,
+                  builder: (theContext) => AlertDialog(
+                    title: const Text("Conversion"),
+                    content: dropdownLengthValue == "AU" && secondDropdownLengthValue == "AU"?
+                    Text("You cannot convert AU (Astronomical Units) to AU"):
+                    dropdownLengthValue == "AU" && secondDropdownLengthValue == "Kilometers"?
+                    Text("${int.parse(myLength.text)} AU is: \n${(int.parse(myLength.text) * 149597870.691)} kilometers"):
+                    dropdownLengthValue == "AU" && secondDropdownLengthValue == "Light-years"?
+                    Text("${int.parse(myLength.text)} AU is: \n${(int.parse(myLength.text)) * (1/63241.077)} light-years"):
+                    dropdownLengthValue == "AU" && secondDropdownLengthValue == "Miles"?
+                    Text("${int.parse(myLength.text)} AU is: \n${(int.parse(myLength.text)) * 92955807.267} miles"):
+                    dropdownLengthValue == "AU" && secondDropdownLengthValue == "Parsecs"?
+                    Text("${int.parse(myLength.text)} AU is: \n${(int.parse(myLength.text) / 206264.800)} parsecs"):
+                    Text(""),
                   ),
                 );
               }
