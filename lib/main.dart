@@ -21,6 +21,7 @@ import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
 import 'package:starexpedition4/whyStarExpeditionWasMade.dart';
+import 'package:starexpedition4/conversionCalculator.dart';
 
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -366,6 +367,7 @@ class MyApp extends StatelessWidget {
         routesToOtherPages.theRegisterPage: (context) => registerPage(),
         routesToOtherPages.theStarArticlePage: (context) => articlePage(starInfo),
         routesToOtherPages.thePlanetArticlePage: (context) => planetArticle(informationAboutPlanet),
+        routesToOtherPages.conversionCalculator: (context) => conversionCalculatorPage(),
       }
     );
   }
@@ -380,6 +382,7 @@ class routesToOtherPages{
   static String theRegisterPage = registerPageState.nameOfRoute;
   static String theStarArticlePage = articlePage.nameOfRoute;
   static String thePlanetArticlePage = planetArticle.nameOfRoute;
+  static String conversionCalculator = conversionCalculatorPageState.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -678,6 +681,12 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                       Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
                     }
                   }
+              ),
+              ListTile(
+                title: Text("Conversion Calculator"),
+                onTap: (){
+                  Navigator.pushReplacementNamed(context, routesToOtherPages.conversionCalculator);
+                }
               )
             ]
         )
