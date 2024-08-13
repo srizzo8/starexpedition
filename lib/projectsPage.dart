@@ -84,7 +84,10 @@ class projectsPageState extends State<projectsPage>{
       body: Column(
         children: <Widget>[
           Container(
-            child: Text("Projects Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
+            height: 5,
+          ),
+          Container(
+            child: Text("Projects Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
               height: 20,

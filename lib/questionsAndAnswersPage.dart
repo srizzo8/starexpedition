@@ -84,7 +84,10 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
       body: Column(
         children: <Widget>[
           Container(
-            child: Text("Questions and Answers Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
+            height: 5,
+          ),
+          Container(
+            child: Text("Questions and Answers Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
               height: 20,

@@ -91,6 +91,9 @@ class createThreadState extends State<createThread>{
         child: Column(
           children: <Widget>[
             Container(
+              height: 5,
+            ),
+            Container(
               child: Text("Making a thread", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
               width: 480,
               alignment: Alignment.center,

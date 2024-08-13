@@ -168,21 +168,25 @@ class spectralClassPageState extends State<spectralClassPage>{
       Wrap(
         children: <Widget>[
           Container(
+            height: 5,
+          ),
+          Container(
             alignment: Alignment.topCenter,
             child: Text(
                 "Spectral Classes of Stars", textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
             height: 30,
           ),
           DataTable(
+            columnSpacing: 30.0,
             columns: [
               DataColumn(label: Text('Spectral Class', style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 9.0))),
+                  fontWeight: FontWeight.bold, fontSize: 12.5))),
               DataColumn(label: Text('Temperature', style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 9.0))),
+                  fontWeight: FontWeight.bold, fontSize: 12.5))),
               //DataColumn(label: Text('Example', style: TextStyle(fontWeight: FontWeight.bold))),
               DataColumn(label: Text('Stars with Articles', style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 9.0))),
+                  fontWeight: FontWeight.bold, fontSize: 12.5))),
             ],
             rows: [
               DataRow(cells: [
@@ -275,7 +279,7 @@ class spectralClassPageState extends State<spectralClassPage>{
           ),
           Container(
             child: Text("Sources", textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold)),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
             height: 20,
             width: 360,
           ),
@@ -422,8 +426,15 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
       body: Column(
         children: <Widget>[
           Container(
+            height: 5,
+          ),
+          Container(
             alignment: Alignment.topCenter,
-            child: Text("List of stars with articles that belong to the " + mySpectralClass + " spectral class"),
+            padding: EdgeInsets.all(10.0),
+            child: Text("List of stars with articles that belong to the " + mySpectralClass + " spectral class", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: 5,
           ),
           /*Container(
             height: 300,

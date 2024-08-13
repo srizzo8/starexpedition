@@ -84,7 +84,10 @@ class technologiesPageState extends State<technologiesPage>{
       body: Column(
         children: <Widget>[
           Container(
-            child: Text("Technologies Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
+            height: 5,
+          ),
+          Container(
+            child: Text("Technologies Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
               height: 20,

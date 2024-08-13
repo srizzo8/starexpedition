@@ -84,7 +84,10 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
       body: Column(
         children: <Widget>[
           Container(
-            child: Text("New Discoveries Subforum", style: TextStyle(fontWeight: FontWeight.bold)),
+            height: 5,
+          ),
+          Container(
+            child: Text("New Discoveries Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           //InkWell(
             Container(

@@ -97,7 +97,10 @@ class replyThreadPageState extends State<replyThreadPage>{
         child: Column(
           children: <Widget>[
             Container(
-              child: Text("Replying to a thread", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
+              height: 5,
+            ),
+            Container(
+              child: Text("Making a reply", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
               width: 480,
               alignment: Alignment.center,
             ),

@@ -559,18 +559,22 @@ class theStarExpeditionState extends State<StarExpedition> {
                   ],
                 ):
           Container(
+            height: 5,
+          ),
+          Container(
             alignment: Alignment.topCenter,
-            child: const Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 20.0)),
+            child: const Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold)), //fontFamily: 'Raleway'
             height: 30,
           ),
           Container(
             alignment: Alignment.topCenter,
+            padding: EdgeInsets.all(10.0),
             child: const Text('Star Expedition is an app that allows its users to view and research stars with terrestrial planets and the terrestrial planets that orbit those stars. Star Expedition will include stars whose spectral classes range from M8 to A5 and are within 100 light-years from Earth.', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'), textAlign: TextAlign.center),
             height: 200,
           ),
           Container(
             alignment: Alignment.topCenter,
-            child: const Text('Featured Star of the Day', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 20.0)),
+            child: const Text('Featured Star of the Day', style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold)), //fontFamily: 'Railway'
             height: 25,
           ),
           Center(
@@ -1162,6 +1166,9 @@ class articlePage extends StatelessWidget{
                 final myData = mySnapshot.data as List<String>;
                 return Column(
                   children: [
+                    Container(
+                      height: 5,
+                    ),
                     Center(
                       child: Text("Star Information",
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
@@ -1377,6 +1384,9 @@ class planetArticle extends StatelessWidget{
       ),
       body: Column(
         children: <Widget>[
+          Container(
+            height: 5,
+          ),
           Center(
             child: Text("Planet Information",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0))

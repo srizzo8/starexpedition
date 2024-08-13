@@ -48,10 +48,13 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
       ),
       body: Wrap(
         children: <Widget>[
+          Container(
+            height: 5,
+          ),
           Center(
             child: Container(
               padding: const EdgeInsets.all(10.0),
-              child: Text("Conversion Calculator", style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
+              child: Text("Conversion Calculator", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
             ),
           ),
           Center(

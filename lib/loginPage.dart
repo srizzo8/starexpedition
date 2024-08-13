@@ -80,8 +80,11 @@ class loginPageState extends State<loginPage>{
       body: Wrap(
         children: <Widget>[
           Container(
+            height: 5,
+          ),
+          Container(
             alignment: Alignment.center,
-            child: Text("Login", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)),
+            child: Text("Login", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Center(
             child: Container(

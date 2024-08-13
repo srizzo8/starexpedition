@@ -111,6 +111,13 @@ class registerPageState extends State<registerPage>{
       ),
       body: Wrap(
         children: <Widget>[
+          Container(
+            height: 5,
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Text("Register", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
           Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),

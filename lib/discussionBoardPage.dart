@@ -71,7 +71,10 @@ class discussionBoardPageState extends State<discussionBoardPage>{
       body: Column(
         children: <Widget>[
           Container(
-            child: Text("Star Expedition Discussion Board",textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
+            height: 5,
+          ),
+          Container(
+            child: Text("Star Expedition Discussion Board",textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Expanded(
             child: ListView.builder(
