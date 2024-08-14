@@ -95,13 +95,14 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
             child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-            height: 20,
+            height: 30,
             width: 120,
             margin: EdgeInsets.only(left: 250.0),
             alignment: Alignment.center,
             child: InkWell(
               child: Ink(
                 color: Colors.black,
+                padding: EdgeInsets.all(5.0),
                 child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
               ),
               onTap: (){

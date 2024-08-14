@@ -90,13 +90,14 @@ class technologiesPageState extends State<technologiesPage>{
             child: Text("Technologies Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-              height: 20,
+              height: 30,
               width: 120,
               margin: EdgeInsets.only(left: 250.0),
               alignment: Alignment.center,
               child: InkWell(
                 child: Ink(
                   child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+                  padding: EdgeInsets.all(5.0),
                   color: Colors.black,
                 ),
                 onTap: (){

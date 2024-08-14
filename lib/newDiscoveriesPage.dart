@@ -92,13 +92,14 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
           //InkWell(
             Container(
               //color: Colors.black,
-              height: 20,
+              height: 30,
               width: 130,
               margin: EdgeInsets.only(left: 250.0),
               alignment: Alignment.center,
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
+                  padding: EdgeInsets.all(5.0),
                   child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
                 ),
                 onTap: (){

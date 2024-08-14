@@ -149,6 +149,7 @@ class createThreadState extends State<createThread>{
                 child: Container(
                   alignment: Alignment.center,
                   //margin: EdgeInsets.only(left: 200.0),
+                  padding: EdgeInsets.all(5.0),
                   child: Text("Post to Subforum", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
                 ),
               ),
