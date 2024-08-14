@@ -521,6 +521,18 @@ class theStarExpeditionState extends State<StarExpedition> {
                       alignment: Alignment.topRight,
                       fit: BoxFit.contain,
                       child: Ink(
+                        child: Text(" Settings", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                      ),
+                    ),
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                  ),
+                  InkWell(
+                    child: FittedBox(
+                      alignment: Alignment.topRight,
+                      fit: BoxFit.contain,
+                      child: Ink(
                         child: Text(' Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                       ),
                     ),
@@ -540,6 +552,17 @@ class theStarExpeditionState extends State<StarExpedition> {
                     FittedBox(
                       child: Text('Hi ' + myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                       fit: BoxFit.contain,
+                    ),
+                    InkWell(
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Ink(
+                          child: Text(" Settings", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                        ),
+                      ),
+                      onTap: (){
+                        Navigator.pop(context);
+                      }
                     ),
                     InkWell(
                       child: FittedBox(
