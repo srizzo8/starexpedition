@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 //import 'dart:html';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -31,7 +32,9 @@ class settingsPageState extends State<settingsPage>{
 
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
-  var usernameUsed;
+  var myUserResult;
+  var userDoc;
+  var usersPass;
 
   Widget build(BuildContext context){
     return Scaffold(
@@ -87,9 +90,41 @@ class settingsPageState extends State<settingsPage>{
                     ),
                     actions: [
                       TextButton(
-                        onPressed: () =>{
+                        onPressed: () async =>{
                           if(oldPasswordController.text != "" && newPasswordController.text != ""){
-                            Navigator.of(context).pop(),
+                            if(myUsername != "" && myNewUsername == ""){
+                              myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get(),
+                              myUserResult.docs.forEach((result){
+                                userDoc = result.data();
+                                print("This is the result: ${result.data()}");
+                              }),
+                              print("userDoc[password]: ${userDoc["password"].toString()}"),
+
+                              /*myPassResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: newPasswordController.text).get(),
+                              myPassResult.docs.forEach((myOutcome){
+                                usersPass = myOutcome.data();
+                              }),
+                              print("This is your pass: ${usersPass.toString()}"),*/
+
+                              usersPass = userDoc["password"],
+
+                              if(oldPasswordController.text == usersPass){
+                                print("The old password is correct"),
+                                Navigator.pop(context),
+                              }
+                              else{
+                                print("The old password is not correct"),
+                              },
+
+                              print("This is an already existing username"),
+                            }
+                            else if(myNewUsername == "" && myNewUsername != ""){
+                              print("This is a new username"),
+                              Navigator.pop(context),
+                            }
+                            else{
+                              print("There is a problem with this if-else statement"),
+                            }
                           }
                           else{
                             //User needs to enter in his or her old password and/or his or her new password.
@@ -99,7 +134,7 @@ class settingsPageState extends State<settingsPage>{
                       ),
                       TextButton(
                         onPressed: () =>{
-                          Navigator.of(context).pop(),
+                          Navigator.pop(context),
                         },
                         child: Text("Cancel"),
                       ),
