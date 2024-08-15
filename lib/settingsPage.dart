@@ -29,11 +29,22 @@ class settingsPage extends StatefulWidget{
 class settingsPageState extends State<settingsPage>{
   static String nameOfRoute = '/settings';
 
+  TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  var usernameUsed;
+
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () async =>{
+            Navigator.pop(context),
+          }
+        ),
       ),
       body: Column(
         children: <Widget>[
@@ -43,8 +54,60 @@ class settingsPageState extends State<settingsPage>{
           Container(
             child: Text("Settings", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
-          Container(
-            child: Text("Change Password"),
+          InkWell(
+            child: Ink(
+              //alignment: Alignment.center,
+              child: Text("Change Password"),
+            ),
+            onTap: (){
+              showDialog(
+                context: context,
+                builder: (BuildContext bc){
+                  return AlertDialog(
+                    title: Text("Change your password"),
+                    content: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          TextField(
+                            decoration: InputDecoration(
+                              labelText: "Enter in your current password",
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: oldPasswordController,
+                          ),
+                          TextField(
+                            decoration: InputDecoration(
+                              labelText: "Enter in your new password",
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: newPasswordController,
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () =>{
+                          if(oldPasswordController.text != "" && newPasswordController.text != ""){
+                            Navigator.of(context).pop(),
+                          }
+                          else{
+                            //User needs to enter in his or her old password and/or his or her new password.
+                          }
+                        },
+                        child: Text("Confirm"),
+                      ),
+                      TextButton(
+                        onPressed: () =>{
+                          Navigator.of(context).pop(),
+                        },
+                        child: Text("Cancel"),
+                      ),
+                    ],
+                  );
+                }
+              );
+            }
           ),
         ],
       ),

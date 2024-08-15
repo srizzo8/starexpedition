@@ -22,6 +22,7 @@ import 'package:json_editor/json_editor.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
 import 'package:starexpedition4/whyStarExpeditionWasMade.dart';
 import 'package:starexpedition4/conversionCalculator.dart';
+import 'package:starexpedition4/settingsPage.dart';
 
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -368,6 +369,7 @@ class MyApp extends StatelessWidget {
         routesToOtherPages.theStarArticlePage: (context) => articlePage(starInfo),
         routesToOtherPages.thePlanetArticlePage: (context) => planetArticle(informationAboutPlanet),
         routesToOtherPages.conversionCalculator: (context) => conversionCalculatorPage(),
+        routesToOtherPages.settingsPage: (context) => settingsPage(),
       }
     );
   }
@@ -383,6 +385,7 @@ class routesToOtherPages{
   static String theStarArticlePage = articlePage.nameOfRoute;
   static String thePlanetArticlePage = planetArticle.nameOfRoute;
   static String conversionCalculator = conversionCalculatorPageState.nameOfRoute;
+  static String settingsPage = settingsPageState.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -525,7 +528,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                       ),
                     ),
                     onTap: (){
-                      Navigator.pop(context);
+                      Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
                     },
                   ),
                   InkWell(
@@ -561,7 +564,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                         ),
                       ),
                       onTap: (){
-                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
                       }
                     ),
                     InkWell(
