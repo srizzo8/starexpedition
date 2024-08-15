@@ -105,6 +105,8 @@ class settingsPageState extends State<settingsPage>{
                               if(oldPasswordController.text == usersPass){
                                 print("The old password is correct"),
                                 Navigator.pop(context),
+                                oldPasswordController.text = "",
+                                newPasswordController.text = "",
                               }
                               else{
                                 print("The old password is not correct"),
@@ -125,6 +127,8 @@ class settingsPageState extends State<settingsPage>{
                               if(oldPasswordController.text == usersPass){
                                 print("The old password is correct"),
                                 Navigator.pop(context),
+                                oldPasswordController.text = "",
+                                newPasswordController.text = "",
                               }
                               else{
                                 print("The old password is not correct"),
