@@ -100,12 +100,6 @@ class settingsPageState extends State<settingsPage>{
                               }),
                               print("userDoc[password]: ${userDoc["password"].toString()}"),
 
-                              /*myPassResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: newPasswordController.text).get(),
-                              myPassResult.docs.forEach((myOutcome){
-                                usersPass = myOutcome.data();
-                              }),
-                              print("This is your pass: ${usersPass.toString()}"),*/
-
                               usersPass = userDoc["password"],
 
                               if(oldPasswordController.text == usersPass){
@@ -119,6 +113,23 @@ class settingsPageState extends State<settingsPage>{
                               print("This is an already existing username"),
                             }
                             else if(myNewUsername == "" && myNewUsername != ""){
+                              myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get(),
+                              myUserResult.docs.forEach((result){
+                                userDoc = result.data();
+                                print("This is the result: ${result.data()}");
+                              }),
+                              print("userDoc[password]: ${userDoc["password"].toString()}"),
+
+                              usersPass = userDoc["password"],
+
+                              if(oldPasswordController.text == usersPass){
+                                print("The old password is correct"),
+                                Navigator.pop(context),
+                              }
+                              else{
+                                print("The old password is not correct"),
+                              },
+
                               print("This is a new username"),
                               Navigator.pop(context),
                             }
