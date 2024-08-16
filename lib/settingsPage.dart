@@ -397,13 +397,123 @@ class changePasswordPageState extends State<changePasswordPage>{
                     }
                   }
                 }
-                else{
+                else if(currentPasswordController.text == "" && newPasswordController.text != "" && secondNewPasswordController.text != ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext bc){
+                    builder: (BuildContext fibc){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
-                        content: Text("The password change was unsuccessful because you have forgotten to enter at least one of these:\nYour current password\nThe new password that you have chosen in the \"New Password\" section\nThe new password that you have chosen in the \"Confirm New Password\" section"),
+                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password."),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>{
+                              Navigator.pop(context),
+                              currentPasswordController.text = "",
+                              newPasswordController.text = "",
+                              secondNewPasswordController.text = "",
+                            },
+                            child: Text("Ok"),
+                          ),
+                        ],
+                      );
+                    }
+                  );
+                }
+                else if(currentPasswordController.text == "" && newPasswordController.text == "" && secondNewPasswordController.text != ""){
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext sibc){
+                      return AlertDialog(
+                        title: Text("Password Change Unsuccessful"),
+                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password and the new password that you have chosen in the \"New Password\" section."),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>{
+                              Navigator.pop(context),
+                              currentPasswordController.text = "",
+                              newPasswordController.text = "",
+                              secondNewPasswordController.text = "",
+                            },
+                            child: Text("Ok"),
+                          ),
+                        ],
+                      );
+                    }
+                  );
+                }
+                else if(currentPasswordController.text == "" && newPasswordController.text != "" && secondNewPasswordController.text == ""){
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext sebc){
+                      return AlertDialog(
+                        title: Text("Password Change Unsuccessful"),
+                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password and the new password that you have chosen in the \"Confirm New Password\" section"),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>{
+                              Navigator.pop(context),
+                              currentPasswordController.text = "",
+                              newPasswordController.text = "",
+                              secondNewPasswordController.text = "",
+                            },
+                            child: Text("Ok"),
+                          ),
+                        ],
+                      );
+                    }
+                  );
+                }
+                else if(currentPasswordController.text != "" && newPasswordController.text == "" && secondNewPasswordController.text != ""){
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext eibc){
+                      return AlertDialog(
+                        title: Text("Password Change Unsuccessful"),
+                        content: Text("The password change was unsuccessful because you have forgotten to enter in the new password that you have chosen in the \"New Password\" section"),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>{
+                              Navigator.pop(context),
+                              currentPasswordController.text = "",
+                              newPasswordController.text = "",
+                              secondNewPasswordController.text = "",
+                            },
+                            child: Text("Ok"),
+                          ),
+                        ],
+                      );
+                    }
+                  );
+                }
+                else if(currentPasswordController.text != "" && newPasswordController.text != "" && secondNewPasswordController == ""){
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext nbc){
+                      return AlertDialog(
+                        title: Text("Password Change Unsuccessful"),
+                        content: Text("The password change was unsuccessful because you have forgotten to enter in the new password that you have chosen in the \"Confirm New Password\" section"),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>{
+                              Navigator.pop(context),
+                              currentPasswordController.text = "",
+                              newPasswordController.text = "",
+                              secondNewPasswordController.text = "",
+                            },
+                            child: Text("Ok"),
+                          ),
+                        ],
+                      );
+                    }
+                  );
+                }
+                else if(currentPasswordController.text == "" && newPasswordController.text == "" && secondNewPasswordController.text == ""){
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext tebc){
+                      return AlertDialog(
+                        title: Text("Password Change Unsuccessful"),
+                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password, the new password that you have chosen in the \"New Password\" section, and the new password that you have chosen in the \"Confirm New Password\" section"),
                         actions: [
                           TextButton(
                             onPressed: () =>{
