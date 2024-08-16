@@ -281,7 +281,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                       );
                     }
                   }
-                  else if(myNewUsername == "" && myNewUsername != ""){
+                  else if(myNewUsername != "" && myNewUsername == ""){
                     myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
                     myUserResult.docs.forEach((result){
                       userDoc = result.data();
@@ -400,7 +400,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text == "" && newPasswordController.text != "" && secondNewPasswordController.text != ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext fibc){
+                    builder: (BuildContext bc){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
                         content: Text("The password change was unsuccessful because you have forgotten to enter in your current password."),
@@ -422,7 +422,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text == "" && newPasswordController.text == "" && secondNewPasswordController.text != ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext sibc){
+                    builder: (BuildContext sbc){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
                         content: Text("The password change was unsuccessful because you have forgotten to enter in your current password and the new password that you have chosen in the \"New Password\" section."),
@@ -444,7 +444,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text == "" && newPasswordController.text != "" && secondNewPasswordController.text == ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext sebc){
+                    builder: (BuildContext tbc){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
                         content: Text("The password change was unsuccessful because you have forgotten to enter in your current password and the new password that you have chosen in the \"Confirm New Password\" section"),
@@ -466,7 +466,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text != "" && newPasswordController.text == "" && secondNewPasswordController.text != ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext eibc){
+                    builder: (BuildContext fbc){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
                         content: Text("The password change was unsuccessful because you have forgotten to enter in the new password that you have chosen in the \"New Password\" section"),
