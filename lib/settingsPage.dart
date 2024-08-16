@@ -32,8 +32,10 @@ class settingsPageState extends State<settingsPage>{
 
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
+  TextEditingController secondNewPasswordController = TextEditingController();
   var myUserResult;
   var userDoc;
+  var gettingDocName;
   var usersPass;
 
   Widget build(BuildContext context){
@@ -85,31 +87,55 @@ class settingsPageState extends State<settingsPage>{
                             ),
                             controller: newPasswordController,
                           ),
+                          TextField(
+                            decoration: InputDecoration(
+                              labelText: "Re-enter your new password",
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: secondNewPasswordController,
+                          ),
                         ],
                       ),
                     ),
                     actions: [
                       TextButton(
                         onPressed: () async =>{
-                          if(oldPasswordController.text != "" && newPasswordController.text != ""){
+                          if(oldPasswordController.text != "" && newPasswordController.text != "" && secondNewPasswordController.text != ""){
                             if(myUsername != "" && myNewUsername == ""){
                               myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get(),
                               myUserResult.docs.forEach((result){
                                 userDoc = result.data();
                                 print("This is the result: ${result.data()}");
+                                gettingDocName = result.id;
                               }),
                               print("userDoc[password]: ${userDoc["password"].toString()}"),
 
                               usersPass = userDoc["password"],
 
-                              if(oldPasswordController.text == usersPass){
-                                print("The old password is correct"),
-                                Navigator.pop(context),
-                                oldPasswordController.text = "",
-                                newPasswordController.text = "",
-                              }
-                              else{
-                                print("The old password is not correct"),
+                              if(oldPasswordController.text != "" && newPasswordController.text != "" && secondNewPasswordController.text != ""){
+                                if(oldPasswordController.text == usersPass && newPasswordController.text == secondNewPasswordController.text){
+                                  print("The old password is correct"),
+
+                                  print("gettingDocName: ${gettingDocName.toString()}"),
+
+                                  FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : newPasswordController.text}).whenComplete(() async{
+                                    print("Updated");
+                                  }).catchError((e) => print("This is your error: ${e}")),
+
+                                  print("This is new user password: ${userDoc["password"]}"),
+                                  Navigator.pop(context),
+                                  oldPasswordController.text = "",
+                                  newPasswordController.text = "",
+                                  secondNewPasswordController.text = "",
+                                }
+                                else if(oldPasswordController.text != usersPass && newPasswordController.text == secondNewPasswordController.text){
+                                  print("The old password is not correct, but the new passwords match"),
+                                }
+                                else if(oldPasswordController.text == usersPass && newPasswordController.text != secondNewPasswordController.text){
+                                  print("The old password is correct, but the two new passwords do not match.")
+                                },
+                              } else{
+                                print("You are missing at least one thing"),
                               },
 
                               print("This is an already existing username"),
@@ -124,11 +150,12 @@ class settingsPageState extends State<settingsPage>{
 
                               usersPass = userDoc["password"],
 
-                              if(oldPasswordController.text == usersPass){
+                              if(oldPasswordController.text == usersPass && newPasswordController.text == secondNewPasswordController.text){
                                 print("The old password is correct"),
                                 Navigator.pop(context),
                                 oldPasswordController.text = "",
                                 newPasswordController.text = "",
+                                secondNewPasswordController.text = "",
                               }
                               else{
                                 print("The old password is not correct"),
