@@ -168,6 +168,9 @@ class changePasswordPageState extends State<changePasswordPage>{
                 child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white)),
               ),
               onTap: () async{
+                print("currentPasswordController.text: ${currentPasswordController.text}");
+                print("newPasswordController.text: ${newPasswordController.text}");
+                print("secondNewPasswordController.text: ${secondNewPasswordController.text}");
                 if(currentPasswordController.text != "" && newPasswordController.text != "" && secondNewPasswordController.text != ""){
                   if(myUsername != "" && myNewUsername == ""){
                     myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -181,37 +184,63 @@ class changePasswordPageState extends State<changePasswordPage>{
                     usersPass = userDoc["password"];
 
                     if(currentPasswordController.text == usersPass && newPasswordController.text == secondNewPasswordController.text){
-                      //Password successfully changed
-                      print("The old password is correct");
+                      if(currentPasswordController.text == newPasswordController.text && newPasswordController.text == secondNewPasswordController.text && currentPasswordController.text == secondNewPasswordController.text){
+                        //The new password cannot be the current password
+                        print("Old and new are the same");
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password cannot be your current password."),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else{
+                        //Password successfully changed
+                        print("The old password is correct");
 
-                      print("gettingDocName: ${gettingDocName.toString()}");
+                        print("gettingDocName: ${gettingDocName.toString()}");
 
-                      FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : newPasswordController.text}).whenComplete(() async{
-                        print("Updated");
-                      }).catchError((e) => print("This is your error: ${e}"));
+                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : newPasswordController.text}).whenComplete(() async{
+                          print("Updated");
+                        }).catchError((e) => print("This is your error: ${e}"));
 
-                      print("This is new user password: ${userDoc["password"]}");
+                        print("This is new user password: ${userDoc["password"]}");
 
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext bc){
-                          return AlertDialog(
-                            title: Text("Password Change Successful"),
-                            content: Text("You have successfully changed your password."),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  currentPasswordController.text = "",
-                                  newPasswordController.text = "",
-                                  secondNewPasswordController.text = "",
-                                },
-                                child: Text("Ok"),
-                              ),
-                            ],
-                          );
-                        }
-                      );
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext bc){
+                            return AlertDialog(
+                              title: Text("Password Change Successful"),
+                              content: Text("You have successfully changed your password."),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
                     }
                     else if(currentPasswordController.text != usersPass && newPasswordController.text == secondNewPasswordController.text){
                       //Current password entered does not match with your password
@@ -296,37 +325,62 @@ class changePasswordPageState extends State<changePasswordPage>{
                     usersPass = userDoc["password"];
 
                     if(currentPasswordController.text == usersPass && newPasswordController.text == secondNewPasswordController.text){
-                      //Password successfully changed
-                      print("The old password is correct");
+                      if(currentPasswordController.text == newPasswordController.text && newPasswordController.text == secondNewPasswordController.text && currentPasswordController.text == secondNewPasswordController.text){
+                        //The new password cannot be the current password
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext fibc){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password cannot be your current password."),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else{
+                        //Password successfully changed
+                        print("The old password is correct");
 
-                      print("gettingDocName: ${gettingDocName.toString()}");
+                        print("gettingDocName: ${gettingDocName.toString()}");
 
-                      FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : newPasswordController.text}).whenComplete(() async{
-                        print("Updated");
-                      }).catchError((e) => print("This is your error: ${e}"));
+                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : newPasswordController.text}).whenComplete(() async{
+                          print("Updated");
+                        }).catchError((e) => print("This is your error: ${e}"));
 
-                      print("This is new user password: ${userDoc["password"]}");
+                        print("This is new user password: ${userDoc["password"]}");
 
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext bc){
-                          return AlertDialog(
-                            title: Text("Password Change Successful"),
-                            content: Text("You have successfully changed your password."),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  currentPasswordController.text = "",
-                                  newPasswordController.text = "",
-                                  secondNewPasswordController.text = "",
-                                },
-                                child: Text("Ok"),
-                              ),
-                            ],
-                          );
-                        }
-                      );
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext bc){
+                            return AlertDialog(
+                              title: Text("Password Change Successful"),
+                              content: Text("You have successfully changed your password."),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
                     }
                     else if(currentPasswordController.text != usersPass && newPasswordController.text == secondNewPasswordController.text){
                       //Current password entered does not match with your password
@@ -488,7 +542,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                     }
                   );
                 }
-                else if(currentPasswordController.text != "" && newPasswordController.text != "" && secondNewPasswordController == ""){
+                else if(currentPasswordController.text != "" && newPasswordController.text != "" && secondNewPasswordController.text == ""){
                   showDialog(
                     context: context,
                     builder: (BuildContext nbc){
