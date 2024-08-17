@@ -192,7 +192,139 @@ class changePasswordPageState extends State<changePasswordPage>{
                           builder: (BuildContext myContext){
                             return AlertDialog(
                               title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password cannot be your current password."),
+                              content: Text("Your new password cannot be your current password"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == true && (newPasswordController.text).length >= 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one special character"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length >= 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one number"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == true && (newPasswordController.text).length < 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must be at least 8 characters long"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length < 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one special character and be at least 8 characters long"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length < 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one number and be at least 8 characters long"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length < 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one special character, at least one number, and be at least 8 characters long"),
                               actions: [
                                 TextButton(
                                   onPressed: () =>{
@@ -225,7 +357,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                           builder: (BuildContext bc){
                             return AlertDialog(
                               title: Text("Password Change Successful"),
-                              content: Text("You have successfully changed your password."),
+                              content: Text("You have successfully changed your password"),
                               actions: [
                                 TextButton(
                                   onPressed: () => {
@@ -246,10 +378,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                       //Current password entered does not match with your password
                       showDialog(
                         context: context,
-                        builder: (BuildContext sbc){
+                        builder: (BuildContext myContext){
                           return AlertDialog(
                             title: Text("Password Change Unsuccessful"),
-                            content: Text("The current password that you entered does not match with your password."),
+                            content: Text("The current password that you entered does not match with your password"),
                             actions: [
                               TextButton(
                                 onPressed: () => {
@@ -269,10 +401,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                       //The passwords entered in the "new password" and "confirm new password" sections do not match
                       showDialog(
                         context: context,
-                        builder: (BuildContext tbc){
+                        builder: (BuildContext myContext){
                           return AlertDialog(
                             title: Text("Password Change Unsuccessful"),
-                            content: Text("The passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match."),
+                            content: Text("The passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match"),
                             actions: [
                               TextButton(
                                 onPressed: () => {
@@ -293,10 +425,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                       //The passwords entered in the "new password" and "confirm new password" sections do not match
                       showDialog(
                         context: context,
-                        builder: (BuildContext fbc){
+                        builder: (BuildContext myContext){
                           return AlertDialog(
                             title: Text("Password Change Unsuccessful"),
-                            content: Text("The current password that you entered does not match with your password.\nThe passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match."),
+                            content: Text("The current password that you entered does not match with your password\nThe passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match"),
                             actions: [
                               TextButton(
                                 onPressed: () => {
@@ -329,10 +461,164 @@ class changePasswordPageState extends State<changePasswordPage>{
                         //The new password cannot be the current password
                         showDialog(
                           context: context,
-                          builder: (BuildContext fibc){
+                          builder: (BuildContext myContext){
                             return AlertDialog(
                               title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password cannot be your current password."),
+                              content: Text("Your new password cannot be your current password"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == true && (newPasswordController.text).length >= 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one special character"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length >= 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one number"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == true && (newPasswordController.text).length < 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must be at least 8 characters long"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length <= 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one special character and one number"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == true && (newPasswordController.text).length < 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one special character and be at least 8 characters long"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length < 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one number and be at least 8 characters long"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>{
+                                    Navigator.pop(context),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                        );
+                      }
+                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length < 8){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext myContext){
+                            return AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Text("Your new password must have at least one special character, at least one number, and be at least 8 characters long"),
                               actions: [
                                 TextButton(
                                   onPressed: () =>{
@@ -365,7 +651,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                           builder: (BuildContext bc){
                             return AlertDialog(
                               title: Text("Password Change Successful"),
-                              content: Text("You have successfully changed your password."),
+                              content: Text("You have successfully changed your password"),
                               actions: [
                                 TextButton(
                                   onPressed: () => {
@@ -386,10 +672,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                       //Current password entered does not match with your password
                       showDialog(
                         context: context,
-                        builder: (BuildContext sbc){
+                        builder: (BuildContext myContext){
                           return AlertDialog(
                             title: Text("Password Change Unsuccessful"),
-                            content: Text("The current password that you entered does not match with your password."),
+                            content: Text("The current password that you entered does not match with your password"),
                             actions: [
                               TextButton(
                                 onPressed: () => {
@@ -409,10 +695,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                       //The passwords entered in the "new password" and "confirm new password" sections do not match
                       showDialog(
                         context: context,
-                        builder: (BuildContext tbc){
+                        builder: (BuildContext myContext){
                           return AlertDialog(
                             title: Text("Password Change Unsuccessful"),
-                            content: Text("The passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match."),
+                            content: Text("The passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match"),
                             actions: [
                               TextButton(
                                 onPressed: () => {
@@ -433,10 +719,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                       //The passwords entered in the "new password" and "confirm new password" sections do not match
                       showDialog(
                         context: context,
-                        builder: (BuildContext fbc){
+                        builder: (BuildContext myContext){
                           return AlertDialog(
                             title: Text("Password Change Unsuccessful"),
-                            content: Text("The current password that you entered does not match with your password.\nThe passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match."),
+                            content: Text("The current password that you entered does not match with your password\nThe passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match"),
                             actions: [
                               TextButton(
                                 onPressed: () => {
@@ -457,10 +743,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text == "" && newPasswordController.text != "" && secondNewPasswordController.text != ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext bc){
+                    builder: (BuildContext myContext){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
-                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password."),
+                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password"),
                         actions: [
                           TextButton(
                             onPressed: () =>{
@@ -479,10 +765,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text == "" && newPasswordController.text == "" && secondNewPasswordController.text != ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext sbc){
+                    builder: (BuildContext myContext){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
-                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password and the new password that you have chosen in the \"New Password\" section."),
+                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password and the new password that you have chosen in the \"New Password\" section"),
                         actions: [
                           TextButton(
                             onPressed: () =>{
@@ -501,7 +787,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text == "" && newPasswordController.text != "" && secondNewPasswordController.text == ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext tbc){
+                    builder: (BuildContext myContext){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
                         content: Text("The password change was unsuccessful because you have forgotten to enter in your current password and the new password that you have chosen in the \"Confirm New Password\" section"),
@@ -523,7 +809,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text != "" && newPasswordController.text == "" && secondNewPasswordController.text != ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext fbc){
+                    builder: (BuildContext myContext){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
                         content: Text("The password change was unsuccessful because you have forgotten to enter in the new password that you have chosen in the \"New Password\" section"),
@@ -545,7 +831,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text != "" && newPasswordController.text != "" && secondNewPasswordController.text == ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext nbc){
+                    builder: (BuildContext myContext){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
                         content: Text("The password change was unsuccessful because you have forgotten to enter in the new password that you have chosen in the \"Confirm New Password\" section"),
@@ -567,7 +853,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text != "" && newPasswordController.text == "" && secondNewPasswordController.text == ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext tebc){
+                    builder: (BuildContext myContext){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
                         content: Text("The password change was unsuccessful because you have forgotten to enter in the new password that you have chosen in the \"New Password\" section and the new password that you have chosen in the \"Confirm New Password\" section"),
@@ -589,7 +875,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 else if(currentPasswordController.text == "" && newPasswordController.text == "" && secondNewPasswordController.text == ""){
                   showDialog(
                     context: context,
-                    builder: (BuildContext elbc){
+                    builder: (BuildContext myContext){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
                         content: Text("The password change was unsuccessful because you have forgotten to enter in your current password, the new password that you have chosen in the \"New Password\" section, and the new password that you have chosen in the \"Confirm New Password\" section"),
