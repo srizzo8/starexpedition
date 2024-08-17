@@ -116,6 +116,7 @@ class changePasswordPageState extends State<changePasswordPage>{
             padding: EdgeInsets.all(20.0),
             child: TextField(
               controller: currentPasswordController,
+              obscureText: true,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),
@@ -134,6 +135,7 @@ class changePasswordPageState extends State<changePasswordPage>{
             padding: EdgeInsets.all(20.0),
             child: TextField(
               controller: newPasswordController,
+              obscureText: true,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),
@@ -152,6 +154,7 @@ class changePasswordPageState extends State<changePasswordPage>{
             padding: EdgeInsets.all(20.0),
             child: TextField(
               controller: secondNewPasswordController,
+              obscureText: true,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),
@@ -507,10 +510,32 @@ class changePasswordPageState extends State<changePasswordPage>{
                     }
                   );
                 }
-                else if(currentPasswordController.text == "" && newPasswordController.text == "" && secondNewPasswordController.text == ""){
+                else if(currentPasswordController.text != "" && newPasswordController.text == "" && secondNewPasswordController.text == ""){
                   showDialog(
                     context: context,
                     builder: (BuildContext tebc){
+                      return AlertDialog(
+                        title: Text("Password Change Unsuccessful"),
+                        content: Text("The password change was unsuccessful because you have forgotten to enter in the new password that you have chosen in the \"New Password\" section and the new password that you have chosen in the \"Confirm New Password\" section"),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>{
+                              Navigator.pop(context),
+                              currentPasswordController.text = "",
+                              newPasswordController.text = "",
+                              secondNewPasswordController.text = "",
+                            },
+                            child: Text("Ok"),
+                          ),
+                        ],
+                      );
+                    }
+                  );
+                }
+                else if(currentPasswordController.text == "" && newPasswordController.text == "" && secondNewPasswordController.text == ""){
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext elbc){
                       return AlertDialog(
                         title: Text("Password Change Unsuccessful"),
                         content: Text("The password change was unsuccessful because you have forgotten to enter in your current password, the new password that you have chosen in the \"New Password\" section, and the new password that you have chosen in the \"Confirm New Password\" section"),
