@@ -18,6 +18,7 @@ import 'main.dart' as myMain;
 import 'registerPage.dart' as registerPage;
 //import 'package:flutter_secure_storage/flutter_secure_storage.dart' as secureStorage;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:starexpedition4/settingsPage.dart' as settingsPage;
 
 class emailNotifications extends StatelessWidget {
   const emailNotifications ({Key? key}) : super(key: key);
@@ -104,4 +105,52 @@ Future<void> registrationConfirmationEmail() async{
   var theConnection = PersistentConnection(smtpServer);
   //await theConnection.send(myMessage);
   await theConnection.close();
+}
+
+Future<void> passwordChangeConfirmationEmail() async{
+  await dotenv.load(fileName: "dotEnv.env");
+
+  var myEmailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
+  var myPasswordForSmtpServer = dotenv.env["PASS"];
+
+  var mySmtpServer = hotmail(myEmailForSmtpServer!, myPasswordForSmtpServer!);
+
+  if(settingsPage.theUser != "" && settingsPage.theNewUser == ""){
+    var passwordChangeConfirmationMessageExistingUser = Message()
+      ..from = Address("starexpedition@hotmail.com")
+      ..recipients.add(settingsPage.theUser)
+      ..subject = "Password Change Confirmation"
+      ..text = "Hi ${settingsPage.theUser},\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition@gmail.com as soon as possible.\nBest,\nStar Expedition"
+    ;
+
+    try{
+      final sendingReportExistingUser = await send(passwordChangeConfirmationMessageExistingUser, mySmtpServer);
+      print("The message sent: ${sendingReportExistingUser.toString()}");
+    }
+    on MailerException catch(e){
+      print("The message was not sent: ${e.toString()}");
+    }
+
+    var theConnectionExistingUser = PersistentConnection(mySmtpServer);
+    await theConnectionExistingUser.close();
+  }
+  else if(settingsPage.theUser == "" && settingsPage.theNewUser != ""){
+    var passwordChangeConfirmationMessageNewUser = Message()
+      ..from = Address("starexpedition@hotmail.com")
+      ..recipients.add(settingsPage.theNewUser)
+      ..subject = "Password Change Confirmation"
+      ..text = "Hi ${settingsPage.theNewUser},\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition@gmail.com as soon as possible.\nBest,\nStar Expedition"
+    ;
+
+    try{
+      final sendingReportNewUser = await send(passwordChangeConfirmationMessageNewUser, mySmtpServer);
+      print("The message sent: ${sendingReportNewUser.toString()}");
+    }
+    on MailerException catch(e){
+      print("The message was not sent: ${e.toString()}");
+    }
+
+    var theConnectionNewUser = PersistentConnection(mySmtpServer);
+    await theConnectionNewUser.close();
+  }
 }

@@ -16,9 +16,13 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
+import 'package:starexpedition4/emailNotifications.dart' as emailNotifications;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
+
+var theUser;
+var theNewUser;
 
 class settingsPage extends StatefulWidget{
   const settingsPage ({Key? key}) : super(key: key);
@@ -171,6 +175,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 print("currentPasswordController.text: ${currentPasswordController.text}");
                 print("newPasswordController.text: ${newPasswordController.text}");
                 print("secondNewPasswordController.text: ${secondNewPasswordController.text}");
+                print("myUsername = ${myUsername}, myNewUsername = ${myNewUsername}");
                 if(currentPasswordController.text != "" && newPasswordController.text != "" && secondNewPasswordController.text != ""){
                   if(myUsername != "" && myNewUsername == ""){
                     myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -361,7 +366,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                               actions: [
                                 TextButton(
                                   onPressed: () => {
+                                    theUser = myUsername,
+                                    theNewUser = "",
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                    emailNotifications.passwordChangeConfirmationEmail(),
                                     currentPasswordController.text = "",
                                     newPasswordController.text = "",
                                     secondNewPasswordController.text = "",
@@ -445,7 +453,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                       );
                     }
                   }
-                  else if(myNewUsername != "" && myNewUsername == ""){
+                  else if(myUsername == "" && myNewUsername != ""){
                     myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
                     myUserResult.docs.forEach((result){
                       userDoc = result.data();
@@ -655,7 +663,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                               actions: [
                                 TextButton(
                                   onPressed: () => {
+                                    theUser = "",
+                                    theNewUser = myNewUsername,
                                     Navigator.pop(context),
+                                    emailNotifications.passwordChangeConfirmationEmail(),
                                     currentPasswordController.text = "",
                                     newPasswordController.text = "",
                                     secondNewPasswordController.text = "",
