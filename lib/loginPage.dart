@@ -164,7 +164,7 @@ class loginPageState extends State<loginPage>{
                       print("passwordDocument: $passwordDocument");
 
                       //if(userLowercased == usernameController.text.toLowerCase())
-                      if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
+                      if(userDocument["id"].toString() == passwordDocument["id"].toString() && userDocument != null && passwordDocument != null){
                         if(myMain.discussionBoardLogin == true){
                           await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
                             myUsername = theUn.docs.first.data()["username"];
