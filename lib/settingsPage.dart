@@ -23,6 +23,7 @@ import 'package:json_editor/json_editor.dart';
 
 var theUser;
 var theNewUser;
+var usersEmail;
 
 class settingsPage extends StatefulWidget{
   const settingsPage ({Key? key}) : super(key: key);
@@ -368,6 +369,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                                   onPressed: () => {
                                     theUser = myUsername,
                                     theNewUser = "",
+                                    usersEmail = userDoc["emailAddress"],
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
                                     emailNotifications.passwordChangeConfirmationEmail(),
                                     currentPasswordController.text = "",
@@ -665,6 +667,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                                   onPressed: () => {
                                     theUser = "",
                                     theNewUser = myNewUsername,
+                                    usersEmail = userDoc["emailAddress"],
                                     Navigator.pop(context),
                                     emailNotifications.passwordChangeConfirmationEmail(),
                                     currentPasswordController.text = "",

@@ -108,7 +108,7 @@ Future<void> registrationConfirmationEmail() async{
 }
 
 Future<void> passwordChangeConfirmationEmail() async{
-  await dotenv.load(fileName: "dotEnv.env");
+  await dotenv.load(fileName: "dotenv.env");
 
   var myEmailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
   var myPasswordForSmtpServer = dotenv.env["PASS"];
@@ -118,9 +118,9 @@ Future<void> passwordChangeConfirmationEmail() async{
   if(settingsPage.theUser != "" && settingsPage.theNewUser == ""){
     var passwordChangeConfirmationMessageExistingUser = Message()
       ..from = Address("starexpedition@hotmail.com")
-      ..recipients.add(settingsPage.theUser)
+      ..recipients.add(settingsPage.usersEmail)
       ..subject = "Password Change Confirmation"
-      ..text = "Hi ${settingsPage.theUser},\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition@gmail.com as soon as possible.\nBest,\nStar Expedition"
+      ..text = "Hi ${settingsPage.theUser},\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition@hotmail.com as soon as possible.\nBest,\nStar Expedition"
     ;
 
     try{
@@ -129,6 +129,7 @@ Future<void> passwordChangeConfirmationEmail() async{
     }
     on MailerException catch(e){
       print("The message was not sent: ${e.toString()}");
+      print("More issues: ${e.message}");
     }
 
     var theConnectionExistingUser = PersistentConnection(mySmtpServer);
@@ -137,9 +138,9 @@ Future<void> passwordChangeConfirmationEmail() async{
   else if(settingsPage.theUser == "" && settingsPage.theNewUser != ""){
     var passwordChangeConfirmationMessageNewUser = Message()
       ..from = Address("starexpedition@hotmail.com")
-      ..recipients.add(settingsPage.theNewUser)
+      ..recipients.add(settingsPage.usersEmail)
       ..subject = "Password Change Confirmation"
-      ..text = "Hi ${settingsPage.theNewUser},\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition@gmail.com as soon as possible.\nBest,\nStar Expedition"
+      ..text = "Hi ${settingsPage.theNewUser},\n\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition@hotmail.com as soon as possible.\n\nBest,\nStar Expedition"
     ;
 
     try{
