@@ -91,7 +91,7 @@ Future<void> registrationConfirmationEmail() async{
     ..from = Address("starexpedition@hotmail.com")
     ..recipients.add(registerPage.myNewEmail)
     ..subject = "Welcome to Star Expedition!"
-    ..text = "We hope you enjoy your time on here, ${registerPage.myNewUsername}!\n\nIf you have any questions or concerns, please send an email to starexpedition@hotmail.com."
+    ..text = "Hi ${registerPage.myNewUsername},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition@hotmail.com.\n\nBest,\nStar Expedition"
   ;
 
   try{
@@ -120,7 +120,7 @@ Future<void> passwordChangeConfirmationEmail() async{
       ..from = Address("starexpedition@hotmail.com")
       ..recipients.add(settingsPage.usersEmail)
       ..subject = "Password Change Confirmation"
-      ..text = "Hi ${settingsPage.theUser},\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition@hotmail.com as soon as possible.\nBest,\nStar Expedition"
+      ..text = "Hi ${settingsPage.theUser},\n\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition@hotmail.com as soon as possible.\n\nBest,\nStar Expedition"
     ;
 
     try{
