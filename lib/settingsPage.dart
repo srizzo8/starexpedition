@@ -44,7 +44,7 @@ class settingsPageState extends State<settingsPage>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () async =>{
-            Navigator.pop(context),
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
           }
         ),
       ),
@@ -63,6 +63,14 @@ class settingsPageState extends State<settingsPage>{
             ),
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changePasswordPage()));
+            }
+          ),
+          InkWell(
+            child: Ink(
+              child: Text("Change Email Address")
+            ),
+            onTap: (){
+              Navigator.pop(context);
             }
           ),
         ],
@@ -97,7 +105,7 @@ class changePasswordPageState extends State<changePasswordPage>{
           onPressed: () =>{
             Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
           }
-        )
+        ),
       ),
       body: Column(
         children: <Widget>[
@@ -907,6 +915,149 @@ class changePasswordPageState extends State<changePasswordPage>{
                       );
                     }
                   );
+                }
+              }
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class changeEmailAddressPage extends StatefulWidget{
+  const changeEmailAddressPage({Key? key}) : super(key: key);
+
+  @override
+  changeEmailAddressPageState createState() => changeEmailAddressPageState();
+}
+
+class changeEmailAddressPageState extends State<changeEmailAddressPage>{
+  TextEditingController currentEmailAddressController = TextEditingController();
+  TextEditingController newEmailAddressController = TextEditingController();
+  TextEditingController myPasswordController = TextEditingController();
+
+  var myEmailResult;
+  var gettingDocName;
+  var docForUsername;
+  var docForPassword;
+
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+          }
+        ),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 5,
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Text("Change Your Email Address", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(0.0),
+              alignment: Alignment.centerLeft,
+              child: Text("Current Email Address", style: TextStyle(fontSize: 14.0)),
+              height: 20,
+              width: 380,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(20.0),
+            child: TextField(
+              controller: currentEmailAddressController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(0.0),
+              alignment: Alignment.centerLeft,
+              child: Text("New Email Address", style: TextStyle(fontSize: 14.0)),
+              height: 20,
+              width: 380,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(20.0),
+            child: TextField(
+              controller: newEmailAddressController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(0.0),
+              alignment: Alignment.centerLeft,
+              child: Text("Password", style: TextStyle(fontSize: 14.0)),
+              height: 20,
+              width: 380,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(20.0),
+            child: TextField(
+              controller: myPasswordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Center(
+            child: InkWell(
+              child: Ink(
+                color: Colors.black,
+                padding: EdgeInsets.all(5.0),
+                child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white)),
+              ),
+              onTap: () async{
+                if(currentEmailAddressController.text != "" && newEmailAddressController.text != "" && myPasswordController.text != ""){
+                  if(myUsername != "" && myNewUsername == ""){
+                    myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                    myEmailResult.docs.forEach((myResult){
+                      docForUsername = myResult.data();
+                      print("This is the result: ${myResult.data()}");
+                      gettingDocName = myResult.id;
+                    });
+                    print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
+                  }
+                  else if(myUsername == "" && myNewUsername != ""){
+                    myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                    myEmailResult.docs.forEach((myResult){
+                      docForUsername = myResult.data();
+                      print("This is the result: ${myResult.data()}");
+                      gettingDocName = myResult.id;
+                    });
+                    print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
+                  }
+                  else{
+                    //continue
+                  }
+
+                  if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text == docForUsername["password"]){
+                    print("Your email will change");
+                  }
+
+                  /*
+                  FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : newPasswordController.text}).whenComplete(() async{
+                    print("Updated");
+                  }).catchError((e) => print("This is your error: ${e}"));*/
                 }
               }
             ),
