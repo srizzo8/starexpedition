@@ -70,7 +70,7 @@ class settingsPageState extends State<settingsPage>{
               child: Text("Change Email Address")
             ),
             onTap: (){
-              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changeEmailAddressPage()));
             }
           ),
         ],
@@ -941,6 +941,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
   var gettingDocName;
   var docForUsername;
   var docForPassword;
+  var usersEmailAddress;
 
   Widget build(BuildContext context){
     return Scaffold(
@@ -1050,14 +1051,40 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                     //continue
                   }
 
-                  if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text == docForUsername["password"]){
+                  if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == docForUsername["password"]){
                     print("Your email will change");
-                  }
 
-                  /*
-                  FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : newPasswordController.text}).whenComplete(() async{
-                    print("Updated");
-                  }).catchError((e) => print("This is your error: ${e}"));*/
+                    FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
+                      print("Updated the email address");
+                    }).catchError((e) => print("This is your error: ${e}"));
+
+                    print("This is new user email address: ${docForUsername["emailAddress"]}");
+
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext bc){
+                        return AlertDialog(
+                          title: Text("Email Address Change Successful"),
+                          content: Text("You have successfully changed your email address"),
+                          actions: [
+                            TextButton(
+                              onPressed: () => {
+                                //theUser = "",
+                                //theNewUser = myNewUsername,
+                                usersEmailAddress = docForUsername["emailAddress"],
+                                Navigator.pop(context),
+                                //emailNotifications.emailChangeConfirmationEmail(),
+                                currentEmailAddressController.text = "",
+                                newEmailAddressController.text = "",
+                                myPasswordController.text = "",
+                              },
+                              child: Text("Ok"),
+                            ),
+                          ],
+                        );
+                      }
+                    );
+                  }
                 }
               }
             ),
