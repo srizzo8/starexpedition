@@ -155,3 +155,48 @@ Future<void> passwordChangeConfirmationEmail() async{
     await theConnectionNewUser.close();
   }
 }
+
+Future<void> emailAddressChangeConfirmationEmail() async{
+  await dotenv.load(fileName: "dotenv.env");
+
+  var theEmailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
+  var thePasswordForSmtpServer = dotenv.env["PASS"];
+
+  var theSmtpServer = hotmail(theEmailForSmtpServer!, thePasswordForSmtpServer!);
+
+  //For previous email address
+  var emailChangeConfirmationMessageForPreviousEmailAddress = Message()
+    ..from = Address("starexpedition@hotmail.com")
+    ..recipients.add(settingsPage.usersEmailForEmailChangeMessage)
+    ..subject = "Email Change Confirmation"
+    ..text = "Hi ${settingsPage.userForEmailChange},\n\nWe have noticed that you have changed your email address. If you did not do this, please contact starexpedition@hotmail.com as soon as possible.\n\nBest,\nStar Expedition"
+  ;
+
+  try{
+    final sendingReport = await send(emailChangeConfirmationMessageForPreviousEmailAddress, theSmtpServer);
+    print("The message sent: ${sendingReport.toString()}");
+  }
+  on MailerException catch(e){
+    print("The message was not sent: ${e.toString()}");
+  }
+
+  //For new email address
+  var emailChangeConfirmationMessageForNewEmailAddress = Message()
+    ..from = Address("starexpedition@hotmail.com")
+    ..recipients.add(settingsPage.usersNewEmail)
+    ..subject = "Email Change Confirmation"
+    ..text = "Hi ${settingsPage.userForEmailChange},\n\nThis message is to confirm that you have changed your email address.\n\nBest,\nStar Expedition"
+  ;
+
+  try{
+    final sendingReport = await send(emailChangeConfirmationMessageForNewEmailAddress, theSmtpServer);
+    print("The message sent: ${sendingReport.toString()}");
+  }
+  on MailerException catch(e){
+    print("The message was not sent: ${e.toString()}");
+  }
+
+  //The connection
+  var theConnection = PersistentConnection(theSmtpServer);
+  await theConnection.close();
+}
