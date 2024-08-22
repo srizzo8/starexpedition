@@ -169,7 +169,7 @@ Future<void> emailAddressChangeConfirmationEmail() async{
     ..from = Address("starexpedition@hotmail.com")
     ..recipients.add(settingsPage.usersEmailForEmailChangeMessage)
     ..subject = "Email Change Confirmation"
-    ..text = "Hi ${settingsPage.userForEmailChange},\n\nWe have noticed that you have changed your email address. If you did not do this, please contact starexpedition@hotmail.com as soon as possible.\n\nBest,\nStar Expedition"
+    ..text = "Hi ${settingsPage.userForEmailChange},\n\nWe have noticed that you have changed your email address from ${settingsPage.usersEmailForEmailChangeMessage} to ${settingsPage.usersNewEmail}. If you did not do this, please contact starexpedition@hotmail.com as soon as possible.\n\nBest,\nStar Expedition"
   ;
 
   try{
@@ -185,7 +185,7 @@ Future<void> emailAddressChangeConfirmationEmail() async{
     ..from = Address("starexpedition@hotmail.com")
     ..recipients.add(settingsPage.usersNewEmail)
     ..subject = "Email Change Confirmation"
-    ..text = "Hi ${settingsPage.userForEmailChange},\n\nThis message is to confirm that you have changed your email address.\n\nBest,\nStar Expedition"
+    ..text = "Hi ${settingsPage.userForEmailChange},\n\nThis message is to confirm that you have changed your email address from ${settingsPage.usersEmailForEmailChangeMessage} to ${settingsPage.usersNewEmail}.\n\nBest,\nStar Expedition"
   ;
 
   try{
