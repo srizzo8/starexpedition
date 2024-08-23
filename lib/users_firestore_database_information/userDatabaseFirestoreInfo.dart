@@ -4,13 +4,15 @@ class User{
   final String emailAddress;
   final String password;
   final String usernameLowercased;
+  final Map<String, String> usernameProfileInformation;
 
   const User({
     required this.id,
     required this.username,
     required this.emailAddress,
     required this.password,
-    required this.usernameLowercased
+    required this.usernameLowercased,
+    required this.usernameProfileInformation
   });
 
   toJson(){
@@ -19,7 +21,8 @@ class User{
       "username": username,
       "emailAddress": emailAddress,
       "password": password,
-      "usernameLowercased": usernameLowercased
+      "usernameLowercased": usernameLowercased,
+      "usernameProfileInformation": usernameProfileInformation
     };
   }
 }
