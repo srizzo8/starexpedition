@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 //import 'dart:html';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -18,6 +19,10 @@ import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
+
+var myInformation;
+var docOfUser;
+var myDocName;
 
 class userProfilePage extends StatefulWidget{
   const userProfilePage ({Key? key}) : super(key: key);
@@ -117,6 +122,39 @@ class editingMyUserProfile extends StatelessWidget{
                 contentPadding: EdgeInsets.symmetric(vertical: 80),
               ),
               controller: informationAboutMyselfController,
+            ),
+          ),
+          Center(
+            child: InkWell(
+              child: Ink(
+                color: Colors.black,
+                padding: EdgeInsets.all(5.0),
+                child: Text("Update Profile", style: TextStyle(color: Colors.white)),
+              ),
+              onTap: () async{
+                if(myUsername != "" && myNewUsername == ""){
+                  myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                  myInformation.docs.forEach((myResult){
+                    docOfUser = myResult.data();
+                    myDocName = myResult.id;
+                  });
+
+                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({"userInformation" : informationAboutMyselfController.text}).whenComplete(() async{
+                    print("userInformation Updated");
+                  }).catchError((e) => print("This is your error: ${e}"));
+                }
+                else if(myUsername == "" && myNewUsername != ""){
+                  myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                  myInformation.docs.forEach((myResult){
+                    docOfUser = myResult.data();
+                    myDocName = myResult.id;
+                  });
+
+                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({"usernameProfileInformation" : informationAboutMyselfController.text}).whenComplete(() async{
+                    print("userInformation Updated");
+                  }).catchError((e) => print("This is your error: ${e}"));
+                }
+              }
             ),
           ),
         ],

@@ -17,6 +17,7 @@ import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:starexpedition4/emailNotifications.dart' as emailNotifications;
+import 'package:starexpedition4/userProfile.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
@@ -70,12 +71,20 @@ class settingsPageState extends State<settingsPage>{
           ),
           InkWell(
             child: Ink(
-              child: Text("Change Email Address")
+              child: Text("Change Email Address"),
             ),
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changeEmailAddressPage()));
             }
           ),
+          InkWell(
+            child: Ink(
+              child: Text("Update Profile"),
+            ),
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => editingMyUserProfile()));
+            }
+          )
         ],
       ),
     );
