@@ -21,8 +21,9 @@ import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 
 var myInformation;
-var docOfUser;
+var dataOfUser;
 var myDocName;
+var userInformation;
 
 class userProfilePage extends StatefulWidget{
   const userProfilePage ({Key? key}) : super(key: key);
@@ -135,18 +136,60 @@ class editingMyUserProfile extends StatelessWidget{
                 if(myUsername != "" && myNewUsername == ""){
                   myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
                   myInformation.docs.forEach((myResult){
-                    docOfUser = myResult.data();
+                    dataOfUser = myResult.data();
                     myDocName = myResult.id;
                   });
 
-                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({"userInformation" : informationAboutMyselfController.text}).whenComplete(() async{
+                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                    "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
+                  }).then((i){
+                    print("You have updated the user information!");
+                  });
+
+                  //print("nestedUserInfo: ${nestedUserInfo}");
+                  //collection("usernameProfileInformation").snapshots();
+                  /*print("nestedUserInfo: ${nestedUserInfo.toString()}");
+                  nestedUserInfo.forEach((result){
+                    print("The result is this: ${result}");
+                  });*/
+
+                  //update({"userProfileInformation.${userInformation}" : informationAboutMyselfController.text}).whenComplete(() async{
+                  //  print("userInformation Updated");
+                  // }).catchError((e) => print("This is your error: ${e}"));
+
+                  /*var theUsersInfo = theUsernameProfileInformation.firstWhere(
+                    (i) => i["userInformation"] == theUsernameProfileInformation.text,
+                    orElse: () => Map()
+                  );
+
+                  await FirebaseFirestore.instance.collection("User").doc(myDocName).update(dataOfUser);*/
+
+                  /*DocumentSnapshot<Map<String, dynamic>> mySnapshot = await FirebaseFirestore.instance.collection("User").doc(myDocName).get();
+                  Map<String, dynamic>? theUsersInfo = mySnapshot.data();*/
+
+                  //print("The user's info: ${theUsersInfo!["usernameProfileInformation"]["userInformation"]}");
+                  //theUsersInfo!["usernameProfileInformation"]["userInformation"] = informationAboutMyselfController.text;
+                  //print("The user's info: ${theUsersInfo!["usernameProfileInformation"]["userInformation"]}");
+
+
+                  /*FirebaseFirestore.instance.collection("User").doc(myDocName).update({"userProfileInformation.${userInformation}" : informationAboutMyselfController.text}).whenComplete(() async{
                     print("userInformation Updated");
-                  }).catchError((e) => print("This is your error: ${e}"));
+                  }).catchError((e) => print("This is your error: ${e}"));*/
+
+                  /*
+                  userInformation = myDocName["userProfileInformation"];
+                  for(var i in userInformation){
+                    print("userInformation: ${i["userInformation"]}");
+                  }
+
+                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({"userProfileInformation.${userInformation}" : informationAboutMyselfController.text}).whenComplete(() async{
+                    print("userInformation Updated");
+                  }).catchError((e) => print("This is your error: ${e}"));*/
                 }
                 else if(myUsername == "" && myNewUsername != ""){
                   myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
                   myInformation.docs.forEach((myResult){
-                    docOfUser = myResult.data();
+                    dataOfUser = myResult.data();
                     myDocName = myResult.id;
                   });
 

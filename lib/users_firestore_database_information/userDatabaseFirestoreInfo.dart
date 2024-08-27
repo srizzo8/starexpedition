@@ -4,7 +4,7 @@ class User{
   final String emailAddress;
   final String password;
   final String usernameLowercased;
-  final Map<String, String> usernameProfileInformation;
+  final Map<dynamic, dynamic> usernameProfileInformation;
 
   const User({
     required this.id,
