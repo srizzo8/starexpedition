@@ -6,6 +6,7 @@ import 'dart:io';
 import 'dart:math';
 //import 'dart:html';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -23,6 +24,7 @@ import 'package:starexpedition4/spectralClassPage.dart';
 import 'package:starexpedition4/whyStarExpeditionWasMade.dart';
 import 'package:starexpedition4/conversionCalculator.dart';
 import 'package:starexpedition4/settingsPage.dart';
+import 'package:starexpedition4/userProfile.dart';
 
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -42,6 +44,10 @@ Map<String, List> otherNamesMap = HashMap();
 Iterable<List> alternateNames = [];
 
 bool featuredStarOfTheDayBool = false;
+
+var userProfileData;
+var userProfileDoc;
+var usersBlurb;
 
 /*
 Future<String> get myDirectoryPath async{
@@ -370,6 +376,7 @@ class MyApp extends StatelessWidget {
         routesToOtherPages.thePlanetArticlePage: (context) => planetArticle(informationAboutPlanet),
         routesToOtherPages.conversionCalculator: (context) => conversionCalculatorPage(),
         routesToOtherPages.settingsPage: (context) => settingsPage(),
+        routesToOtherPages.userProfileInUserPerspectivePage: (context) => userProfileInUserPerspective(),
       }
     );
   }
@@ -386,6 +393,7 @@ class routesToOtherPages{
   static String thePlanetArticlePage = planetArticle.nameOfRoute;
   static String conversionCalculator = conversionCalculatorPageState.nameOfRoute;
   static String settingsPage = settingsPageState.nameOfRoute;
+  static String userProfileInUserPerspectivePage = userProfileInUserPerspective.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -516,7 +524,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                 children: <Widget>[
                   FittedBox( //For new users, not those that logged into already existing accounts
                     alignment: Alignment.topRight,
-                    child: Text('Hi ' + myNewUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                    child: Text('Hi ', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                     fit: BoxFit.contain,
                   ),
                   InkWell(
@@ -524,19 +532,45 @@ class theStarExpeditionState extends State<StarExpedition> {
                       alignment: Alignment.topRight,
                       fit: BoxFit.contain,
                       child: Ink(
-                        child: Text(" Settings", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                        child: Text(myNewUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                       ),
                     ),
-                    onTap: (){
-                      Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
-                    },
+                    onTap: () async{
+                      await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
+                        usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                      });
+                      print("usersBlurb: ${usersBlurb}");
+                      Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
+                    }
+                  ),
+                  FittedBox(
+                    alignment: Alignment.topRight,
+                    fit: BoxFit.contain,
+                    child: Text(" ", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                   ),
                   InkWell(
                     child: FittedBox(
                       alignment: Alignment.topRight,
                       fit: BoxFit.contain,
                       child: Ink(
-                        child: Text(' Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                        child: Text("Settings", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                      ),
+                    ),
+                    onTap: (){
+                      Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
+                    },
+                  ),
+                  FittedBox(
+                    alignment: Alignment.topRight,
+                    fit: BoxFit.contain,
+                    child: Text(" ", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                  ),
+                  InkWell(
+                    child: FittedBox(
+                      alignment: Alignment.topRight,
+                      fit: BoxFit.contain,
+                      child: Ink(
+                        child: Text('Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                       ),
                     ),
                     onTap: (){
@@ -553,25 +587,53 @@ class theStarExpeditionState extends State<StarExpedition> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     FittedBox(
-                      child: Text('Hi ' + myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                      child: Text('Hi ', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                       fit: BoxFit.contain,
+                    ),
+                    InkWell(
+                      child: FittedBox(
+                        alignment: Alignment.topRight,
+                        fit: BoxFit.contain,
+                        child: Ink(
+                          child: Text(myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                        ),
+                      ),
+                      onTap: () async{
+                        await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
+                          usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                        });
+                        print("usersBlurb: ${usersBlurb}");
+                        //print("${userProfileDoc["usernameProfileInformation"]}");
+                        //usersBlurb = indExistingUser["usernameProfileInformation"]["userInformation"];
+                        Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
+                      }
+                    ),
+                    FittedBox(
+                      alignment: Alignment.topRight,
+                      fit: BoxFit.contain,
+                      child: Text(" ", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                     ),
                     InkWell(
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: Ink(
-                          child: Text(" Settings", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                          child: Text("Settings", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                         ),
                       ),
                       onTap: (){
                         Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
                       }
                     ),
+                    FittedBox(
+                      alignment: Alignment.topRight,
+                      fit: BoxFit.contain,
+                      child: Text(" ", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                    ),
                     InkWell(
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: Ink(
-                          child: Text(' Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                          child: Text('Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
                         ),
                       ),
                       onTap: (){

@@ -167,3 +167,49 @@ class editingMyUserProfile extends StatelessWidget{
     );
   }
 }
+
+class userProfileInUserPerspective extends StatelessWidget{
+  static String nameOfRoute = '/userProfileInUserPerspective';
+
+  Widget build(BuildContext bc){
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
+          }
+        ),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 5,
+          ),
+          Container(
+            child: Text("My Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            child: myUsername != "" && myNewUsername == ""?
+                Text("Username:\n${myUsername}"):
+                Text("Username:\n${myNewUsername}"),
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            child: myUsername != "" && myNewUsername == ""?
+                Text("Information About You:\n${myMain.usersBlurb}"):
+                Text("Information About You:\n${myMain.usersBlurb}"),
+          ),
+        ],
+      ),
+    );
+  }
+}
