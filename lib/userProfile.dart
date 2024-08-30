@@ -196,17 +196,23 @@ class userProfileInUserPerspective extends StatelessWidget{
             height: 5,
           ),
           Container(
+            child: Text("Username:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
             child: myUsername != "" && myNewUsername == ""?
-                Text("Username:\n${myUsername}"):
-                Text("Username:\n${myNewUsername}"),
+                Text("${myUsername}"):
+                Text("${myNewUsername}"),
           ),
           Container(
             height: 5,
           ),
           Container(
+            child: Text("\nInformation About You:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
             child: myUsername != "" && myNewUsername == ""?
-                Text("Information About You:\n${myMain.usersBlurb}"):
-                Text("Information About You:\n${myMain.usersBlurb}"),
+                Text("${myMain.usersBlurb}"):
+                Text("${myMain.usersBlurb}"),
           ),
         ],
       ),
