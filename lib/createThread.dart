@@ -204,8 +204,6 @@ class createThreadState extends State<createThread>{
 
                       print("userData: ${userData}");
                       print("docName: ${docName}");
-                      //var numOfPosts = userData["usernameProfileInformation"].values.elementAt(0);
-                      //print("numOfPosts: ${numOfPosts}");
 
                       FirebaseFirestore.instance.collection("User").doc(docName).update({
                         "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
@@ -220,10 +218,11 @@ class createThreadState extends State<createThread>{
                         docName = resultNewUsername.id;
                       });
 
-                      var numOfPosts = docName["usernameProfileInformation"]["numberOfPosts"];
+                      print("userData: ${userData}");
+                      print("docName: ${docName}");
 
                       FirebaseFirestore.instance.collection("User").doc(docName).update({
-                        "usernameProfileInformation.numberOfPosts": numOfPosts++
+                        "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                       }).then((a){
                         print("You have updated the post number for the new user!");
                       });
@@ -267,6 +266,39 @@ class createThreadState extends State<createThread>{
 
                       createQuestionsAndAnswersThread(theNewQuestionsAndAnswersThread);
 
+                      if(myUsername != "" && myNewUsername == ""){
+                        myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                        myInfo.docs.forEach((resultExistingUsername){
+                          userData = resultExistingUsername.data();
+                          docName = resultExistingUsername.id;
+                        });
+
+                        print("userData: ${userData}");
+                        print("docName: ${docName}");
+
+                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                          "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                        }).then((a){
+                          print("You have updated the post number for the existing user!");
+                        });
+                      }
+                      else if(myUsername == "" && myNewUsername != ""){
+                        myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                        myInfo.docs.forEach((resultNewUsername){
+                          userData = resultNewUsername.data();
+                          docName = resultNewUsername.id;
+                        });
+
+                        print("userData: ${userData}");
+                        print("docName: ${docName}");
+
+                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                          "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                        }).then((a){
+                          print("You have updated the post number for the new user!");
+                        });
+                      }
+
                       questionsAndAnswersPendingThreads.add(usernameController.text);
                       questionsAndAnswersPendingThreads.add(threadNameController.text);
                       questionsAndAnswersPendingThreads.add(threadContentController.text);
@@ -302,6 +334,39 @@ class createThreadState extends State<createThread>{
                         );
 
                         createTechnologiesThread(theNewTechnologiesThread);
+
+                        if(myUsername != "" && myNewUsername == ""){
+                          myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                          myInfo.docs.forEach((resultExistingUsername){
+                            userData = resultExistingUsername.data();
+                            docName = resultExistingUsername.id;
+                          });
+
+                          print("userData: ${userData}");
+                          print("docName: ${docName}");
+
+                          FirebaseFirestore.instance.collection("User").doc(docName).update({
+                            "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                          }).then((a){
+                            print("You have updated the post number for the existing user!");
+                          });
+                        }
+                        else if(myUsername == "" && myNewUsername != ""){
+                          myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                          myInfo.docs.forEach((resultNewUsername){
+                            userData = resultNewUsername.data();
+                            docName = resultNewUsername.id;
+                          });
+
+                          print("userData: ${userData}");
+                          print("docName: ${docName}");
+
+                          FirebaseFirestore.instance.collection("User").doc(docName).update({
+                            "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                          }).then((a){
+                            print("You have updated the post number for the new user!");
+                          });
+                        }
 
                         technologiesPendingThreads.add(usernameController.text);
                         technologiesPendingThreads.add(threadNameController.text);
@@ -339,6 +404,39 @@ class createThreadState extends State<createThread>{
 
                           createProjectsThread(theNewProjectsThread);
 
+                          if(myUsername != "" && myNewUsername == ""){
+                            myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                            myInfo.docs.forEach((resultExistingUsername){
+                              userData = resultExistingUsername.data();
+                              docName = resultExistingUsername.id;
+                            });
+
+                            print("userData: ${userData}");
+                            print("docName: ${docName}");
+
+                            FirebaseFirestore.instance.collection("User").doc(docName).update({
+                              "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                            }).then((a){
+                              print("You have updated the post number for the existing user!");
+                            });
+                          }
+                          else if(myUsername == "" && myNewUsername != ""){
+                            myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                            myInfo.docs.forEach((resultNewUsername){
+                              userData = resultNewUsername.data();
+                              docName = resultNewUsername.id;
+                            });
+
+                            print("userData: ${userData}");
+                            print("docName: ${docName}");
+
+                            FirebaseFirestore.instance.collection("User").doc(docName).update({
+                              "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                            }).then((a){
+                              print("You have updated the post number for the new user!");
+                            });
+                          }
+
                           projectsPendingThreads.add(usernameController.text);
                           projectsPendingThreads.add(threadNameController.text);
                           projectsPendingThreads.add(threadContentController.text);
@@ -374,6 +472,39 @@ class createThreadState extends State<createThread>{
                             );
 
                             createNewDiscoveriesThread(theNewNewDiscoveriesThread);
+
+                            if(myUsername != "" && myNewUsername == ""){
+                              myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                              myInfo.docs.forEach((resultExistingUsername){
+                                userData = resultExistingUsername.data();
+                                docName = resultExistingUsername.id;
+                              });
+
+                              print("userData: ${userData}");
+                              print("docName: ${docName}");
+
+                              FirebaseFirestore.instance.collection("User").doc(docName).update({
+                                "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                              }).then((a){
+                                print("You have updated the post number for the existing user!");
+                              });
+                            }
+                            else if(myUsername == "" && myNewUsername != ""){
+                              myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                              myInfo.docs.forEach((resultNewUsername){
+                                userData = resultNewUsername.data();
+                                docName = resultNewUsername.id;
+                              });
+
+                              print("userData: ${userData}");
+                              print("docName: ${docName}");
+
+                              FirebaseFirestore.instance.collection("User").doc(docName).update({
+                                "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                              }).then((a){
+                                print("You have updated the post number for the new user!");
+                              });
+                            }
 
                             newDiscoveriesPendingThreads.add(usernameController.text);
                             newDiscoveriesPendingThreads.add(threadNameController.text);
