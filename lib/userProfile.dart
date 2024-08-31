@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:starexpedition4/settingsPage.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
 
 import 'package:starexpedition4/main.dart' as myMain;
@@ -100,6 +101,7 @@ class editingMyUserProfile extends StatelessWidget{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage())),
             print("Going back to settings page"),
           }
         ),
@@ -145,6 +147,8 @@ class editingMyUserProfile extends StatelessWidget{
                   }).then((i){
                     print("You have updated the user information (for already existing users)!");
                   });
+
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
                 }
                 else if(myUsername == "" && myNewUsername != ""){
                   myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -158,6 +162,8 @@ class editingMyUserProfile extends StatelessWidget{
                   }).then((j){
                     print("You have updated the user information (for new users)!");
                   });
+
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
                 }
               }
             ),
