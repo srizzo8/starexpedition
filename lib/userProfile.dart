@@ -214,6 +214,15 @@ class userProfileInUserPerspective extends StatelessWidget{
                 Text("${myMain.usersBlurb}"):
                 Text("${myMain.usersBlurb}"),
           ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            child: Text("${myMain.numberOfPostsUserHasMade}"),
+          ),
         ],
       ),
     );

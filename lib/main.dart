@@ -48,6 +48,7 @@ bool featuredStarOfTheDayBool = false;
 var userProfileData;
 var userProfileDoc;
 var usersBlurb;
+var numberOfPostsUserHasMade;
 
 /*
 Future<String> get myDirectoryPath async{
@@ -538,8 +539,10 @@ class theStarExpeditionState extends State<StarExpedition> {
                     onTap: () async{
                       await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
                         usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                        numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
                       });
                       print("usersBlurb: ${usersBlurb}");
+                      print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
                       Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
                     }
                   ),
@@ -601,8 +604,10 @@ class theStarExpeditionState extends State<StarExpedition> {
                       onTap: () async{
                         await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
                           usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                          numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
                         });
                         print("usersBlurb: ${usersBlurb}");
+                        print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
                         //print("${userProfileDoc["usernameProfileInformation"]}");
                         //usersBlurb = indExistingUser["usernameProfileInformation"]["userInformation"];
                         Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
