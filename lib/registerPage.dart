@@ -198,7 +198,7 @@ class registerPageState extends State<registerPage>{
                           emailAddress: email.text,
                           password: password.text,
                           usernameLowercased: theUsername.text.toLowerCase(),
-                          usernameProfileInformation: {"userInformation": ""},
+                          usernameProfileInformation: {"userInformation": "", "numberOfPosts": 0},
                       );
                       createUser(theNewUser);
                       //dbService.addUser(theNewUser);
@@ -227,7 +227,7 @@ class registerPageState extends State<registerPage>{
                           emailAddress: email.text,
                           password: password.text,
                           usernameLowercased: theUsername.text.toLowerCase(),
-                          usernameProfileInformation: {"userInformation": ""},
+                          usernameProfileInformation: {"userInformation": "", "numberOfPosts": 0},
                       );
                       createUser(theNewUser);
                       //dbService.addUser(theNewUser);

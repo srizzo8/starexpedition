@@ -28,6 +28,12 @@ import 'main.dart' as myMain;
 import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesDatabaseFirestoreInfo.dart';
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesInformation.dart';
+import 'package:starexpedition4/loginPage.dart';
+import 'package:starexpedition4/registerPage.dart';
+
+var myInfo;
+var userData;
+var docName;
 
 class createThread extends StatefulWidget{
   const createThread ({Key? key}) : super(key: key);
@@ -188,6 +194,40 @@ class createThreadState extends State<createThread>{
                     );
 
                     createDiscussionBoardUpdatesThread(theNewDiscussionBoardUpdatesThread);
+
+                    if(myUsername != "" && myNewUsername == ""){
+                      myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                      myInfo.docs.forEach((resultExistingUsername){
+                        userData = resultExistingUsername.data();
+                        docName = resultExistingUsername.id;
+                      });
+
+                      print("userData: ${userData}");
+                      print("docName: ${docName}");
+                      //var numOfPosts = userData["usernameProfileInformation"].values.elementAt(0);
+                      //print("numOfPosts: ${numOfPosts}");
+
+                      FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                      }).then((a){
+                        print("You have updated the post number for the existing user!");
+                      });
+                    }
+                    else if(myUsername == "" && myNewUsername != ""){
+                      myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                      myInfo.docs.forEach((resultNewUsername){
+                        userData = resultNewUsername.data();
+                        docName = resultNewUsername.id;
+                      });
+
+                      var numOfPosts = docName["usernameProfileInformation"]["numberOfPosts"];
+
+                      FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        "usernameProfileInformation.numberOfPosts": numOfPosts++
+                      }).then((a){
+                        print("You have updated the post number for the new user!");
+                      });
+                    }
 
                     print('You are ready to post this thread');
                     discussionBoardUpdatesPendingThreads.add(usernameController.text);
