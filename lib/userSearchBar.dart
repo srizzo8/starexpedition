@@ -95,6 +95,7 @@ class mySearch extends SearchDelegate{
 class userSearchBarPageState extends State<userSearchBarPage>{
   static String nameOfRoute = '/userSearchBarPage';
   TextEditingController query = TextEditingController();
+  mySearch ms = new mySearch();
 
   Widget build(BuildContext context){
     return Scaffold(
@@ -128,6 +129,12 @@ class userSearchBarPageState extends State<userSearchBarPage>{
                 icon: Icon(Icons.search),
               ),
               controller: query,
+              onTap: (){
+                showSearch(
+                  context: context,
+                  delegate: mySearch(),
+                );
+              }
             ),
           ),
         ],
