@@ -20,6 +20,7 @@ import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
+import 'package:starexpedition4/userSearchBar.dart';
 
 var myInformation;
 var dataOfUser;
@@ -196,18 +197,9 @@ class userProfileInUserPerspective extends StatelessWidget{
             height: 5,
           ),
           Container(
-            child: Text("My Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            child: Text("Username:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
             child: myUsername != "" && myNewUsername == ""?
-                Text("${myUsername}"):
-                Text("${myNewUsername}"),
+                Text("${myUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)):
+                Text("${myNewUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
             height: 5,
@@ -247,7 +239,7 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
-              Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
+              Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => userSearchBarPage())),
             }
         ),
       ),
@@ -257,7 +249,25 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             height: 5,
           ),
           Container(
-
+            child: Text("${theUsersData["username"]}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            child: Text("\nInformation About ${theUsersData["username"]}:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            child: Text("${theUsersData["usernameProfileInformation"]["userInformation"]}"),
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            child: Text("${theUsersData["usernameProfileInformation"]["numberOfPosts"]}"),
           ),
         ],
       ),

@@ -20,6 +20,10 @@ import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
+import 'package:starexpedition4/userProfile.dart';
+
+var nameClickedData;
+var theUsersData;
 
 class userSearchBarPage extends StatefulWidget{
   const userSearchBarPage ({Key? key}) : super(key: key);
@@ -86,6 +90,15 @@ class mySearch extends SearchDelegate{
         var myResult = myMatchQuery[index];
         return ListTile(
           title: Text(myResult),
+          onTap: () async{
+            nameClickedData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myResult.toLowerCase()).get();
+            nameClickedData.docs.forEach((person){
+              theUsersData = person.data();
+            });
+            print("You clicked on someone's name: ${myResult}");
+            print("The user's data: ${theUsersData}");
+            Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
+          }
         );
       }
     );
