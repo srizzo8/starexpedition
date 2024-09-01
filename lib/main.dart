@@ -793,10 +793,16 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
               ListTile(
                 title: Text("User Search"),
                 onTap: () async{
+                  //List<dynamic> myUserList = [];
                   await FirebaseFirestore.instance.collection("User").get().then((qSnapshot){
                     for(var documentSnapshot in qSnapshot.docs){
                       print("documentSnapshot: ${documentSnapshot.data()}");
-                      theListOfUsers.add(documentSnapshot.data()["username"]);
+                      if(!(theListOfUsers.contains(documentSnapshot.data()["username"]))) {
+                        theListOfUsers.add(documentSnapshot.data()["username"]);
+                      }
+                      else{
+                        //continue
+                      }
                     }
                   });
                   print("theListOfUsers: ${theListOfUsers}");
