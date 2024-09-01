@@ -1,0 +1,137 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+//import 'dart:html';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:starexpedition4/settingsPage.dart';
+import 'package:starexpedition4/spectralClassPage.dart';
+
+import 'package:starexpedition4/main.dart' as myMain;
+import 'package:starexpedition4/discussionBoardPage.dart';
+import 'package:starexpedition4/loginPage.dart';
+import 'package:starexpedition4/registerPage.dart';
+import 'package:starexpedition4/loginPage.dart' as theLoginPage;
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/src/services/asset_bundle.dart';
+import 'package:json_editor/json_editor.dart';
+
+class userSearchBarPage extends StatefulWidget{
+  const userSearchBarPage ({Key? key}) : super(key: key);
+
+  @override
+  userSearchBarPageState createState() => userSearchBarPageState();
+}
+
+class mySearch extends SearchDelegate{
+  List<dynamic> usernameList = myMain.theListOfUsers;
+
+  @override
+  List<Widget>? buildActions(BuildContext bc){
+    return [
+      IconButton(
+        onPressed: (){
+          query = "";
+        },
+        icon: Icon(Icons.clear),
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext bc2){
+    return IconButton(
+      onPressed: (){
+        close(bc2, null);
+      },
+      icon: Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext bc3){
+    List<String> myMatchQuery = [];
+    for(var user in usernameList){
+      if(user.toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add(user);
+      }
+    }
+    return ListView.builder(
+      itemCount: myMatchQuery.length,
+      itemBuilder: (bc3, index){
+        var myResult = myMatchQuery[index];
+        return ListTile(
+          title: Text(myResult),
+        );
+      }
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext bc4){
+    List<String> myMatchQuery = [];
+    for(var guy in usernameList){
+      if(guy.toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add(guy);
+      }
+    }
+    return ListView.builder(
+      itemCount: myMatchQuery.length,
+      itemBuilder: (bc4, index){
+        var myResult = myMatchQuery[index];
+        return ListTile(
+          title: Text(myResult),
+        );
+      }
+    );
+  }
+}
+
+class userSearchBarPageState extends State<userSearchBarPage>{
+  static String nameOfRoute = '/userSearchBarPage';
+  TextEditingController query = TextEditingController();
+
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Star Expedition"),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () =>{
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
+            }
+        ),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 5,
+          ),
+          Container(
+            child: Text("User Search", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            padding: EdgeInsets.all(20.0),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                icon: Icon(Icons.search),
+              ),
+              controller: query,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

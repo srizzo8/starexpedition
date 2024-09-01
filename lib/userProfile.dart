@@ -234,3 +234,33 @@ class userProfileInUserPerspective extends StatelessWidget{
     );
   }
 }
+
+class userProfileInOtherUsersPerspective extends StatelessWidget{
+  static String nameOfRoute = '/userProfileInOtherUsersPerspective';
+
+  Widget build(BuildContext bc){
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Star Expedition"),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () =>{
+              Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
+            }
+        ),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 5,
+          ),
+          Container(
+
+          ),
+        ],
+      ),
+    );
+  }
+}

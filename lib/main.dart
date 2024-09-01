@@ -25,6 +25,7 @@ import 'package:starexpedition4/whyStarExpeditionWasMade.dart';
 import 'package:starexpedition4/conversionCalculator.dart';
 import 'package:starexpedition4/settingsPage.dart';
 import 'package:starexpedition4/userProfile.dart';
+import 'package:starexpedition4/userSearchBar.dart';
 
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -49,6 +50,8 @@ var userProfileData;
 var userProfileDoc;
 var usersBlurb;
 var numberOfPostsUserHasMade;
+
+var theListOfUsers = [];
 
 /*
 Future<String> get myDirectoryPath async{
@@ -378,6 +381,7 @@ class MyApp extends StatelessWidget {
         routesToOtherPages.conversionCalculator: (context) => conversionCalculatorPage(),
         routesToOtherPages.settingsPage: (context) => settingsPage(),
         routesToOtherPages.userProfileInUserPerspectivePage: (context) => userProfileInUserPerspective(),
+        routesToOtherPages.userSearchBarPage: (context) => userSearchBarPage(),
       }
     );
   }
@@ -395,6 +399,7 @@ class routesToOtherPages{
   static String conversionCalculator = conversionCalculatorPageState.nameOfRoute;
   static String settingsPage = settingsPageState.nameOfRoute;
   static String userProfileInUserPerspectivePage = userProfileInUserPerspective.nameOfRoute;
+  static String userSearchBarPage = userSearchBarPageState.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -783,6 +788,19 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                 title: Text("Conversion Calculator"),
                 onTap: (){
                   Navigator.pushReplacementNamed(context, routesToOtherPages.conversionCalculator);
+                }
+              ),
+              ListTile(
+                title: Text("User Search"),
+                onTap: () async{
+                  await FirebaseFirestore.instance.collection("User").get().then((qSnapshot){
+                    for(var documentSnapshot in qSnapshot.docs){
+                      print("documentSnapshot: ${documentSnapshot.data()}");
+                      theListOfUsers.add(documentSnapshot.data()["username"]);
+                    }
+                  });
+                  print("theListOfUsers: ${theListOfUsers}");
+                  Navigator.pushReplacementNamed(context, routesToOtherPages.userSearchBarPage);
                 }
               )
             ]
