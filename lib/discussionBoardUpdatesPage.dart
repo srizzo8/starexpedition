@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:starexpedition4/replyThreadPage.dart';
+import 'package:starexpedition4/userProfile.dart';
+import 'package:starexpedition4/userSearchBar.dart';
 
 import 'createThread.dart';
 import 'discussionBoardPage.dart' as discussionBoardPage;
@@ -39,6 +41,9 @@ var myReplyToReplyDbu;
 var replyToReplyOriginalInfoDbu;
 List<List> dbuRepliesToReplies = [];
 Map<String, dynamic> myReplyToReplyDbuMap = {};
+
+var nameData;
+bool dbuClickedOnUser = false;
 
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
@@ -234,7 +239,30 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
             Align(
               alignment: Alignment.topCenter,
               child: Container(
-                child: Text("Thread title: " + threadTitleDbu + "\n" + "Posted by: " + threadAuthorDbu + "\n" + threadContentDbu),
+                child: Text.rich(
+                  TextSpan(
+                    text: "Thread title: ${threadTitleDbu}\n",
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: "Posted by: ",
+                      ),
+                      TextSpan(
+                        text: "${threadAuthorDbu}\n",
+                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                          dbuClickedOnUser = true,
+                          nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorDbu.toLowerCase()).get(),
+                          nameData.docs.forEach((person){
+                            theUsersData = person.data();
+                          }),
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                        }
+                      ),
+                      TextSpan(
+                        text: "${threadContentDbu}",
+                      )
+                    ],
+                  ),
+                ),//Text("Thread title: " + threadTitleDbu + "\n" + "Posted by: " + threadAuthorDbu + "\n" + threadContentDbu),
                 color: Colors.grey[300],
                 alignment: Alignment.topLeft,
               ),
@@ -276,7 +304,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                             ),
                             Container(
                               //Reply to: Reply content, reply poster
-                              child: Text("Reply to: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),//Text("Reply to: " + replyToReplyContentDbu + "\n" + "Posted by: " + replyToReplyPosterDbu),//Text("Reply to: " + theDbuThreadReplies[replyNum]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[replyNum]["replier"]),//Text("Reply to: " + theDbuThreadReplies[myIndex]["replyContent"] + "\n" + "Posted by: " + theDbuThreadReplies[myIndex]["replier"]),//Text("Reply to: \n" + "Posted by: " + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3].toString() + "\n" + discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4].toString()),
+                              child: Text("Reply to: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
                               color: Colors.blueGrey[300], //theDbuThreadReplies[index]["theOriginalReplyInfo"].toString(), theDbuThreadReplies[index]["theOriginalReplyInfo"].toString()
                               width: 360,
                             ),

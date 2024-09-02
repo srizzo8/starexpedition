@@ -22,6 +22,8 @@ import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 import 'package:starexpedition4/userSearchBar.dart';
 
+import 'discussionBoardUpdatesPage.dart';
+
 var myInformation;
 var dataOfUser;
 var myDocName;
@@ -239,7 +241,13 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
-              Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => userSearchBarPage())),
+              if(dbuClickedOnUser == true){
+                dbuClickedOnUser = false,
+                Navigator.of(bc).pop(),
+              }
+              else{
+                Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => userSearchBarPage())),
+              }
             }
         ),
       ),
