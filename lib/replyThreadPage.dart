@@ -197,7 +197,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the existing user!");
@@ -213,7 +213,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the new user!");
@@ -253,7 +253,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the existing user!");
@@ -269,7 +269,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the new user!");
@@ -329,7 +329,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the existing user!");
@@ -345,7 +345,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the new user!");
@@ -384,7 +384,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the existing user!");
@@ -400,7 +400,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the new user!");
@@ -453,7 +453,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the existing user!");
@@ -469,7 +469,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the new user!");
@@ -506,7 +506,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the existing user!");
@@ -522,7 +522,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the new user!");
@@ -574,7 +574,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the existing user!");
@@ -590,7 +590,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the new user!");
@@ -627,7 +627,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the existing user!");
@@ -643,7 +643,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the new user!");
@@ -695,7 +695,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the existing user!");
@@ -711,7 +711,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the new user!");
@@ -748,7 +748,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the existing user!");
@@ -764,7 +764,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         print("userData: ${userDataForReplies}");
                         print("docName: ${docNameForReplies}");
 
-                        FirebaseFirestore.instance.collection("User").doc(docName).update({
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                         }).then((a){
                           print("You have updated the post number for the new user!");
