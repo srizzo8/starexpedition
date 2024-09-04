@@ -6,6 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:starexpedition4/userProfile.dart';
+import 'package:starexpedition4/userSearchBar.dart';
 
 import 'discussionBoardPage.dart' as discussionBoardPage;
 import 'createThread.dart';
@@ -34,6 +36,9 @@ var myReplyToReplyQaa;
 var replyToReplyOriginalInfoQaa;
 List<List> qaaRepliesToReplies = [];
 Map<String, dynamic> myReplyToReplyQaaMap = {};
+
+var qaaNameData;
+bool qaaClickedOnUser = false;
 
 class questionsAndAnswersPage extends StatefulWidget{
   const questionsAndAnswersPage ({Key? key}) : super(key: key);
@@ -120,7 +125,28 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                       ),
                       InkWell(
                           child: Ink(
-                            child: Text(discussionBoardPage.questionsAndAnswersThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString()),//Text(reversedQuestionsAndAnswersThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedQuestionsAndAnswersThreadsIterable.toList()[index][0]),
+                            //child: Text(discussionBoardPage.questionsAndAnswersThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString()),//Text(reversedQuestionsAndAnswersThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedQuestionsAndAnswersThreadsIterable.toList()[index][0]),
+                            child: Text.rich(
+                              TextSpan(
+                                text: "${discussionBoardPage.questionsAndAnswersThreads[index]["threadTitle"].toString()}\nBy: ",
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: "${discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString()}",
+                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                      qaaClickedOnUser = true,
+                                      qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString().toLowerCase()).get(),
+                                      qaaNameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      }),
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    }
+                                  ),
+                                  TextSpan(
+                                    text: " ",
+                                  ),
+                                ],
+                              ),
+                            ),
                             height: 30,
                             width: 360,
                             color: Colors.grey[300],
@@ -191,7 +217,31 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              child: Text("Thread title: " + threadTitleQaa + "\n" + "Posted by: " + threadAuthorQaa + "\n" + threadContentQaa),
+              //child: Text("Thread title: " + threadTitleQaa + "\n" + "Posted by: " + threadAuthorQaa + "\n" + threadContentQaa),
+              child: Text.rich(
+                TextSpan(
+                  text: "Thread title: ${threadTitleQaa}\nPosted by: ",
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "${threadAuthorQaa}",
+                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                        qaaClickedOnUser = true,
+                        qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorQaa.toLowerCase()).get(),
+                        qaaNameData.docs.forEach((person){
+                          theUsersData = person.data();
+                        }),
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                      }
+                    ),
+                    TextSpan(
+                      text: " ",
+                    ),
+                    TextSpan(
+                      text: "\n${threadContentQaa}",
+                    ),
+                  ],
+                ),
+              ),
               color: Colors.grey[300],
               alignment: Alignment.topLeft,
             ),
@@ -231,12 +281,57 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Reply to: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                                //child: Text("Reply to: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: "Reply to: ${theQaaThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "${theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          qaaClickedOnUser = true,
+                                          qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                          qaaNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                      ),
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 color: Colors.blueGrey[300],
                                 width: 360,
                               ),
                               Container(
-                                child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
+                                //child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: "Posted on: ${theQaaThreadReplies[index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "${theQaaThreadReplies[index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          qaaClickedOnUser = true,
+                                          qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theQaaThreadReplies[index]["replier"].toString().toLowerCase()).get(),
+                                          qaaNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                      ),
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        text: "\n${theQaaThreadReplies[index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 color: Colors.grey[300],
                                 width: 360,
                               ),
@@ -296,7 +391,31 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
+                                //child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: "Posted on: ${theQaaThreadReplies[index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "${theQaaThreadReplies[index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          qaaClickedOnUser = true,
+                                          qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theQaaThreadReplies[index]["replier"].toString().toLowerCase()).get(),
+                                          qaaNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                      ),
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        text: "\n${theQaaThreadReplies[index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 color: Colors.grey[300],
                                 width: 360,
                               ),

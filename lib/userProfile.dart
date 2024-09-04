@@ -23,6 +23,10 @@ import 'package:json_editor/json_editor.dart';
 import 'package:starexpedition4/userSearchBar.dart';
 
 import 'discussionBoardUpdatesPage.dart';
+import 'newDiscoveriesPage.dart';
+import 'projectsPage.dart';
+import 'questionsAndAnswersPage.dart';
+import 'technologiesPage.dart';
 
 var myInformation;
 var dataOfUser;
@@ -241,8 +245,24 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
-              if(dbuClickedOnUser == true){
+              if(dbuClickedOnUser == true && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false){
                 dbuClickedOnUser = false,
+                Navigator.of(bc).pop(),
+              }
+              else if(dbuClickedOnUser == false && ndClickedOnUser == true && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false){
+                ndClickedOnUser = false,
+                Navigator.of(bc).pop(),
+              }
+              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == true && qaaClickedOnUser == false && technologiesClickedOnUser == false){
+                projectsClickedOnUser = false,
+                Navigator.of(bc).pop(),
+              }
+              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == true && technologiesClickedOnUser == false){
+                qaaClickedOnUser = false,
+                Navigator.of(bc).pop(),
+              }
+              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == true){
+                technologiesClickedOnUser = false,
                 Navigator.of(bc).pop(),
               }
               else{

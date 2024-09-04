@@ -6,6 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:starexpedition4/userProfile.dart';
+import 'package:starexpedition4/userSearchBar.dart';
 
 import 'createThread.dart';
 import 'replyThreadPage.dart';
@@ -34,6 +36,9 @@ var myReplyToReplyNd;
 var replyToReplyOriginalInfoNd;
 List<List> ndRepliesToReplies = [];
 Map<String, dynamic> myReplyToReplyNdMap = {};
+
+var ndNameData;
+bool ndClickedOnUser = false;
 
 class newDiscoveriesPage extends StatefulWidget{
   const newDiscoveriesPage ({Key? key}) : super(key: key);
@@ -103,12 +108,12 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                   child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
                 ),
                 onTap: (){
-                    print(newDiscoveriesBool);
-                    newDiscoveriesBool = true;
-                    print(newDiscoveriesBool);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
-                    print("I am going to write a new thread.");
-                  }
+                  print(newDiscoveriesBool);
+                  newDiscoveriesBool = true;
+                  print(newDiscoveriesBool);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+                  print("I am going to write a new thread.");
+                }
               ),
             ),
           //),
@@ -123,7 +128,28 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                       ),
                       InkWell(
                           child: Ink(
-                            child: Text(discussionBoardPage.newDiscoveriesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString()),
+                            //child: Text(discussionBoardPage.newDiscoveriesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString()),
+                            child: Text.rich(
+                              TextSpan(
+                                text: "${discussionBoardPage.newDiscoveriesThreads[index]["threadTitle"].toString()}\nBy: ",
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: "${discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString()}",
+                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                      ndClickedOnUser = true,
+                                      ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString().toLowerCase()).get(),
+                                      ndNameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      }),
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    }
+                                  ),
+                                  TextSpan(
+                                    text: " ",
+                                  ),
+                                ],
+                              ),
+                            ),
                             height: 30,
                             width: 360,
                             color: Colors.grey[300],
@@ -192,7 +218,30 @@ class newDiscoveriesThreadContent extends StatelessWidget{
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              child: Text("Thread title: " + threadTitleNd + "\n" + "Posted by: " + threadAuthorNd + "\n" + threadContentNd),
+              child: Text.rich(
+                TextSpan(
+                  text: "Thread title: ${threadTitleNd}\nPosted by: ",
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "${threadAuthorNd}",
+                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                        ndClickedOnUser = true,
+                        ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorNd.toLowerCase()).get(),
+                        ndNameData.docs.forEach((person){
+                          theUsersData = person.data();
+                        }),
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                      }
+                    ),
+                    TextSpan(
+                      text: " ",
+                    ),
+                    TextSpan(
+                      text: "\n${threadContentNd}",
+                    )
+                  ],
+                ),
+              ),
               color: Colors.grey[300],
               alignment: Alignment.topLeft,
             ),
@@ -231,12 +280,57 @@ class newDiscoveriesThreadContent extends StatelessWidget{
                               height: 5,
                             ),
                             Container(
-                              child: Text("Reply to: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                              //child: Text("Reply to: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Reply to: ${theNdThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: "${theNdThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                        ndClickedOnUser = true,
+                                        ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theNdThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                        ndNameData.docs.forEach((person){
+                                          theUsersData = person.data();
+                                        }),
+                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                      }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                  ],
+                                ),
+                              ),
                               color: Colors.blueGrey[300],
                               width: 360,
                             ),
                             Container(
-                              child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
+                              //child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Posted on: ${theNdThreadReplies[index]["time"].toDate().toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: "${theNdThreadReplies[index]["replier"].toString()}",
+                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                        ndClickedOnUser = true,
+                                        ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theNdThreadReplies[index]["replier"].toString().toLowerCase()).get(),
+                                        ndNameData.docs.forEach((person){
+                                          theUsersData = person.data();
+                                        }),
+                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                      }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: "\n${theNdThreadReplies[index]["replyContent"].toString()}",
+                                    ),
+                                  ],
+                                ),
+                              ),
                               color: Colors.grey[300],
                               width: 360,
                             ),
@@ -294,7 +388,31 @@ class newDiscoveriesThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
+                                //child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: "Posted on: ${theNdThreadReplies[index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "${theNdThreadReplies[index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          ndClickedOnUser = true,
+                                          ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theNdThreadReplies[index]["replier"].toString().toLowerCase()).get(),
+                                          ndNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                      ),
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        text: "\n${theNdThreadReplies[index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 color: Colors.grey[300],
                                 width: 360,
                               ),

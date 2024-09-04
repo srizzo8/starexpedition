@@ -6,6 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:starexpedition4/userProfile.dart';
+import 'package:starexpedition4/userSearchBar.dart';
 
 import 'createThread.dart';
 import 'replyThreadPage.dart';
@@ -34,6 +36,9 @@ var myReplyToReplyT;
 var replyToReplyOriginalInfoT;
 List<List> tRepliesToReplies = [];
 Map<String, dynamic> myReplyToReplyTMap = {};
+
+var technologiesNameData;
+bool technologiesClickedOnUser = false;
 
 class technologiesPage extends StatefulWidget{
   const technologiesPage ({Key? key}) : super(key: key);
@@ -120,7 +125,28 @@ class technologiesPageState extends State<technologiesPage>{
                       ),
                       InkWell(
                           child: Ink(
-                            child: Text(discussionBoardPage.technologiesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.technologiesThreads[index]["poster"].toString()),
+                            //child: Text(discussionBoardPage.technologiesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.technologiesThreads[index]["poster"].toString()),
+                            child: Text.rich(
+                              TextSpan(
+                                text: "${discussionBoardPage.technologiesThreads[index]["threadTitle"].toString()}\nBy: ",
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: "${discussionBoardPage.technologiesThreads[index]["poster"].toString()}",
+                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                      technologiesClickedOnUser = true,
+                                      technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: discussionBoardPage.technologiesThreads[index]["poster"].toString().toLowerCase()).get(),
+                                      technologiesNameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      }),
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    }
+                                  ),
+                                  TextSpan(
+                                    text: " ",
+                                  ),
+                                ],
+                              ),
+                            ),
                             height: 30,
                             width: 360,
                             color: Colors.grey[300],
@@ -189,7 +215,31 @@ class technologiesThreadContent extends StatelessWidget{
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              child: Text("Thread title: " + threadTitleT + "\n" + "Posted by: " + threadAuthorT + "\n" + threadContentT),
+              //child: Text("Thread title: " + threadTitleT + "\n" + "Posted by: " + threadAuthorT + "\n" + threadContentT),
+              child: Text.rich(
+                TextSpan(
+                  text: "Thread title: ${threadTitleT}\nPosted by: ",
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "${threadAuthorT}",
+                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                        technologiesClickedOnUser = true,
+                        technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorT.toLowerCase()).get(),
+                        technologiesNameData.docs.forEach((person){
+                          theUsersData = person.data();
+                        }),
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                      }
+                    ),
+                    TextSpan(
+                      text: " ",
+                    ),
+                    TextSpan(
+                      text: "\n${threadContentT}",
+                    ),
+                  ],
+                )
+              ),
               color: Colors.grey[300],
               alignment: Alignment.topLeft,
             ),
@@ -229,12 +279,57 @@ class technologiesThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Reply to: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                                //child: Text("Reply to: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: "Reply to: ${theTThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "${theTThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          technologiesClickedOnUser = true,
+                                          technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theTThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                          technologiesNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                      ),
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                    ],
+                                  )
+                                ),
                                 color: Colors.blueGrey[300],
                                 width: 360,
                               ),
                               Container(
-                                child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
+                                //child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: "Posted on: ${theTThreadReplies[index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "${theTThreadReplies[index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          technologiesClickedOnUser = true,
+                                          technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theTThreadReplies[index]["replier"].toString().toLowerCase()).get(),
+                                          technologiesNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                      ),
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        text: "\n${theTThreadReplies[index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 color: Colors.grey[300],
                                 width: 360,
                               ),
@@ -292,7 +387,31 @@ class technologiesThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
+                                //child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: "Posted on: ${theTThreadReplies[index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "${theTThreadReplies[index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          technologiesClickedOnUser = true,
+                                          technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theTThreadReplies[index]["replier"].toString().toLowerCase()).get(),
+                                          technologiesNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                      ),
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        text: "\n${theTThreadReplies[index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 color: Colors.grey[300],
                                 width: 360,
                               ),

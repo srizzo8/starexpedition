@@ -6,6 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:starexpedition4/userProfile.dart';
+import 'package:starexpedition4/userSearchBar.dart';
 
 import 'createThread.dart';
 import 'replyThreadPage.dart';
@@ -34,6 +36,9 @@ var myReplyToReplyP;
 var replyToReplyOriginalInfoP;
 List<List> pRepliesToReplies = [];
 Map<String, dynamic> myReplyToReplyPMap = {};
+
+var projectsNameData;
+bool projectsClickedOnUser = false;
 
 class projectsPage extends StatefulWidget{
   const projectsPage ({Key? key}) : super(key: key);
@@ -120,7 +125,28 @@ class projectsPageState extends State<projectsPage>{
                       ),
                       InkWell(
                           child: Ink(
-                            child: Text(discussionBoardPage.projectsThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.projectsThreads[index]["poster"].toString()),
+                            //child: Text(discussionBoardPage.projectsThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.projectsThreads[index]["poster"].toString()),
+                            child: Text.rich(
+                              TextSpan(
+                                text: "${discussionBoardPage.projectsThreads[index]["threadTitle"].toString()}\nBy: ",
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: "${discussionBoardPage.projectsThreads[index]["poster"].toString()}",
+                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                      projectsClickedOnUser = true,
+                                      projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: discussionBoardPage.projectsThreads[index]["poster"].toString().toLowerCase()).get(),
+                                      projectsNameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      }),
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    }
+                                  ),
+                                  TextSpan(
+                                    text: " ",
+                                  ),
+                                ],
+                              ),
+                            ),
                             height: 30,
                             width: 360,
                             color: Colors.grey[300],
@@ -189,7 +215,31 @@ class projectsThreadContent extends StatelessWidget{
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              child: Text("Thread title: " + threadTitleP + "\n" + "Posted by: " + threadAuthorP + "\n" + threadContentP),
+              //child: Text("Thread title: " + threadTitleP + "\n" + "Posted by: " + threadAuthorP + "\n" + threadContentP),
+              child: Text.rich(
+                TextSpan(
+                  text: "Thread title: ${threadTitleP}\nPosted by: ",
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "${threadAuthorP}",
+                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                        projectsClickedOnUser = true,
+                        projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorP.toLowerCase()).get(),
+                        projectsNameData.docs.forEach((person){
+                          theUsersData = person.data();
+                        }),
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                      }
+                    ),
+                    TextSpan(
+                      text: " ",
+                    ),
+                    TextSpan(
+                      text: "\n${threadContentP}",
+                    ),
+                  ],
+                )
+              ),
               color: Colors.grey[300],
               alignment: Alignment.topLeft,
             ),
@@ -228,12 +278,57 @@ class projectsThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Reply to: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                                //child: Text("Reply to: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: "Reply to: ${thePThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "${thePThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          projectsClickedOnUser = true,
+                                          projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: thePThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                          projectsNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                      ),
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 color: Colors.blueGrey[300],
                                 width: 360,
                               ),
                               Container(
-                                child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
+                                //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: "Posted on: ${thePThreadReplies[index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "${thePThreadReplies[index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          projectsClickedOnUser = true,
+                                          projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: thePThreadReplies[index]["replier"].toString().toLowerCase()).get(),
+                                          projectsNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                      ),
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        text: "\n${thePThreadReplies[index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 color: Colors.grey[300],
                                 width: 360,
                               ),
@@ -291,7 +386,31 @@ class projectsThreadContent extends StatelessWidget{
                                 height: 5,
                               ),
                               Container(
-                                child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
+                                //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: "Posted on: ${thePThreadReplies[index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: "${thePThreadReplies[index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          projectsClickedOnUser = true,
+                                          projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: thePThreadReplies[index]["replier"].toString().toLowerCase()).get(),
+                                          projectsNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                      ),
+                                      TextSpan(
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        text: "\n${thePThreadReplies[index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 color: Colors.grey[300],
                                 width: 360,
                               ),
