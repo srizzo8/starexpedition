@@ -133,21 +133,21 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       //child: Text(discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString()),//Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
                       child: Text.rich(
                         TextSpan(
-                          text: "${discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString()}",
+                          text: "${discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString()}\nBy: ",
                           children: <TextSpan>[
-                            TextSpan(
-                              text: "\nBy: ",
-                            ),
                             TextSpan(
                               text: "${discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString()}",
                               recognizer: TapGestureRecognizer()..onTap = () async =>{
                                 dbuClickedOnUser = true,
                                 nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString().toLowerCase()).get(),
                                 nameData.docs.forEach((person){
-                                theUsersData = person.data();
-                              }),
-                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                  theUsersData = person.data();
+                                }),
+                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                               }
+                            ),
+                            TextSpan(
+                              text: " ",
                             ),
                           ],
                         ),
@@ -268,7 +268,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                         text: "Posted by: ",
                       ),
                       TextSpan(
-                        text: "${threadAuthorDbu}\n",
+                        text: "${threadAuthorDbu}",
                         recognizer: TapGestureRecognizer()..onTap = () async =>{
                           dbuClickedOnUser = true,
                           nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorDbu.toLowerCase()).get(),
@@ -279,8 +279,11 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                         }
                       ),
                       TextSpan(
+                        text: " \n",
+                      ),
+                      TextSpan(
                         text: "${threadContentDbu}",
-                      )
+                      ),
                     ],
                   ),
                 ),//Text("Thread title: " + threadTitleDbu + "\n" + "Posted by: " + threadAuthorDbu + "\n" + threadContentDbu),
@@ -344,6 +347,9 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
                                     ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
                                   ],
                                 ),
                               ),
@@ -371,6 +377,9 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                         }),
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
                                     ),
                                     TextSpan(
                                       text: "\n${theDbuThreadReplies[index]["replyContent"].toString()}",
@@ -470,6 +479,9 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                                             }),
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                           }
+                                        ),
+                                        TextSpan(
+                                          text: " ",
                                         ),
                                         TextSpan(
                                           text: "\n${theDbuThreadReplies[index]["replyContent"].toString()}",
