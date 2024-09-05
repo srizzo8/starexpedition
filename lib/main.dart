@@ -511,18 +511,21 @@ class theStarExpeditionState extends State<StarExpedition> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  InkWell(
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Ink(
-                        child: Text('Login', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+                    child: InkWell(
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Ink(
+                          child: Text('Login', style: TextStyle(color: Colors.black, fontSize: 18.0)), //fontFamily: 'Railway'
+                        ),
                       ),
-                    ),
                       onTap: (){
                         print('Logging in');
                         Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
                       }
-                  )
+                    ),
+                  ),
                 ],
             ): (myUsername == "" && myNewUsername != "")?
               Row( //If login is successful
@@ -530,7 +533,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                 children: <Widget>[
                   FittedBox( //For new users, not those that logged into already existing accounts
                     alignment: Alignment.topRight,
-                    child: Text('Hi ', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                    child: Text('Hi ', style: TextStyle(color: Colors.black, fontSize: 18.0)),
                     fit: BoxFit.contain,
                   ),
                   InkWell(
@@ -538,7 +541,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                       alignment: Alignment.topRight,
                       fit: BoxFit.contain,
                       child: Ink(
-                        child: Text(myNewUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                        child: Text(myNewUsername, style: TextStyle(color: Colors.black, fontSize: 18.0)),
                       ),
                     ),
                     onTap: () async{
@@ -554,14 +557,14 @@ class theStarExpeditionState extends State<StarExpedition> {
                   FittedBox(
                     alignment: Alignment.topRight,
                     fit: BoxFit.contain,
-                    child: Text(" ", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                    child: Text(" ", style: TextStyle(color: Colors.black, fontSize: 18.0)),
                   ),
                   InkWell(
                     child: FittedBox(
                       alignment: Alignment.topRight,
                       fit: BoxFit.contain,
                       child: Ink(
-                        child: Text("Settings", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                        child: Text("Settings", style: TextStyle(color: Colors.black, fontSize: 18.0)),
                       ),
                     ),
                     onTap: (){
@@ -571,23 +574,26 @@ class theStarExpeditionState extends State<StarExpedition> {
                   FittedBox(
                     alignment: Alignment.topRight,
                     fit: BoxFit.contain,
-                    child: Text(" ", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                    child: Text(" ", style: TextStyle(color: Colors.black, fontSize: 18.0)),
                   ),
-                  InkWell(
-                    child: FittedBox(
-                      alignment: Alignment.topRight,
-                      fit: BoxFit.contain,
-                      child: Ink(
-                        child: Text('Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+                    child: InkWell(
+                      child: FittedBox(
+                        alignment: Alignment.topRight,
+                        fit: BoxFit.contain,
+                        child: Ink(
+                          child: Text('Logout', style: TextStyle(color: Colors.black, fontSize: 18.0)),
+                        ),
                       ),
+                      onTap: (){
+                        myUsername = "";
+                        myNewUsername = "";
+                        registerBool = false;
+                        Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                        print("Logging out");
+                      }
                     ),
-                    onTap: (){
-                      myUsername = "";
-                      myNewUsername = "";
-                      registerBool = false;
-                      Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
-                      print("Logging out");
-                    }
                   ),
                 ],
               ): (myUsername != "" && myNewUsername == "") && theLoginPage.loginBool == true?
@@ -595,7 +601,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     FittedBox(
-                      child: Text('Hi ', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                      child: Text('Hi ', style: TextStyle(color: Colors.black, fontSize: 18.0)),
                       fit: BoxFit.contain,
                     ),
                     InkWell(
@@ -603,7 +609,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                         alignment: Alignment.topRight,
                         fit: BoxFit.contain,
                         child: Ink(
-                          child: Text(myUsername, style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                          child: Text(myUsername, style: TextStyle(color: Colors.black, fontSize: 18.0)),
                         ),
                       ),
                       onTap: () async{
@@ -621,13 +627,13 @@ class theStarExpeditionState extends State<StarExpedition> {
                     FittedBox(
                       alignment: Alignment.topRight,
                       fit: BoxFit.contain,
-                      child: Text(" ", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                      child: Text(" ", style: TextStyle(color: Colors.black, fontSize: 18.0)),
                     ),
                     InkWell(
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: Ink(
-                          child: Text("Settings", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                          child: Text("Settings", style: TextStyle(color: Colors.black, fontSize: 18.0)),
                         ),
                       ),
                       onTap: (){
@@ -637,22 +643,25 @@ class theStarExpeditionState extends State<StarExpedition> {
                     FittedBox(
                       alignment: Alignment.topRight,
                       fit: BoxFit.contain,
-                      child: Text(" ", style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                      child: Text(" ", style: TextStyle(color: Colors.black, fontSize: 18.0)),
                     ),
-                    InkWell(
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Ink(
-                          child: Text('Logout', style: TextStyle(color: Colors.black, fontFamily: 'Railway', fontSize: 18.0)),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+                      child: InkWell(
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Ink(
+                            child: Text('Logout', style: TextStyle(color: Colors.black, fontSize: 18.0)),
+                          ),
                         ),
+                        onTap: (){
+                          myUsername = "";
+                          myNewUsername = "";
+                          theLoginPage.loginBool = false;
+                          Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                          print("Logging out from already existing account");
+                        }
                       ),
-                      onTap: (){
-                        myUsername = "";
-                        myNewUsername = "";
-                        theLoginPage.loginBool = false;
-                        Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
-                        print("Logging out from already existing account");
-                      }
                     ),
                   ],
                 ):
