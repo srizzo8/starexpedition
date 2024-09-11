@@ -45,6 +45,7 @@ Map<String, List> otherNamesMap = HashMap();
 Iterable<List> alternateNames = [];
 
 bool featuredStarOfTheDayBool = false;
+bool clickOnName = false;
 
 var userProfileData;
 var userProfileDoc;
@@ -52,6 +53,18 @@ var usersBlurb;
 var numberOfPostsUserHasMade;
 
 var theListOfUsers = [];
+
+//List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
+//List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
+
+//String newUserDropdownValue = userItemsNewUsers[0];
+//String existingUserDropdownValue = userItemsExistingUsers[0];
+
+//String myOptionsNewUsers = userItemsNewUsers[0];
+//String myOptionsExistingUsers = userItemsExistingUsers[0];
+
+enum userItemsExistingUsers{myProfile, mySettings, logOut}
+enum userItemsNewUsers{myProfile, mySettings, logOut}
 
 /*
 Future<String> get myDirectoryPath async{
@@ -460,6 +473,8 @@ class theStarExpeditionState extends State<StarExpedition> {
   theStarExpeditionState(this.starInfo);
   final CustomSearchDelegate csd = new CustomSearchDelegate();
 
+  userItemsExistingUsers? myChosenItemExistingUsers;
+
   @override
   Widget build(BuildContext context) {
     final dateForUse = DateTime(2020, 1, 1);
@@ -533,10 +548,48 @@ class theStarExpeditionState extends State<StarExpedition> {
                 children: <Widget>[
                   FittedBox( //For new users, not those that logged into already existing accounts
                     alignment: Alignment.topRight,
-                    child: Text('Hi ', style: TextStyle(color: Colors.black, fontSize: 18.0)),
+                    child: Text('Hi ${myNewUsername}', style: TextStyle(color: Colors.black, fontSize: 18.0)),
                     fit: BoxFit.contain,
                   ),
-                  InkWell(
+                  PopupMenuButton<userItemsNewUsers>(
+                    icon: Icon(Icons.settings),
+                    onSelected: (myItemNewUsers) async{
+                      if(myItemNewUsers == userItemsNewUsers.myProfile){
+                        await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
+                          usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                          numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                        });
+                        print("usersBlurb: ${usersBlurb}");
+                        print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                        Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
+                      }
+                      else if(myItemNewUsers == userItemsNewUsers.mySettings){
+                        Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
+                      }
+                      else if(myItemNewUsers == userItemsNewUsers.logOut){
+                        myUsername = "";
+                        myNewUsername = "";
+                        registerBool = false;
+                        Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                        print("Logging out");
+                      }
+                    },
+                    itemBuilder: (BuildContext bc) => <PopupMenuEntry<userItemsNewUsers>>[
+                      PopupMenuItem<userItemsNewUsers>(
+                        value: userItemsNewUsers.myProfile,
+                        child: Text("My profile"),
+                      ),
+                      PopupMenuItem<userItemsNewUsers>(
+                        value: userItemsNewUsers.mySettings,
+                        child: Text("Settings"),
+                      ),
+                      PopupMenuItem<userItemsNewUsers>(
+                        value: userItemsNewUsers.logOut,
+                        child: Text("Logout"),
+                      ),
+                    ],
+                  ),
+                  /*InkWell(
                     child: FittedBox(
                       alignment: Alignment.topRight,
                       fit: BoxFit.contain,
@@ -594,17 +647,122 @@ class theStarExpeditionState extends State<StarExpedition> {
                         print("Logging out");
                       }
                     ),
-                  ),
+                  ),*/
                 ],
               ): (myUsername != "" && myNewUsername == "") && theLoginPage.loginBool == true?
                 Row( //For returning users
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     FittedBox(
-                      child: Text('Hi ', style: TextStyle(color: Colors.black, fontSize: 18.0)),
+                      child: Text('Hi ${myUsername}', style: TextStyle(color: Colors.black, fontSize: 18.0)),
                       fit: BoxFit.contain,
                     ),
-                    InkWell(
+                    PopupMenuButton<userItemsExistingUsers>(
+                      /*initialValue: myChosenItemExistingUsers,
+                      onSelected: (userItemsExistingUsers item){
+                        setState((){
+                          myChosenItemExistingUsers = item;
+                        });
+                      },*/
+                      icon: Icon(Icons.settings),
+                      onSelected: (myItem) async{
+                        if(myItem == userItemsExistingUsers.myProfile){
+                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
+                            usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                            numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                          });
+                          print("usersBlurb: ${usersBlurb}");
+                          print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                          Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
+                        }
+                        else if(myItem == userItemsExistingUsers.mySettings){
+                          print("Settings");
+                          Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
+                        }
+                        else if(myItem == userItemsExistingUsers.logOut){
+                          myUsername = "";
+                          myNewUsername = "";
+                          theLoginPage.loginBool = false;
+                          print("Logging out from already existing account");
+                          Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                        }
+                      },
+                      itemBuilder: (BuildContext bc) => <PopupMenuEntry<userItemsExistingUsers>>[
+                        PopupMenuItem<userItemsExistingUsers>(
+                            value: userItemsExistingUsers.myProfile,
+                            child: Text("My profile"),
+                        ),
+                        PopupMenuItem<userItemsExistingUsers>(
+                            value: userItemsExistingUsers.mySettings,
+                            child: Text("Settings"),
+                        ),
+                        PopupMenuItem<userItemsExistingUsers>(
+                            value: userItemsExistingUsers.logOut,
+                            child: Text("Logout"),
+                        ),
+                      ],
+                    ),
+                    //Dropdownbutton start
+                    /*DropdownButton(
+                      value: myOptionsExistingUsers,
+                      items: userItemsExistingUsers.map((String ui){
+                        return DropdownMenuItem(
+                          value: ui,
+                          child: Text(ui),
+                        );
+                      }).toList(),
+                      onChanged: (String? newOption) async{
+                        if(newOption != myUsername.toString()){
+                          switch(newOption){
+                            case "My profile":
+                              await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
+                                usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                                numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                              });
+                              print("usersBlurb: ${usersBlurb}");
+                              print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                              Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
+                              break;
+                            case "Settings":
+                              Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
+                              print("Settings");
+                              break;
+                            case "Logout":
+                              myUsername = "";
+                              myNewUsername = "";
+                              theLoginPage.loginBool = false;
+                              Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                              print("Logging out from already existing account");
+                          }
+                          /*if(newOption == userItems[0]){ //My profile
+                            await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
+                              usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                              numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                            });
+                            print("usersBlurb: ${usersBlurb}");
+                            print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                            Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
+                          }
+                          else if(newOption == userItems[1]){ //Settings
+                            Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
+                            print("Settings");
+                          }
+                          else if(newOption == userItems[2]){ //Logout
+                            myUsername = "";
+                            myNewUsername = "";
+                            theLoginPage.loginBool = false;
+                            Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                            print("Logging out from already existing account");
+                          }*/
+                          }
+                          setState((){
+                            myOptionsExistingUsers = newOption!;
+                          });
+                      },
+                    ),*/
+                    //Dropdown button end
+                    //Profile inkwell start
+                    /*InkWell(
                       child: FittedBox(
                         alignment: Alignment.topRight,
                         fit: BoxFit.contain,
@@ -613,23 +771,56 @@ class theStarExpeditionState extends State<StarExpedition> {
                         ),
                       ),
                       onTap: () async{
-                        await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
-                          usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
-                          numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
-                        });
-                        print("usersBlurb: ${usersBlurb}");
-                        print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
-                        //print("${userProfileDoc["usernameProfileInformation"]}");
-                        //usersBlurb = indExistingUser["usernameProfileInformation"]["userInformation"];
-                        Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
-                      }
-                    ),
-                    FittedBox(
+                        clickOnName = true;
+                        setState((){});
+                        //child:
+                        //"Drop down" menu
+                        /*PopupMenuButton<userItems>(
+                          itemBuilder: (BuildContext bc) => <PopupMenuEntry<userItems>>[
+                            PopupMenuItem<userItems>(
+                              value: userItems.myProfile,
+                              child: Text("My profile"),
+                              onTap: () async{
+                                await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
+                                  usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                                  numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                                });
+                                print("usersBlurb: ${usersBlurb}");
+                                print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                                Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
+                              }
+                            ),
+                            PopupMenuItem<userItems>(
+                              value: userItems.mySettings,
+                              child: Text("Settings"),
+                              onTap: (){
+                                Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
+                                print("Settings");
+                              }
+                            ),
+                            PopupMenuItem<userItems>(
+                              value: userItems.logOut,
+                              child: Text("Logout"),
+                              onTap: (){
+                                myUsername = "";
+                                myNewUsername = "";
+                                theLoginPage.loginBool = false;
+                                Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                                print("Logging out from already existing account");
+                              }
+                            ),
+                          ],
+                        );
+                        //Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);*/
+                      },
+                    ),*/
+                    //Profile inkwell end
+                    /*FittedBox(
                       alignment: Alignment.topRight,
                       fit: BoxFit.contain,
                       child: Text(" ", style: TextStyle(color: Colors.black, fontSize: 18.0)),
-                    ),
-                    InkWell(
+                    ),*/
+                    /*InkWell(
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: Ink(
@@ -639,8 +830,8 @@ class theStarExpeditionState extends State<StarExpedition> {
                       onTap: (){
                         Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
                       }
-                    ),
-                    FittedBox(
+                    ),*/
+                    /*FittedBox(
                       alignment: Alignment.topRight,
                       fit: BoxFit.contain,
                       child: Text(" ", style: TextStyle(color: Colors.black, fontSize: 18.0)),
@@ -662,7 +853,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                           print("Logging out from already existing account");
                         }
                       ),
-                    ),
+                    ),*/
                   ],
                 ):
           Container(
