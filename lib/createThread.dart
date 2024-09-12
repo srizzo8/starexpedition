@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:starexpedition4/projects_firestore_database_information/projectsDatabaseFirestoreInfo.dart';
@@ -139,13 +140,16 @@ class createThreadState extends State<createThread>{
             ),
             Padding(
               padding: EdgeInsets.all(20.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: "Thread Content",
-                  contentPadding: EdgeInsets.symmetric(vertical: 80),
+                child: TextField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                  decoration: InputDecoration(
+                    labelText: "Thread Content",
+                    contentPadding: EdgeInsets.symmetric(vertical: 80),
+                  ),
+                  controller: threadContentController,
                 ),
-                controller: threadContentController,
-              ),
             ),
             InkWell(
               child: Ink(
