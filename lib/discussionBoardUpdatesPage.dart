@@ -121,6 +121,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
           ),
           Expanded(
             child: ListView.builder(
+              scrollDirection: Axis.vertical,
               itemCount: discussionBoardPage.discussionBoardUpdatesThreads.length,//discussionBoardUpdatesThreads.reversed.toList().length,
               itemBuilder: (context, index){
               return Column(
@@ -255,7 +256,7 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
+        child: Wrap(
           children: <Widget>[
             Align(
               alignment: Alignment.topCenter,
@@ -314,6 +315,8 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
             Column(
               children: <Widget>[
                   ListView.builder(
+                    padding: EdgeInsets.zero,
+                    physics: NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     itemCount: theDbuThreadReplies.length,//FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").length//5,//discussionBoardUpdatesThreads[int.parse(threadID)][4].length,

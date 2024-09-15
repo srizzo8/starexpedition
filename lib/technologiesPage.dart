@@ -116,6 +116,7 @@ class technologiesPageState extends State<technologiesPage>{
           ),
           Expanded(
             child: ListView.builder(
+                scrollDirection: Axis.vertical,
                 itemCount: discussionBoardPage.technologiesThreads.length,
                 itemBuilder: (context, index){
                   return Column(
@@ -210,7 +211,8 @@ class technologiesThreadContent extends StatelessWidget{
           }
         ),
       ),
-      body: Wrap(
+      body: SingleChildScrollView(
+        child: Wrap(
         children: <Widget>[
           Align(
             alignment: Alignment.topCenter,
@@ -266,6 +268,8 @@ class technologiesThreadContent extends StatelessWidget{
           Column(
             children: <Widget>[
               ListView.builder(
+                  padding: EdgeInsets.zero,
+                  physics: NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   itemCount: theTThreadReplies.length,
@@ -474,6 +478,7 @@ class technologiesThreadContent extends StatelessWidget{
             ],
           ),
         ],
+      ),
       ),
     );
   }

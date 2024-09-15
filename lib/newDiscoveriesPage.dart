@@ -119,6 +119,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
           //),
           Expanded(
             child: ListView.builder(
+                scrollDirection: Axis.vertical,
                 itemCount: discussionBoardPage.newDiscoveriesThreads.length,
                 itemBuilder: (context, index){
                   return Column(
@@ -213,7 +214,8 @@ class newDiscoveriesThreadContent extends StatelessWidget{
           }
         ),
       ),
-      body: Wrap(
+      body: SingleChildScrollView(
+        child: Wrap(
         children: <Widget>[
           Align(
             alignment: Alignment.topCenter,
@@ -267,6 +269,8 @@ class newDiscoveriesThreadContent extends StatelessWidget{
           Column(
             children: <Widget>[
               ListView.builder(
+                padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 itemCount: theNdThreadReplies.length,
@@ -475,6 +479,7 @@ class newDiscoveriesThreadContent extends StatelessWidget{
             ],
           ),
         ],
+      ),
       ),
     );
   }

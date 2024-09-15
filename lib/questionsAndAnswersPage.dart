@@ -116,6 +116,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
           ),
           Expanded(
             child: ListView.builder(
+                scrollDirection: Axis.vertical,
                 itemCount: discussionBoardPage.questionsAndAnswersThreads.length,//questionsAndAnswersThreads.reversed.toList().length,
                 itemBuilder: (context, index){
                   return Column(
@@ -212,7 +213,8 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
           }
         ),
       ),
-      body: Wrap(
+      body: SingleChildScrollView(
+        child: Wrap(
         children: <Widget>[
           Align(
             alignment: Alignment.topCenter,
@@ -268,6 +270,8 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
           Column(
             children: <Widget>[
               ListView.builder(
+                  padding: EdgeInsets.zero,
+                  physics: NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   itemCount: theQaaThreadReplies.length,
@@ -478,6 +482,7 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
             ],
           ),
         ],
+      ),
       ),
     );
   }
