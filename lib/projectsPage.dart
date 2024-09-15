@@ -116,6 +116,7 @@ class projectsPageState extends State<projectsPage>{
           ),
           Expanded(
             child: ListView.builder(
+                scrollDirection: Axis.vertical,
                 itemCount: discussionBoardPage.projectsThreads.length,
                 itemBuilder: (context, index){
                   return Column(
@@ -210,7 +211,8 @@ class projectsThreadContent extends StatelessWidget{
           }
         ),
       ),
-      body: Wrap(
+      body: SingleChildScrollView(
+        child: Wrap(
         children: <Widget>[
           Align(
             alignment: Alignment.topCenter,
@@ -265,7 +267,9 @@ class projectsThreadContent extends StatelessWidget{
           Column(
             children: <Widget>[
               ListView.builder(
+                  padding: EdgeInsets.zero,
                   scrollDirection: Axis.vertical,
+                  physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: thePThreadReplies.length,
                   itemBuilder: (context, index){
@@ -473,6 +477,7 @@ class projectsThreadContent extends StatelessWidget{
             ],
           ),
         ],
+      ),
       ),
     );
   }
