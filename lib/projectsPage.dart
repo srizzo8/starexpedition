@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
 
@@ -72,8 +73,17 @@ class routeToReplyToThreadProjectsPage{
 
 class projectsPageState extends State<projectsPage>{
   static String projectsRoute = '/projectsPage';
+  int numberOfPages = (((discussionBoardPage.projectsThreads.length)/10)).ceil();
+  int theCurrentPage = 0;
 
   Widget build(BuildContext buildContext){
+    var myPages = List.generate(
+      numberOfPages,
+        (index) => Center(
+          child: Text("Page number: ${theCurrentPage + 1}"),
+        ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -185,10 +195,31 @@ class projectsPageState extends State<projectsPage>{
                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => projectsThreadContent()));
                           }
                       ),
+                      /*Expanded(
+                        child: Text("${myPages[theCurrentPage]}"),
+                      ),*/
                     ],
                   );
                 }
             ),
+          ),
+          Expanded(
+            child: Container(
+              child: myPages[theCurrentPage],
+            ),
+          ),
+          NumberPaginator(
+              height: 50,
+              numberPages: numberOfPages,
+              //buttonSelectedBackgroundColor: Colors.green,
+              //buttonUnselectedBackgroundColor: Colors.red,
+              //buttonSelectedForegroundColor: Colors.grey,
+              //buttonUnselectedForegroundColor: Colors.grey,
+              onPageChange: (myIndex){
+                setState((){
+                  theCurrentPage = myIndex;
+                });
+              }
           ),
         ],
       ),

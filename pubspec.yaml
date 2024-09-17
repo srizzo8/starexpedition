@@ -49,6 +49,7 @@ dependencies:
   path: 1.8.1
   cloud_firestore: ^4.2.0
   get: ^4.6.0
+  number_paginator: 0.0.2
 
 dev_dependencies:
   flutter_test:
