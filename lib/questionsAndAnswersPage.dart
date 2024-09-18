@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
 
@@ -72,8 +73,100 @@ class routeToReplyToThreadQuestionsAndAnswersPage{
 
 class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
   static String questionsAndAnswersRoute = '/questionsAndAnswersPage';
+  int numberOfPagesQaa = (((discussionBoardPage.questionsAndAnswersThreads.length)/10)).ceil();
+  int theCurrentPageQaa = 0;
+
+  var listOfQaaThreads = discussionBoardPage.questionsAndAnswersThreads;
+  var mySublistsQaa = [];
+  var portionSizeQaa = 10;
 
   Widget build(BuildContext buildContext){
+    for(int i = 0; i < listOfQaaThreads.length; i += portionSizeQaa){
+      mySublistsQaa.add(listOfQaaThreads.sublist(i, i + portionSizeQaa > listOfQaaThreads.length ? listOfQaaThreads.length : i + portionSizeQaa));
+    }
+
+    var myPagesQaa = List.generate(
+      numberOfPagesQaa,
+        (index) => Center(
+          child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: mySublistsQaa[theCurrentPageQaa].length,//questionsAndAnswersThreads.reversed.toList().length,
+              itemBuilder: (context, index){
+                return Column(
+                  children: <Widget>[
+                    Container(
+                      height: 10,
+                    ),
+                    InkWell(
+                        child: Ink(
+                          //child: Text(discussionBoardPage.questionsAndAnswersThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString()),//Text(reversedQuestionsAndAnswersThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedQuestionsAndAnswersThreadsIterable.toList()[index][0]),
+                          child: Text.rich(
+                            TextSpan(
+                              text: "${mySublistsQaa[theCurrentPageQaa][index]["threadTitle"].toString()}\nBy: ",
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: "${mySublistsQaa[theCurrentPageQaa][index]["poster"].toString()}",
+                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                      qaaClickedOnUser = true,
+                                      qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsQaa[theCurrentPageQaa][index]["poster"].toString().toLowerCase()).get(),
+                                      qaaNameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      }),
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    }
+                                ),
+                                TextSpan(
+                                  text: " ",
+                                ),
+                              ],
+                            ),
+                          ),
+                          height: 30,
+                          width: 360,
+                          color: Colors.grey[300],
+                        ),
+                        onTap: () async {
+                          print("This is index: $index");
+                          print("listOfQaaThreads is null? ${listOfQaaThreads == null}");
+                          print("I clicked on a thread");
+                          threadAuthorQaa = mySublistsQaa[theCurrentPageQaa][index]["poster"].toString();
+                          threadTitleQaa = mySublistsQaa[theCurrentPageQaa][index]["threadTitle"].toString();
+                          threadContentQaa = mySublistsQaa[theCurrentPageQaa][index]["threadContent"].toString();
+                          threadID = mySublistsQaa[theCurrentPageQaa][index]["threadId"].toString();
+
+                          print(discussionBoardPage.questionsAndAnswersThreads![index]);
+                          print("${threadAuthorQaa} + ${threadTitleQaa} + ${threadContentQaa} + ${threadID}");
+                          print("context: ${context}");
+                          await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                            myDocQaa = d.docs.first.id;
+                            print(myDocQaa);
+                          });
+
+                          await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies");
+
+                          QuerySnapshot qaaRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").get();
+                          theQaaThreadReplies = qaaRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                          print(theQaaThreadReplies.runtimeType);
+                          //print(theQaaThreadReplies[0]["time"].toDate().runtimeType);
+
+                          print(DateTime.now().runtimeType);
+
+                          (theQaaThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
+
+                          print("Number of theQaaThreadReplies: ${theQaaThreadReplies.length}");
+                          //}
+
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => questionsAndAnswersThreadContent()));
+                        }
+                    ),
+                  ],
+                );
+              }
+          ),
+        ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -115,82 +208,16 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
               ),
           ),
           Expanded(
-            child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: discussionBoardPage.questionsAndAnswersThreads.length,//questionsAndAnswersThreads.reversed.toList().length,
-                itemBuilder: (context, index){
-                  return Column(
-                    children: <Widget>[
-                      Container(
-                        height: 10,
-                      ),
-                      InkWell(
-                          child: Ink(
-                            //child: Text(discussionBoardPage.questionsAndAnswersThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString()),//Text(reversedQuestionsAndAnswersThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedQuestionsAndAnswersThreadsIterable.toList()[index][0]),
-                            child: Text.rich(
-                              TextSpan(
-                                text: "${discussionBoardPage.questionsAndAnswersThreads[index]["threadTitle"].toString()}\nBy: ",
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: "${discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString()}",
-                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                      qaaClickedOnUser = true,
-                                      qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString().toLowerCase()).get(),
-                                      qaaNameData.docs.forEach((person){
-                                        theUsersData = person.data();
-                                      }),
-                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                    }
-                                  ),
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                ],
-                              ),
-                            ),
-                            height: 30,
-                            width: 360,
-                            color: Colors.grey[300],
-                          ),
-                          onTap: () async {
-                            print("This is index: $index");
-                            print("discussionBoardPage.questionsAndAnswersThreads is null? ${discussionBoardPage.questionsAndAnswersThreads == null}");
-                            print("I clicked on a thread");
-                            threadAuthorQaa = discussionBoardPage.questionsAndAnswersThreads![index]["poster"].toString();
-                            threadTitleQaa = discussionBoardPage.questionsAndAnswersThreads![index]["threadTitle"].toString();
-                            threadContentQaa = discussionBoardPage.questionsAndAnswersThreads![index]["threadContent"].toString();
-                            threadID = discussionBoardPage.questionsAndAnswersThreads![index]["threadId"].toString();
-
-                            print(discussionBoardPage.questionsAndAnswersThreads![index]);
-                            print("${threadAuthorQaa} + ${threadTitleQaa} + ${threadContentQaa} + ${threadID}");
-                            print("context: ${context}");
-                            await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                              myDocQaa = d.docs.first.id;
-                              print(myDocQaa);
-                            });
-
-                            await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies");
-
-                            QuerySnapshot qaaRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").get();
-                            theQaaThreadReplies = qaaRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
-                            print(theQaaThreadReplies.runtimeType);
-                            //print(theQaaThreadReplies[0]["time"].toDate().runtimeType);
-
-                            print(DateTime.now().runtimeType);
-
-                            (theQaaThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
-
-                            print("Number of theQaaThreadReplies: ${theQaaThreadReplies.length}");
-                            //}
-
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => questionsAndAnswersThreadContent()));
-                          }
-                      ),
-                    ],
-                  );
-                }
-            ),
+            child: myPagesQaa[theCurrentPageQaa],
+          ),
+          NumberPaginator(
+            height: 50,
+            numberPages: numberOfPagesQaa,
+            onPageChange: (myIndexQaa){
+              setState((){
+                theCurrentPageQaa = myIndexQaa;
+              });
+            }
           ),
         ],
       ),
