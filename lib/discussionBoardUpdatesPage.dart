@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:starexpedition4/replyThreadPage.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
@@ -77,8 +78,138 @@ class routeToReplyToThreadDiscussionBoardUpdates{
 
 class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
   static String dBoardRoute = '/discussionBoardUpdatesPage';
+  int numberOfPagesDbu = (((discussionBoardPage.discussionBoardUpdatesThreads.length)/10)).ceil();
+  int theCurrentPageDbu = 0;
 
+  //Getting the threads that will appear in a page
+  var listOfDbuThreads = discussionBoardPage.discussionBoardUpdatesThreads;
+  var mySublistsDbu = [];
+  var portionSizeDbu = 10;
+
+  //build method
   Widget build(BuildContext bc){
+    for(int i = 0; i < listOfDbuThreads.length; i += portionSizeDbu){
+      mySublistsDbu.add(listOfDbuThreads.sublist(i, i + portionSizeDbu > listOfDbuThreads.length ? listOfDbuThreads.length : i + portionSizeDbu));
+    }
+
+    var myPagesDbu = List.generate(
+      numberOfPagesDbu,
+        (index) => Center(
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: mySublistsDbu[theCurrentPageDbu].length,//discussionBoardPage.discussionBoardUpdatesThreads.length,//discussionBoardUpdatesThreads.reversed.toList().length,
+            itemBuilder: (context, index){
+              return Column(
+                children: <Widget>[
+                  Container(
+                    height: 10,
+                  ),
+                  InkWell(
+                      child: Ink(
+                        //child: Text(discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString()),//Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
+                        child: Text.rich(
+                          TextSpan(
+                            text: "${mySublistsDbu[theCurrentPageDbu][index]["threadTitle"].toString()}\nBy: ",
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: "${mySublistsDbu[theCurrentPageDbu][index]["poster"].toString()}",
+                                  recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                    dbuClickedOnUser = true,
+                                    nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase()).get(),
+                                    nameData.docs.forEach((person){
+                                      theUsersData = person.data();
+                                    }),
+                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                  }
+                              ),
+                              TextSpan(
+                                text: " ",
+                              ),
+                            ],
+                          ),
+                        ),
+                        height: 30,
+                        width: 360,
+                        color: Colors.grey[300],
+                      ),
+                      onTap: () async {
+                        print("This is index: $index");
+                        print("listOfProjectsThreads is null? ${listOfDbuThreads == null}");
+                        print("I clicked on a thread");
+                        //print('You clicked on: ' + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1]);
+                        //if(discussionBoardPage.discussionBoardUpdatesThreads[index].isNotEmpty){
+                        threadAuthorDbu = mySublistsDbu[theCurrentPageDbu][index]["poster"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0];
+                        threadTitleDbu = mySublistsDbu[theCurrentPageDbu][index]["threadTitle"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1];
+                        threadContentDbu = mySublistsDbu[theCurrentPageDbu][index]["threadContent"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][2];
+                        threadID = mySublistsDbu[theCurrentPageDbu][index]["threadId"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3];
+                        print("${threadAuthorDbu} + ${threadTitleDbu} + ${threadContentDbu} + ${threadID}");
+                        print("context: ${context}");
+                        await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                          myDocDbu = d.docs.first.id;
+                          print(myDocDbu);
+                        });
+                        //var oneReply = {"animal": "dog", "breed": "belgian tervuren"};
+
+                        //Getting the replies of a thread
+                        await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies");//.add(oneReply);
+
+                        QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                        theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                        print(theDbuThreadReplies.runtimeType);
+                        //print(theDbuThreadReplies[0]["time"].toDate().runtimeType);
+                        //print(theDbuThreadReplies[0]["time"].runtimeType);
+                        //print(theDbuThreadReplies((a, b) => a[0]["time"].compareTo(b[0]["time"])));
+
+                        print(DateTime.now().runtimeType);
+
+                        (theDbuThreadReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+                        //print("theDbuThreadRepliesSorted: ${sortedList}");
+
+                        /*
+                      if(theDbuThreadReplies.length >= 2){
+                      theDbuThreadReplies.sort((r1, r2){
+                        print("r1 and r2: ${r1}, ${r2}");
+                        if(r1["time"].isBefore(r2["time"]) && !(r2["time"].isBefore(r1["time"]))){
+                          return 1;
+                        }
+                        else if(r2["time"].isBefore(r1["time"]) && !(r1["time"].isBefore(r2["time"]))){
+                          return -1;
+                        }
+                        return r1["time"].compareTo(r2["time"]);
+                      });
+                      }
+                      else{
+                        print("You need at least two elements in theDbuThreadReplies! ${theDbuThreadReplies.length}");
+                      }
+
+                      if(theDbuThreadReplies.length >= 2){
+                        print("theDbuThreadReplies: $theDbuThreadReplies");
+                        var i = theDbuThreadReplies.sort((r1, r2) => r1["time"].toString().compareTo(r2["time"].toString()));
+                        print("Value of i: $i");
+                      }
+                      else{
+                        print("theDbuThreadReplies: $theDbuThreadReplies");
+                        //print("theDbuThreadReplies[0][time]: ${theDbuThreadReplies[0]["time"]}");
+                      }*/
+
+                        //print(theDbuThreadReplies[0]["threadNumber"]);
+                        //print(theDbuThreadReplies.where((sr) => sr.replyContent == "Four!"));
+                        print("Number of theDbuThreadReplies: ${theDbuThreadReplies.length}");
+                        //}
+                        /*await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3])).get().then((num){
+                        discussionBoardUpdatesThreadId = num.docs.first.data()["threadId"];
+                      });*/
+                        //print("This is discussionBoardUpdatesThreadId: ${discussionBoardUpdatesThreadId}");
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => discussionBoardUpdatesThreadContent()));//myIndexPlace = index;
+                      }
+                  ),
+                ],
+              );
+            }
+        ),
+        ),
+    );
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -120,119 +251,16 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: discussionBoardPage.discussionBoardUpdatesThreads.length,//discussionBoardUpdatesThreads.reversed.toList().length,
-              itemBuilder: (context, index){
-              return Column(
-                children: <Widget>[
-                  Container(
-                    height: 10,
-                  ),
-                  InkWell(
-                    child: Ink(
-                      //child: Text(discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString()),//Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
-                      child: Text.rich(
-                        TextSpan(
-                          text: "${discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString()}\nBy: ",
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: "${discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString()}",
-                              recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                dbuClickedOnUser = true,
-                                nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString().toLowerCase()).get(),
-                                nameData.docs.forEach((person){
-                                  theUsersData = person.data();
-                                }),
-                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                              }
-                            ),
-                            TextSpan(
-                              text: " ",
-                            ),
-                          ],
-                        ),
-                      ),
-                      height: 30,
-                      width: 360,
-                      color: Colors.grey[300],
-                    ),
-                    onTap: () async {
-                      print("This is index: $index");
-                      print("discussionBoardPage.discussionBoardUpdatesThreads is null? ${discussionBoardPage.discussionBoardUpdatesThreads == null}");
-                      print("I clicked on a thread");
-                      //print('You clicked on: ' + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1]);
-                      //if(discussionBoardPage.discussionBoardUpdatesThreads[index].isNotEmpty){
-                      threadAuthorDbu = discussionBoardPage.discussionBoardUpdatesThreads![index]["poster"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0];
-                      threadTitleDbu = discussionBoardPage.discussionBoardUpdatesThreads![index]["threadTitle"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1];
-                      threadContentDbu = discussionBoardPage.discussionBoardUpdatesThreads![index]["threadContent"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][2];
-                      threadID = discussionBoardPage.discussionBoardUpdatesThreads![index]["threadId"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3];
-                      print("${threadAuthorDbu} + ${threadTitleDbu} + ${threadContentDbu} + ${threadID}");
-                      print("context: ${context}");
-                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                        myDocDbu = d.docs.first.id;
-                        print(myDocDbu);
-                      });
-                      //var oneReply = {"animal": "dog", "breed": "belgian tervuren"};
-
-                      //Getting the replies of a thread
-                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies");//.add(oneReply);
-
-                      QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
-                      theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
-                      print(theDbuThreadReplies.runtimeType);
-                      //print(theDbuThreadReplies[0]["time"].toDate().runtimeType);
-                      //print(theDbuThreadReplies[0]["time"].runtimeType);
-                      //print(theDbuThreadReplies((a, b) => a[0]["time"].compareTo(b[0]["time"])));
-
-                      print(DateTime.now().runtimeType);
-
-                      (theDbuThreadReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
-                      //print("theDbuThreadRepliesSorted: ${sortedList}");
-
-                      /*
-                      if(theDbuThreadReplies.length >= 2){
-                      theDbuThreadReplies.sort((r1, r2){
-                        print("r1 and r2: ${r1}, ${r2}");
-                        if(r1["time"].isBefore(r2["time"]) && !(r2["time"].isBefore(r1["time"]))){
-                          return 1;
-                        }
-                        else if(r2["time"].isBefore(r1["time"]) && !(r1["time"].isBefore(r2["time"]))){
-                          return -1;
-                        }
-                        return r1["time"].compareTo(r2["time"]);
-                      });
-                      }
-                      else{
-                        print("You need at least two elements in theDbuThreadReplies! ${theDbuThreadReplies.length}");
-                      }
-
-                      if(theDbuThreadReplies.length >= 2){
-                        print("theDbuThreadReplies: $theDbuThreadReplies");
-                        var i = theDbuThreadReplies.sort((r1, r2) => r1["time"].toString().compareTo(r2["time"].toString()));
-                        print("Value of i: $i");
-                      }
-                      else{
-                        print("theDbuThreadReplies: $theDbuThreadReplies");
-                        //print("theDbuThreadReplies[0][time]: ${theDbuThreadReplies[0]["time"]}");
-                      }*/
-
-                      //print(theDbuThreadReplies[0]["threadNumber"]);
-                      //print(theDbuThreadReplies.where((sr) => sr.replyContent == "Four!"));
-                      print("Number of theDbuThreadReplies: ${theDbuThreadReplies.length}");
-                      //}
-                      /*await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3])).get().then((num){
-                        discussionBoardUpdatesThreadId = num.docs.first.data()["threadId"];
-                      });*/
-                      //print("This is discussionBoardUpdatesThreadId: ${discussionBoardUpdatesThreadId}");
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => discussionBoardUpdatesThreadContent()));//myIndexPlace = index;
-                    }
-                  ),
-                ],
-              );
-            }
+            child: myPagesDbu[theCurrentPageDbu],
           ),
+          NumberPaginator(
+            height: 50,
+            numberPages: numberOfPagesDbu,
+            onPageChange: (myIndexDbu){
+              setState((){
+                theCurrentPageDbu = myIndexDbu;
+              });
+            }
           ),
         ],
       ),
