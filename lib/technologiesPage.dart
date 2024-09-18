@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
 
@@ -72,8 +73,98 @@ class routeToReplyToThreadTechnologiesPage{
 
 class technologiesPageState extends State<technologiesPage>{
   static String technologiesRoute = '/technologiesPage';
+  int numberOfPagesTechnologies = (((discussionBoardPage.technologiesThreads.length)/10)).ceil();
+  int theCurrentPageTechnologies = 0;
+
+  var listOfTechnologiesThreads = discussionBoardPage.technologiesThreads;
+  var mySublistsTechnologies = [];
+  var portionSizeTechnologies = 10;
 
   Widget build(BuildContext buildContext){
+    for(int i = 0; i < listOfTechnologiesThreads.length; i += portionSizeTechnologies){
+      mySublistsTechnologies.add(listOfTechnologiesThreads.sublist(i, i + portionSizeTechnologies > listOfTechnologiesThreads.length ? listOfTechnologiesThreads.length : i + portionSizeTechnologies));
+    }
+
+    var myPagesTechnologies = List.generate(
+      numberOfPagesTechnologies,
+        (index) => Center(
+          child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: mySublistsTechnologies[theCurrentPageTechnologies].length,
+              itemBuilder: (context, index){
+                return Column(
+                  children: <Widget>[
+                    Container(
+                      height: 10,
+                    ),
+                    InkWell(
+                        child: Ink(
+                          //child: Text(discussionBoardPage.technologiesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.technologiesThreads[index]["poster"].toString()),
+                          child: Text.rich(
+                            TextSpan(
+                              text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["threadTitle"].toString()}\nBy: ",
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString()}",
+                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                      technologiesClickedOnUser = true,
+                                      technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString().toLowerCase()).get(),
+                                      technologiesNameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      }),
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    }
+                                ),
+                                TextSpan(
+                                  text: " ",
+                                ),
+                              ],
+                            ),
+                          ),
+                          height: 30,
+                          width: 360,
+                          color: Colors.grey[300],
+                        ),
+                        onTap: () async{
+                          print("This is index: $index");
+                          print("listOfTechnologiesThreads is null? ${listOfTechnologiesThreads == null}");
+                          print("I clicked on a thread");
+                          threadAuthorT = mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString();
+                          threadTitleT = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadTitle"].toString();
+                          threadContentT = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadContent"].toString();
+                          threadID = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadId"].toString();
+
+                          print(discussionBoardPage.technologiesThreads![index]);
+                          print("${threadAuthorT} + ${threadTitleT} + ${threadContentT} + ${threadID}");
+                          print("context: ${context}");
+                          await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                            myDocT = d.docs.first.id;
+                            print(myDocT);
+                          });
+
+                          await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies");
+
+                          QuerySnapshot tRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").get();
+                          theTThreadReplies = tRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                          print(theTThreadReplies.runtimeType);
+
+                          print(DateTime.now().runtimeType);
+
+                          (theTThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
+
+                          print("Number of theTThreadReplies: ${theTThreadReplies.length}");
+
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => technologiesThreadContent()));
+                        }
+                    ),
+                  ],
+                );
+              }
+          ),
+        ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -115,80 +206,16 @@ class technologiesPageState extends State<technologiesPage>{
               ),
           ),
           Expanded(
-            child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: discussionBoardPage.technologiesThreads.length,
-                itemBuilder: (context, index){
-                  return Column(
-                    children: <Widget>[
-                      Container(
-                        height: 10,
-                      ),
-                      InkWell(
-                          child: Ink(
-                            //child: Text(discussionBoardPage.technologiesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.technologiesThreads[index]["poster"].toString()),
-                            child: Text.rich(
-                              TextSpan(
-                                text: "${discussionBoardPage.technologiesThreads[index]["threadTitle"].toString()}\nBy: ",
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: "${discussionBoardPage.technologiesThreads[index]["poster"].toString()}",
-                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                      technologiesClickedOnUser = true,
-                                      technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: discussionBoardPage.technologiesThreads[index]["poster"].toString().toLowerCase()).get(),
-                                      technologiesNameData.docs.forEach((person){
-                                        theUsersData = person.data();
-                                      }),
-                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                    }
-                                  ),
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                ],
-                              ),
-                            ),
-                            height: 30,
-                            width: 360,
-                            color: Colors.grey[300],
-                          ),
-                          onTap: () async{
-                            print("This is index: $index");
-                            print("discussionBoardPage.technologiesThreads is null? ${discussionBoardPage.technologiesThreads == null}");
-                            print("I clicked on a thread");
-                            threadAuthorT = discussionBoardPage.technologiesThreads![index]["poster"].toString();
-                            threadTitleT = discussionBoardPage.technologiesThreads![index]["threadTitle"].toString();
-                            threadContentT = discussionBoardPage.technologiesThreads![index]["threadContent"].toString();
-                            threadID = discussionBoardPage.technologiesThreads![index]["threadId"].toString();
-
-                            print(discussionBoardPage.technologiesThreads![index]);
-                            print("${threadAuthorT} + ${threadTitleT} + ${threadContentT} + ${threadID}");
-                            print("context: ${context}");
-                            await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                              myDocT = d.docs.first.id;
-                              print(myDocT);
-                            });
-
-                            await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies");
-
-                            QuerySnapshot tRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").get();
-                            theTThreadReplies = tRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
-                            print(theTThreadReplies.runtimeType);
-
-                            print(DateTime.now().runtimeType);
-
-                            (theTThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
-
-                            print("Number of theTThreadReplies: ${theTThreadReplies.length}");
-
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => technologiesThreadContent()));
-                          }
-                      ),
-                    ],
-                  );
-                }
-            ),
+            child: myPagesTechnologies[theCurrentPageTechnologies],
+          ),
+          NumberPaginator(
+            height: 50,
+            numberPages: numberOfPagesTechnologies,
+            onPageChange: (myIndexTechnologies){
+              setState((){
+                theCurrentPageTechnologies = myIndexTechnologies;
+              });
+            }
           ),
         ],
       ),
