@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
 
@@ -72,8 +73,98 @@ class routeToReplyToThreadNewDiscoveriesPage{
 
 class newDiscoveriesPageState extends State<newDiscoveriesPage>{
   static String newDiscoveriesRoute = '/newDiscoveriesPage';
+  int numberOfPagesNd = (((discussionBoardPage.newDiscoveriesThreads.length)/10)).ceil();
+  int theCurrentPageNd = 0;
+
+  var listOfNdThreads = discussionBoardPage.newDiscoveriesThreads;
+  var mySublistsNd = [];
+  var portionSizeNd = 10;
 
   Widget build(BuildContext buildContext){
+    for(int i = 0; i < listOfNdThreads.length; i += portionSizeNd){
+      mySublistsNd.add(listOfNdThreads.sublist(i, i + portionSizeNd > listOfNdThreads.length ? listOfNdThreads.length : i + portionSizeNd));
+    }
+
+    var myPagesNd = List.generate(
+      numberOfPagesNd,
+        (index) => Center(
+          child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: mySublistsNd[theCurrentPageNd].length,
+              itemBuilder: (context, index){
+                return Column(
+                  children: <Widget>[
+                    Container(
+                      height: 10,
+                    ),
+                    InkWell(
+                        child: Ink(
+                          //child: Text(discussionBoardPage.newDiscoveriesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString()),
+                          child: Text.rich(
+                            TextSpan(
+                              text: "${mySublistsNd[theCurrentPageNd][index]["threadTitle"].toString()}\nBy: ",
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: "${mySublistsNd[theCurrentPageNd][index]["poster"].toString()}",
+                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                      ndClickedOnUser = true,
+                                      ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsNd[theCurrentPageNd][index]["poster"].toString().toLowerCase()).get(),
+                                      ndNameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      }),
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    }
+                                ),
+                                TextSpan(
+                                  text: " ",
+                                ),
+                              ],
+                            ),
+                          ),
+                          height: 30,
+                          width: 360,
+                          color: Colors.grey[300],
+                        ),
+                        onTap: () async{
+                          print("This is index: $index");
+                          print("listOfNdThreads is null? ${listOfNdThreads == null}");
+                          print("I clicked on a thread");
+                          threadAuthorNd = mySublistsNd[theCurrentPageNd][index]["poster"].toString();
+                          threadTitleNd = mySublistsNd[theCurrentPageNd][index]["threadTitle"].toString();
+                          threadContentNd = mySublistsNd[theCurrentPageNd][index]["threadContent"].toString();
+                          threadID = mySublistsNd[theCurrentPageNd][index]["threadId"].toString();
+
+                          print(discussionBoardPage.newDiscoveriesThreads![index]);
+                          print("${threadAuthorNd} + ${threadTitleNd} + ${threadContentNd} + ${threadID}");
+                          print("context: ${context}");
+                          await FirebaseFirestore.instance.collection("New_Discoveries").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                            myDocNd = d.docs.first.id;
+                            print(myDocNd);
+                          });
+
+                          await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies");
+
+                          QuerySnapshot ndRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies").get();
+                          theNdThreadReplies = ndRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                          print(theNdThreadReplies.runtimeType);
+
+                          print(DateTime.now().runtimeType);
+
+                          (theNdThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
+
+                          print("Number of theNdThreadReplies: ${theNdThreadReplies.length}");
+
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => newDiscoveriesThreadContent()));
+                        }
+                    ),
+                  ],
+                );
+              }
+          ),
+        ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -118,80 +209,16 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
             ),
           //),
           Expanded(
-            child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: discussionBoardPage.newDiscoveriesThreads.length,
-                itemBuilder: (context, index){
-                  return Column(
-                    children: <Widget>[
-                      Container(
-                        height: 10,
-                      ),
-                      InkWell(
-                          child: Ink(
-                            //child: Text(discussionBoardPage.newDiscoveriesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString()),
-                            child: Text.rich(
-                              TextSpan(
-                                text: "${discussionBoardPage.newDiscoveriesThreads[index]["threadTitle"].toString()}\nBy: ",
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: "${discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString()}",
-                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                      ndClickedOnUser = true,
-                                      ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString().toLowerCase()).get(),
-                                      ndNameData.docs.forEach((person){
-                                        theUsersData = person.data();
-                                      }),
-                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                    }
-                                  ),
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                ],
-                              ),
-                            ),
-                            height: 30,
-                            width: 360,
-                            color: Colors.grey[300],
-                          ),
-                          onTap: () async{
-                            print("This is index: $index");
-                            print("discussionBoardPage.newDiscoveriesThreads is null? ${discussionBoardPage.newDiscoveriesThreads == null}");
-                            print("I clicked on a thread");
-                            threadAuthorNd = discussionBoardPage.newDiscoveriesThreads![index]["poster"].toString();
-                            threadTitleNd = discussionBoardPage.newDiscoveriesThreads![index]["threadTitle"].toString();
-                            threadContentNd = discussionBoardPage.newDiscoveriesThreads![index]["threadContent"].toString();
-                            threadID = discussionBoardPage.newDiscoveriesThreads![index]["threadId"].toString();
-
-                            print(discussionBoardPage.newDiscoveriesThreads![index]);
-                            print("${threadAuthorNd} + ${threadTitleNd} + ${threadContentNd} + ${threadID}");
-                            print("context: ${context}");
-                            await FirebaseFirestore.instance.collection("New_Discoveries").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                              myDocNd = d.docs.first.id;
-                              print(myDocNd);
-                            });
-
-                            await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies");
-
-                            QuerySnapshot ndRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies").get();
-                            theNdThreadReplies = ndRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
-                            print(theNdThreadReplies.runtimeType);
-
-                            print(DateTime.now().runtimeType);
-
-                            (theNdThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
-
-                            print("Number of theNdThreadReplies: ${theNdThreadReplies.length}");
-
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => newDiscoveriesThreadContent()));
-                          }
-                      ),
-                    ],
-                  );
-                }
-            ),
+            child: myPagesNd[theCurrentPageNd],
+          ),
+          NumberPaginator(
+            height: 50,
+            numberPages: numberOfPagesNd,
+            onPageChange: (myIndexNd){
+              setState((){
+                theCurrentPageNd = myIndexNd;
+              });
+            }
           ),
         ],
       ),

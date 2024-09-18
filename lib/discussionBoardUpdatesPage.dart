@@ -134,7 +134,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                       ),
                       onTap: () async {
                         print("This is index: $index");
-                        print("listOfProjectsThreads is null? ${listOfDbuThreads == null}");
+                        print("listOfDbuThreads is null? ${listOfDbuThreads == null}");
                         print("I clicked on a thread");
                         //print('You clicked on: ' + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1]);
                         //if(discussionBoardPage.discussionBoardUpdatesThreads[index].isNotEmpty){
