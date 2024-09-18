@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
@@ -76,11 +77,116 @@ class projectsPageState extends State<projectsPage>{
   int numberOfPages = (((discussionBoardPage.projectsThreads.length)/10)).ceil();
   int theCurrentPage = 0;
 
+  //Getting the threads that will appear in a page
+  var listOfProjectsThreads = discussionBoardPage.projectsThreads;
+  var mySublistsProjects = [];
+  var portionSize = 10;
+
+  //build method
   Widget build(BuildContext buildContext){
+    for(int i = 0; i < listOfProjectsThreads.length; i += portionSize){
+      mySublistsProjects.add(listOfProjectsThreads.sublist(i, i + portionSize > listOfProjectsThreads.length ? listOfProjectsThreads.length : i + portionSize));
+    }
+
+    //for(int i = 0; i < ((listOfProjectsThreads.length / 10).ceil()); i++){
+      /*var myListLength = listOfProjectsThreads.length;
+      if(myListLength >= 10){
+        for(int j = 0; j < 10; j++){
+          portions.add(listOfProjectsThreads[j]["threadId"]);
+        }
+        myListLength = myListLength - 10;
+        i++;
+      }
+      else{
+        for(int k = 0; k < myListLength; k++){
+          portions.add(listOfProjectsThreads[k]["threadId"]);
+        }
+        myListLength = myListLength - myListLength;
+        i++;
+      }*/
+
+    //}
+
     var myPages = List.generate(
       numberOfPages,
         (index) => Center(
-          child: Text("Page number: ${theCurrentPage + 1}"),
+          child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: mySublistsProjects[theCurrentPage].length,
+              itemBuilder: (context, index){
+                return Column(
+                  children: <Widget>[
+                    Container(
+                      height: 10,
+                    ),
+                    InkWell(
+                        child: Ink(
+                          //child: Text(discussionBoardPage.projectsThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.projectsThreads[index]["poster"].toString()),
+                          child: Text.rich(
+                            TextSpan(
+                              text: "${mySublistsProjects[theCurrentPage][index]["threadTitle"].toString()}\nBy: ",//"${discussionBoardPage.projectsThreads[index]["threadTitle"].toString()}\nBy: ",
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: "${mySublistsProjects[theCurrentPage][index]["poster"].toString()}",//"${discussionBoardPage.projectsThreads[index]["poster"].toString()}",
+                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                      projectsClickedOnUser = true,
+                                      projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjects[theCurrentPage][index]["poster"].toString().toLowerCase()).get(),
+                                      projectsNameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      }),
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    }
+                                ),
+                                TextSpan(
+                                  text: " ",
+                                ),
+                              ],
+                            ),
+                          ),
+                          height: 30,
+                          width: 360,
+                          color: Colors.grey[300],
+                        ),
+                        onTap: () async{
+                          print("This is index: $index");
+                          print("listOfProjectsThreads is null? ${listOfProjectsThreads == null}");
+                          print("I clicked on a thread");
+                          threadAuthorP = mySublistsProjects[theCurrentPage][index]["poster"].toString();//discussionBoardPage.projectsThreads![index]["poster"].toString();
+                          threadTitleP = mySublistsProjects[theCurrentPage][index]["threadTitle"].toString();//discussionBoardPage.projectsThreads![index]["threadTitle"].toString();
+                          threadContentP = mySublistsProjects[theCurrentPage][index]["threadContent"].toString();//discussionBoardPage.projectsThreads![index]["threadContent"].toString();
+                          threadID = mySublistsProjects[theCurrentPage][index]["threadId"].toString();//discussionBoardPage.projectsThreads![index]["threadId"].toString();
+
+                          print(mySublistsProjects[theCurrentPage][index]);
+                          print("${threadAuthorP} + ${threadTitleP} + ${threadContentP} + ${threadID}");
+                          print("context: ${context}");
+                          await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                            myDocP = d.docs.first.id;
+                            print(myDocP);
+                          });
+
+                          await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies");
+
+                          QuerySnapshot pRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").get();
+                          thePThreadReplies = pRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                          print(thePThreadReplies.runtimeType);
+
+                          print(DateTime.now().runtimeType);
+
+                          (thePThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
+
+                          print("Number of thePThreadReplies: ${thePThreadReplies.length}");
+
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => projectsThreadContent()));
+                        }
+                    ),
+                    /*Expanded(
+                        child: Text("${myPages[theCurrentPage]}"),
+                      ),*/
+                  ],
+                );
+              }
+          ),
         ),
     );
 
@@ -92,6 +198,7 @@ class projectsPageState extends State<projectsPage>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
+            print("portions: ${mySublistsProjects}"),
             Navigator.pushNamed(context, '/discussionBoardPage'),
           }
         )
@@ -125,6 +232,10 @@ class projectsPageState extends State<projectsPage>{
               ),
           ),
           Expanded(
+            child: myPages[theCurrentPage],
+          ),
+          //IMPORTANT CONTENT STARTS
+          /*Expanded(
             child: ListView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: discussionBoardPage.projectsThreads.length,
@@ -202,12 +313,13 @@ class projectsPageState extends State<projectsPage>{
                   );
                 }
             ),
-          ),
-          Expanded(
+          ),*/ //IMPORTANT CONTENT ENDS
+
+          /*Expanded(
             child: Container(
               child: myPages[theCurrentPage],
             ),
-          ),
+          ),*/
           NumberPaginator(
               height: 50,
               numberPages: numberOfPages,
@@ -218,6 +330,7 @@ class projectsPageState extends State<projectsPage>{
               onPageChange: (myIndex){
                 setState((){
                   theCurrentPage = myIndex;
+                  print(theCurrentPage);
                 });
               }
           ),
