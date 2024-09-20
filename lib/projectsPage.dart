@@ -49,6 +49,13 @@ class projectsPage extends StatefulWidget{
   projectsPageState createState() => projectsPageState();
 }
 
+class projectsThreadsPage extends StatefulWidget{
+  const projectsThreadsPage ({Key? key}) : super(key: key);
+
+  @override
+  projectsThreadContent createState() => projectsThreadContent();
+}
+
 class MyProjectsPage extends StatelessWidget{
   const MyProjectsPage ({Key? key}) : super(key: key);
 
@@ -177,7 +184,8 @@ class projectsPageState extends State<projectsPage>{
 
                           print("Number of thePThreadReplies: ${thePThreadReplies.length}");
 
-                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => projectsThreadContent()));
+                          //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => projectsThreadContent()));
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => projectsThreadsPage()));
                         }
                     ),
                     /*Expanded(
@@ -340,9 +348,238 @@ class projectsPageState extends State<projectsPage>{
   }
 }
 
-class projectsThreadContent extends StatelessWidget{
+class projectsThreadContent extends State<projectsThreadsPage>{
+  int numberOfPagesProjectsThreadReplies = (((thePThreadReplies.length)/10)).ceil();
+  int theCurrentPageProjectsThreadReplies = 0;
+
+  var listOfProjectsThreadReplies = thePThreadReplies;
+  var mySublistsProjectsThreadReplies = [];
+  int portionSizeProjectsThreadReplies = 10;
+
   @override
   Widget build(BuildContext context){
+    for(int i = 0; i < listOfProjectsThreadReplies.length; i += portionSizeProjectsThreadReplies){
+      mySublistsProjectsThreadReplies.add(listOfProjectsThreadReplies.sublist(i, i + portionSizeProjectsThreadReplies > listOfProjectsThreadReplies.length ? listOfProjectsThreadReplies.length : i + portionSizeProjectsThreadReplies));
+    }
+
+    print("Some replies length: ${mySublistsProjectsThreadReplies[0].length}");
+    print("Some more replies length: ${mySublistsProjectsThreadReplies[1].length}");
+
+    var myPagesProjectsThreadReplies = List.generate(
+      numberOfPagesProjectsThreadReplies,
+        (index) => Column(
+          children: <Widget>[
+            ListView.builder(
+                padding: EdgeInsets.zero,
+                scrollDirection: Axis.vertical,
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].length,
+                itemBuilder: (context, index){
+                  return Column(
+                    children: <Widget>[
+                      mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"] != null && mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"] != null?
+                      Column(
+                          children: <Widget>[
+                            Container(
+                              height: 5,
+                            ),
+                            Container(
+                              //child: Text("Reply to: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Reply to: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          projectsClickedOnUser = true,
+                                          projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                          projectsNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              color: Colors.blueGrey[300],
+                              width: 360,
+                            ),
+                            Container(
+                              //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Posted on: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          projectsClickedOnUser = true,
+                                          projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                          projectsNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: "\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              color: Colors.grey[300],
+                              width: 360,
+                            ),
+                            InkWell(
+                                child: Ink(
+                                  child: Text("Reply"),
+                                  color: Colors.grey[500],
+                                  width: 360,
+                                ),
+                                onTap: () async{
+                                  replyToReplyTimeP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["time"];
+                                  replyToReplyContentP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replyContent"].toString();
+                                  replyToReplyPosterP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replier"].toString();
+
+                                  print("This is replyToReplyTime: $replyToReplyTimeP");
+
+                                  await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                    myDocP = d.docs.first.id;
+                                    print(myDocP);
+                                  });
+
+                                  await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").where("time", isEqualTo: replyToReplyTimeP).get().then((rd) {
+                                    replyToReplyDocP = rd.docs.first.id;
+                                    print(replyToReplyDocP);
+                                  });
+
+                                  print(thePThreadReplies);
+                                  print(replyToReplyDocP);
+
+                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").doc(replyToReplyDocP).get();
+                                  print(ds.data());
+                                  print(ds.data().runtimeType);
+                                  print(thePThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeP));
+
+                                  myIndex = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeP);
+                                  myReplyToReplyP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][myIndex];
+                                  myReplyToReplyPMap = Map.from(myReplyToReplyP);
+
+                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentP, replyToReplyPosterP, myReplyToReplyPMap];
+                                  pRepliesToReplies.add(tempReplyToReplyList);
+
+                                  print("myReplyToReplyTMap: ${myReplyToReplyPMap}");
+                                  print("myReplyToReplyT: ${myReplyToReplyP["replyContent"]}");
+                                  print("This is myIndex: $myIndex");
+
+                                  projectsReplyBool = true;
+                                  projectsReplyingToReplyBool = true;
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                }
+                            ),
+                          ]
+                      ): Column(
+                          children: <Widget>[
+                            Container(
+                              height: 5,
+                            ),
+                            Container(
+                              //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Posted on: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          projectsClickedOnUser = true,
+                                          projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                          projectsNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: "\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              color: Colors.grey[300],
+                              width: 360,
+                            ),
+                            InkWell(
+                                child: Ink(
+                                  child: Text("Reply"),
+                                  color: Colors.grey[500],
+                                  width: 360,
+                                ),
+                                onTap: () async{
+                                  replyToReplyTimeP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["time"];
+                                  replyToReplyContentP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replyContent"].toString();
+                                  replyToReplyPosterP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replier"].toString();
+
+                                  print("This is replyToReplyTime: $replyToReplyTimeP");
+
+                                  await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                    myDocP = d.docs.first.id;
+                                    print(myDocP);
+                                  });
+
+                                  await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").where("time", isEqualTo: replyToReplyTimeP).get().then((rd) {
+                                    replyToReplyDocP = rd.docs.first.id;
+                                    print(replyToReplyDocP);
+                                  });
+
+                                  print(thePThreadReplies);
+                                  print(replyToReplyDocP);
+
+                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").doc(replyToReplyDocP).get();
+                                  print(ds.data());
+                                  print(ds.data().runtimeType);
+
+                                  myIndex = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeP);
+
+                                  print(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeP));
+                                  myReplyToReplyP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][myIndex];
+
+                                  myReplyToReplyPMap = Map.from(myReplyToReplyP);
+
+                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentP, replyToReplyPosterP, myReplyToReplyPMap];
+                                  pRepliesToReplies.add(tempReplyToReplyList);
+
+                                  print("myReplyToReplyPMap: ${myReplyToReplyPMap}");
+
+                                  print("myReplyToReplyP: ${myReplyToReplyP["replyContent"]}");
+                                  print("This is myIndex: $myIndex");
+
+                                  projectsReplyBool = true;
+                                  projectsReplyingToReplyBool = true;
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                }
+                            ),
+                          ]
+                      ),
+                    ],
+                  );
+                }
+            ),
+          ],
+        ),
+    );
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -408,8 +645,10 @@ class projectsThreadContent extends StatelessWidget{
                 print('Replying to the thread');
               }
           ),
-          Column(
-            children: <Widget>[
+          Center(
+            child: myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies],
+          ),//Column(
+            /*children: <Widget>[
               ListView.builder(
                   padding: EdgeInsets.zero,
                   scrollDirection: Axis.vertical,
@@ -618,10 +857,18 @@ class projectsThreadContent extends StatelessWidget{
                     );
                   }
               ),
-            ],
-          ),
-        ],
-      ),
+            ],*/
+            NumberPaginator(
+              height: 50,
+              numberPages: numberOfPagesProjectsThreadReplies,
+              onPageChange: (myIndexProjectsThreadReplies){
+                setState((){
+                  theCurrentPageProjectsThreadReplies = myIndexProjectsThreadReplies;
+                });
+              }
+            ),
+          ],
+        ),
       ),
     );
   }
