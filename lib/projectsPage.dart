@@ -349,7 +349,7 @@ class projectsPageState extends State<projectsPage>{
 }
 
 class projectsThreadContent extends State<projectsThreadsPage>{
-  int numberOfPagesProjectsThreadReplies = (((thePThreadReplies.length)/10)).ceil();
+  int numberOfPagesProjectsThreadReplies = 0;
   int theCurrentPageProjectsThreadReplies = 0;
 
   var listOfProjectsThreadReplies = thePThreadReplies;
@@ -358,16 +358,23 @@ class projectsThreadContent extends State<projectsThreadsPage>{
 
   @override
   Widget build(BuildContext context){
-    for(int i = 0; i < listOfProjectsThreadReplies.length; i += portionSizeProjectsThreadReplies){
-      mySublistsProjectsThreadReplies.add(listOfProjectsThreadReplies.sublist(i, i + portionSizeProjectsThreadReplies > listOfProjectsThreadReplies.length ? listOfProjectsThreadReplies.length : i + portionSizeProjectsThreadReplies));
+    if(listOfProjectsThreadReplies == []){
+      numberOfPagesProjectsThreadReplies = 1;
+    }
+    else{
+      numberOfPagesProjectsThreadReplies = (((thePThreadReplies.length)/10)).ceil();
+
+      for(int i = 0; i < listOfProjectsThreadReplies.length; i += portionSizeProjectsThreadReplies){
+        mySublistsProjectsThreadReplies.add(listOfProjectsThreadReplies.sublist(i, i + portionSizeProjectsThreadReplies > listOfProjectsThreadReplies.length ? listOfProjectsThreadReplies.length : i + portionSizeProjectsThreadReplies));
+      }
     }
 
-    print("Some replies length: ${mySublistsProjectsThreadReplies[0].length}");
-    print("Some more replies length: ${mySublistsProjectsThreadReplies[1].length}");
+    //print("Some replies length: ${mySublistsProjectsThreadReplies[0].length}");
+    //print("Some more replies length: ${mySublistsProjectsThreadReplies[1].length}");
 
     var myPagesProjectsThreadReplies = List.generate(
       numberOfPagesProjectsThreadReplies,
-        (index) => Column(
+        (myIndex) => Column(
           children: <Widget>[
             ListView.builder(
                 padding: EdgeInsets.zero,
@@ -646,7 +653,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
               }
           ),
           Center(
-            child: myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies],
+            child: listOfProjectsThreadReplies.length != 0? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Text("There are no replies to this thread yet. Be the first to reply!"),
           ),//Column(
             /*children: <Widget>[
               ListView.builder(
@@ -860,7 +867,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
             ],*/
             NumberPaginator(
               height: 50,
-              numberPages: numberOfPagesProjectsThreadReplies,
+              numberPages: listOfProjectsThreadReplies.length != 0? numberOfPagesProjectsThreadReplies : 1,
               onPageChange: (myIndexProjectsThreadReplies){
                 setState((){
                   theCurrentPageProjectsThreadReplies = myIndexProjectsThreadReplies;

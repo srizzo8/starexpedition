@@ -53,6 +53,13 @@ class discussionBoardUpdatesPage extends StatefulWidget{
   discussionBoardUpdatesPageState createState() => discussionBoardUpdatesPageState();
 }
 
+class discussionBoardUpdatesThreadsPage extends StatefulWidget{
+  const discussionBoardUpdatesThreadsPage({Key? key}) : super(key: key);
+
+  @override
+  discussionBoardUpdatesThreadContent createState() => discussionBoardUpdatesThreadContent();
+}
+
 class MyDiscussionBoardUpdatesPage extends StatelessWidget{
   const MyDiscussionBoardUpdatesPage ({Key? key}) : super(key: key);
 
@@ -201,7 +208,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                         discussionBoardUpdatesThreadId = num.docs.first.data()["threadId"];
                       });*/
                         //print("This is discussionBoardUpdatesThreadId: ${discussionBoardUpdatesThreadId}");
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => discussionBoardUpdatesThreadContent()));//myIndexPlace = index;
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => discussionBoardUpdatesThreadsPage()));//myIndexPlace = index;
                       }
                   ),
                 ],
@@ -268,9 +275,324 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
   }
 }
 
-class discussionBoardUpdatesThreadContent extends StatelessWidget{
+class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesThreadsPage>{
+  int numberOfPagesDbuThreadReplies = 0;
+  int theCurrentPageDbuThreadReplies = 0;
+
+  var listOfDbuThreadReplies = theDbuThreadReplies;
+  var mySublistsDbuThreadReplies = [];
+  int portionSizeDbuThreadReplies = 10;
+
   @override
   Widget build(BuildContext context) {
+    if(listOfDbuThreadReplies == []){
+      numberOfPagesDbuThreadReplies = 1;
+    }
+    else{
+      numberOfPagesDbuThreadReplies = (((theDbuThreadReplies.length)/10)).ceil();
+
+      for(int i = 0; i < listOfDbuThreadReplies.length; i += portionSizeDbuThreadReplies){
+        mySublistsDbuThreadReplies.add(listOfDbuThreadReplies.sublist(i, i + portionSizeDbuThreadReplies > listOfDbuThreadReplies.length ? listOfDbuThreadReplies.length : i + portionSizeDbuThreadReplies));
+      }
+    }
+
+    /*for(int i = 0; i < listOfDbuThreadReplies.length; i += portionSizeDbuThreadReplies){
+      mySublistsDbuThreadReplies.add(listOfDbuThreadReplies.sublist(i, i + portionSizeDbuThreadReplies > listOfDbuThreadReplies.length ? listOfDbuThreadReplies.length : i + portionSizeDbuThreadReplies));
+    }*/
+
+    var myPagesDbuThreadReplies = List.generate(
+      numberOfPagesDbuThreadReplies,
+        (myIndex) => Column(
+          children: <Widget>[
+            ListView.builder(
+                padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].length,//FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").length//5,//discussionBoardUpdatesThreads[int.parse(threadID)][4].length,
+                itemBuilder: (context, index){
+                  return Column(
+                    children: <Widget>[
+                      mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replyContent"] != null && mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"] != null?//theDbuThreadReplies.length > 0?//discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
+                      Column(
+                          children: <Widget>[
+                            Container(
+                              height: 5,
+                            ),
+                            Container(
+                              //Reply to: Reply content, reply poster
+                              //child: Text("Reply to: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Reply to: ${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: "\nPosted by: ",
+                                    ),
+                                    TextSpan(
+                                        text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          dbuClickedOnUser = true,
+                                          nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                          nameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              color: Colors.blueGrey[300], //theDbuThreadReplies[index]["theOriginalReplyInfo"].toString(), theDbuThreadReplies[index]["theOriginalReplyInfo"].toString()
+                              width: 360,
+                            ),
+                            //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
+                            Container(
+                              //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
+                              //child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Posted on: ${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toDate().toString()}",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: "\nPosted by: ",
+                                    ),
+                                    TextSpan(
+                                        text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          dbuClickedOnUser = true,
+                                          nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                          nameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: "\n${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              color: Colors.grey[300],
+                              width: 360,
+                            ),
+                            InkWell(
+                                child: Ink(
+                                  child: Text("Reply"),
+                                  color: Colors.grey[500],
+                                  width: 360,
+                                ),
+                                onTap: () async{
+                                  replyToReplyTimeDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["time"];//.toString();
+                                  replyToReplyContentDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replyContent"].toString();
+                                  replyToReplyPosterDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replier"].toString();
+                                  //replyToReplyOriginalInfoDbu = theDbuThreadReplies![index]["originalReplyInfo"].toString();
+                                  //print("This is replyToReplyOriginalInfoDbu: ${replyToReplyOriginalInfoDbu["replyContent"]}");
+                                  print("This is replyToReplyTime: $replyToReplyTimeDbu");
+
+                                  await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                    myDocDbu = d.docs.first.id;
+                                    print(myDocDbu);
+                                  });
+                                  await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
+                                    replyToReplyDocDbu = rd.docs.first.id;
+                                    //replyToReplyTime = rd.docs.first["time"];
+                                    //print("This is t: $replyToReplyTime");
+                                    //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                                    print(replyToReplyDocDbu);
+                                  });
+
+                                  //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
+
+                                  //.add(oneReply);
+
+                                  //QuerySnapshot dbuRepliesQuerySnapshot = (await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get()) as QuerySnapshot<Object?>;//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                                  //theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                                  print(theDbuThreadReplies);
+                                  print(replyToReplyDocDbu);
+                                  //print(replyToReplyDoc.snapshot);
+                                  //print(replyContent);
+                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
+                                  print(ds.data());
+                                  print(ds.data().runtimeType);
+                                  print(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu));
+                                  myIndex = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu); //where replyToReplyDoc is in theDbuThreadReplies.
+                                  myReplyToReplyDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][myIndex];
+                                  //print("myReplyToReplyDbu runtime type: ${myReplyToReplyDbu.runtimeType}");
+                                  //myReplyToReplyDbu.forEach((k, v) => myReplyToReplyDbuList.);//List.from(myReplyToReplyDbu);//Map.from(myReplyToReplyDbu);
+                                  myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
+                                  //myReplyToReplyDbuList = myReplyToReplyDbuMap.entries.map((myEntry) => "${myEntry.key}: ${myEntry.value}").toList();
+
+                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuMap];
+                                  dbuRepliesToReplies.add(tempReplyToReplyList);
+
+                                  print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
+
+                                  print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
+                                  print("This is myIndex: $myIndex");
+                                  discussionBoardUpdatesReplyBool = true;
+                                  discussionBoardUpdatesReplyingToReplyBool = true;
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                  //print('Reply no. ' + index.toString());
+                                  //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                }
+                            ),
+                          ]
+                      ): Column(
+                          children: <Widget>[
+                            Container(
+                              height: 5,
+                            ),
+                            //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
+                            Container(
+                              //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
+                              //child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Posted on: ${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toDate().toString()}",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: "\nPosted by: ",
+                                    ),
+                                    TextSpan(
+                                        text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          dbuClickedOnUser = true,
+                                          nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                          nameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: "\n${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              color: Colors.grey[300],
+                              width: 360,
+                            ),
+                            InkWell(
+                                child: Ink(
+                                  child: Text("Reply"),
+                                  color: Colors.grey[500],
+                                  width: 360,
+                                ),
+                                onTap: () async{
+                                  replyToReplyTimeDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["time"];//.toString();
+                                  replyToReplyContentDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replyContent"].toString();
+                                  replyToReplyPosterDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replier"].toString();
+                                  //replyToReplyOriginalInfoDbu = theDbuThreadReplies![index]["originalReplyInfo"].toString();
+                                  //print("This is replyToReplyOriginalInfoDbu: $replyToReplyOriginalInfoDbu");
+                                  print("This is replyToReplyTime: $replyToReplyTimeDbu");
+
+                                  await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                    myDocDbu = d.docs.first.id;
+                                    print(myDocDbu);
+                                  });
+                                  await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
+                                    replyToReplyDocDbu = rd.docs.first.id;
+                                    //replyToReplyTime = rd.docs.first["time"];
+                                    //print("This is t: $replyToReplyTime");
+                                    //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                                    print(replyToReplyDocDbu);
+                                  });
+
+                                  //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
+
+                                  //.add(oneReply);
+
+                                  //QuerySnapshot dbuRepliesQuerySnapshot = (await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get()) as QuerySnapshot<Object?>;//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                                  //theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                                  print(theDbuThreadReplies);
+                                  print(replyToReplyDocDbu);
+                                  //print(replyToReplyDoc.snapshot);
+                                  //print(replyContent);
+                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
+                                  print(ds.data());
+                                  print(ds.data().runtimeType);
+                                  //print(theDbuThreadReplies[1].runtimeType);
+                                  myIndex = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu);
+                                  //where replyToReplyDoc is in theDbuThreadReplies.
+                                  print(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu));
+                                  myReplyToReplyDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][myIndex];
+                                  //print("myReplyToReplyDbu runtime type: ${myReplyToReplyDbu.runtimeType}");
+                                  myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
+                                  //myReplyToReplyDbuList = myReplyToReplyDbuMap.entries.map((myEntry) => "${myEntry.key}: ${myEntry.value}").toList();
+
+                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuMap];
+                                  dbuRepliesToReplies.add(tempReplyToReplyList);
+
+                                  //print("This is replyToReplyOriginalInfoDbu: ${replyToReplyOriginalInfoDbu["replyContent"]}");
+                                  //print(myReplyToReplyDbuList["replyContent"]);
+                                  print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
+
+                                  print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
+                                  print("This is myIndex: $myIndex");
+                                  discussionBoardUpdatesReplyBool = true;
+                                  discussionBoardUpdatesReplyingToReplyBool = true;
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                  //print('Reply no. ' + index.toString());
+                                  //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                  //print('Reply no. ' + index.toString());
+                                  //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                  /*var replyContent;
+                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                        myDoc = d.docs.first.id;
+                                        print(myDoc);
+                                      });
+                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").get().then((secondRd) {
+                                        replyContent = secondRd.docs.first;
+                                        replyToReplyDoc = secondRd.docs.first.id;
+
+                                        replyToReplyTime = secondRd.docs.first["time"];
+                                        print("This is t: $replyToReplyTime");
+
+                                        print(replyToReplyDoc);
+                                      });
+                                      print(theDbuThreadReplies);
+                                      print(replyToReplyDoc);
+                                      print(replyContent);
+                                      myIndex = theDbuThreadReplies.indexOf(replyToReplyDoc); //where replyToReplyDoc is in theDbuThreadReplies.
+                                      print("This is myIndex: $myIndex");
+                                      discussionBoardUpdatesReplyBool = true;
+                                      discussionBoardUpdatesReplyingToReplyBool = true;
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                      //print('Reply no. ' + index.toString());
+                                      //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                      /*myIndex = index;
+                                      discussionBoardUpdatesReplyBool = true;
+                                      discussionBoardUpdatesReplyingToReplyBool = true;
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                      print('Reply no. ' + index.toString());
+                                      print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());*/
+                                      print(theDbuThreadReplies.length);*/
+                                }
+                            ),
+                          ]
+                      ),
+                    ],
+                  );
+                }
+            ),
+          ],
+        ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -340,295 +662,18 @@ class discussionBoardUpdatesThreadContent extends StatelessWidget{
                 print('Replying to the thread');
               }
             ),
-            Column(
-              children: <Widget>[
-                  ListView.builder(
-                    padding: EdgeInsets.zero,
-                    physics: NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: theDbuThreadReplies.length,//FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").length//5,//discussionBoardUpdatesThreads[int.parse(threadID)][4].length,
-                    itemBuilder: (context, index){
-                      return Column(
-                        children: <Widget>[
-                          theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"] != null && theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"] != null?//theDbuThreadReplies.length > 0?//discussionBoardUpdatesThreads[int.parse(threadID)][4][index][3] != "" && discussionBoardUpdatesThreads[int.parse(threadID)][4][index][4] != ""?
-                          Column(
-                          children: <Widget>[
-                            Container(
-                              height: 5,
-                            ),
-                            Container(
-                              //Reply to: Reply content, reply poster
-                              //child: Text("Reply to: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: "Reply to: ${theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString()}",
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: "\nPosted by: ",
-                                    ),
-                                    TextSpan(
-                                      text: "${theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()}",
-                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                        dbuClickedOnUser = true,
-                                        nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
-                                        nameData.docs.forEach((person){
-                                          theUsersData = person.data();
-                                        }),
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                      }
-                                    ),
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              color: Colors.blueGrey[300], //theDbuThreadReplies[index]["theOriginalReplyInfo"].toString(), theDbuThreadReplies[index]["theOriginalReplyInfo"].toString()
-                              width: 360,
-                            ),
-                            //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
-                            Container(
-                              //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
-                              //child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: "Posted on: ${theDbuThreadReplies[index]["time"].toDate().toString()}",
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: "\nPosted by: ",
-                                    ),
-                                    TextSpan(
-                                      text: "${theDbuThreadReplies[index]["replier"].toString()}",
-                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                        dbuClickedOnUser = true,
-                                        nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theDbuThreadReplies[index]["replier"].toString().toLowerCase()).get(),
-                                        nameData.docs.forEach((person){
-                                          theUsersData = person.data();
-                                        }),
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                      }
-                                    ),
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text: "\n${theDbuThreadReplies[index]["replyContent"].toString()}",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              color: Colors.grey[300],
-                              width: 360,
-                            ),
-                            InkWell(
-                              child: Ink(
-                                child: Text("Reply"),
-                                color: Colors.grey[500],
-                                width: 360,
-                              ),
-                              onTap: () async{
-                                replyToReplyTimeDbu = theDbuThreadReplies![index]["time"];//.toString();
-                                replyToReplyContentDbu = theDbuThreadReplies![index]["replyContent"].toString();
-                                replyToReplyPosterDbu = theDbuThreadReplies![index]["replier"].toString();
-                                //replyToReplyOriginalInfoDbu = theDbuThreadReplies![index]["originalReplyInfo"].toString();
-                                //print("This is replyToReplyOriginalInfoDbu: ${replyToReplyOriginalInfoDbu["replyContent"]}");
-                                print("This is replyToReplyTime: $replyToReplyTimeDbu");
-
-                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                  myDocDbu = d.docs.first.id;
-                                  print(myDocDbu);
-                                });
-                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
-                                  replyToReplyDocDbu = rd.docs.first.id;
-                                  //replyToReplyTime = rd.docs.first["time"];
-                                  //print("This is t: $replyToReplyTime");
-                                  //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-                                  print(replyToReplyDocDbu);
-                                });
-
-                                //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
-
-                                //.add(oneReply);
-
-                                //QuerySnapshot dbuRepliesQuerySnapshot = (await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get()) as QuerySnapshot<Object?>;//.do//.docs.map((myDoc) => myDoc.data()).toList();;
-                                //theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
-                                print(theDbuThreadReplies);
-                                print(replyToReplyDocDbu);
-                                //print(replyToReplyDoc.snapshot);
-                                //print(replyContent);
-                                DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
-                                print(ds.data());
-                                print(ds.data().runtimeType);
-                                print(theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeDbu));
-                                myIndex = theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeDbu); //where replyToReplyDoc is in theDbuThreadReplies.
-                                myReplyToReplyDbu = theDbuThreadReplies[myIndex];
-                                //print("myReplyToReplyDbu runtime type: ${myReplyToReplyDbu.runtimeType}");
-                                //myReplyToReplyDbu.forEach((k, v) => myReplyToReplyDbuList.);//List.from(myReplyToReplyDbu);//Map.from(myReplyToReplyDbu);
-                                myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
-                                //myReplyToReplyDbuList = myReplyToReplyDbuMap.entries.map((myEntry) => "${myEntry.key}: ${myEntry.value}").toList();
-
-                                List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuMap];
-                                dbuRepliesToReplies.add(tempReplyToReplyList);
-
-                                print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
-
-                                print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
-                                print("This is myIndex: $myIndex");
-                                discussionBoardUpdatesReplyBool = true;
-                                discussionBoardUpdatesReplyingToReplyBool = true;
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                //print('Reply no. ' + index.toString());
-                                //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
-                              }
-                            ),
-                          ]
-                          ): Column(
-                              children: <Widget>[
-                                Container(
-                                  height: 5,
-                                ),
-                                //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
-                                Container(
-                                  //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
-                                  //child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),
-                                  child: Text.rich(
-                                    TextSpan(
-                                      text: "Posted on: ${theDbuThreadReplies[index]["time"].toDate().toString()}",
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: "\nPosted by: ",
-                                        ),
-                                        TextSpan(
-                                          text: "${theDbuThreadReplies[index]["replier"].toString()}",
-                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                            dbuClickedOnUser = true,
-                                            nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theDbuThreadReplies[index]["replier"].toString().toLowerCase()).get(),
-                                            nameData.docs.forEach((person){
-                                              theUsersData = person.data();
-                                            }),
-                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          }
-                                        ),
-                                        TextSpan(
-                                          text: " ",
-                                        ),
-                                        TextSpan(
-                                          text: "\n${theDbuThreadReplies[index]["replyContent"].toString()}",
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  color: Colors.grey[300],
-                                  width: 360,
-                                ),
-                                InkWell(
-                                    child: Ink(
-                                      child: Text("Reply"),
-                                      color: Colors.grey[500],
-                                      width: 360,
-                                    ),
-                                    onTap: () async{
-                                      replyToReplyTimeDbu = theDbuThreadReplies![index]["time"];//.toString();
-                                      replyToReplyContentDbu = theDbuThreadReplies![index]["replyContent"].toString();
-                                      replyToReplyPosterDbu = theDbuThreadReplies![index]["replier"].toString();
-                                      //replyToReplyOriginalInfoDbu = theDbuThreadReplies![index]["originalReplyInfo"].toString();
-                                      //print("This is replyToReplyOriginalInfoDbu: $replyToReplyOriginalInfoDbu");
-                                      print("This is replyToReplyTime: $replyToReplyTimeDbu");
-
-                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                        myDocDbu = d.docs.first.id;
-                                        print(myDocDbu);
-                                      });
-                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
-                                        replyToReplyDocDbu = rd.docs.first.id;
-                                        //replyToReplyTime = rd.docs.first["time"];
-                                        //print("This is t: $replyToReplyTime");
-                                        //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-                                        print(replyToReplyDocDbu);
-                                      });
-
-                                      //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
-
-                                      //.add(oneReply);
-
-                                      //QuerySnapshot dbuRepliesQuerySnapshot = (await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get()) as QuerySnapshot<Object?>;//.do//.docs.map((myDoc) => myDoc.data()).toList();;
-                                      //theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
-                                      print(theDbuThreadReplies);
-                                      print(replyToReplyDocDbu);
-                                      //print(replyToReplyDoc.snapshot);
-                                      //print(replyContent);
-                                      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
-                                      print(ds.data());
-                                      print(ds.data().runtimeType);
-                                      //print(theDbuThreadReplies[1].runtimeType);
-                                      myIndex = theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeDbu);
-                                      //where replyToReplyDoc is in theDbuThreadReplies.
-                                      print(theDbuThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeDbu));
-                                      myReplyToReplyDbu = theDbuThreadReplies[myIndex];
-                                      //print("myReplyToReplyDbu runtime type: ${myReplyToReplyDbu.runtimeType}");
-                                      myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
-                                      //myReplyToReplyDbuList = myReplyToReplyDbuMap.entries.map((myEntry) => "${myEntry.key}: ${myEntry.value}").toList();
-
-                                      List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuMap];
-                                      dbuRepliesToReplies.add(tempReplyToReplyList);
-
-                                      //print("This is replyToReplyOriginalInfoDbu: ${replyToReplyOriginalInfoDbu["replyContent"]}");
-                                      //print(myReplyToReplyDbuList["replyContent"]);
-                                      print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
-
-                                      print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
-                                      print("This is myIndex: $myIndex");
-                                      discussionBoardUpdatesReplyBool = true;
-                                      discussionBoardUpdatesReplyingToReplyBool = true;
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                      //print('Reply no. ' + index.toString());
-                                      //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
-                                      //print('Reply no. ' + index.toString());
-                                      //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
-                                      /*var replyContent;
-                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                        myDoc = d.docs.first.id;
-                                        print(myDoc);
-                                      });
-                                      await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").get().then((secondRd) {
-                                        replyContent = secondRd.docs.first;
-                                        replyToReplyDoc = secondRd.docs.first.id;
-
-                                        replyToReplyTime = secondRd.docs.first["time"];
-                                        print("This is t: $replyToReplyTime");
-
-                                        print(replyToReplyDoc);
-                                      });
-                                      print(theDbuThreadReplies);
-                                      print(replyToReplyDoc);
-                                      print(replyContent);
-                                      myIndex = theDbuThreadReplies.indexOf(replyToReplyDoc); //where replyToReplyDoc is in theDbuThreadReplies.
-                                      print("This is myIndex: $myIndex");
-                                      discussionBoardUpdatesReplyBool = true;
-                                      discussionBoardUpdatesReplyingToReplyBool = true;
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                      //print('Reply no. ' + index.toString());
-                                      //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
-                                      /*myIndex = index;
-                                      discussionBoardUpdatesReplyBool = true;
-                                      discussionBoardUpdatesReplyingToReplyBool = true;
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                      print('Reply no. ' + index.toString());
-                                      print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());*/
-                                      print(theDbuThreadReplies.length);*/
-                                    }
-                                ),
-                              ]
-                          ),
-                      ],
-                    );
-                  }
-                ),
-              ],
+            Center(
+              child: listOfDbuThreadReplies.length != 0? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Text("There are no replies to this thread yet. Be the first to reply!"),
             ),
+            NumberPaginator(
+              height: 50,
+              numberPages: listOfDbuThreadReplies.length != 0? numberOfPagesDbuThreadReplies : 1,
+              onPageChange: (myIndexDbuThreadReplies){
+                setState((){
+                  theCurrentPageDbuThreadReplies = myIndexDbuThreadReplies;
+                });
+              }
+            )
           ],
         ),
       ),
