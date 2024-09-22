@@ -182,6 +182,7 @@ class registerPageState extends State<registerPage>{
                 child: Text("Sign Up for Star Expedition", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),
               ),
                 onTap: () async{
+                  print("theUsers: ${myMain.theUsers}");
                   if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
                     if(myMain.discussionBoardLogin == true){
                       //userId = userId + 1;

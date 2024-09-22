@@ -55,6 +55,7 @@ var usersBlurb;
 var numberOfPostsUserHasMade;
 
 var theListOfUsers = [];
+//var usersOnStarExpedition = [];
 
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
@@ -234,10 +235,30 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
-  Users u1 = new Users(username: "John", email: "john@testing.com", password: "123");
+  List usersOnStarExpeditionDocs = [];
+  await FirebaseFirestore.instance.collection("User").get().then((snapshot){
+    snapshot.docs.forEach((item){
+      usersOnStarExpeditionDocs.add(item.data());
+    });
+  });
+  print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
+
+  for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
+    Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
+    theUsers!.add(u);
+  }
+  /*QuerySnapshot qs = await FirebaseFirestore.instance.collection("Users").get();
+  var thePeople = qs.docs.map((info) => info.data());
+  print("thePeople: ${thePeople}");*/
+
+  //print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
+
+  //print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
+
+  /*Users u1 = new Users(username: "John", email: "john@testing.com", password: "123");
   theUsers!.add(u1);
   print(theUsers);
-  print(theUsers![0].username); //one's username
+  print(theUsers![0].username);*/ //one's username
 
 
   //Directory d = await getTemporaryDirectory();
