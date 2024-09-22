@@ -27,6 +27,8 @@ import 'package:starexpedition4/settingsPage.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
 
+import 'loginPage.dart';
+
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
 DatabaseReference ref = FirebaseDatabase.instance.ref(myString);*/
@@ -63,8 +65,8 @@ var theListOfUsers = [];
 //String myOptionsNewUsers = userItemsNewUsers[0];
 //String myOptionsExistingUsers = userItemsExistingUsers[0];
 
-enum userItemsExistingUsers{myProfile, mySettings, logOut}
-enum userItemsNewUsers{myProfile, mySettings, logOut}
+//enum userItemsExistingUsers{myProfile, mySettings, logOut}
+//enum userItemsNewUsers{myProfile, mySettings, logOut}
 
 /*
 Future<String> get myDirectoryPath async{
@@ -473,7 +475,7 @@ class theStarExpeditionState extends State<StarExpedition> {
   theStarExpeditionState(this.starInfo);
   final CustomSearchDelegate csd = new CustomSearchDelegate();
 
-  userItemsExistingUsers? myChosenItemExistingUsers;
+  //userItemsExistingUsers? myChosenItemExistingUsers;
 
   @override
   Widget build(BuildContext context) {
@@ -522,7 +524,7 @@ class theStarExpeditionState extends State<StarExpedition> {
       ),
       body: Wrap(
         children: <Widget>[
-          myUsername == "" && myNewUsername == ""? // If myUsername is empty, it will show the Login container. If myUsername is not empty, it will show an empty SizedBox.
+          /*myUsername == "" && myNewUsername == ""? // If myUsername is empty, it will show the Login container. If myUsername is not empty, it will show an empty SizedBox.
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
@@ -638,7 +640,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                       ],
                     ),
                   ],
-                ):
+                ):*/
           Container(
             height: 5,
           ),
@@ -729,12 +731,73 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
         child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.red,
+              if(myNewUsername == "" && myUsername == "")
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                  ),
+                  child: Text("Star Expedition Navigation Drawer", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
                 ),
-                child: Text("Star Expedition Navigation Drawer", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+              if(myNewUsername != "" && myUsername == "")
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                  ),
+                  child: Text("Star Expedition Navigation Drawer\n\nHi ${myNewUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                ),
+              if(myNewUsername == "" && myUsername != "")
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                  ),
+                  child: Text("Star Expedition Navigation Drawer\n\nHi ${myUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                ),
+              ListTile(
+                title: myNewUsername == "" && myUsername == ""? Text("Login") : Text("Logout"),
+                  onTap: (){
+                    if(myNewUsername == "" && myUsername == "") {
+                      Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
+                    }
+                    else if((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != "")){
+                      myUsername = "";
+                      myNewUsername = "";
+                      theLoginPage.loginBool = false;
+                      print("Logging out from already existing account");
+                      Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                    }
+                  }
               ),
+              if((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != ""))
+                ListTile(
+                  title: Text("My Profile"),
+                  onTap: () async{
+                    if(myUsername != "" && myNewUsername == ""){
+                      await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
+                        usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                        numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                      });
+                      print("usersBlurb: ${usersBlurb}");
+                      print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                      Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
+                    }
+                    else if(myUsername == "" && myNewUsername != ""){
+                      await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
+                        usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                        numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                      });
+                      print("usersBlurb: ${usersBlurb}");
+                      print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                      Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
+                    }
+                  }
+                ),
+              if((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != ""))
+                ListTile(
+                  title: Text("Settings"),
+                  onTap: () {
+                    Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
+                  }
+                ),
               ListTile(
                 title: Text("Home"),
                 onTap: (){
