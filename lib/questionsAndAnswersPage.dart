@@ -48,6 +48,13 @@ class questionsAndAnswersPage extends StatefulWidget{
   questionsAndAnswersPageState createState() => questionsAndAnswersPageState();
 }
 
+class questionsAndAnswersThreadsPage extends StatefulWidget{
+  const questionsAndAnswersThreadsPage ({Key? key}) : super(key: key);
+
+  @override
+  questionsAndAnswersThreadContent createState() => questionsAndAnswersThreadContent();
+}
+
 class MyQuestionsAndAnswersPage extends StatelessWidget{
   const MyQuestionsAndAnswersPage ({Key? key}) : super(key: key);
 
@@ -157,7 +164,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                           print("Number of theQaaThreadReplies: ${theQaaThreadReplies.length}");
                           //}
 
-                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => questionsAndAnswersThreadContent()));
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => questionsAndAnswersThreadsPage()));
                         }
                     ),
                   ],
@@ -225,9 +232,245 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
   }
 }
 
-class questionsAndAnswersThreadContent extends StatelessWidget{
+class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsPage>{
+  int numberOfPagesQaaThreadReplies = 0;
+  int theCurrentPageQaaThreadReplies = 0;
+
+  var listOfQaaThreadReplies = theQaaThreadReplies;
+  var mySublistsQaaThreadReplies = [];
+  int portionSizeQaaThreadReplies = 10;
+
   @override
   Widget build(BuildContext context){
+    if(listOfQaaThreadReplies == []){
+      numberOfPagesQaaThreadReplies = 1;
+    }
+    else{
+      numberOfPagesQaaThreadReplies = (((theQaaThreadReplies.length)/10)).ceil();
+
+      for(int i = 0; i < listOfQaaThreadReplies.length; i += portionSizeQaaThreadReplies){
+        mySublistsQaaThreadReplies.add(listOfQaaThreadReplies.sublist(i, i + portionSizeQaaThreadReplies > listOfQaaThreadReplies.length ? listOfQaaThreadReplies.length : i + portionSizeQaaThreadReplies));
+      }
+    }
+
+    var myPagesQaaThreadReplies = List.generate(
+      numberOfPagesQaaThreadReplies,
+        (myIndex) => Column(
+          children: <Widget>[
+            ListView.builder(
+                padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies].length,
+                itemBuilder: (context, index){
+                  return Column(
+                    children: <Widget>[
+                      mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replyContent"] != null && mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replier"] != null?
+                      Column(
+                          children: <Widget>[
+                            Container(
+                              height: 5,
+                            ),
+                            Container(
+                              //child: Text("Reply to: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Reply to: ${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: "${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          qaaClickedOnUser = true,
+                                          qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                          qaaNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              color: Colors.blueGrey[300],
+                              width: 360,
+                            ),
+                            Container(
+                              //child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Posted on: ${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: "${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          qaaClickedOnUser = true,
+                                          qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                          qaaNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: "\n${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replyContent"].toString()}",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              color: Colors.grey[300],
+                              width: 360,
+                            ),
+                            InkWell(
+                                child: Ink(
+                                  child: Text("Reply"),
+                                  color: Colors.grey[500],
+                                  width: 360,
+                                ),
+                                onTap: () async{
+                                  replyToReplyTimeQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["time"];
+                                  replyToReplyContentQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["replyContent"].toString();
+                                  replyToReplyPosterQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["replier"].toString();
+
+                                  print("This is replyToReplyTime: $replyToReplyTimeQaa");
+
+                                  await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                    myDocQaa = d.docs.first.id;
+                                    print(myDocQaa);
+                                  });
+
+                                  await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").where("time", isEqualTo: replyToReplyTimeQaa).get().then((rd) {
+                                    replyToReplyDocQaa = rd.docs.first.id;
+                                    print(replyToReplyDocQaa);
+                                  });
+
+                                  print(theQaaThreadReplies);
+                                  print(replyToReplyDocQaa);
+
+                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").doc(replyToReplyDocQaa).get();
+                                  print(ds.data());
+                                  print(ds.data().runtimeType);
+                                  print(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeQaa));
+
+                                  myIndex = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeQaa);
+                                  myReplyToReplyQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][myIndex];
+                                  myReplyToReplyQaaMap = Map.from(myReplyToReplyQaa);
+
+                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentQaa, replyToReplyPosterQaa, myReplyToReplyQaaMap];
+                                  qaaRepliesToReplies.add(tempReplyToReplyList);
+
+                                  print("myReplyToReplyQaaMap: ${myReplyToReplyQaaMap}");
+                                  print("myReplyToReplyQaa: ${myReplyToReplyQaa["replyContent"]}");
+                                  print("This is myIndex: $myIndex");
+
+                                  questionsAndAnswersReplyBool = true;
+                                  questionsAndAnswersReplyingToReplyBool = true;
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                  //print('Reply no. ' + index.toString());
+                                  //print('Replying to this reply: ' + questionsAndAnswersThreads[int.parse(threadID)][4][myIndex][2].toString());
+                                }
+                            ),
+                          ]
+                      ): Column(
+                          children: <Widget>[
+                            Container(
+                              height: 5,
+                            ),
+                            Container(
+                              //child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "Posted on: ${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: "${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString()}",
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          qaaClickedOnUser = true,
+                                          qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                          qaaNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      text: "\n${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replyContent"].toString()}",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              color: Colors.grey[300],
+                              width: 360,
+                            ),
+                            InkWell(
+                                child: Ink(
+                                  child: Text("Reply"),
+                                  color: Colors.grey[500],
+                                  width: 360,
+                                ),
+                                onTap: () async{
+                                  replyToReplyTimeQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["time"];
+                                  replyToReplyContentQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["replyContent"].toString();
+                                  replyToReplyPosterQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["replier"].toString();
+
+                                  print("This is replyToReplyTime: $replyToReplyTimeQaa");
+
+                                  await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                    myDocQaa = d.docs.first.id;
+                                    print(myDocQaa);
+                                  });
+
+                                  await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").where("time", isEqualTo: replyToReplyTimeQaa).get().then((rd) {
+                                    replyToReplyDocQaa = rd.docs.first.id;
+                                    print(replyToReplyDocQaa);
+                                  });
+
+                                  print(theQaaThreadReplies);
+                                  print(replyToReplyDocQaa);
+
+                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").doc(replyToReplyDocQaa).get();
+                                  print(ds.data());
+                                  print(ds.data().runtimeType);
+
+                                  myIndex = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeQaa);
+
+                                  print(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeQaa));
+                                  myReplyToReplyQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][myIndex];
+
+                                  myReplyToReplyQaaMap = Map.from(myReplyToReplyQaa);
+
+                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentQaa, replyToReplyPosterQaa, myReplyToReplyQaaMap];
+                                  qaaRepliesToReplies.add(tempReplyToReplyList);
+
+                                  print("myReplyToReplyQaaMap: ${myReplyToReplyQaaMap}");
+
+                                  print("myReplyToReplyQaa: ${myReplyToReplyQaa["replyContent"]}");
+                                  print("This is myIndex: $myIndex");
+
+                                  questionsAndAnswersReplyBool = true;
+                                  questionsAndAnswersReplyingToReplyBool = true;
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                }
+                            ),
+                          ]
+                      ),
+                    ],
+                  );
+                }
+            ),
+          ],
+        ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -294,219 +537,17 @@ class questionsAndAnswersThreadContent extends StatelessWidget{
                 print('Replying to the thread');
               }
           ),
-          Column(
-            children: <Widget>[
-              ListView.builder(
-                  padding: EdgeInsets.zero,
-                  physics: NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: theQaaThreadReplies.length,
-                  itemBuilder: (context, index){
-                    return Column(
-                      children: <Widget>[
-                        theQaaThreadReplies[index]["theOriginalReplyInfo"]["replyContent"] != null && theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"] != null?
-                        Column(
-                            children: <Widget>[
-                              Container(
-                                height: 5,
-                              ),
-                              Container(
-                                //child: Text("Reply to: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
-                                child: Text.rich(
-                                  TextSpan(
-                                    text: "Reply to: ${theQaaThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: "${theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()}",
-                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                          qaaClickedOnUser = true,
-                                          qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
-                                          qaaNameData.docs.forEach((person){
-                                            theUsersData = person.data();
-                                          }),
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        }
-                                      ),
-                                      TextSpan(
-                                        text: " ",
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                color: Colors.blueGrey[300],
-                                width: 360,
-                              ),
-                              Container(
-                                //child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
-                                child: Text.rich(
-                                  TextSpan(
-                                    text: "Posted on: ${theQaaThreadReplies[index]["time"].toDate().toString()}\nPosted by: ",
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: "${theQaaThreadReplies[index]["replier"].toString()}",
-                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                          qaaClickedOnUser = true,
-                                          qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theQaaThreadReplies[index]["replier"].toString().toLowerCase()).get(),
-                                          qaaNameData.docs.forEach((person){
-                                            theUsersData = person.data();
-                                          }),
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        }
-                                      ),
-                                      TextSpan(
-                                        text: " ",
-                                      ),
-                                      TextSpan(
-                                        text: "\n${theQaaThreadReplies[index]["replyContent"].toString()}",
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                color: Colors.grey[300],
-                                width: 360,
-                              ),
-                              InkWell(
-                                  child: Ink(
-                                    child: Text("Reply"),
-                                    color: Colors.grey[500],
-                                    width: 360,
-                                  ),
-                                  onTap: () async{
-                                    replyToReplyTimeQaa = theQaaThreadReplies![index]["time"];
-                                    replyToReplyContentQaa = theQaaThreadReplies![index]["replyContent"].toString();
-                                    replyToReplyPosterQaa = theQaaThreadReplies![index]["replier"].toString();
-
-                                    print("This is replyToReplyTime: $replyToReplyTimeQaa");
-
-                                    await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                      myDocQaa = d.docs.first.id;
-                                      print(myDocQaa);
-                                    });
-
-                                    await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").where("time", isEqualTo: replyToReplyTimeQaa).get().then((rd) {
-                                      replyToReplyDocQaa = rd.docs.first.id;
-                                      print(replyToReplyDocQaa);
-                                    });
-
-                                    print(theQaaThreadReplies);
-                                    print(replyToReplyDocQaa);
-
-                                    DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").doc(replyToReplyDocQaa).get();
-                                    print(ds.data());
-                                    print(ds.data().runtimeType);
-                                    print(theQaaThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeQaa));
-
-                                    myIndex = theQaaThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeQaa);
-                                    myReplyToReplyQaa = theQaaThreadReplies[myIndex];
-                                    myReplyToReplyQaaMap = Map.from(myReplyToReplyQaa);
-
-                                    List<dynamic> tempReplyToReplyList = [replyToReplyContentQaa, replyToReplyPosterQaa, myReplyToReplyQaaMap];
-                                    qaaRepliesToReplies.add(tempReplyToReplyList);
-
-                                    print("myReplyToReplyQaaMap: ${myReplyToReplyQaaMap}");
-                                    print("myReplyToReplyQaa: ${myReplyToReplyQaa["replyContent"]}");
-                                    print("This is myIndex: $myIndex");
-
-                                    questionsAndAnswersReplyBool = true;
-                                    questionsAndAnswersReplyingToReplyBool = true;
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                    //print('Reply no. ' + index.toString());
-                                    //print('Replying to this reply: ' + questionsAndAnswersThreads[int.parse(threadID)][4][myIndex][2].toString());
-                                  }
-                              ),
-                            ]
-                        ): Column(
-                            children: <Widget>[
-                              Container(
-                                height: 5,
-                              ),
-                              Container(
-                                //child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
-                                child: Text.rich(
-                                  TextSpan(
-                                    text: "Posted on: ${theQaaThreadReplies[index]["time"].toDate().toString()}\nPosted by: ",
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: "${theQaaThreadReplies[index]["replier"].toString()}",
-                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                          qaaClickedOnUser = true,
-                                          qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theQaaThreadReplies[index]["replier"].toString().toLowerCase()).get(),
-                                          qaaNameData.docs.forEach((person){
-                                            theUsersData = person.data();
-                                          }),
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        }
-                                      ),
-                                      TextSpan(
-                                        text: " ",
-                                      ),
-                                      TextSpan(
-                                        text: "\n${theQaaThreadReplies[index]["replyContent"].toString()}",
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                color: Colors.grey[300],
-                                width: 360,
-                              ),
-                              InkWell(
-                                  child: Ink(
-                                    child: Text("Reply"),
-                                    color: Colors.grey[500],
-                                    width: 360,
-                                  ),
-                                  onTap: () async{
-                                    replyToReplyTimeQaa = theQaaThreadReplies![index]["time"];
-                                    replyToReplyContentQaa = theQaaThreadReplies![index]["replyContent"].toString();
-                                    replyToReplyPosterQaa = theQaaThreadReplies![index]["replier"].toString();
-
-                                    print("This is replyToReplyTime: $replyToReplyTimeQaa");
-
-                                    await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                      myDocQaa = d.docs.first.id;
-                                      print(myDocQaa);
-                                    });
-
-                                    await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").where("time", isEqualTo: replyToReplyTimeQaa).get().then((rd) {
-                                      replyToReplyDocQaa = rd.docs.first.id;
-                                      print(replyToReplyDocQaa);
-                                    });
-
-                                    print(theQaaThreadReplies);
-                                    print(replyToReplyDocQaa);
-
-                                    DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").doc(replyToReplyDocQaa).get();
-                                    print(ds.data());
-                                    print(ds.data().runtimeType);
-
-                                    myIndex = theQaaThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeQaa);
-
-                                    print(theQaaThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeQaa));
-                                    myReplyToReplyQaa = theQaaThreadReplies[myIndex];
-
-                                    myReplyToReplyQaaMap = Map.from(myReplyToReplyQaa);
-
-                                    List<dynamic> tempReplyToReplyList = [replyToReplyContentQaa, replyToReplyPosterQaa, myReplyToReplyQaaMap];
-                                    qaaRepliesToReplies.add(tempReplyToReplyList);
-
-                                    print("myReplyToReplyQaaMap: ${myReplyToReplyQaaMap}");
-
-                                    print("myReplyToReplyQaa: ${myReplyToReplyQaa["replyContent"]}");
-                                    print("This is myIndex: $myIndex");
-
-                                    questionsAndAnswersReplyBool = true;
-                                    questionsAndAnswersReplyingToReplyBool = true;
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                  }
-                              ),
-                            ]
-                        ),
-                      ],
-                    );
-                  }
-              ),
-            ],
+          Center(
+            child: listOfQaaThreadReplies.length != 0? myPagesQaaThreadReplies[theCurrentPageQaaThreadReplies] : Text("There are no replies to this thread yet. Be the first to reply!"),
+          ),
+          NumberPaginator(
+            height: 50,
+            numberPages: listOfQaaThreadReplies.length != 0? numberOfPagesQaaThreadReplies : 1,
+            onPageChange: (myIndexQaaThreadReplies){
+              setState((){
+                theCurrentPageQaaThreadReplies = myIndexQaaThreadReplies;
+              });
+            }
           ),
         ],
       ),
