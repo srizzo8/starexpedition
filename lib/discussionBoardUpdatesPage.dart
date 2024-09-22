@@ -673,7 +673,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                   theCurrentPageDbuThreadReplies = myIndexDbuThreadReplies;
                 });
               }
-            )
+            ),
           ],
         ),
       ),
