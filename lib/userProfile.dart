@@ -17,7 +17,7 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show MaxLengthEnforcement, rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 import 'package:starexpedition4/userSearchBar.dart';
@@ -131,6 +131,8 @@ class editingMyUserProfile extends StatelessWidget{
                 labelText: "Information about yourself",
                 contentPadding: EdgeInsets.symmetric(vertical: 80),
               ),
+              maxLines: null,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
               controller: informationAboutMyselfController,
             ),
           ),
@@ -203,6 +205,7 @@ class userProfileInUserPerspective extends StatelessWidget{
             height: 5,
           ),
           Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: myUsername != "" && myNewUsername == ""?
                 Text("${myUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)):
                 Text("${myNewUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
@@ -211,12 +214,14 @@ class userProfileInUserPerspective extends StatelessWidget{
             height: 5,
           ),
           Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Text("\nInformation About You:", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: myUsername != "" && myNewUsername == ""?
-                Text("${myMain.usersBlurb}"):
-                Text("${myMain.usersBlurb}"),
+                Text("${myMain.usersBlurb}", textAlign: TextAlign.center):
+                Text("${myMain.usersBlurb}", textAlign: TextAlign.center),
           ),
           Container(
             height: 5,
@@ -225,7 +230,8 @@ class userProfileInUserPerspective extends StatelessWidget{
             child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           Container(
-            child: Text("${myMain.numberOfPostsUserHasMade}"),
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Text("${myMain.numberOfPostsUserHasMade}", textAlign: TextAlign.center),
           ),
         ],
       ),
@@ -277,15 +283,18 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             height: 5,
           ),
           Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Text("${theUsersData["username"]}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
             height: 5,
           ),
           Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Text("\nInformation About ${theUsersData["username"]}:", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Text("${theUsersData["usernameProfileInformation"]["userInformation"]}"),
           ),
           Container(
@@ -295,6 +304,7 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Text("${theUsersData["usernameProfileInformation"]["numberOfPosts"]}"),
           ),
         ],
