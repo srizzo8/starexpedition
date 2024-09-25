@@ -55,6 +55,11 @@ var usersBlurb;
 var numberOfPostsUserHasMade;
 
 var theListOfUsers = [];
+
+var docNameForStarsTrackedNewUser;
+var docNameForStarsTrackedExistingUser;
+
+var myStarsTracked = [];
 //var usersOnStarExpedition = [];
 
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
@@ -1480,9 +1485,11 @@ class articlePage extends StatelessWidget{
                       child: Text("\nConfirmed Terrestrial Planets",
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
                     ),
-                    Expanded(
-                        child: ListView.builder(
+                    Column(
+                        children: <Widget>[
+                        ListView.builder(
                         itemCount: myData.length,
+                        shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Column(
                             children: <Widget>[
@@ -1515,6 +1522,49 @@ class articlePage extends StatelessWidget{
                             ],
                           );
                         }),
+                          if((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != ""))
+                            Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: InkWell(
+                                  child: Ink(
+                                    color: Colors.black,
+                                    padding: EdgeInsets.all(5.0),
+                                    child: Text("Track this Star", style: TextStyle(color: Colors.white)),
+                                  ),
+                                  onTap: () async{
+                                    if(myNewUsername != "" && myUsername == ""){
+                                      var user = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                      user.docs.forEach((result){
+                                        //var theNewUsersData = result.data();
+                                        docNameForStarsTrackedNewUser = result.id;
+                                      });
+                                      myStarsTracked.add(theStar.starName!);
+
+                                      FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedNewUser).update({
+                                        "usernameProfileInformation.starsTracked": myStarsTracked,
+                                      }).then((outcome) {
+                                        print("starsTracked updated!");
+                                      });
+                                    }
+                                    else if(myNewUsername == "" && myUsername != ""){
+                                      var existingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                      existingUser.docs.forEach((result){
+                                        //var theNewUsersData = result.data();
+                                        docNameForStarsTrackedExistingUser = result.id;
+                                      });
+                                      myStarsTracked.add(theStar.starName!);
+
+                                      FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedExistingUser).update({
+                                        "usernameProfileInformation.starsTracked": myStarsTracked,
+                                      }).then((outcome) {
+                                        print("starsTracked updated!");
+                                      });
+                                    }
+                                    print("Tracking the star");
+                                  }
+                              ),
+                            ),
+                        ],
                       ),
                   ],
                 );
