@@ -59,7 +59,7 @@ var theListOfUsers = [];
 var docNameForStarsTrackedNewUser;
 var docNameForStarsTrackedExistingUser;
 
-var myStarsTracked = [];
+var myStarsTracked = {};
 //var usersOnStarExpedition = [];
 
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
@@ -1533,56 +1533,172 @@ class articlePage extends StatelessWidget{
                                   ),
                                   onTap: () async{
                                     if(myNewUsername != "" && myUsername == ""){
+                                      TextEditingController reasonForStarTrackNewUsers = TextEditingController();
+
                                       var user = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
                                       user.docs.forEach((result){
-                                        //var theNewUsersData = result.data();
                                         docNameForStarsTrackedNewUser = result.id;
                                       });
                                       print(docNameForStarsTrackedNewUser);
 
-                                      //myStarsTracked = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-
                                       DocumentSnapshot<Map<dynamic, dynamic>> mySnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedNewUser).get();
-
                                       Map<dynamic, dynamic>? individual = mySnapshotNewUsers.data();
+
                                       print(individual?["usernameProfileInformation"]);
                                       print(individual?["usernameProfileInformation"]["starsTracked"]);
 
                                       myStarsTracked = individual?["usernameProfileInformation"]["starsTracked"];
 
-                                      myStarsTracked.add(theStar.starName!);
-
-                                      FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedNewUser).update({
-                                        "usernameProfileInformation.starsTracked": myStarsTracked,
-                                      }).then((outcome) {
-                                        print("starsTracked updated!");
-                                      });
+                                      if(myStarsTracked.length < 3){
+                                        showDialog(
+                                            context: bc,
+                                            builder: (BuildContext context){
+                                              return AlertDialog(
+                                                title: Text("Tracking ${theStar.starName!}"),
+                                                content: Wrap(
+                                                  children: <Widget>[
+                                                    Center(
+                                                      child: Container(
+                                                        alignment: Alignment.centerLeft,
+                                                        child: Text("Why are you interested in tracking this star?"),
+                                                      ),
+                                                    ),
+                                                    TextField(
+                                                      controller: reasonForStarTrackNewUsers,
+                                                    ),
+                                                  ],
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                      child: Text("Ok"),
+                                                      onPressed: () async{
+                                                        if(reasonForStarTrackNewUsers.text != ""){
+                                                          myStarsTracked.addEntries({theStar.starName!: reasonForStarTrackNewUsers.text}.entries);
+                                                          FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedNewUser).update({
+                                                            "usernameProfileInformation.starsTracked": myStarsTracked,
+                                                          }).then((outcome) {
+                                                            print("starsTracked updated!");
+                                                          });
+                                                          Navigator.pop(bc);
+                                                        }
+                                                      }
+                                                  ),
+                                                  TextButton(
+                                                      child: Text("Cancel"),
+                                                      onPressed: ()=>{
+                                                        Navigator.pop(context),
+                                                      }
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                        );
+                                      }
+                                      else{
+                                        showDialog(
+                                            context: bc,
+                                            builder: (BuildContext context){
+                                              return AlertDialog(
+                                                title: Text("Unable to track star"),
+                                                content: Text("You have reached the maximum number of stars to track!"),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                      child: Container(
+                                                        child: Text("Ok"),
+                                                      ),
+                                                      onPressed: (){
+                                                        Navigator.pop(context);
+                                                      }
+                                                  )
+                                                ],
+                                              );
+                                            }
+                                        );
+                                      }
                                     }
                                     else if(myNewUsername == "" && myUsername != ""){
+                                      TextEditingController reasonForStarTrackExistingUsers = TextEditingController();
+
                                       var user = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
                                       user.docs.forEach((result){
-                                        //var theNewUsersData = result.data();
                                         docNameForStarsTrackedExistingUser = result.id;
                                       });
                                       print(docNameForStarsTrackedExistingUser);
 
-                                      //myStarsTracked = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-
                                       DocumentSnapshot<Map<dynamic, dynamic>> mySnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedExistingUser).get();
-
                                       Map<dynamic, dynamic>? individual = mySnapshotExistingUsers.data();
+
                                       print(individual?["usernameProfileInformation"]);
                                       print(individual?["usernameProfileInformation"]["starsTracked"]);
 
                                       myStarsTracked = individual?["usernameProfileInformation"]["starsTracked"];
 
-                                      myStarsTracked.add(theStar.starName!);
-
-                                      FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedExistingUser).update({
-                                        "usernameProfileInformation.starsTracked": myStarsTracked,
-                                      }).then((outcome) {
-                                        print("starsTracked updated!");
-                                      });
+                                      if(myStarsTracked.length < 3){
+                                        showDialog(
+                                          context: bc,
+                                          builder: (BuildContext context){
+                                            return AlertDialog(
+                                              title: Text("Tracking ${theStar.starName!}"),
+                                              content: Wrap(
+                                                children: <Widget>[
+                                                  Center(
+                                                    child: Container(
+                                                      alignment: Alignment.centerLeft,
+                                                      child: Text("Why are you interested in tracking this star?"),
+                                                    ),
+                                                  ),
+                                                  TextField(
+                                                    controller: reasonForStarTrackExistingUsers,
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  child: Text("Ok"),
+                                                  onPressed: () async{
+                                                    if(reasonForStarTrackExistingUsers.text != ""){
+                                                      myStarsTracked.addEntries({theStar.starName!: reasonForStarTrackExistingUsers.text}.entries);
+                                                      FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedExistingUser).update({
+                                                        "usernameProfileInformation.starsTracked": myStarsTracked,
+                                                      }).then((outcome) {
+                                                      print("starsTracked updated!");
+                                                    });
+                                                    Navigator.pop(bc);
+                                                  }
+                                                }
+                                              ),
+                                              TextButton(
+                                                child: Text("Cancel"),
+                                                onPressed: ()=>{
+                                                  Navigator.pop(context),
+                                                }
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                      );
+                                      }
+                                      else{
+                                        showDialog(
+                                          context: bc,
+                                          builder: (BuildContext context){
+                                            return AlertDialog(
+                                              title: Text("Unable to track star"),
+                                              content: Text("You have reached the maximum number of stars to track!"),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Container(
+                                                    child: Text("Ok"),
+                                                  ),
+                                                  onPressed: (){
+                                                    Navigator.pop(context);
+                                                  }
+                                                )
+                                              ],
+                                            );
+                                          }
+                                        );
+                                      }
                                     }
                                     print("Tracking the star");
                                   }

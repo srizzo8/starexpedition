@@ -199,7 +199,7 @@ class registerPageState extends State<registerPage>{
                           emailAddress: email.text,
                           password: password.text,
                           usernameLowercased: theUsername.text.toLowerCase(),
-                          usernameProfileInformation: {"userInformation": "", "numberOfPosts": 0, "starsTracked": [], "planetsTracked": []},
+                          usernameProfileInformation: {"userInformation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
                       );
                       createUser(theNewUser);
                       //dbService.addUser(theNewUser);
@@ -228,7 +228,7 @@ class registerPageState extends State<registerPage>{
                           emailAddress: email.text,
                           password: password.text,
                           usernameLowercased: theUsername.text.toLowerCase(),
-                          usernameProfileInformation: {"userInformation": "", "numberOfPosts": 0, "starsTracked": [], "planetsTracked": []},
+                          usernameProfileInformation: {"userInformation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
                       );
                       createUser(theNewUser);
                       //dbService.addUser(theNewUser);
