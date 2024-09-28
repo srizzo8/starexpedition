@@ -63,6 +63,11 @@ var docNameForStarsTrackedExistingUser;
 bool starTracked = false;
 //var usersOnStarExpedition = [];
 
+var docNameForPlanetsTrackedNewUser;
+var docNameForPlanetsTrackedExistingUser;
+
+bool planetTracked = false;
+
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
 
@@ -1330,8 +1335,6 @@ class articlePage extends StatelessWidget{
     return [discoveryDate.value.toString(), distanceFromStar.value.toString(), earthMasses.value.toString(), orbitalPeriod.value.toString(), planetTemperature.value.toString()];
   }
 
-
-
   @override
   Widget build(BuildContext bc) {
     var info = ModalRoute.of(bc)!.settings;
@@ -1511,7 +1514,7 @@ class articlePage extends StatelessWidget{
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
                     ),
                     Column(
-                        children: <Widget>[
+                      children: <Widget>[
                         ListView.builder(
                         itemCount: myData.length,
                         shrinkWrap: true,
@@ -1541,6 +1544,34 @@ class articlePage extends StatelessWidget{
                                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
                                     //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
                                     //Navigator.push(context, new MaterialPageRoute(builder: (context) => new planetArticle(starAndPlanetInfo: new starAndPlanetInformation)));
+
+                                    //Is the planet tracked by the user?
+                                    if(myNewUsername != "" && myUsername == ""){
+                                      var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                      var theDocNameForNewUsers;
+                                      theNewUser.docs.forEach((result){
+                                        theDocNameForNewUsers = result.id;
+                                      });
+
+                                      DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                                      Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                      planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                      print("planetTracked: ${planetTracked}");
+                                    }
+                                    else if(myNewUsername == "" && myUsername != ""){
+                                      var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                      var theDocNameForExistingUsers;
+                                      theExistingUser.docs.forEach((result){
+                                        theDocNameForExistingUsers = result.id;
+                                      });
+
+                                      DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                                      Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                      planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                      print("planetTracked: ${planetTracked}");
+                                    }
                                   },
                                 ),
                               ),
@@ -1937,6 +1968,284 @@ class planetArticle extends StatelessWidget{
                   ],
                 ),
               ),
+              if(((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != "")) && planetTracked == false)
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: InkWell(
+                    child: Ink(
+                      color: Colors.black,
+                      padding: EdgeInsets.all(5.0),
+                      child: Text("Track this Planet", style: TextStyle(color: Colors.white)),
+                    ),
+                    onTap: () async{
+                      if(myNewUsername != "" && myUsername == ""){
+                        TextEditingController reasonForPlanetTrackNewUsers = TextEditingController();
+
+                        var user = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                        user.docs.forEach((result){
+                          docNameForPlanetsTrackedNewUser = result.id;
+                        });
+                        print(docNameForPlanetsTrackedNewUser);
+
+                        DocumentSnapshot<Map<dynamic, dynamic>> mySnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedNewUser).get();
+                        Map<dynamic, dynamic>? individual = mySnapshotNewUsers.data();
+
+                        print(individual?["usernameProfileInformation"]);
+                        print(individual?["usernameProfileInformation"]["planetsTracked"]);
+
+                        var planetsTracked = individual?["usernameProfileInformation"]["planetsTracked"];
+
+                        if(planetsTracked.length < 3){
+                          showDialog(
+                              context: theContext,
+                              builder: (BuildContext context){
+                                return AlertDialog(
+                                  title: Text("Tracking ${correctPlanet}"),
+                                  content: Wrap(
+                                    children: <Widget>[
+                                      Center(
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text("Why are you interested in tracking this planet?"),
+                                        ),
+                                      ),
+                                      TextField(
+                                        controller: reasonForPlanetTrackNewUsers,
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                        child: Text("Ok"),
+                                        onPressed: () async{
+                                          if(reasonForPlanetTrackNewUsers.text != ""){
+                                            planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackNewUsers.text}.entries);
+                                            FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedNewUser).update({
+                                              "usernameProfileInformation.planetsTracked": planetsTracked,
+                                            }).then((outcome) {
+                                              print("planetsTracked updated!");
+                                            });
+                                            Navigator.pop(theContext);
+                                            showSearch(
+                                                context: context,
+                                                delegate: CustomSearchDelegate()
+                                            );
+                                          }
+                                        }
+                                    ),
+                                    TextButton(
+                                        child: Text("Cancel"),
+                                        onPressed: ()=>{
+                                          Navigator.pop(context),
+                                        }
+                                    ),
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                        else{
+                          showDialog(
+                              context: theContext,
+                              builder: (BuildContext context){
+                                return AlertDialog(
+                                  title: Text("Unable to track planet"),
+                                  content: Text("You have reached the maximum number of planets to track!"),
+                                  actions: <Widget>[
+                                    TextButton(
+                                        child: Container(
+                                          child: Text("Ok"),
+                                        ),
+                                        onPressed: (){
+                                          Navigator.pop(context);
+                                        }
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                      }
+                      else if(myNewUsername == "" && myUsername != ""){
+                        TextEditingController reasonForPlanetTrackExistingUsers = TextEditingController();
+
+                        var user = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                        user.docs.forEach((result){
+                          docNameForPlanetsTrackedExistingUser = result.id;
+                        });
+                        print(docNameForPlanetsTrackedExistingUser);
+
+                        DocumentSnapshot<Map<dynamic, dynamic>> mySnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedExistingUser).get();
+                        Map<dynamic, dynamic>? individual = mySnapshotExistingUsers.data();
+
+                        print(individual?["usernameProfileInformation"]);
+                        print(individual?["usernameProfileInformation"]["planetsTracked"]);
+
+                        var planetsTracked = individual?["usernameProfileInformation"]["planetsTracked"];
+
+                        if(planetsTracked.length < 3){
+                          showDialog(
+                              context: theContext,
+                              builder: (BuildContext context){
+                                return AlertDialog(
+                                  title: Text("Tracking ${correctPlanet}"),
+                                  content: Wrap(
+                                    children: <Widget>[
+                                      Center(
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text("Why are you interested in tracking this planet?"),
+                                        ),
+                                      ),
+                                      TextField(
+                                        controller: reasonForPlanetTrackExistingUsers,
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                        child: Text("Ok"),
+                                        onPressed: () async{
+                                          if(reasonForPlanetTrackExistingUsers.text != ""){
+                                            planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackExistingUsers.text}.entries);
+                                            FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedExistingUser).update({
+                                              "usernameProfileInformation.planetsTracked": planetsTracked,
+                                            }).then((outcome) {
+                                              print("planetsTracked updated!");
+                                            });
+                                            Navigator.pop(context);
+                                            showSearch(
+                                                context: context,
+                                                delegate: CustomSearchDelegate()
+                                            );
+                                          }
+                                        }
+                                    ),
+                                    TextButton(
+                                        child: Text("Cancel"),
+                                        onPressed: ()=>{
+                                          Navigator.pop(context),
+                                        }
+                                    ),
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                        else{
+                          showDialog(
+                              context: theContext,
+                              builder: (BuildContext context){
+                                return AlertDialog(
+                                  title: Text("Unable to track planet"),
+                                  content: Text("You have reached the maximum number of planets to track!"),
+                                  actions: <Widget>[
+                                    TextButton(
+                                        child: Container(
+                                          child: Text("Ok"),
+                                        ),
+                                        onPressed: (){
+                                          Navigator.pop(context);
+                                        }
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                      }
+                    }
+                  ),
+                ),
+              if(((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != "")) && planetTracked == true)
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: InkWell(
+                      child: Ink(
+                        color: Colors.black,
+                        padding: EdgeInsets.all(5.0),
+                        child: Text("Untrack this Planet", style: TextStyle(color: Colors.white)),
+                      ),
+                      onTap: () async{
+                        showDialog(
+                            context: theContext,
+                            builder: (BuildContext context){
+                              return AlertDialog(
+                                title: Text("Untracking Planet"),
+                                content: Text("Are you sure you want to untrack this planet?"),
+                                actions: <Widget>[
+                                  TextButton(
+                                      child: Text("Yes"),
+                                      onPressed: () async{
+                                        print("Untracking planet");
+                                        if(myNewUsername != "" && myUsername == ""){
+                                          var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                          var docForTheNewUser;
+
+                                          theNewUser.docs.forEach((result){
+                                            docForTheNewUser = result.id;
+                                          });
+
+                                          DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docForTheNewUser).get();
+                                          Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                          var planetsTracked = individual?["usernameProfileInformation"]["planetsTracked"];
+
+                                          planetsTracked.remove(correctPlanet);
+                                          FirebaseFirestore.instance.collection("User").doc(docForTheNewUser).update({
+                                            "usernameProfileInformation.planetsTracked": planetsTracked,
+                                          }).then((outcome) {
+                                            print("Untracked the planet!");
+                                          });
+
+                                          Navigator.pop(context);
+                                          showSearch(
+                                              context: context,
+                                              delegate: CustomSearchDelegate()
+                                          );
+                                        }
+                                        else if(myNewUsername == "" && myUsername != ""){
+                                          var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                          var docForTheExistingUser;
+
+                                          theExistingUser.docs.forEach((result){
+                                            docForTheExistingUser = result.id;
+                                          });
+
+                                          DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docForTheExistingUser).get();
+                                          Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                          var planetsTracked = individual?["usernameProfileInformation"]["planetsTracked"];
+
+                                          planetsTracked.remove(correctPlanet);
+                                          FirebaseFirestore.instance.collection("User").doc(docForTheExistingUser).update({
+                                            "usernameProfileInformation.planetsTracked": planetsTracked,
+                                          }).then((outcome) {
+                                            print("Untracked the planet!");
+                                          });
+
+                                          Navigator.pop(context);
+                                          showSearch(
+                                              context: context,
+                                              delegate: CustomSearchDelegate()
+                                          );
+                                        }
+                                      }
+                                  ),
+                                  TextButton(
+                                      child: Text("No"),
+                                      onPressed: (){
+                                        Navigator.pop(context);
+                                        print("No");
+                                      }
+                                  )
+                                ],
+                              );
+                            }
+                        );
+                      }
+                  ),
+                ),
             ],
               /*Text("Discovery date: " + informationAboutPlanet[0].toString() + '\n' +
                   "Distance from star: " + informationAboutPlanet[1].toString() + '\n' +
