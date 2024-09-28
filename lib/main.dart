@@ -59,7 +59,8 @@ var theListOfUsers = [];
 var docNameForStarsTrackedNewUser;
 var docNameForStarsTrackedExistingUser;
 
-var myStarsTracked = {};
+//var myStarsTracked = {};
+bool starTracked = false;
 //var usersOnStarExpedition = [];
 
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
@@ -1230,13 +1231,35 @@ class CustomSearchDelegate extends SearchDelegate {
             onTap: () async{
               correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
               print(correctStar);
-              //showAlertDialog(context);
-             // Navigator.push(context, MaterialPageRoute(builder: (context) => articlePage(ms: ));
-              //correctStar = myMatchQuery[index].starName!;
-              //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(), arguments: )); // I am trying to use this to push the data from the star search suggestions to the dialog
-              // Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
-              //print(Navigator.push(context, showAlertDialog(context)));
               starInfo = await getStarInformation();
+
+              if(myNewUsername != "" && myUsername == ""){
+                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                var docNameForNewUsers;
+                theNewUser.docs.forEach((result){
+                  docNameForNewUsers = result.id;
+                });
+
+                DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
+                print("starTracked: ${starTracked}");
+              }
+              else if(myNewUsername == "" && myUsername != ""){
+                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                var docNameForExistingUsers;
+                theExistingUser.docs.forEach((result){
+                  docNameForExistingUsers = result.id;
+                });
+
+                DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
+                print("starTracked: ${starTracked}");
+              }
+
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
             },
             leading: Image.asset(myMatchQuery[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
@@ -1306,6 +1329,8 @@ class articlePage extends StatelessWidget{
 
     return [discoveryDate.value.toString(), distanceFromStar.value.toString(), earthMasses.value.toString(), orbitalPeriod.value.toString(), planetTemperature.value.toString()];
   }
+
+
 
   @override
   Widget build(BuildContext bc) {
@@ -1522,7 +1547,7 @@ class articlePage extends StatelessWidget{
                             ],
                           );
                         }),
-                          if((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != ""))
+                          if(((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != "")) && starTracked == false)
                             Padding(
                               padding: EdgeInsets.all(10.0),
                               child: InkWell(
@@ -1547,9 +1572,9 @@ class articlePage extends StatelessWidget{
                                       print(individual?["usernameProfileInformation"]);
                                       print(individual?["usernameProfileInformation"]["starsTracked"]);
 
-                                      myStarsTracked = individual?["usernameProfileInformation"]["starsTracked"];
+                                      var starsTracked = individual?["usernameProfileInformation"]["starsTracked"];
 
-                                      if(myStarsTracked.length < 3){
+                                      if(starsTracked.length < 3){
                                         showDialog(
                                             context: bc,
                                             builder: (BuildContext context){
@@ -1573,13 +1598,17 @@ class articlePage extends StatelessWidget{
                                                       child: Text("Ok"),
                                                       onPressed: () async{
                                                         if(reasonForStarTrackNewUsers.text != ""){
-                                                          myStarsTracked.addEntries({theStar.starName!: reasonForStarTrackNewUsers.text}.entries);
+                                                          starsTracked.addEntries({theStar.starName!: reasonForStarTrackNewUsers.text}.entries);
                                                           FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedNewUser).update({
-                                                            "usernameProfileInformation.starsTracked": myStarsTracked,
+                                                            "usernameProfileInformation.starsTracked": starsTracked,
                                                           }).then((outcome) {
                                                             print("starsTracked updated!");
                                                           });
                                                           Navigator.pop(bc);
+                                                          showSearch(
+                                                              context: context,
+                                                              delegate: CustomSearchDelegate()
+                                                          );
                                                         }
                                                       }
                                                   ),
@@ -1631,9 +1660,9 @@ class articlePage extends StatelessWidget{
                                       print(individual?["usernameProfileInformation"]);
                                       print(individual?["usernameProfileInformation"]["starsTracked"]);
 
-                                      myStarsTracked = individual?["usernameProfileInformation"]["starsTracked"];
+                                      var starsTracked = individual?["usernameProfileInformation"]["starsTracked"];
 
-                                      if(myStarsTracked.length < 3){
+                                      if(starsTracked.length < 3){
                                         showDialog(
                                           context: bc,
                                           builder: (BuildContext context){
@@ -1657,13 +1686,17 @@ class articlePage extends StatelessWidget{
                                                   child: Text("Ok"),
                                                   onPressed: () async{
                                                     if(reasonForStarTrackExistingUsers.text != ""){
-                                                      myStarsTracked.addEntries({theStar.starName!: reasonForStarTrackExistingUsers.text}.entries);
+                                                      starsTracked.addEntries({theStar.starName!: reasonForStarTrackExistingUsers.text}.entries);
                                                       FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedExistingUser).update({
-                                                        "usernameProfileInformation.starsTracked": myStarsTracked,
+                                                        "usernameProfileInformation.starsTracked": starsTracked,
                                                       }).then((outcome) {
                                                       print("starsTracked updated!");
                                                     });
                                                     Navigator.pop(bc);
+                                                    showSearch(
+                                                        context: context,
+                                                        delegate: CustomSearchDelegate()
+                                                    );
                                                   }
                                                 }
                                               ),
@@ -1702,6 +1735,95 @@ class articlePage extends StatelessWidget{
                                     }
                                     print("Tracking the star");
                                   }
+                              ),
+                            ),
+                          if(((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != "")) && starTracked == true)
+                            Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: InkWell(
+                                child: Ink(
+                                  color: Colors.black,
+                                  padding: EdgeInsets.all(5.0),
+                                  child: Text("Untrack this Star", style: TextStyle(color: Colors.white)),
+                                ),
+                                onTap: () async{
+                                  showDialog(
+                                    context: bc,
+                                    builder: (BuildContext context){
+                                      return AlertDialog(
+                                        title: Text("Untracking Star"),
+                                        content: Text("Are you sure you want to untrack this star?"),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text("Yes"),
+                                            onPressed: () async{
+                                              print("Untracking star");
+                                              if(myNewUsername != "" && myUsername == ""){
+                                                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                var docForTheNewUser;
+
+                                                theNewUser.docs.forEach((result){
+                                                  docForTheNewUser = result.id;
+                                                });
+
+                                                DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docForTheNewUser).get();
+                                                Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                                var starsTracked = individual?["usernameProfileInformation"]["starsTracked"];
+
+                                                starsTracked.remove(theStar.starName!);
+                                                FirebaseFirestore.instance.collection("User").doc(docForTheNewUser).update({
+                                                  "usernameProfileInformation.starsTracked": starsTracked,
+                                                }).then((outcome) {
+                                                  print("Untracked the star!");
+                                                });
+
+                                                Navigator.pop(context);
+                                                showSearch(
+                                                    context: context,
+                                                    delegate: CustomSearchDelegate()
+                                                );
+                                              }
+                                              else if(myNewUsername == "" && myUsername != ""){
+                                                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                var docForTheExistingUser;
+                                                //var starsExistingUserIsTracking;
+                                                theExistingUser.docs.forEach((result){
+                                                  docForTheExistingUser = result.id;
+                                                });
+
+                                                DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docForTheExistingUser).get();
+                                                Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                                var starsTracked = individual?["usernameProfileInformation"]["starsTracked"];
+
+                                                starsTracked.remove(theStar.starName!);
+                                                FirebaseFirestore.instance.collection("User").doc(docForTheExistingUser).update({
+                                                  "usernameProfileInformation.starsTracked": starsTracked,
+                                                }).then((outcome) {
+                                                  print("Untracked the star!");
+                                                });
+
+                                                Navigator.pop(context);
+                                                showSearch(
+                                                    context: context,
+                                                    delegate: CustomSearchDelegate()
+                                                );
+                                              }
+                                            }
+                                          ),
+                                          TextButton(
+                                            child: Text("No"),
+                                            onPressed: (){
+                                              Navigator.pop(context);
+                                              print("No");
+                                            }
+                                          )
+                                        ],
+                                      );
+                                    }
+                                  );
+                                },
                               ),
                             ),
                         ],
