@@ -2037,11 +2037,11 @@ class planetArticle extends StatelessWidget{
                                                         }).then((outcome) {
                                                           print("planetsTracked updated!");
                                                         });
+
+                                                        hostStarInformation = await getStarInformation();
+                                                        print("hoststarinformation: ${hostStarInformation}");
                                                         Navigator.pop(theContext);
-                                                        showSearch(
-                                                            context: context,
-                                                            delegate: CustomSearchDelegate()
-                                                        );
+                                                        Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));
                                                       }
                                                     }
                                                 ),
@@ -2125,11 +2125,11 @@ class planetArticle extends StatelessWidget{
                                                         }).then((outcome) {
                                                           print("planetsTracked updated!");
                                                         });
+
+                                                        hostStarInformation = await getStarInformation();
+                                                        print("hoststarinformation: ${hostStarInformation}");
                                                         Navigator.pop(context);
-                                                        showSearch(
-                                                            context: context,
-                                                            delegate: CustomSearchDelegate()
-                                                        );
+                                                        Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));
                                                       }
                                                     }
                                                 ),
@@ -2210,11 +2210,10 @@ class planetArticle extends StatelessWidget{
                                                       print("Untracked the planet!");
                                                     });
 
+                                                    hostStarInformation = await getStarInformation();
+                                                    print("hoststarinformation: ${hostStarInformation}");
                                                     Navigator.pop(context);
-                                                    showSearch(
-                                                        context: context,
-                                                        delegate: CustomSearchDelegate()
-                                                    );
+                                                    Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));
                                                   }
                                                   else if(myNewUsername == "" && myUsername != ""){
                                                     var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -2236,11 +2235,10 @@ class planetArticle extends StatelessWidget{
                                                       print("Untracked the planet!");
                                                     });
 
+                                                    hostStarInformation = await getStarInformation();
+                                                    print("hoststarinformation: ${hostStarInformation}");
                                                     Navigator.pop(context);
-                                                    showSearch(
-                                                        context: context,
-                                                        delegate: CustomSearchDelegate()
-                                                    );
+                                                    Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));
                                                   }
                                                 }
                                             ),
