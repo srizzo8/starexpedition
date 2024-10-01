@@ -227,11 +227,57 @@ class userProfileInUserPerspective extends StatelessWidget{
             height: 5,
           ),
           Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           Container(
             padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Text("${myMain.numberOfPostsUserHasMade}", textAlign: TextAlign.center),
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Text("\nStars Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            height: 5,
+          ),
+          /*SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: ListView.builder(
+                itemCount: myMain.starsUserTracked.length,
+                shrinkWrap: true,
+                itemBuilder: (bc, myIndexStars){
+                  return Container(
+                    child: Text("${myMain.starsUserTracked.keys}\n${myMain.starsUserTracked.values}\n\n"),
+                  );
+                }),
+          ),*/
+          Column(
+            children: <Widget>[
+              //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
+              for(int s = 0; s < (myMain.starsUserTracked.keys.toList()).length; s++)
+                Text("${myMain.starsUserTracked.keys.toList()[s]}\n${myMain.starsUserTracked.values.toList()[s]}\n\n", textAlign: TextAlign.center),
+            ],
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Text("\nPlanets Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            height: 5,
+          ),
+          Column(
+            children: <Widget>[
+              //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
+              for(int p = 0; p < (myMain.planetsUserTracked.keys.toList()).length; p++)
+                Text("${myMain.planetsUserTracked.keys.toList()[p]}\n${myMain.planetsUserTracked.values.toList()[p]}\n\n", textAlign: TextAlign.center),
+            ],
           ),
         ],
       ),

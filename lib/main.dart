@@ -53,6 +53,8 @@ var userProfileData;
 var userProfileDoc;
 var usersBlurb;
 var numberOfPostsUserHasMade;
+var starsUserTracked;
+var planetsUserTracked;
 
 var theListOfUsers = [];
 
@@ -807,18 +809,26 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                       await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
                         usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
                         numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                        starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
+                        planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
                       });
                       print("usersBlurb: ${usersBlurb}");
                       print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                      print("starsUserTracked: ${starsUserTracked}");
+                      print("planetsUserTracked: ${planetsUserTracked}");
                       Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
                     }
                     else if(myUsername == "" && myNewUsername != ""){
                       await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
                         usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
                         numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                        starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
+                        planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
                       });
                       print("usersBlurb: ${usersBlurb}");
                       print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                      print("starsUserTracked: ${starsUserTracked}");
+                      print("planetsUserTracked: ${planetsUserTracked}");
                       Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
                     }
                   }
