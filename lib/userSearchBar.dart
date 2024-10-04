@@ -97,6 +97,7 @@ class mySearch extends SearchDelegate{
             });
             print("You clicked on someone's name: ${myResult}");
             print("The user's data: ${theUsersData}");
+            print("Stars tracked: ${theUsersData["usernameProfileInformation"]["starsTracked"]}");
             Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
           }
         );
