@@ -199,7 +199,8 @@ class userProfileInUserPerspective extends StatelessWidget{
           }
         ),
       ),
-      body: Column(
+      body: SingleChildScrollView(
+        child: Column(
         children: <Widget>[
           Container(
             height: 5,
@@ -280,6 +281,7 @@ class userProfileInUserPerspective extends StatelessWidget{
             ],
           ),
         ],
+        ),
       ),
     );
   }
@@ -323,7 +325,8 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             }
         ),
       ),
-      body: Column(
+      body: SingleChildScrollView(
+        child: Column(
         children: <Widget>[
           Container(
             height: 5,
@@ -384,6 +387,7 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             ],
           ),
         ],
+        ),
       ),
     );
   }
