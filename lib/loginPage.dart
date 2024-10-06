@@ -135,36 +135,34 @@ class loginPageState extends State<loginPage>{
                     if(usernameController.text != "" && passwordController.text != "") {
                       var userDocument;
 
-                      //Finding lower case version of usernames
-                      /*List<String> usernameList = [];
-                await FirebaseFirestore.instance.collection("User").get().then((v){
-                  for(var item in v.docs){
-                    usernameList.add(item.data()["username"].toLowerCase());
-                    print("Item: ${usernameList}");
-                  }
-                });*/
-
                       //userResult
-                      var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
-                      userResult.docs.forEach((outcome){
-                        userDocument = outcome.data();
-                        //userLowercased = outcome.data()["username"].toLowerCase();
-                        print("This is the outcome: ${outcome.data()}");
-                      });
+                      if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
+                        var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
+                        userResult.docs.forEach((outcome){
+                          userDocument = outcome.data();
+                          //userLowercased = outcome.data()["username"].toLowerCase();
+                          print("This is the outcome: ${outcome.data()}");
+                        });
+
+                        print("keys: ${userDocument["password"]}");
+                        print("userDocument: $userDocument");
+                      }
+                      else{
+                        userDocument = null;
+                      }
 
                       //if(usernameList.contains(usernameController.text.toLowerCase())
 
-                      var passwordDocument;
+                      /*var passwordDocument;
                       var passwordResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: passwordController.text).get();
                       passwordResult.docs.forEach((outcome){
                         passwordDocument = outcome.data();
-                      });
-
-                      print("userDocument: $userDocument");
-                      print("passwordDocument: $passwordDocument");
+                      });*/
+                      //print("passwordDocument: $passwordDocument");
 
                       //if(userLowercased == usernameController.text.toLowerCase())
-                      if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
+                      //if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
+                      if(userDocument != null && userDocument["usernameLowercased"] == usernameController.text.toLowerCase() && userDocument["password"] == passwordController.text && usernameController.text != "" && passwordController.text != ""){ //myMain.theUsers!.contains(usernameController.text)
                         if(myMain.discussionBoardLogin == true){
                           await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
                             myUsername = theUn.docs.first.data()["username"];
@@ -186,11 +184,12 @@ class loginPageState extends State<loginPage>{
                           print("myUsername: " + myUsername);
                           print("myNewUsername: " + theRegisterPage.myNewUsername);
                           loginBool = true;
+                          //print("Outcome: ${userDocument.keys.sort()}");
                         }
                       }
                       else{
-                        print("userDocument: $userDocument");
-                        print("passwordDocument: $passwordDocument");
+                        //print("userDocument info: ${userDocument["usernameLowercased"]}, ${userDocument["password"]}");
+                        //print("passwordDocument: $passwordDocument");
                         showDialog(
                             context: context,
                             builder: (BuildContext theContext){
