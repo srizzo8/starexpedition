@@ -280,22 +280,34 @@ class replyThreadPageState extends State<replyThreadPage>{
                         });
                       }
                     }
-                  }
                     else{
                       pendingDiscussionBoardUpdatesReply.add("");
                       pendingDiscussionBoardUpdatesReply.add("");
                       print("I do not exist");
                     }
-                    //discussionBoardUpdatesPage.discussionBoardUpdatesThreads.toList()[threadNum][4].add(pendingDiscussionBoardUpdatesReply);
-                    //= discussionBoardUpdatesPage.discussionBoardUpdatesReplies.toString();
-                    //print(pendingDiscussionBoardUpdatesReply);
-                    //discussionBoardUpdatesPage.discussionBoardUpdatesReplies.add(pendingDiscussionBoardUpdatesReply);
+
                     print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsIterable);
                     print(discussionBoardUpdatesPage.discussionBoardUpdatesReplies);
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][0]);
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][1]);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                     discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;
+                  }
+                    /*else{
+                      pendingDiscussionBoardUpdatesReply.add("");
+                      pendingDiscussionBoardUpdatesReply.add("");
+                      print("I do not exist");
+                    }*/
+                    //discussionBoardUpdatesPage.discussionBoardUpdatesThreads.toList()[threadNum][4].add(pendingDiscussionBoardUpdatesReply);
+                    //= discussionBoardUpdatesPage.discussionBoardUpdatesReplies.toString();
+                    //print(pendingDiscussionBoardUpdatesReply);
+                    //discussionBoardUpdatesPage.discussionBoardUpdatesReplies.add(pendingDiscussionBoardUpdatesReply);
+                    /*print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsIterable);
+                    print(discussionBoardUpdatesPage.discussionBoardUpdatesReplies);
+                    //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][0]);
+                    //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][1]);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
+                    discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;*/
                   }
                   if(questionsAndAnswersPage.questionsAndAnswersReplyBool == true){
                     //For the Questions and Answers subforum:
@@ -780,9 +792,10 @@ class replyThreadPageState extends State<replyThreadPage>{
                       pendingNewDiscoveriesReply.add("");
                       print("I do not exist");
                     }
+
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
                     print(newDiscoveriesPage.reversedNewDiscoveriesThreadsIterable);
                     print(newDiscoveriesPage.newDiscoveriesReplies);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
                     newDiscoveriesPage.newDiscoveriesReplyBool = false;
                   }
                 }
