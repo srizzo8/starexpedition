@@ -95,16 +95,17 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
 
   Future<List<dynamic>> getDbuThreads() async{
     var theSublistDbu = [];
-    var pageNumDbu;
+    //var pageNumDbu;
 
     for(int i = 0; i < listOfDbuThreads.length; i += portionSizeDbu){
       theSublistDbu.add(listOfDbuThreads.sublist(i, i + portionSizeDbu > listOfDbuThreads.length ? listOfDbuThreads.length : i + portionSizeDbu));
+      //print("i: $i");
     }
 
-    pageNumDbu = theCurrentPageDbu;
+    //pageNumDbu = theCurrentPageDbu;
 
     return Future.delayed(Duration(seconds: 1), () {
-      return [theSublistDbu, pageNumDbu];
+      return theSublistDbu;
     });
   }
 
@@ -113,14 +114,14 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
     /*for(int i = 0; i < listOfDbuThreads.length; i += portionSizeDbu){
       mySublistsDbu.add(listOfDbuThreads.sublist(i, i + portionSizeDbu > listOfDbuThreads.length ? listOfDbuThreads.length : i + portionSizeDbu));
     }*/
-    mySublistsDbu = discussionBoardPage.theDbuSublists[0];
+    mySublistsDbu = discussionBoardPage.theDbuSublists;
 
     var myPagesDbu = List.generate(
       numberOfPagesDbu,
           (index) => Center(
             child: ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: mySublistsDbu[discussionBoardPage.theDbuSublists[1]].length,//mySublistsDbu[theCurrentPageDbu].length,//discussionBoardPage.discussionBoardUpdatesThreads.length,//discussionBoardUpdatesThreads.reversed.toList().length,
+            itemCount: mySublistsDbu[theCurrentPageDbu].length,//mySublistsDbu[theCurrentPageDbu].length,//discussionBoardPage.discussionBoardUpdatesThreads.length,//discussionBoardUpdatesThreads.reversed.toList().length,
             itemBuilder: (context, index){
               return Column(
                 children: <Widget>[
