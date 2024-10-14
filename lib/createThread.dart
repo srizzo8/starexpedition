@@ -318,8 +318,14 @@ class createThreadState extends State<createThread>{
                       questionsAndAnswersPendingThreads.add(List.empty(growable: true));
                       print(questionsAndAnswersPendingThreads);
                       questionsAndAnswersPage.questionsAndAnswersThreads.add(questionsAndAnswersPendingThreads);
+
+                      questionsAndAnswersThreadCount = await FirebaseFirestore.instance.collection("Questions_And_Answers").count().get();
+                      QuerySnapshot qaaQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").get();
+                      questionsAndAnswersThreads = qaaQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                      (questionsAndAnswersThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
+
                       print("Threads in questions and answers subforum: " + questionsAndAnswersPage.questionsAndAnswersThreads.toString());
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
                       //Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
                       questionsAndAnswersPage.questionsAndAnswersBool = false;
                       print(questionsAndAnswersPage.reversedQuestionsAndAnswersThreadsIterable.toList());
@@ -387,8 +393,14 @@ class createThreadState extends State<createThread>{
                         technologiesPendingThreads.add(List.empty(growable: true));
                         print(technologiesPendingThreads);
                         technologiesPage.technologiesThreads.add(technologiesPendingThreads);
+
+                        technologiesThreadCount = await FirebaseFirestore.instance.collection("Technologies").count().get();
+                        QuerySnapshot tQuerySnapshot = await FirebaseFirestore.instance.collection("Technologies").get();
+                        technologiesThreads = tQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                        (technologiesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
+
                         print("Threads in technologies subforum: " + technologiesPage.technologiesThreads.toString());
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
                         //Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
                         technologiesPage.technologiesBool = false;
                         print(technologiesPage.reversedTechnologiesThreadsIterable.toList());
@@ -456,8 +468,14 @@ class createThreadState extends State<createThread>{
                           projectsPendingThreads.add(List.empty(growable: true));
                           print(projectsPendingThreads);
                           projectsPage.projectsThreads.add(projectsPendingThreads);
+
+                          projectsThreadCount = await FirebaseFirestore.instance.collection("Projects").count().get();
+                          QuerySnapshot pQuerySnapshot = await FirebaseFirestore.instance.collection("Projects").get();
+                          projectsThreads = pQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                          (projectsThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
+
                           print("Threads in questions and answers subforum: " + projectsPage.projectsThreads.toString());
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
                           //Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
                           projectsPage.projectsBool = false;
                           print(projectsPage.reversedProjectsThreadsIterable.toList());
@@ -525,8 +543,14 @@ class createThreadState extends State<createThread>{
                             newDiscoveriesPendingThreads.add(List.empty(growable: true));
                             print(newDiscoveriesPendingThreads);
                             newDiscoveriesPage.newDiscoveriesThreads.add(newDiscoveriesPendingThreads);
+
+                            newDiscoveriesThreadCount = await FirebaseFirestore.instance.collection("New_Discoveries").count().get();
+                            QuerySnapshot ndQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").get();
+                            newDiscoveriesThreads = ndQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                            (newDiscoveriesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
+
                             print("Threads in discussion board updates subforum: " + newDiscoveriesPage.newDiscoveriesThreads.toString());
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardPage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
                             newDiscoveriesPage.newDiscoveriesBool = false;
                             print(newDiscoveriesPage.reversedNewDiscoveriesThreadsIterable.toList());
