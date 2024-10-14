@@ -89,13 +89,13 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
   int theCurrentPageDbu = 0;
 
   //Getting the threads that will appear in a page
-  var listOfDbuThreads = discussionBoardPage.discussionBoardUpdatesThreads;
+  var listOfDbuThreads;
   var mySublistsDbu = [];
   var portionSizeDbu = 10;
 
-  Future<List<dynamic>> getDbuThreads() async{
+  /*Future<List<dynamic>> getDbuThreads() async{
     var theSublistDbu = [];
-    //var pageNumDbu;
+    var myIndex;
 
     for(int i = 0; i < listOfDbuThreads.length; i += portionSizeDbu){
       theSublistDbu.add(listOfDbuThreads.sublist(i, i + portionSizeDbu > listOfDbuThreads.length ? listOfDbuThreads.length : i + portionSizeDbu));
@@ -107,14 +107,15 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
     return Future.delayed(Duration(seconds: 1), () {
       return theSublistDbu;
     });
-  }
+  }*/
 
   //build method
   Widget build(BuildContext bc){
-    /*for(int i = 0; i < listOfDbuThreads.length; i += portionSizeDbu){
+    listOfDbuThreads = discussionBoardPage.discussionBoardUpdatesThreads;
+    for(int i = 0; i < listOfDbuThreads.length; i += portionSizeDbu){
       mySublistsDbu.add(listOfDbuThreads.sublist(i, i + portionSizeDbu > listOfDbuThreads.length ? listOfDbuThreads.length : i + portionSizeDbu));
-    }*/
-    mySublistsDbu = discussionBoardPage.theDbuSublists;
+    }
+    print("listOfDbuThreads.length: ${listOfDbuThreads.length}");
 
     var myPagesDbu = List.generate(
       numberOfPagesDbu,
@@ -246,69 +247,49 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
             }
         ),
       ),
-      body: FutureBuilder(
-        builder: (bc, snapshot){
-          if(snapshot.connectionState == ConnectionState.done){
-            if(snapshot.hasError){
-              return Text("Sorry, an error has occurred. Please try again.");
-            }
-            else{
-              if(snapshot.hasData){
-                return Column(
-                  children: <Widget>[
-                    Container(
-                      height: 5,
-                    ),
-                    Container(
-                      child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-                    ),
-                    Container(
-                      height: 30,
-                      width: 120,
-                      margin: EdgeInsets.only(left: 250.0),
-                      alignment: Alignment.center,
-                      child: InkWell(
-                          child: Ink(
-                            color: Colors.black,
-                            padding: EdgeInsets.all(5.0),
-                            child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
-                          ),
-                          onTap: (){
-                            print(discussionBoardUpdatesBool);
-                            discussionBoardUpdatesBool = true;
-                            print(discussionBoardUpdatesBool);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
-                            print("I am going to write a new thread.");
-                          }
-                      ),
-                    ),
-                    Expanded(
-                      child: myPagesDbu[theCurrentPageDbu],
-                    ),
-                    NumberPaginator(
-                        height: 50,
-                        numberPages: numberOfPagesDbu,
-                        onPageChange: (myIndexDbu){
-                          setState((){
-                            theCurrentPageDbu = myIndexDbu;
-                          });
-                        }
-                    ),
-                  ],
-                );
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 5,
+          ),
+          Container(
+            child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: 30,
+            width: 120,
+            margin: EdgeInsets.only(left: 250.0),
+            alignment: Alignment.center,
+            child: InkWell(
+              child: Ink(
+                color: Colors.black,
+                padding: EdgeInsets.all(5.0),
+                child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+              ),
+              onTap: (){
+                print(discussionBoardUpdatesBool);
+                discussionBoardUpdatesBool = true;
+                print(discussionBoardUpdatesBool);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+                print("I am going to write a new thread.");
               }
-              else{
-                return Center(
-                  child: Text("No data is available on this subforum", textAlign: TextAlign.center),
-                );
-              }
+            ),
+          ),
+          Expanded(
+            child: myPagesDbu[theCurrentPageDbu],
+          ),
+          NumberPaginator(
+            height: 50,
+            numberPages: numberOfPagesDbu,
+            onPageChange: (myIndexDbu){
+              setState((){
+                theCurrentPageDbu = myIndexDbu;
+                print("theCurrentPageDbu: ${theCurrentPageDbu}, myIndexDbu: ${myIndexDbu}");
+              });
             }
-          }
-          else{
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-        future: getDbuThreads(),
+          ),
+        ],
+
         /*children: <Widget>[
           Container(
             height: 5,

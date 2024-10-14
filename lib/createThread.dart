@@ -240,9 +240,17 @@ class createThreadState extends State<createThread>{
                     discussionBoardUpdatesPendingThreads.add(List.empty(growable: true));
                     print(discussionBoardUpdatesPendingThreads);
                     discussionBoardUpdatesPage.discussionBoardUpdatesThreads.add(discussionBoardUpdatesPendingThreads);
+
+                    //Making sure the new thread gets added to the Discussion Board Updates subforum
+                    discussionBoardUpdatesThreadCount = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").count().get();
+                    QuerySnapshot dbuQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").get();
+                    discussionBoardUpdatesThreads = dbuQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                    (discussionBoardUpdatesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
+
+                    //Going to the Discussion Board Updates subforum
                     print("Threads in discussion board updates subforum: " + discussionBoardUpdatesPage.discussionBoardUpdatesThreads.toString());
                     print("Length: ${discussionBoardUpdatesThreads.length}");
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardPage())); //originally going to discussionBoardUpdatesPage
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage())); //originally going to discussionBoardUpdatesPage
                     discussionBoardUpdatesPage.discussionBoardUpdatesBool = false;
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsList);
                     print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsIterable.toList());

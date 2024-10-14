@@ -25,8 +25,6 @@ var projectsThreads;
 var newDiscoveriesThreadCount;
 var newDiscoveriesThreads;
 
-var theDbuSublists;
-
 class discussionBoardPage extends StatefulWidget{
   const discussionBoardPage ({Key? key}) : super(key: key);
 
@@ -123,7 +121,6 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                         print("Testing subforum button");
                         switch(subforumList[index]){
                           case "Discussion Board Updates":
-                            theDbuSublists = await discussionBoardUpdatesPageState().getDbuThreads();
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage()));
                             break;
                           case "Questions and Answers":
