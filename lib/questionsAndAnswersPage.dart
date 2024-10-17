@@ -41,6 +41,10 @@ Map<String, dynamic> myReplyToReplyQaaMap = {};
 var qaaNameData;
 bool qaaClickedOnUser = false;
 
+var mySublistsQaaInformation;
+var myIndexPlaceQaa;
+var myLocation;
+
 class questionsAndAnswersPage extends StatefulWidget{
   const questionsAndAnswersPage ({Key? key}) : super(key: key);
 
@@ -92,6 +96,8 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
       mySublistsQaa.add(listOfQaaThreads.sublist(i, i + portionSizeQaa > listOfQaaThreads.length ? listOfQaaThreads.length : i + portionSizeQaa));
     }
 
+    mySublistsQaaInformation = mySublistsQaa;
+
     var myPagesQaa = List.generate(
       numberOfPagesQaa,
         (index) => Center(
@@ -136,6 +142,10 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                           print("This is index: $index");
                           print("listOfQaaThreads is null? ${listOfQaaThreads == null}");
                           print("I clicked on a thread");
+
+                          myIndexPlaceQaa = index;
+                          myLocation = theCurrentPageQaa;
+
                           threadAuthorQaa = mySublistsQaa[theCurrentPageQaa][index]["poster"].toString();
                           threadTitleQaa = mySublistsQaa[theCurrentPageQaa][index]["threadTitle"].toString();
                           threadContentQaa = mySublistsQaa[theCurrentPageQaa][index]["threadContent"].toString();
@@ -479,7 +489,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            Navigator.pop(context),
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage())),
           }
         ),
       ),

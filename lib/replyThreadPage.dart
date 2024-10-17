@@ -47,6 +47,7 @@ var userDataForReplies;
 var docNameForReplies;
 
 var dbuDoc;
+var qaaDoc;
 
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
@@ -466,7 +467,36 @@ class replyThreadPageState extends State<replyThreadPage>{
                     //questionsAndAnswersPage.questionsAndAnswersThreads.toList()[threadNum][4].add(pendingQuestionsAndAnswersReply);
                     print(questionsAndAnswersPage.reversedQuestionsAndAnswersThreadsIterable);
                     print(questionsAndAnswersPage.questionsAndAnswersReplies);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersPage()));
+
+                    //Getting thread information
+                    print("page number: ${questionsAndAnswersPage.myLocation}, index place: ${questionsAndAnswersPage.myIndexPlaceQaa}");
+                    var mySublistsForQaa = questionsAndAnswersPage.mySublistsQaaInformation;
+                    var qaaReplies = questionsAndAnswersPage.theQaaThreadReplies;
+                    questionsAndAnswersPage.threadAuthorQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["poster"].toString();
+                    questionsAndAnswersPage.threadTitleQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadTitle"].toString();
+                    questionsAndAnswersPage.threadContentQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadContent"].toString();
+                    discussionBoardUpdatesPage.threadID = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadId"].toString();
+
+                    print("${questionsAndAnswersPage.threadAuthorQaa} + ${questionsAndAnswersPage.threadTitleQaa} + ${questionsAndAnswersPage.threadContentQaa} + ${questionsAndAnswersPage.threadID}");
+
+                    //Getting documents
+                    await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(questionsAndAnswersPage.threadID)).get().then((d) {
+                      qaaDoc = d.docs.first.id;
+                      print(qaaDoc);
+                    });
+
+                    //Getting the replies of the thread one made a reply to
+                    await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(qaaDoc).collection("Replies");//.add(oneReply);
+
+                    QuerySnapshot qaaRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(qaaDoc).collection("Replies").get();
+                    print("qaaReplies: ${qaaReplies.length}");
+                    qaaReplies = qaaRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                    print("qaaReplies: ${qaaReplies.length}");
+                    (qaaReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+
+                    questionsAndAnswersPage.theQaaThreadReplies = qaaReplies;
+
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersThreadsPage()));
                     questionsAndAnswersPage.questionsAndAnswersReplyBool = false;
                   }
                   if(technologiesPage.technologiesReplyBool == true){
