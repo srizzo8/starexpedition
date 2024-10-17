@@ -46,6 +46,10 @@ Map<String, dynamic> myReplyToReplyDbuMap = {};
 var nameData;
 bool dbuClickedOnUser = false;
 
+var mySublistsDbuInformation;
+var myIndexPlaceDbu;
+var myLocation;
+
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
 
@@ -117,6 +121,8 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
     }
     print("listOfDbuThreads.length: ${listOfDbuThreads.length}");
 
+    mySublistsDbuInformation = mySublistsDbu;
+
     var myPagesDbu = List.generate(
       numberOfPagesDbu,
           (index) => Center(
@@ -163,6 +169,8 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                         print("I clicked on a thread");
                         //print('You clicked on: ' + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1]);
                         //if(discussionBoardPage.discussionBoardUpdatesThreads[index].isNotEmpty){
+                        myIndexPlaceDbu = index;
+                        myLocation = theCurrentPageDbu;
                         threadAuthorDbu = mySublistsDbu[theCurrentPageDbu][index]["poster"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0];
                         threadTitleDbu = mySublistsDbu[theCurrentPageDbu][index]["threadTitle"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1];
                         threadContentDbu = mySublistsDbu[theCurrentPageDbu][index]["threadContent"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][2];
@@ -661,7 +669,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () => {
-              Navigator.pop(context),
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage())),
             }
         ),
       ),

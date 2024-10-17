@@ -46,6 +46,8 @@ var myInfoForReplies;
 var userDataForReplies;
 var docNameForReplies;
 
+var dbuDoc;
+
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
 
@@ -290,7 +292,40 @@ class replyThreadPageState extends State<replyThreadPage>{
                     print(discussionBoardUpdatesPage.discussionBoardUpdatesReplies);
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][0]);
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][1]);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
+
+                    //Getting the information of the thread one replied to
+                    print("page number: ${discussionBoardUpdatesPage.myLocation}, index place: ${discussionBoardUpdatesPage.myIndexPlaceDbu}");
+                    var mySublistsForDbu = discussionBoardUpdatesPage.mySublistsDbuInformation;
+                    var dbuReplies = discussionBoardUpdatesPage.theDbuThreadReplies;
+                    //print("mySublistsForDbu: ${mySublistsForDbu}");
+                    discussionBoardUpdatesPage.threadAuthorDbu = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["poster"].toString();
+                    discussionBoardUpdatesPage.threadTitleDbu = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["threadTitle"].toString();
+                    discussionBoardUpdatesPage.threadContentDbu = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["threadContent"].toString();
+                    discussionBoardUpdatesPage.threadID = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["threadId"].toString();
+
+                    print("${discussionBoardUpdatesPage.threadAuthorDbu} + ${discussionBoardUpdatesPage.threadTitleDbu} + ${discussionBoardUpdatesPage.threadContentDbu} + ${discussionBoardUpdatesPage.threadID}");
+
+                    //Getting documents
+                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(discussionBoardUpdatesPage.threadID)).get().then((d) {
+                      dbuDoc = d.docs.first.id;
+                      print(dbuDoc);
+                    });
+
+                    //Getting the replies of the thread one made a reply to
+                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(dbuDoc).collection("Replies");//.add(oneReply);
+
+                    QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(dbuDoc).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                    print("dbuReplies: ${dbuReplies.length}");
+                    dbuReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                    print("dbuReplies: ${dbuReplies.length}");
+                    (dbuReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+
+                    discussionBoardUpdatesPage.theDbuThreadReplies = dbuReplies;
+
+                    //Navigator.pop(context);
+                    Navigator.push(bc, MaterialPageRoute(builder: (context) => discussionBoardUpdatesPage.discussionBoardUpdatesThreadsPage()));
+
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                     discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;
                   }
                     /*else{
