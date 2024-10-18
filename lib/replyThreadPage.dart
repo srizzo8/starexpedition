@@ -48,6 +48,7 @@ var docNameForReplies;
 
 var dbuDoc;
 var qaaDoc;
+var technologiesDoc;
 
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
@@ -475,7 +476,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                     questionsAndAnswersPage.threadAuthorQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["poster"].toString();
                     questionsAndAnswersPage.threadTitleQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadTitle"].toString();
                     questionsAndAnswersPage.threadContentQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadContent"].toString();
-                    discussionBoardUpdatesPage.threadID = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadId"].toString();
+                    questionsAndAnswersPage.threadID = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadId"].toString();
 
                     print("${questionsAndAnswersPage.threadAuthorQaa} + ${questionsAndAnswersPage.threadTitleQaa} + ${questionsAndAnswersPage.threadContentQaa} + ${questionsAndAnswersPage.threadID}");
 
@@ -617,7 +618,37 @@ class replyThreadPageState extends State<replyThreadPage>{
                     }
                     print(technologiesPage.reversedTechnologiesThreadsIterable);
                     print(technologiesPage.technologiesReplies);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesPage()));
+
+                    //Getting thread information
+                    print("page number: ${technologiesPage.myLocation}, index place: ${technologiesPage.myIndexPlaceTechnologies}");
+                    var mySublistsForTechnologies = technologiesPage.mySublistsTechnologiesInformation;
+                    var technologiesReplies = technologiesPage.theTThreadReplies;
+                    technologiesPage.threadAuthorT = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["poster"].toString();
+                    technologiesPage.threadTitleT = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["threadTitle"].toString();
+                    technologiesPage.threadContentT = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["threadContent"].toString();
+                    technologiesPage.threadID = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["threadId"].toString();
+
+                    print("${technologiesPage.threadAuthorT} + ${technologiesPage.threadTitleT} + ${technologiesPage.threadContentT} + ${technologiesPage.threadID}");
+
+                    //Getting documents
+                    await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(technologiesPage.threadID)).get().then((d) {
+                      technologiesDoc = d.docs.first.id;
+                      print(technologiesDoc);
+                    });
+
+                    //Getting the replies of the thread one made a reply to
+                    await FirebaseFirestore.instance.collection("Technologies").doc(technologiesDoc).collection("Replies");
+
+                    QuerySnapshot technologiesRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Technologies").doc(technologiesDoc).collection("Replies").get();
+                    print("technologiesReplies: ${technologiesReplies.length}");
+                    technologiesReplies = technologiesRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                    print("technologiesReplies: ${technologiesReplies.length}");
+                    (technologiesReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+
+                    technologiesPage.theTThreadReplies = technologiesReplies;
+
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesThreadsPage()));
+
                     technologiesPage.technologiesReplyBool = false;
                   }
                   if(projectsPage.projectsReplyBool == true){

@@ -41,6 +41,10 @@ Map<String, dynamic> myReplyToReplyTMap = {};
 var technologiesNameData;
 bool technologiesClickedOnUser = false;
 
+var mySublistsTechnologiesInformation;
+var myIndexPlaceTechnologies;
+var myLocation;
+
 class technologiesPage extends StatefulWidget{
   const technologiesPage ({Key? key}) : super(key: key);
 
@@ -92,6 +96,8 @@ class technologiesPageState extends State<technologiesPage>{
       mySublistsTechnologies.add(listOfTechnologiesThreads.sublist(i, i + portionSizeTechnologies > listOfTechnologiesThreads.length ? listOfTechnologiesThreads.length : i + portionSizeTechnologies));
     }
 
+    mySublistsTechnologiesInformation = mySublistsTechnologies;
+
     var myPagesTechnologies = List.generate(
       numberOfPagesTechnologies,
         (index) => Center(
@@ -136,6 +142,10 @@ class technologiesPageState extends State<technologiesPage>{
                           print("This is index: $index");
                           print("listOfTechnologiesThreads is null? ${listOfTechnologiesThreads == null}");
                           print("I clicked on a thread");
+
+                          myIndexPlaceTechnologies = index;
+                          myLocation = theCurrentPageTechnologies;
+
                           threadAuthorT = mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString();
                           threadTitleT = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadTitle"].toString();
                           threadContentT = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadContent"].toString();
@@ -475,7 +485,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            Navigator.pop(context),//Navigator.pushNamed(context, '/discussionBoardPage'),
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage())),
           }
         ),
       ),
