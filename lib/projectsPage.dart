@@ -42,6 +42,10 @@ Map<String, dynamic> myReplyToReplyPMap = {};
 var projectsNameData;
 bool projectsClickedOnUser = false;
 
+var mySublistsProjectsInformation;
+var myIndexPlaceProjects;
+var myLocation;
+
 class projectsPage extends StatefulWidget{
   const projectsPage ({Key? key}) : super(key: key);
 
@@ -94,6 +98,8 @@ class projectsPageState extends State<projectsPage>{
     for(int i = 0; i < listOfProjectsThreads.length; i += portionSize){
       mySublistsProjects.add(listOfProjectsThreads.sublist(i, i + portionSize > listOfProjectsThreads.length ? listOfProjectsThreads.length : i + portionSize));
     }
+
+    mySublistsProjectsInformation = mySublistsProjects;
 
     //for(int i = 0; i < ((listOfProjectsThreads.length / 10).ceil()); i++){
       /*var myListLength = listOfProjectsThreads.length;
@@ -158,6 +164,10 @@ class projectsPageState extends State<projectsPage>{
                           print("This is index: $index");
                           print("listOfProjectsThreads is null? ${listOfProjectsThreads == null}");
                           print("I clicked on a thread");
+
+                          myIndexPlaceProjects = index;
+                          myLocation = theCurrentPage;
+
                           threadAuthorP = mySublistsProjects[theCurrentPage][index]["poster"].toString();//discussionBoardPage.projectsThreads![index]["poster"].toString();
                           threadTitleP = mySublistsProjects[theCurrentPage][index]["threadTitle"].toString();//discussionBoardPage.projectsThreads![index]["threadTitle"].toString();
                           threadContentP = mySublistsProjects[theCurrentPage][index]["threadContent"].toString();//discussionBoardPage.projectsThreads![index]["threadContent"].toString();
@@ -595,7 +605,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            Navigator.pop(context),//Navigator.pushNamed(context, '/discussionBoardPage'),
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage())),
           }
         ),
       ),

@@ -41,6 +41,10 @@ Map<String, dynamic> myReplyToReplyNdMap = {};
 var ndNameData;
 bool ndClickedOnUser = false;
 
+var mySublistsNewDiscoveriesInformation;
+var myIndexPlaceNewDiscoveries;
+var myLocation;
+
 class newDiscoveriesPage extends StatefulWidget{
   const newDiscoveriesPage ({Key? key}) : super(key: key);
 
@@ -92,6 +96,8 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
       mySublistsNd.add(listOfNdThreads.sublist(i, i + portionSizeNd > listOfNdThreads.length ? listOfNdThreads.length : i + portionSizeNd));
     }
 
+    mySublistsNewDiscoveriesInformation = mySublistsNd;
+
     var myPagesNd = List.generate(
       numberOfPagesNd,
         (index) => Center(
@@ -136,6 +142,10 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                           print("This is index: $index");
                           print("listOfNdThreads is null? ${listOfNdThreads == null}");
                           print("I clicked on a thread");
+
+                          myIndexPlaceNewDiscoveries = index;
+                          myLocation = theCurrentPageNd;
+
                           threadAuthorNd = mySublistsNd[theCurrentPageNd][index]["poster"].toString();
                           threadTitleNd = mySublistsNd[theCurrentPageNd][index]["threadTitle"].toString();
                           threadContentNd = mySublistsNd[theCurrentPageNd][index]["threadContent"].toString();
@@ -478,7 +488,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            Navigator.pop(context),//Navigator.pushNamed(context, '/discussionBoardPage'),
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage())),
           }
         ),
       ),

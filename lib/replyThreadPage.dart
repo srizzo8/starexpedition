@@ -49,6 +49,8 @@ var docNameForReplies;
 var dbuDoc;
 var qaaDoc;
 var technologiesDoc;
+var projectsDoc;
+var ndDoc;
 
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
@@ -769,7 +771,37 @@ class replyThreadPageState extends State<replyThreadPage>{
                     }
                     print(projectsPage.reversedProjectsThreadsIterable);
                     print(projectsPage.projectsReplies);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
+
+                    //Getting thread information
+                    print("page number: ${projectsPage.myLocation}, index place: ${projectsPage.myIndexPlaceProjects}");
+                    var mySublistsForProjects = projectsPage.mySublistsProjectsInformation;
+                    var projectsReplies = projectsPage.thePThreadReplies;
+                    projectsPage.threadAuthorP = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["poster"].toString();
+                    projectsPage.threadTitleP = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["threadTitle"].toString();
+                    projectsPage.threadContentP = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["threadContent"].toString();
+                    projectsPage.threadID = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["threadId"].toString();
+
+                    print("${projectsPage.threadAuthorP} + ${projectsPage.threadTitleP} + ${projectsPage.threadContentP} + ${projectsPage.threadID}");
+
+                    //Getting documents
+                    await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(projectsPage.threadID)).get().then((d) {
+                      projectsDoc = d.docs.first.id;
+                      print(projectsDoc);
+                    });
+
+                    //Getting the replies of the thread one made a reply to
+                    await FirebaseFirestore.instance.collection("Projects").doc(projectsDoc).collection("Replies");
+
+                    QuerySnapshot projectsRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Projects").doc(projectsDoc).collection("Replies").get();
+                    print("projectsReplies: ${projectsReplies.length}");
+                    projectsReplies = projectsRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                    print("projectsReplies: ${projectsReplies.length}");
+                    (projectsReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+
+                    projectsPage.thePThreadReplies = projectsReplies;
+
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsThreadsPage()));
+
                     projectsPage.projectsReplyBool = false;
                   }
                   if(newDiscoveriesPage.newDiscoveriesReplyBool == true){
@@ -888,10 +920,39 @@ class replyThreadPageState extends State<replyThreadPage>{
                       pendingNewDiscoveriesReply.add("");
                       print("I do not exist");
                     }
-
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
                     print(newDiscoveriesPage.reversedNewDiscoveriesThreadsIterable);
                     print(newDiscoveriesPage.newDiscoveriesReplies);
+
+                    //Getting thread information
+                    print("page number: ${newDiscoveriesPage.myLocation}, index place: ${newDiscoveriesPage.myIndexPlaceNewDiscoveries}");
+                    var mySublistsForNewDiscoveries = newDiscoveriesPage.mySublistsNewDiscoveriesInformation;
+                    var newDiscoveriesReplies = newDiscoveriesPage.theNdThreadReplies;
+                    newDiscoveriesPage.threadAuthorNd = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["poster"].toString();
+                    newDiscoveriesPage.threadTitleNd = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["threadTitle"].toString();
+                    newDiscoveriesPage.threadContentNd = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["threadContent"].toString();
+                    newDiscoveriesPage.threadID = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["threadId"].toString();
+
+                    print("${newDiscoveriesPage.threadAuthorNd} + ${newDiscoveriesPage.threadTitleNd} + ${newDiscoveriesPage.threadContentNd} + ${newDiscoveriesPage.threadID}");
+
+                    //Getting documents
+                    await FirebaseFirestore.instance.collection("New_Discoveries").where("threadId", isEqualTo: int.parse(newDiscoveriesPage.threadID)).get().then((d) {
+                      ndDoc = d.docs.first.id;
+                      print(ndDoc);
+                    });
+
+                    //Getting the replies of the thread one made a reply to
+                    await FirebaseFirestore.instance.collection("New_Discoveries").doc(ndDoc).collection("Replies");
+
+                    QuerySnapshot newDiscoveriesRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").doc(ndDoc).collection("Replies").get();
+                    print("newDiscoveriesReplies: ${newDiscoveriesReplies.length}");
+                    newDiscoveriesReplies = newDiscoveriesRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                    print("newDiscoveriesReplies: ${newDiscoveriesReplies.length}");
+                    (newDiscoveriesReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+
+                    newDiscoveriesPage.theNdThreadReplies = newDiscoveriesReplies;
+
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesThreadsPage()));
+
                     newDiscoveriesPage.newDiscoveriesReplyBool = false;
                   }
                 }
