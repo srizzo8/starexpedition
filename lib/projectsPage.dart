@@ -250,7 +250,7 @@ class projectsPageState extends State<projectsPage>{
               ),
           ),
           Expanded(
-            child: myPages[theCurrentPage],
+            child: listOfProjectsThreads.length != 0? myPages[theCurrentPage] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),//myPages[theCurrentPage],
           ),
           //IMPORTANT CONTENT STARTS
           /*Expanded(
@@ -340,7 +340,7 @@ class projectsPageState extends State<projectsPage>{
           ),*/
           NumberPaginator(
               height: 50,
-              numberPages: numberOfPages,
+              numberPages: listOfProjectsThreads.length != 0? numberOfPages : 1,
               //buttonSelectedBackgroundColor: Colors.green,
               //buttonUnselectedBackgroundColor: Colors.red,
               //buttonSelectedForegroundColor: Colors.grey,

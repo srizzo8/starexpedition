@@ -226,11 +226,11 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
             ),
           //),
           Expanded(
-            child: myPagesNd[theCurrentPageNd],
+            child: listOfNdThreads.length != 0? myPagesNd[theCurrentPageNd] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),
           ),
           NumberPaginator(
             height: 50,
-            numberPages: numberOfPagesNd,
+            numberPages: listOfNdThreads.length != 0? numberOfPagesNd : 1,
             onPageChange: (myIndexNd){
               setState((){
                 theCurrentPageNd = myIndexNd;

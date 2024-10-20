@@ -223,11 +223,11 @@ class technologiesPageState extends State<technologiesPage>{
               ),
           ),
           Expanded(
-            child: myPagesTechnologies[theCurrentPageTechnologies],
+            child: listOfTechnologiesThreads.length != 0? myPagesTechnologies[theCurrentPageTechnologies] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),
           ),
           NumberPaginator(
             height: 50,
-            numberPages: numberOfPagesTechnologies,
+            numberPages: listOfTechnologiesThreads.length != 0? numberOfPagesTechnologies : 1,
             onPageChange: (myIndexTechnologies){
               setState((){
                 theCurrentPageTechnologies = myIndexTechnologies;

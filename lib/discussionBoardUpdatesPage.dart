@@ -284,11 +284,11 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
             ),
           ),
           Expanded(
-            child: myPagesDbu[theCurrentPageDbu],
+            child: listOfDbuThreads.length != 0? myPagesDbu[theCurrentPageDbu] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),//myPagesDbu[theCurrentPageDbu],
           ),
           NumberPaginator(
             height: 50,
-            numberPages: numberOfPagesDbu,
+            numberPages: listOfDbuThreads.length != 0? numberOfPagesDbu : 1,//numberOfPagesDbu,
             onPageChange: (myIndexDbu){
               setState((){
                 theCurrentPageDbu = myIndexDbu;
