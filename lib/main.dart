@@ -513,6 +513,7 @@ class theStarExpeditionState extends State<StarExpedition> {
 
   @override
   Widget build(BuildContext context) {
+    print("discussionBoardLogin: ${discussionBoardLogin}");
     final dateForUse = DateTime(2020, 1, 1);
     DateTime? timeNow = DateTime.now();
     int numberOfDays = daysSinceJanOneTwenty(dateForUse, timeNow);
@@ -796,6 +797,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                       myUsername = "";
                       myNewUsername = "";
                       theLoginPage.loginBool = false;
+                      discussionBoardLogin = false;
                       print("Logging out from already existing account");
                       Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
                     }
