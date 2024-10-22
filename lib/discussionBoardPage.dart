@@ -156,6 +156,32 @@ class discussionBoardPageState extends State<discussionBoardPage>{
               },
             ),
           ),
+          InkWell(
+            child: Ink(
+              color: Colors.black,
+              padding: EdgeInsets.all(5.0),
+              child: Text("Rules for each subforum", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+            ),
+            onTap: (){
+              showDialog(
+                context: context,
+                builder: (BuildContext bc){
+                  return AlertDialog(
+                    title: Text("Rules for all subforums"),
+                    content: Text("1. Please stay on topic.\n2. Provide constructive advice if it is needed, but do not insult others.\n3. Please do not post anything nefarious."),
+                    actions: [
+                      TextButton(
+                        onPressed: () =>{
+                          Navigator.pop(bc),
+                        },
+                        child: Text("Ok"),
+                      ),
+                    ],
+                  );
+                }
+              );
+            }
+          )
         ],
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
