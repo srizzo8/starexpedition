@@ -181,7 +181,10 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                 }
               );
             }
-          )
+          ),
+          Container(
+            height: 100,
+          ),
         ],
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
