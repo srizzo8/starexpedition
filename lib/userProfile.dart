@@ -221,8 +221,8 @@ class userProfileInUserPerspective extends StatelessWidget{
           Container(
             padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: myUsername != "" && myNewUsername == ""?
-                Text("${myMain.usersBlurb}", textAlign: TextAlign.center):
-                Text("${myMain.usersBlurb}", textAlign: TextAlign.center),
+                (myMain.usersBlurb != ""? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
+                (myMain.usersBlurb != ""? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
           ),
           Container(
             height: 5,
@@ -259,8 +259,16 @@ class userProfileInUserPerspective extends StatelessWidget{
           Column(
             children: <Widget>[
               //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
-              for(int s = 0; s < (myMain.starsUserTracked.keys.toList()).length; s++)
-                Text("${myMain.starsUserTracked.keys.toList()[s]}\n${myMain.starsUserTracked.values.toList()[s]}\n", textAlign: TextAlign.center),
+              if(!(myMain.starsUserTracked.isEmpty))
+                for(int s = 0; s < (myMain.starsUserTracked.keys.toList()).length; s++)
+                  Text("${myMain.starsUserTracked.keys.toList()[s]}\n${myMain.starsUserTracked.values.toList()[s]}\n", textAlign: TextAlign.center),
+
+              if(myMain.starsUserTracked.isEmpty)
+                Text("N/A", textAlign: TextAlign.center),
+              /*}
+              else{
+                Text("N/A", textAlign: TextAlign.center),
+              }*/
             ],
           ),
           Container(
@@ -276,8 +284,12 @@ class userProfileInUserPerspective extends StatelessWidget{
           Column(
             children: <Widget>[
               //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
-              for(int p = 0; p < (myMain.planetsUserTracked.keys.toList()).length; p++)
-                Text("${myMain.planetsUserTracked.keys.toList()[p]}\n${myMain.planetsUserTracked.values.toList()[p]}\n", textAlign: TextAlign.center),
+              if(!(myMain.planetsUserTracked.isEmpty))
+                for(int p = 0; p < (myMain.planetsUserTracked.keys.toList()).length; p++)
+                  Text("${myMain.planetsUserTracked.keys.toList()[p]}\n${myMain.planetsUserTracked.values.toList()[p]}\n", textAlign: TextAlign.center),
+
+              if(myMain.planetsUserTracked.isEmpty)
+                Text("N/A", textAlign: TextAlign.center),
             ],
           ),
         ],
@@ -344,7 +356,9 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
           ),
           Container(
             padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("${theUsersData["usernameProfileInformation"]["userInformation"]}"),
+            child: !(theUsersData["usernameProfileInformation"]["userInformation"].isEmpty)?
+              Text("${theUsersData["usernameProfileInformation"]["userInformation"]}"):
+              Text("N/A", textAlign: TextAlign.center),
           ),
           Container(
             height: 5,
@@ -368,8 +382,12 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
           ),
           Column(
             children: <Widget>[
-              for(int s = 0; s < (theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()).length; s++)
-                Text("${theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s]}\n${theUsersData["usernameProfileInformation"]["starsTracked"].values.toList()[s]}\n", textAlign: TextAlign.center),
+              if(!(theUsersData["usernameProfileInformation"]["starsTracked"].isEmpty))
+                for(int s = 0; s < (theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()).length; s++)
+                  Text("${theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s]}\n${theUsersData["usernameProfileInformation"]["starsTracked"].values.toList()[s]}\n", textAlign: TextAlign.center),
+
+              if(theUsersData["usernameProfileInformation"]["starsTracked"].isEmpty)
+                Text("N/A", textAlign: TextAlign.center),
             ],
           ),
           Container(
@@ -382,8 +400,12 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
           Column(
             children: <Widget>[
               //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
-              for(int p = 0; p < (theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()).length; p++)
-                Text("${theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p]}\n${theUsersData["usernameProfileInformation"]["planetsTracked"].values.toList()[p]}\n", textAlign: TextAlign.center),
+              if(!(theUsersData["usernameProfileInformation"]["planetsTracked"].isEmpty))
+                for(int p = 0; p < (theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()).length; p++)
+                  Text("${theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p]}\n${theUsersData["usernameProfileInformation"]["planetsTracked"].values.toList()[p]}\n", textAlign: TextAlign.center),
+
+              if(theUsersData["usernameProfileInformation"]["planetsTracked"].isEmpty)
+                Text("N/A", textAlign: TextAlign.center),
             ],
           ),
         ],
