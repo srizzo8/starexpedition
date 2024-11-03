@@ -183,7 +183,61 @@ class registerPageState extends State<registerPage>{
               ),
                 onTap: () async{
                   print("theUsers: ${myMain.theUsers}");
-                  if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
+                  //If there are no users:
+                  if(theUsername.text != "" && myMain.theUsers!.isEmpty && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
+                    if(myMain.discussionBoardLogin == true){
+                      userId = 0;
+                      myNewUsername = theUsername.text;
+                      myNewEmail = email.text;
+                      myNewPassword = password.text;
+                      Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
+                      var theNewUser = User(
+                        id: userId,
+                        username: theUsername.text,
+                        emailAddress: email.text,
+                        password: password.text,
+                        usernameLowercased: theUsername.text.toLowerCase(),
+                        usernameProfileInformation: {"userInformation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
+                      );
+                      createUser(theNewUser);
+                      userEmailPasswordList.add([theUsername.text, email.text, password.text]);
+                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                      myMain.theUsers!.add(dasUser);
+                      print(myMain.theUsers);
+                      myMain.discussionBoardLogin = false;
+                      registerBool = true;
+                      print("Registering successfully as: " + userEmailPasswordList.toString());
+                      emailNotifications.registrationConfirmationEmail();
+                    }
+                    else{
+                      userId = 0;
+                      myNewUsername = theUsername.text;
+                      myNewEmail = email.text;
+                      myNewPassword = password.text;
+                      Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
+                      var theNewUser = User(
+                        id: userId,
+                        username: theUsername.text,
+                        emailAddress: email.text,
+                        password: password.text,
+                        usernameLowercased: theUsername.text.toLowerCase(),
+                        usernameProfileInformation: {"userInformation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
+                      );
+                      createUser(theNewUser);
+                      //dbService.addUser(theNewUser);
+                      //dbService.getUsers();
+                      userEmailPasswordList.add([theUsername.text, email.text, password.text]);
+                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                      myMain.theUsers!.add(dasUser);
+                      print(myMain.theUsers);
+                      myMain.discussionBoardLogin = false;
+                      registerBool = true;
+                      print("Registering successfully as: " + userEmailPasswordList.toString());
+                      emailNotifications.registrationConfirmationEmail();
+                    }
+                  }
+                  //If there is at least one user on Star Expedition:
+                  else if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
                     if(myMain.discussionBoardLogin == true){
                       //userId = userId + 1;
                       await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
