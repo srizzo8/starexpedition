@@ -798,6 +798,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                       myNewUsername = "";
                       theLoginPage.loginBool = false;
                       discussionBoardLogin = false;
+                      registerBool = false;
                       print("Logging out from already existing account");
                       Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
                     }
