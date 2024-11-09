@@ -1077,12 +1077,22 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                     }).catchError((e) => print("This is your error: ${e}"));
 
                     //Getting new email address for an email to the new email address
-                    var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                    newEmailResult.docs.forEach((theResult){
-                      du = theResult.data();
-                      print("This is the result: ${theResult.data()}");
-                      //var gettingDn = theResult.id;
-                    });
+                    if(myUsername != "" && myNewUsername == ""){
+                      var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                      newEmailResult.docs.forEach((theResult){
+                        du = theResult.data();
+                        print("This is the result: ${theResult.data()}");
+                        //var gettingDn = theResult.id;
+                      });
+                    }
+                    else if(myUsername == "" && myNewUsername != ""){
+                      var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                      newEmailResult.docs.forEach((theResult){
+                        du = theResult.data();
+                        print("This is the result: ${theResult.data()}");
+                        //var gettingDn = theResult.id;
+                      });
+                    }
 
                     print("This is new user email address: ${docForUsername["emailAddress"]}");
 
