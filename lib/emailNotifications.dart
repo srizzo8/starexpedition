@@ -10,6 +10,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:email_sender/email_sender.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -60,18 +61,10 @@ Future<void> registrationConfirmationEmail() async{
 
   await FlutterEmailSender.send(myEmail);*/
 
-  await dotenv.load(fileName: "dotenv.env");
-
-  var emailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
-  var passwordForSmtpServer = dotenv.env["PASS"];
-
   /*
   var myStorage = FlutterSecureStorage();
   await myStorage.write(key: emailForSmtpServer, value: passwordForSmtpServer);
   print("This is myStorage: ${myStorage!.toString()}");*/
-
-
-  var smtpServer = hotmail(emailForSmtpServer!, passwordForSmtpServer!);
 
   /*
   if(registerPage.myNewEmail.contains("@gmail.com")){
@@ -87,11 +80,39 @@ Future<void> registrationConfirmationEmail() async{
     print("Email is invalid.");
   }*/
 
+  await dotenv.load(fileName: "dotenv.env");
+  var emailForGmail = dotenv.env["EMAIL_ADDRESS"];
+  var passwordForGmail = dotenv.env["APP_PASS"];
+  //print("${emailForGmail}, ${passwordForGmail}");
+
+  /*EmailSender es = EmailSender();
+  var theResponse = await es.customMessage(emailForGmail!, passwordForGmail!, registerPage.myNewEmail, "Welcome to Star Expedition!", "Welcome to Star Expedition!", "Hi ${registerPage.myNewUsername},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition@hotmail.com.\n\nBest,\nStar Expedition");
+  //var theResponse = await es.sendMessage(registerPage.myNewEmail, "Welcome to Star Expedition!", "Welcome to Star Expedition!", "Hi ${registerPage.myNewUsername},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition@hotmail.com.\n\nBest,\nStar Expedition");
+
+  print("theResponse: ${theResponse}");
+
+  if(theResponse["message"] == "emailSendSuccess"){
+    print("theResponse: ${theResponse}");
+  }
+  else{
+    print("The message was not able to get sent");
+    print("theResponse: ${theResponse}");
+  }*/
+
+  //DO NOT ERASE BELOW
+
+  await dotenv.load(fileName: "dotenv.env");
+
+  var emailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
+  var passwordForSmtpServer = dotenv.env["APP_PASS"];
+
+  var smtpServer = gmail(emailForSmtpServer!, passwordForSmtpServer!);
+
   var myMessage = Message()
-    ..from = Address("starexpedition@hotmail.com")
+    ..from = Address("starexpedition.theapp@gmail.com")
     ..recipients.add(registerPage.myNewEmail)
     ..subject = "Welcome to Star Expedition!"
-    ..text = "Hi ${registerPage.myNewUsername},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition@hotmail.com.\n\nBest,\nStar Expedition"
+    ..text = "Hi ${registerPage.myNewUsername},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition"
   ;
 
   try{
@@ -111,16 +132,16 @@ Future<void> passwordChangeConfirmationEmail() async{
   await dotenv.load(fileName: "dotenv.env");
 
   var myEmailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
-  var myPasswordForSmtpServer = dotenv.env["PASS"];
+  var myPasswordForSmtpServer = dotenv.env["APP_PASS"];
 
-  var mySmtpServer = hotmail(myEmailForSmtpServer!, myPasswordForSmtpServer!);
+  var mySmtpServer = gmail(myEmailForSmtpServer!, myPasswordForSmtpServer!);
 
   if(settingsPage.theUser != "" && settingsPage.theNewUser == ""){
     var passwordChangeConfirmationMessageExistingUser = Message()
-      ..from = Address("starexpedition@hotmail.com")
+      ..from = Address("starexpedition.theapp@gmail.com")
       ..recipients.add(settingsPage.usersEmail)
       ..subject = "Password Change Confirmation"
-      ..text = "Hi ${settingsPage.theUser},\n\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition@hotmail.com as soon as possible.\n\nBest,\nStar Expedition"
+      ..text = "Hi ${settingsPage.theUser},\n\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.\n\nBest,\nStar Expedition"
     ;
 
     try{
@@ -137,10 +158,10 @@ Future<void> passwordChangeConfirmationEmail() async{
   }
   else if(settingsPage.theUser == "" && settingsPage.theNewUser != ""){
     var passwordChangeConfirmationMessageNewUser = Message()
-      ..from = Address("starexpedition@hotmail.com")
+      ..from = Address("starexpedition.theapp@gmail.com")
       ..recipients.add(settingsPage.usersEmail)
       ..subject = "Password Change Confirmation"
-      ..text = "Hi ${settingsPage.theNewUser},\n\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition@hotmail.com as soon as possible.\n\nBest,\nStar Expedition"
+      ..text = "Hi ${settingsPage.theNewUser},\n\nWe have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.\n\nBest,\nStar Expedition"
     ;
 
     try{
@@ -160,16 +181,16 @@ Future<void> emailAddressChangeConfirmationEmail() async{
   await dotenv.load(fileName: "dotenv.env");
 
   var theEmailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
-  var thePasswordForSmtpServer = dotenv.env["PASS"];
+  var thePasswordForSmtpServer = dotenv.env["APP_PASS"];
 
-  var theSmtpServer = hotmail(theEmailForSmtpServer!, thePasswordForSmtpServer!);
+  var theSmtpServer = gmail(theEmailForSmtpServer!, thePasswordForSmtpServer!);
 
   //For previous email address
   var emailChangeConfirmationMessageForPreviousEmailAddress = Message()
-    ..from = Address("starexpedition@hotmail.com")
+    ..from = Address("starexpedition.theapp@gmail.com")
     ..recipients.add(settingsPage.usersEmailForEmailChangeMessage)
     ..subject = "Email Change Confirmation"
-    ..text = "Hi ${settingsPage.userForEmailChange},\n\nWe have noticed that you have changed your email address from ${settingsPage.usersEmailForEmailChangeMessage} to ${settingsPage.usersNewEmail}. If you did not do this, please contact starexpedition@hotmail.com as soon as possible.\n\nBest,\nStar Expedition"
+    ..text = "Hi ${settingsPage.userForEmailChange},\n\nWe have noticed that you have changed your email address from ${settingsPage.usersEmailForEmailChangeMessage} to ${settingsPage.usersNewEmail}. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.\n\nBest,\nStar Expedition"
   ;
 
   try{
@@ -182,7 +203,7 @@ Future<void> emailAddressChangeConfirmationEmail() async{
 
   //For new email address
   var emailChangeConfirmationMessageForNewEmailAddress = Message()
-    ..from = Address("starexpedition@hotmail.com")
+    ..from = Address("starexpedition.theapp@gmail.com")
     ..recipients.add(settingsPage.usersNewEmail)
     ..subject = "Email Change Confirmation"
     ..text = "Hi ${settingsPage.userForEmailChange},\n\nThis message is to confirm that you have changed your email address from ${settingsPage.usersEmailForEmailChangeMessage} to ${settingsPage.usersNewEmail}.\n\nBest,\nStar Expedition"
