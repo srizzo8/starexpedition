@@ -688,7 +688,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                                     theUser = "",
                                     theNewUser = myNewUsername,
                                     usersEmail = userDoc["emailAddress"],
-                                    Navigator.pop(context),
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
                                     emailNotifications.passwordChangeConfirmationEmail(),
                                     currentPasswordController.text = "",
                                     newPasswordController.text = "",

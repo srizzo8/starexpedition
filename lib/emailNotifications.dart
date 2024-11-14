@@ -80,9 +80,9 @@ Future<void> registrationConfirmationEmail() async{
     print("Email is invalid.");
   }*/
 
-  await dotenv.load(fileName: "dotenv.env");
+  /*await dotenv.load(fileName: "dotenv.env");
   var emailForGmail = dotenv.env["EMAIL_ADDRESS"];
-  var passwordForGmail = dotenv.env["APP_PASS"];
+  var passwordForGmail = dotenv.env["APP_PASS"];*/
   //print("${emailForGmail}, ${passwordForGmail}");
 
   /*EmailSender es = EmailSender();
