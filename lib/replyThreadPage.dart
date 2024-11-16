@@ -29,10 +29,14 @@ import 'discussion_board_updates_firestore_database_information/discussionBoardU
 import 'new_discoveries_firestore_database_information/newDiscoveriesRepliesDatabaseFirestoreInfo.dart';
 import 'new_discoveries_firestore_database_information/newDiscoveriesRepliesInformation.dart';
 import 'new_discoveries_firestore_database_information/newDiscoveriesRepliesToRepliesInformation.dart';
+import 'feedback_and_suggestions_firestore_database_information/feedbackAndSuggestionsRepliesDatabaseFirestoreInfo.dart';
+import 'feedback_and_suggestions_firestore_database_information/feedbackAndSuggestionsRepliesInformation.dart';
+import 'feedback_and_suggestions_firestore_database_information/feedbackAndSuggestionsRepliesToRepliesInformation.dart';
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
 import 'newDiscoveriesPage.dart' as newDiscoveriesPage;
+import 'feedbackAndSuggestionsPage.dart' as feedbackAndSuggestionsPage;
 import 'main.dart' as myMain;
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
@@ -51,6 +55,7 @@ var qaaDoc;
 var technologiesDoc;
 var projectsDoc;
 var ndDoc;
+var fasDoc;
 
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
@@ -68,6 +73,7 @@ class replyThreadPageState extends State<replyThreadPage>{
   List<String> pendingTechnologiesReply = [];
   List<String> pendingProjectsReply = [];
   List<String> pendingNewDiscoveriesReply = [];
+  List<String> pendingFeedbackAndSuggestionsReply = [];
   int threadNum = 0;
 
   Widget build(BuildContext bc){
@@ -954,6 +960,157 @@ class replyThreadPageState extends State<replyThreadPage>{
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesThreadsPage()));
 
                     newDiscoveriesPage.newDiscoveriesReplyBool = false;
+                  }
+                  if(feedbackAndSuggestionsPage.fasReplyBool == true){
+                    final feedbackAndSuggestionsRepliesInfo = Get.put(feedbackAndSuggestionsRepliesInformation());
+
+                    final feedbackAndSuggestionsRepliesToRepliesInfo = Get.put(feedbackAndSuggestionsRepliesToRepliesInformation());
+
+                    Future<void> createFeedbackAndSuggestionsReply(FeedbackAndSuggestionsReplies fasr, var docName) async{
+                      await feedbackAndSuggestionsRepliesInfo.createMyFeedbackAndSuggestionsReply(fasr, docName);
+                    }
+
+                    Future<void> createFeedbackAndSuggestionsReplyToReply(FeedbackAndSuggestionsReplies fasr, var secondDocName) async{
+                      await feedbackAndSuggestionsRepliesToRepliesInfo.createMyFeedbackAndSuggestionsReplyToReply(fasr, secondDocName);
+                    }
+                    if(feedbackAndSuggestionsPage.fasReplyingToReplyBool == false){
+                      threadNum = int.parse(feedbackAndSuggestionsPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      var myReplyFeedbackAndSuggestions = FeedbackAndSuggestionsReplies(
+                          threadNumber: threadNum,
+                          time: DateTime.now(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text,
+                          theOriginalReplyInfo: {}
+                      );
+                      createFeedbackAndSuggestionsReply(myReplyFeedbackAndSuggestions, feedbackAndSuggestionsPage.myDocFas);
+
+                      if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
+                        myInfoForReplies = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theLoginPage.myUsername.toLowerCase()).get();
+                        myInfoForReplies.docs.forEach((resultExistingUsername){
+                          userDataForReplies = resultExistingUsername.data();
+                          docNameForReplies = resultExistingUsername.id;
+                        });
+
+                        print("userData: ${userDataForReplies}");
+                        print("docName: ${docNameForReplies}");
+
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
+                          "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                        }).then((a){
+                          print("You have updated the post number for the existing user!");
+                        });
+                      }
+                      else if(theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != ""){
+                        myInfoForReplies = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theRegisterPage.myNewUsername.toLowerCase()).get();
+                        myInfoForReplies.docs.forEach((resultNewUsername){
+                          userDataForReplies = resultNewUsername.data();
+                          docNameForReplies = resultNewUsername.id;
+                        });
+
+                        print("userData: ${userDataForReplies}");
+                        print("docName: ${docNameForReplies}");
+
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
+                          "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                        }).then((a){
+                          print("You have updated the post number for the new user!");
+                        });
+                      }
+
+                      pendingFeedbackAndSuggestionsReply.add(DateTime.now().toString());
+                      pendingFeedbackAndSuggestionsReply.add(usernameReplyController.text);
+                      pendingFeedbackAndSuggestionsReply.add(replyContentController.text);
+                    }
+                    else if(feedbackAndSuggestionsPage.fasReplyingToReplyBool == true){
+                      feedbackAndSuggestionsPage.fasReplyingToReplyBool = false;
+                      threadNum = int.parse(feedbackAndSuggestionsPage.threadID);
+                      assert(threadNum is int);
+                      print(threadNum.runtimeType);
+                      replyNum = feedbackAndSuggestionsPage.myIndex;
+                      var myReplyFeedbackAndSuggestions = FeedbackAndSuggestionsReplies(
+                          threadNumber: threadNum,
+                          time: DateTime.now(),
+                          replier: usernameReplyController.text,
+                          replyContent: replyContentController.text,
+                          theOriginalReplyInfo: feedbackAndSuggestionsPage.myReplyToReplyFasMap
+                      );
+                      print("This is theOriginalReplyInfo: ${feedbackAndSuggestionsPage.myReplyToReplyFasMap}");
+                      createFeedbackAndSuggestionsReplyToReply(myReplyFeedbackAndSuggestions, feedbackAndSuggestionsPage.myDocFas);
+
+                      if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
+                        myInfoForReplies = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theLoginPage.myUsername.toLowerCase()).get();
+                        myInfoForReplies.docs.forEach((resultExistingUsername){
+                          userDataForReplies = resultExistingUsername.data();
+                          docNameForReplies = resultExistingUsername.id;
+                        });
+
+                        print("userData: ${userDataForReplies}");
+                        print("docName: ${docNameForReplies}");
+
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
+                          "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                        }).then((a){
+                          print("You have updated the post number for the existing user!");
+                        });
+                      }
+                      else if(theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != ""){
+                        myInfoForReplies = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theRegisterPage.myNewUsername.toLowerCase()).get();
+                        myInfoForReplies.docs.forEach((resultNewUsername){
+                          userDataForReplies = resultNewUsername.data();
+                          docNameForReplies = resultNewUsername.id;
+                        });
+
+                        print("userData: ${userDataForReplies}");
+                        print("docName: ${docNameForReplies}");
+
+                        FirebaseFirestore.instance.collection("User").doc(docNameForReplies).update({
+                          "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                        }).then((a){
+                          print("You have updated the post number for the new user!");
+                        });
+                      }
+                    }
+                    else{
+                      pendingFeedbackAndSuggestionsReply.add("");
+                      pendingFeedbackAndSuggestionsReply.add("");
+                      print("I do not exist");
+                    }
+                    print(feedbackAndSuggestionsPage.reversedFasThreadsIterable);
+                    print(feedbackAndSuggestionsPage.fasReplies);
+
+                    //Getting thread information
+                    print("page number: ${feedbackAndSuggestionsPage.myLocation}, index place: ${feedbackAndSuggestionsPage.myIndexPlaceFas}");
+                    var mySublistsForFeedbackAndSuggestions = feedbackAndSuggestionsPage.mySublistsFasInformation;
+                    var feedbackAndSuggestionsReplies = feedbackAndSuggestionsPage.theFasThreadReplies;
+                    feedbackAndSuggestionsPage.threadAuthorFas = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["poster"].toString();
+                    feedbackAndSuggestionsPage.threadTitleFas = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["threadTitle"].toString();
+                    feedbackAndSuggestionsPage.threadContentFas = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["threadContent"].toString();
+                    feedbackAndSuggestionsPage.threadID = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["threadId"].toString();
+
+                    print("${feedbackAndSuggestionsPage.threadAuthorFas} + ${feedbackAndSuggestionsPage.threadTitleFas} + ${feedbackAndSuggestionsPage.threadContentFas} + ${feedbackAndSuggestionsPage.threadID}");
+
+                    //Getting documents
+                    await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(feedbackAndSuggestionsPage.threadID)).get().then((d) {
+                      fasDoc = d.docs.first.id;
+                      print(fasDoc);
+                    });
+
+                    //Getting the replies of the thread one made a reply to
+                    await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(fasDoc).collection("Replies");
+
+                    QuerySnapshot feedbackAndSuggestionsRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(fasDoc).collection("Replies").get();
+                    print("feedbackAndSuggestionsReplies: ${feedbackAndSuggestionsReplies.length}");
+                    feedbackAndSuggestionsReplies = feedbackAndSuggestionsRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                    print("feedbackAndSuggestionsReplies: ${feedbackAndSuggestionsReplies.length}");
+                    (feedbackAndSuggestionsReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+
+                    feedbackAndSuggestionsPage.theFasThreadReplies = feedbackAndSuggestionsReplies;
+
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const feedbackAndSuggestionsPage.feedbackAndSuggestionsThreadsPage()));
+
+                    feedbackAndSuggestionsPage.fasReplyBool = false;
                   }
                 }
             ),

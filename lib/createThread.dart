@@ -29,6 +29,9 @@ import 'main.dart' as myMain;
 import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesDatabaseFirestoreInfo.dart';
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesInformation.dart';
+import 'feedback_and_suggestions_firestore_database_information/feedbackAndSuggestionsDatabaseFirestoreInfo.dart';
+import 'feedback_and_suggestions_firestore_database_information/feedbackAndSuggestionsInformation.dart';
+import 'feedbackAndSuggestionsPage.dart' as feedbackAndSuggestionsPage;
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 
@@ -53,11 +56,13 @@ class createThreadState extends State<createThread>{
   int technologiesThreadId = 0;
   int projectsThreadId = 0;
   int newDiscoveriesThreadId = 0;
+  int feedbackAndSuggestionsThreadId = 0;
   var discussionBoardUpdatesPendingThreads = [];
   var questionsAndAnswersPendingThreads = [];
   var technologiesPendingThreads = [];
   var projectsPendingThreads = [];
   var newDiscoveriesPendingThreads = [];
+  var feedbackAndSuggestionsPendingThreads = [];
 
   Widget build(BuildContext createThreadBuildContext){
     return Scaffold(
@@ -175,7 +180,7 @@ class createThreadState extends State<createThread>{
                 }
                 if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != ""){
                   //print(usernameController.text);
-                  if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false) {
+                  if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == false) {
                     final discussionBoardUpdatesThreadsInfo = Get.put(discussionBoardUpdatesInformation());
 
                     Future<void> createDiscussionBoardUpdatesThread(DiscussionBoardUpdatesThreads dbut) async{
@@ -256,7 +261,7 @@ class createThreadState extends State<createThread>{
                     print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesThreadsIterable.toList());
                   }
                   else{
-                    if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == true && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false){
+                    if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == true && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == false){
                       final questionsAndAnswersThreadsInfo = Get.put(questionsAndAnswersInformation());
 
                       Future<void> createQuestionsAndAnswersThread(QuestionsAndAnswersThreads qaat) async{
@@ -331,7 +336,7 @@ class createThreadState extends State<createThread>{
                       print(questionsAndAnswersPage.reversedQuestionsAndAnswersThreadsIterable.toList());
                     }
                     else{
-                      if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == true && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false){
+                      if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == true && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == false){
                         final technologiesThreadsInfo = Get.put(technologiesInformation());
 
                         Future<void> createTechnologiesThread(TechnologiesThreads tt) async{
@@ -406,7 +411,7 @@ class createThreadState extends State<createThread>{
                         print(technologiesPage.reversedTechnologiesThreadsIterable.toList());
                       }
                       else{
-                        if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == true && newDiscoveriesPage.newDiscoveriesBool == false){
+                        if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == true && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == false){
                           final projectsThreadsInfo = Get.put(projectsInformation());
 
                           Future<void> createProjectsThread(ProjectsThreads pt) async{
@@ -474,14 +479,14 @@ class createThreadState extends State<createThread>{
                           projectsThreads = pQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
                           (projectsThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
 
-                          print("Threads in questions and answers subforum: " + projectsPage.projectsThreads.toString());
+                          print("Threads in projects subforum: " + projectsPage.projectsThreads.toString());
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
                           //Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsPage()));
                           projectsPage.projectsBool = false;
                           print(projectsPage.reversedProjectsThreadsIterable.toList());
                         }
                         else{
-                          if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == true){
+                          if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == true && feedbackAndSuggestionsPage.fasBool == false){
                             final newDiscoveriesThreadsInfo = Get.put(newDiscoveriesInformation());
 
                             Future<void> createNewDiscoveriesThread(NewDiscoveriesThreads ndt) async{
@@ -549,11 +554,87 @@ class createThreadState extends State<createThread>{
                             newDiscoveriesThreads = ndQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
                             (newDiscoveriesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
 
-                            print("Threads in discussion board updates subforum: " + newDiscoveriesPage.newDiscoveriesThreads.toString());
+                            print("Threads in new discoveries subforum: " + newDiscoveriesPage.newDiscoveriesThreads.toString());
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
                             newDiscoveriesPage.newDiscoveriesBool = false;
                             print(newDiscoveriesPage.reversedNewDiscoveriesThreadsIterable.toList());
+                          }
+                          else{
+                            if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == true){
+                              final feedbackAndSuggestionsThreadsInfo = Get.put(feedbackAndSuggestionsInformation());
+
+                              Future<void> createFeedbackAndSuggestionsThread(FeedbackAndSuggestionsThreads fast) async{
+                                await feedbackAndSuggestionsThreadsInfo.createMyFeedbackAndSuggestionsThread(fast);
+                              }
+
+                              if(feedbackAndSuggestionsThreads.length > 0){
+                                await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").orderBy("threadId", descending: true).limit(1).get().then((myId){
+                                  feedbackAndSuggestionsThreadId = myId.docs.first.data()["threadId"] + 1;
+                                });
+                              }
+
+                              var theNewFeedbackAndSuggestionsThread = FeedbackAndSuggestionsThreads(
+                                threadId: feedbackAndSuggestionsThreadId,
+                                poster: usernameController.text,
+                                threadTitle: threadNameController.text,
+                                threadContent: threadContentController.text,
+                              );
+
+                              createFeedbackAndSuggestionsThread(theNewFeedbackAndSuggestionsThread);
+
+                              if(myUsername != "" && myNewUsername == ""){
+                                myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                myInfo.docs.forEach((resultExistingUsername){
+                                  userData = resultExistingUsername.data();
+                                  docName = resultExistingUsername.id;
+                                });
+
+                                print("userData: ${userData}");
+                                print("docName: ${docName}");
+
+                                FirebaseFirestore.instance.collection("User").doc(docName).update({
+                                  "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                                }).then((a){
+                                  print("You have updated the post number for the existing user!");
+                                });
+                              }
+                              else if(myUsername == "" && myNewUsername != ""){
+                                myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                myInfo.docs.forEach((resultNewUsername){
+                                  userData = resultNewUsername.data();
+                                  docName = resultNewUsername.id;
+                                });
+
+                                print("userData: ${userData}");
+                                print("docName: ${docName}");
+
+                                FirebaseFirestore.instance.collection("User").doc(docName).update({
+                                  "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                                }).then((a){
+                                  print("You have updated the post number for the new user!");
+                                });
+                              }
+
+                              feedbackAndSuggestionsPendingThreads.add(usernameController.text);
+                              feedbackAndSuggestionsPendingThreads.add(threadNameController.text);
+                              feedbackAndSuggestionsPendingThreads.add(threadContentController.text);
+                              feedbackAndSuggestionsPendingThreads.add(feedbackAndSuggestionsPage.fasThreads.length.toString());
+                              feedbackAndSuggestionsPendingThreads.add(List.empty(growable: true));
+                              print(feedbackAndSuggestionsPendingThreads);
+                              feedbackAndSuggestionsPage.fasThreads.add(feedbackAndSuggestionsPendingThreads);
+
+                              feedbackAndSuggestionsThreadCount = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").count().get();
+                              QuerySnapshot fasQuerySnapshot = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").get();
+                              feedbackAndSuggestionsThreads = fasQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                              (feedbackAndSuggestionsThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
+
+                              print("Threads in feedback and suggestions subforum: " + feedbackAndSuggestionsPage.fasThreads.toString());
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const feedbackAndSuggestionsPage.feedbackAndSuggestionsPage()));
+
+                              feedbackAndSuggestionsPage.fasBool = false;
+                              print(feedbackAndSuggestionsPage.reversedFasThreadsIterable.toList());
+                            }
                           }
                         }
                       }

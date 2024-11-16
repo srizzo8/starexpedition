@@ -12,6 +12,7 @@ import 'questionsAndAnswersPage.dart';
 import 'technologiesPage.dart';
 import 'projectsPage.dart';
 import 'newDiscoveriesPage.dart';
+import 'feedbackAndSuggestionsPage.dart';
 import 'main.dart' as myMain;
 
 var discussionBoardUpdatesThreadCount;
@@ -24,6 +25,8 @@ var projectsThreadCount;
 var projectsThreads;
 var newDiscoveriesThreadCount;
 var newDiscoveriesThreads;
+var feedbackAndSuggestionsThreadCount;
+var feedbackAndSuggestionsThreads;
 
 class discussionBoardPage extends StatefulWidget{
   const discussionBoardPage ({Key? key}) : super(key: key);
@@ -45,6 +48,7 @@ class MyDiscussionBoard extends StatelessWidget{
           discussionBoardRoutes.technologiesSubforum: (context) => technologiesPage(),
           discussionBoardRoutes.projectsSubforum: (context) => projectsPage(),
           discussionBoardRoutes.newDiscoveriesSubforum: (context) => newDiscoveriesPage(),
+          discussionBoardRoutes.feedbackAndSuggestionsSubforum: (context) => feedbackAndSuggestionsPage(),
         }
     );
   }
@@ -56,11 +60,12 @@ class discussionBoardRoutes{
   static String technologiesSubforum = technologiesPageState.technologiesRoute;
   static String projectsSubforum = projectsPageState.projectsRoute;
   static String newDiscoveriesSubforum = newDiscoveriesPageState.newDiscoveriesRoute;
+  static String feedbackAndSuggestionsSubforum = feedbackAndSuggestionsPageState.fasRoute;
 }
 
 class discussionBoardPageState extends State<discussionBoardPage>{
   static String nameOfRoute = '/discussionBoardPage';
-  List<String> subforumList = ["Discussion Board Updates", "Questions and Answers", "Technologies", "Projects", "New Discoveries"];
+  List<String> subforumList = ["Discussion Board Updates", "Questions and Answers", "Technologies", "Projects", "New Discoveries", "Feedback and Suggestions"];
 
   Widget build(BuildContext context){
     return Scaffold(
@@ -116,6 +121,12 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                         QuerySnapshot ndQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").get();
                         newDiscoveriesThreads = ndQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
                         (newDiscoveriesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
+
+                        //Getting the amount of threads that are in the Feedback and Suggestions subforum:
+                        feedbackAndSuggestionsThreadCount = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").count().get();
+                        QuerySnapshot fasQuerySnapshot = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").get();
+                        feedbackAndSuggestionsThreads = fasQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                        (feedbackAndSuggestionsThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
                         //print(discussionBoardUpdatesThreads.toString());
                         //Going to a certain subforum
                         print("Testing subforum button");
@@ -138,6 +149,10 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                           case "New Discoveries":
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage()));
                             print("New Discoveries");
+                            break;
+                          case "Feedback and Suggestions":
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const feedbackAndSuggestionsPage()));
+                            print("Feedback and Suggestions");
                             break;
                         }
                       },
