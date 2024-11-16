@@ -27,6 +27,7 @@ import 'newDiscoveriesPage.dart';
 import 'projectsPage.dart';
 import 'questionsAndAnswersPage.dart';
 import 'technologiesPage.dart';
+import 'feedbackAndSuggestionsPage.dart';
 
 var myInformation;
 var dataOfUser;
@@ -311,24 +312,28 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
-              if(dbuClickedOnUser == true && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false){
+              if(dbuClickedOnUser == true && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == false){
                 dbuClickedOnUser = false,
                 Navigator.of(bc).pop(),
               }
-              else if(dbuClickedOnUser == false && ndClickedOnUser == true && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false){
+              else if(dbuClickedOnUser == false && ndClickedOnUser == true && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == false){
                 ndClickedOnUser = false,
                 Navigator.of(bc).pop(),
               }
-              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == true && qaaClickedOnUser == false && technologiesClickedOnUser == false){
+              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == true && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == false){
                 projectsClickedOnUser = false,
                 Navigator.of(bc).pop(),
               }
-              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == true && technologiesClickedOnUser == false){
+              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == true && technologiesClickedOnUser == false && fasClickedOnUser == false){
                 qaaClickedOnUser = false,
                 Navigator.of(bc).pop(),
               }
-              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == true){
+              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == true && fasClickedOnUser == false){
                 technologiesClickedOnUser = false,
+                Navigator.of(bc).pop(),
+              }
+              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == true){
+                fasClickedOnUser = false,
                 Navigator.of(bc).pop(),
               }
               else{
