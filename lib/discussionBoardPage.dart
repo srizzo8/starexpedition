@@ -157,8 +157,8 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                         }
                       },
                       child: Ink(
-                        height: 60,
-                        width: 240,
+                        height: 70,
+                        width: 210,
                         color: Colors.grey[300],
                         child: Container(
                           alignment: Alignment.center,
