@@ -7,9 +7,11 @@ import 'dart:math';
 //import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
 
@@ -28,6 +30,8 @@ import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
 
 import 'loginPage.dart';
+
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -247,7 +251,7 @@ Future<List<dynamic>> loadAccountsData() async{
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  //runApp(MyApp());
   List usersOnStarExpeditionDocs = [];
   await FirebaseFirestore.instance.collection("User").get().then((snapshot){
     snapshot.docs.forEach((item){
@@ -373,6 +377,26 @@ Future<void> main() async {
   });
    */
   //theAccountsDatabase = FirebaseDatabase.instance.ref().child("Users");
+
+  //Sentry:
+  await dotenv.load(fileName: "dotenv.env");
+
+  if(kReleaseMode == true){ //This checks to see if you are in release mode (which means you are in production)
+    await SentryFlutter.init(
+        (options) {
+        options.dsn = dotenv.env["OPTIONS_DSN"];
+
+        options.tracesSampleRate = 1.0;
+
+        options.profilesSampleRate = 1.0;
+      },
+      appRunner: () => runApp(const MyApp()),
+    );
+  }
+  else{
+    //If you are in development mode, you can run your app without sentry.io:
+    runApp(MyApp());
+  }
 }
 
 class myStars {
