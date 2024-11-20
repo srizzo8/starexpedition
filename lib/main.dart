@@ -381,7 +381,7 @@ Future<void> main() async {
   //Sentry:
   await dotenv.load(fileName: "dotenv.env");
 
-  if(kReleaseMode == true){ //This checks to see if you are in release mode (which means you are in production)
+  //if(kReleaseMode == true){ //This checks to see if you are in release mode (which means you are in production)
     await SentryFlutter.init(
         (options) {
         options.dsn = dotenv.env["OPTIONS_DSN"];
@@ -392,11 +392,10 @@ Future<void> main() async {
       },
       appRunner: () => runApp(const MyApp()),
     );
-  }
-  else{
+  /*else{
     //If you are in development mode, you can run your app without sentry.io:
     runApp(MyApp());
-  }
+  }*/
 }
 
 class myStars {
