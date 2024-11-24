@@ -195,7 +195,7 @@ class loginPageState extends State<loginPage>{
                             builder: (BuildContext theContext){
                               return AlertDialog(
                                 title: const Text("Login Error"),
-                                content: const Text("Your username-password combination is not correct."),
+                                content: const Text("Your username-password combination is not correct"),
                                 actions: [
                                   TextButton(
                                     onPressed: () => {
@@ -208,6 +208,63 @@ class loginPageState extends State<loginPage>{
                             }
                         );
                       }
+                    }
+                    else if(usernameController.text == "" && passwordController.text != ""){
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext theContext){
+                            return AlertDialog(
+                              title: const Text("Login Error"),
+                              content: const Text("Username is empty"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    Navigator.pop(context),
+                                  },
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            );
+                          }
+                      );
+                    }
+                    else if(usernameController.text != "" && passwordController.text == ""){
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext theContext){
+                            return AlertDialog(
+                              title: const Text("Login Error"),
+                              content: const Text("Password is empty"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    Navigator.pop(context),
+                                  },
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            );
+                          }
+                      );
+                    }
+                    else if(usernameController.text == "" && passwordController.text == ""){
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext theContext){
+                            return AlertDialog(
+                              title: const Text("Login Error"),
+                              content: const Text("Username is empty\nPassword is empty"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    Navigator.pop(context),
+                                  },
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            );
+                          }
+                      );
                     }
                   }
               ),
