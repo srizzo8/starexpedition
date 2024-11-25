@@ -147,9 +147,6 @@ class loginPageState extends State<loginPage>{
                         print("keys: ${userDocument["password"]}");
                         print("userDocument: $userDocument");
                       }
-                      else{
-                        userDocument = null;
-                      }
 
                       //if(usernameList.contains(usernameController.text.toLowerCase())
 
@@ -174,7 +171,7 @@ class loginPageState extends State<loginPage>{
                           loginBool = true;
                         }
                         else{
-                          print("Logging in123");
+                          print("Logging in 123");
                           await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
                             myUsername = theUn.docs.first.data()["username"];
                           });
@@ -190,11 +187,12 @@ class loginPageState extends State<loginPage>{
                       else{
                         //print("userDocument info: ${userDocument["usernameLowercased"]}, ${userDocument["password"]}");
                         //print("passwordDocument: $passwordDocument");
-                        showDialog(
+                        if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
+                          showDialog(
                             context: context,
                             builder: (BuildContext theContext){
                               return AlertDialog(
-                                title: const Text("Login Error"),
+                                title: const Text("Login unsuccessful"),
                                 content: const Text("Your username-password combination is not correct"),
                                 actions: [
                                   TextButton(
@@ -206,7 +204,28 @@ class loginPageState extends State<loginPage>{
                                 ],
                               );
                             }
-                        );
+                          );
+                        }
+                        else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1){
+                          userDocument = null;
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext theContext){
+                                return AlertDialog(
+                                  title: const Text("Login unsuccessful"),
+                                  content: const Text("The username you have entered does not exist"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => {
+                                        Navigator.pop(context),
+                                      },
+                                      child: const Text("Ok"),
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        }
                       }
                     }
                     else if(usernameController.text == "" && passwordController.text != ""){
@@ -214,7 +233,7 @@ class loginPageState extends State<loginPage>{
                           context: context,
                           builder: (BuildContext theContext){
                             return AlertDialog(
-                              title: const Text("Login Error"),
+                              title: const Text("Login unsuccessful"),
                               content: const Text("Username is empty"),
                               actions: [
                                 TextButton(
@@ -228,13 +247,32 @@ class loginPageState extends State<loginPage>{
                           }
                       );
                     }
-                    else if(usernameController.text != "" && passwordController.text == ""){
+                    else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1 && usernameController.text != "" && passwordController.text == ""){
                       showDialog(
                           context: context,
                           builder: (BuildContext theContext){
                             return AlertDialog(
-                              title: const Text("Login Error"),
+                              title: const Text("Login unsuccessful"),
                               content: const Text("Password is empty"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    Navigator.pop(context),
+                                  },
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            );
+                          }
+                      );
+                    }
+                    else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1 && usernameController.text != "" && passwordController.text == ""){
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext theContext){
+                            return AlertDialog(
+                              title: const Text("Login unsuccessful"),
+                              content: const Text("The username you have entered does not exist\nPassword is empty"),
                               actions: [
                                 TextButton(
                                   onPressed: () => {
@@ -252,7 +290,7 @@ class loginPageState extends State<loginPage>{
                           context: context,
                           builder: (BuildContext theContext){
                             return AlertDialog(
-                              title: const Text("Login Error"),
+                              title: const Text("Login unsuccessful"),
                               content: const Text("Username is empty\nPassword is empty"),
                               actions: [
                                 TextButton(
