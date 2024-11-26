@@ -87,21 +87,14 @@ bool checkUsernameValidity(String u){
   var usernameList = u.split("");
   print("usernameList: ${usernameList}");
   int i = 0;
-  /*for(String y in possibleUsernameChars){
-    print("y: ${y}");
-    if(!(usernameList.contains(y))){
-      return false;
-    }
-    else{
-      i++;
-      print("i: ${i}");
-      //continue
-    }
-  }*/
+
   for(String y in usernameList){
     if(possibleUsernameChars.contains(y)){
       i++;
       print("i is now: ${i}");
+    }
+    else if(y == " "){
+      break;
     }
     else{
       break;
@@ -109,6 +102,16 @@ bool checkUsernameValidity(String u){
   }
   if(i == usernameList.length){
     return true;
+  }
+  return false;
+}
+
+bool checkEmailValidity(String e){
+  var emailList = e.split("");
+  for(var i in emailList){
+    if(i == "@"){
+      return true;
+    }
   }
   return false;
 }
@@ -161,7 +164,7 @@ class registerPageState extends State<registerPage>{
     if(((myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1) && theUsername.text != ""){
       messageForUser.add(Text("Username already exists"));
     }
-    if(checkUsernameValidity(theUsername.text) == false && theUsername.text != ""){
+    if((checkUsernameValidity(theUsername.text) == false || (theUsername.text).contains(" ")) && theUsername.text != ""){
       messageForUser.add(Text("Usernames must only consist of letters, numbers, _, and/or ."));
     }
     if((theUsername.text.length < 3 || theUsername.text.length > 25) && theUsername.text != ""){
@@ -170,7 +173,7 @@ class registerPageState extends State<registerPage>{
     if(email.text == ""){
       messageForUser.add(Text("Email is empty"));
     }
-    if(!((email.text).contains('@')) && email.text != ""){
+    if(checkEmailValidity(email.text) == false && email.text != ""){
       messageForUser.add(Text("Email address is invalid"));
     }
     if(password.text == ""){
@@ -287,7 +290,7 @@ class registerPageState extends State<registerPage>{
 
                   print("theUsers: ${myMain.theUsers}");
                   //If there are no users:
-                  if(theUsername.text != "" && myMain.theUsers!.isEmpty && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
+                  if(theUsername.text != "" && myMain.theUsers!.isEmpty && checkUsernameValidity(theUsername.text) == true && email.text != "" && checkEmailValidity(email.text) == true && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
                     if(myMain.discussionBoardLogin == true){
                       userId = 0;
                       myNewUsername = theUsername.text;
@@ -340,7 +343,7 @@ class registerPageState extends State<registerPage>{
                     }
                   }
                   //If there is at least one user on Star Expedition:
-                  else if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
+                  else if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && checkUsernameValidity(theUsername.text) == true && email.text != "" && checkEmailValidity(email.text) == true && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
                     if(myMain.discussionBoardLogin == true){
                       //userId = userId + 1;
                       await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
