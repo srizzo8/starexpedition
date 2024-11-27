@@ -107,12 +107,43 @@ bool checkUsernameValidity(String u){
 }
 
 bool checkEmailValidity(String e){
-  var emailList = e.split("");
-  for(var i in emailList){
-    if(i == "@"){
-      return true;
+  //var emailList = e.split("");
+  if(e.contains("@") && "@".allMatches(e).length == 1){
+    var emailAddressParts = e.split("@");
+    print("emailAddressParts: ${emailAddressParts}");
+    if(emailAddressParts.length == 2){
+      if(emailAddressParts[0] != "" && !(emailAddressParts[0].contains(" ")) && emailAddressParts[1] != ""){
+        if(emailAddressParts[1] == "gmail.com" || emailAddressParts[1] == "yahoo.com" || emailAddressParts[1] == "icloud.com" || emailAddressParts[1] == "hotmail.com" || emailAddressParts[1] == "outlook.com" || emailAddressParts[1] == "aol.com"){
+          return true;
+        }
+      }
+    }
+    else{
+      return false;
     }
   }
+  else{
+    return false;
+  }
+  /*for(var i in emailList){
+    if(i == "@"){
+      if("@".allMatches(e).length == 1){
+        if(e.contains("@gmail.com") || e.contains("@yahoo.com") || e.contains("@outlook.com") || e.contains("@hotmail.com") || e.contains("@aol.com") || e.contains("@icloud.com")){
+          print("It contains a valid email provider");
+          return true;
+        }
+        else{
+          break;
+        }
+      }
+      else{
+        break;
+      }
+    }
+    else{
+      break;
+    }
+  }*/
   return false;
 }
 
