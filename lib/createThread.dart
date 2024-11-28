@@ -85,6 +85,24 @@ class createThreadState extends State<createThread>{
   var newDiscoveriesPendingThreads = [];
   var feedbackAndSuggestionsPendingThreads = [];
 
+  List<String> threadInfo = [];
+  List<Text> messageCreateThread = [];
+
+  List<Text> createThreadDialogMessage(List<String> info){
+    List<Text> messageForUserCreateThread = [];
+    if(usernameController.text == ""){
+      messageForUserCreateThread.add(Text("Username is empty"));
+    }
+    if(threadNameController.text == ""){
+      messageForUserCreateThread.add(Text("Thread name is empty"));
+    }
+    if(threadContentController.text == ""){
+      messageForUserCreateThread.add(Text("Thread content is empty"));
+    }
+
+    return messageForUserCreateThread;
+  }
+
   Widget build(BuildContext createThreadBuildContext){
     return Scaffold(
       appBar: AppBar(
@@ -683,6 +701,37 @@ class createThreadState extends State<createThread>{
                       }
                     }
                   }
+                }
+                else{
+                  threadInfo.add(usernameController.text);
+                  threadInfo.add(threadNameController.text);
+                  threadInfo.add(threadContentController.text);
+
+                  messageCreateThread = createThreadDialogMessage(threadInfo);
+
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext theContext){
+                        return AlertDialog(
+                          title: const Text("Unable to post thread"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(messageCreateThread.length, (i){
+                              return messageCreateThread[i];
+                            }),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => {
+                                Navigator.pop(context),
+                              },
+                              child: const Text("Ok"),
+                            ),
+                          ],
+                        );
+                      }
+                    );
                 }
               }
             ),
