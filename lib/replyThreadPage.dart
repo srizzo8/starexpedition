@@ -76,6 +76,21 @@ class replyThreadPageState extends State<replyThreadPage>{
   List<String> pendingFeedbackAndSuggestionsReply = [];
   int threadNum = 0;
 
+  List<String> replyInfo = [];
+  List<Text> messageReplyThread = [];
+
+  List<Text> createReplyDialogMessage(List<String> info){
+    List<Text> messageForUserReplyToThread = [];
+    if(usernameReplyController.text == ""){
+      messageForUserReplyToThread.add(Text("Username is empty"));
+    }
+    if(replyContentController.text == ""){
+      messageForUserReplyToThread.add(Text("Reply content is empty"));
+    }
+
+    return messageForUserReplyToThread;
+  }
+
   Widget build(BuildContext bc){
     return Scaffold(
       appBar: AppBar(
@@ -353,7 +368,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                     //print(discussionBoardUpdatesPage.reversedDiscussionBoardUpdatesRepliesIterable.toList()[0][1]);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                     discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;*/
-                  }
+                  //}
                   if(questionsAndAnswersPage.questionsAndAnswersReplyBool == true){
                     //For the Questions and Answers subforum:
                     final questionsAndAnswersRepliesInfo = Get.put(questionsAndAnswersRepliesInformation());
@@ -1113,6 +1128,37 @@ class replyThreadPageState extends State<replyThreadPage>{
                     feedbackAndSuggestionsPage.fasReplyBool = false;
                   }
                 }
+                else{
+                  replyInfo.add(usernameReplyController.text);
+                  replyInfo.add(replyContentController.text);
+
+                  messageReplyThread = createReplyDialogMessage(replyInfo);
+
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext myContext){
+                        return AlertDialog(
+                          title: const Text("Unable to post thread"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(messageReplyThread.length, (i){
+                              return messageReplyThread[i];
+                            }),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => {
+                                Navigator.pop(context),
+                              },
+                              child: const Text("Ok"),
+                            ),
+                          ],
+                        );
+                      }
+                  );
+                }
+              }
             ),
           ],
         ),
