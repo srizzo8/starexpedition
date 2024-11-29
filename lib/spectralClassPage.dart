@@ -180,13 +180,18 @@ class spectralClassPageState extends State<spectralClassPage>{
           DataTable(
             columnSpacing: 30.0,
             columns: [
-              DataColumn(label: Text('Spectral Class', style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 12.5))),
-              DataColumn(label: Text('Temperature', style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 12.5))),
-              //DataColumn(label: Text('Example', style: TextStyle(fontWeight: FontWeight.bold))),
-              DataColumn(label: Text('Stars with Articles', style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 12.5))),
+              DataColumn(label: Align(
+                alignment: Alignment.center,
+                child: Text('Spectral Class', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+              ),
+              DataColumn(label: Align(
+                alignment: Alignment.center,
+                child: Text('Temperature', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+              ),
+              DataColumn(label: Align(
+                alignment: Alignment.center,
+                child: Text('Stars with Articles', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+              ),
             ],
             rows: [
               DataRow(cells: [
