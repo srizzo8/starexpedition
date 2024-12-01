@@ -155,14 +155,14 @@ class spectralClassPageState extends State<spectralClassPage>{
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
-        leading: IconButton(
+        /*leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
             print("Going to home page"),
             Navigator.push(bc, MaterialPageRoute(builder: (bc) => const myMain.StarExpedition())),
           },
-        ),
+        ),*/
       ),
       body: spectralClassOfStars.isEmpty || spectralClassCount.isEmpty? Center(child: CircularProgressIndicator()):
       Wrap(
@@ -573,7 +573,8 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
             //),
             //child: spectralClassListInformation(),
         ]
-      )
+      ),
+      drawer: myMain.starExpeditionNavigationDrawer(),
     );
   }
 

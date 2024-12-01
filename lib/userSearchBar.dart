@@ -116,13 +116,13 @@ class userSearchBarPageState extends State<userSearchBarPage>{
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
-        leading: IconButton(
+        /*leading: IconButton(
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
             }
-        ),
+        ),*/
       ),
       body: Column(
         children: <Widget>[
@@ -153,6 +153,7 @@ class userSearchBarPageState extends State<userSearchBarPage>{
           ),
         ],
       ),
+      drawer: myMain.starExpeditionNavigationDrawer(),
     );
   }
 }
