@@ -506,7 +506,8 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
           }
         )
       ),
-      body: Column(
+      body: fullListOfStars.isEmpty? Center(child: CircularProgressIndicator()):
+      Column(
         children: <Widget>[
           Container(
             height: 5,
