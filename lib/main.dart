@@ -1421,14 +1421,36 @@ class articlePage extends StatelessWidget{
             else{
               if(mySnapshot.hasData){
                 final myData = mySnapshot.data as List<String>;
+                int myStarIndex = 0;
+                for(var s in starsForSearchBar){
+                  if(s.starName == theStar.starName){
+                    break;
+                  }
+                  else{
+                    myStarIndex++;
+                  }
+                }
                 return Column(
                   children: [
                     Container(
                       height: 5,
                     ),
                     Center(
-                      child: Text("Star Information",
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                      child: Text("Image of Star\n", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                    ),
+                    Center(
+                      child: Image(
+                        image: AssetImage(starsForSearchBar[myStarIndex].imagePath!),
+                        height: 200,
+                        width: 200,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Container(
+                      height: 5,
+                    ),
+                    Center(
+                      child: Text("\nStar Information", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
                     ),
                     Column(
                       children: [
