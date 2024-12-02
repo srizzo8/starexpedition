@@ -74,6 +74,8 @@ var docNameForPlanetsTrackedExistingUser;
 
 bool planetTracked = false;
 
+List allPlanets = [];
+
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
 
@@ -264,6 +266,19 @@ Future<void> main() async {
     Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
     theUsers!.add(u);
   }
+
+  //List of planets each star has
+  for(var v in starsForSearchBar){
+    var ref = FirebaseDatabase.instance.ref(v.starName!);
+    var mySnapshot = await ref.child("Planets").get();
+    var info = mySnapshot.value as Map;
+    for(var i in info.keys){
+      allPlanets.add(i);
+    }
+  }
+
+  print("The snapshot: ${allPlanets}");
+
   /*QuerySnapshot qs = await FirebaseFirestore.instance.collection("Users").get();
   var thePeople = qs.docs.map((info) => info.data());
   print("thePeople: ${thePeople}");*/
@@ -710,7 +725,7 @@ class theStarExpeditionState extends State<StarExpedition> {
           Container(
             alignment: Alignment.topCenter,
             padding: EdgeInsets.all(10.0),
-            child: const Text('Star Expedition is an app that allows its users to view and research stars and planets that are potentially capable of supporting life outside our Solar System. Star Expedition will include stars whose spectral classes range from M8 to A5, are within 100 light-years from Earth, and have confirmed terrestrial planets in their habitable zones and planets that are terrestrial and in the habitable zones of their respective stars.', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'), textAlign: TextAlign.center),
+            child: Text('Star Expedition is an app that allows its users to view and research stars and planets that are potentially capable of supporting life outside our Solar System. Star Expedition will include stars whose spectral classes range from M8 to A5, are within 100 light-years from Earth, and have confirmed terrestrial planets in their habitable zones and planets that are terrestrial and in the habitable zones of their respective stars. Currently, Star Expedition features ${starsForSearchBar.length} stars and ${allPlanets.length} planets', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'), textAlign: TextAlign.center),
             height: 200,
           ),
           Container(
