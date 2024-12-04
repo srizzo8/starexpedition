@@ -28,6 +28,7 @@ import 'package:starexpedition4/conversionCalculator.dart';
 import 'package:starexpedition4/settingsPage.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
+import 'package:starexpedition4/starsAndPlanetsList.dart';
 
 import 'loginPage.dart';
 
@@ -74,7 +75,9 @@ var docNameForPlanetsTrackedExistingUser;
 
 bool planetTracked = false;
 
+List allStars = [];
 List allPlanets = [];
+Map starsAndTheirPlanets = {};
 
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
@@ -267,6 +270,14 @@ Future<void> main() async {
     theUsers!.add(u);
   }
 
+  //List of stars in Star Expedition
+  for(var s in starsForSearchBar){
+    var star = s.starName!;
+    allStars.add(star);
+  }
+
+  print("All stars: ${allStars}");
+
   //List of planets each star has
   for(var v in starsForSearchBar){
     var ref = FirebaseDatabase.instance.ref(v.starName!);
@@ -275,8 +286,14 @@ Future<void> main() async {
     for(var i in info.keys){
       allPlanets.add(i);
     }
+
+    //All stars and their planets
+    starsAndTheirPlanets[v.starName!] = info.keys;
   }
 
+  print("stars and their planets: ${starsAndTheirPlanets}");
+
+  print("starsForSearchBar: ${starsForSearchBar}");
   print("The snapshot: ${allPlanets}");
 
   /*QuerySnapshot qs = await FirebaseFirestore.instance.collection("Users").get();
@@ -725,8 +742,35 @@ class theStarExpeditionState extends State<StarExpedition> {
           Container(
             alignment: Alignment.topCenter,
             padding: EdgeInsets.all(10.0),
-            child: Text('Star Expedition is an app that allows its users to view and research stars and planets that are potentially capable of supporting life outside our Solar System. Star Expedition will include stars whose spectral classes range from M8 to A5, are within 100 light-years from Earth, and have confirmed terrestrial planets in their habitable zones and planets that are terrestrial and in the habitable zones of their respective stars. Currently, Star Expedition features ${starsForSearchBar.length} stars and ${allPlanets.length} planets', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'), textAlign: TextAlign.center),
-            height: 200,
+            child: Text('Star Expedition is an app that allows its users to view and research stars and planets that are potentially capable of supporting life outside our Solar System. Star Expedition will include stars whose spectral classes range from M8 to A5, are within 100 light-years from Earth, and have confirmed terrestrial planets in their habitable zones and planets that are terrestrial and in the habitable zones of their respective stars. Currently, Star Expedition features ${allStars.length} stars and ${allPlanets.length} planets.\n', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'), textAlign: TextAlign.center),
+            //height: 200,
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: InkWell(
+              child: Ink(
+                child: Text("Click here to see the list of stars", textAlign: TextAlign.center),
+              ),
+              onTap: (){
+                print("Stars: ${allStars}");
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => starsList()));
+              }
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: InkWell(
+              child: Ink(
+                child: Text("Click here to see the list of planets", textAlign: TextAlign.center),
+              ),
+              onTap: (){
+                print("Planets");
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => planetsList()));
+              }
+            ),
+          ),
+          Container(
+            child: Text("\n"),
           ),
           Container(
             alignment: Alignment.topCenter,
@@ -1418,6 +1462,10 @@ class articlePage extends StatelessWidget{
               featuredStarOfTheDayBool = false,
               Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => StarExpedition())),
             }
+            else if(fromStarList == true){
+              fromStarList = false,
+              Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => starsList())),
+            }
             else{
               showSearch(
                 context: bc,
@@ -1980,9 +2028,15 @@ class planetArticle extends StatelessWidget{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () async =>{
-            hostStarInformation = await getStarInformation(),
-            print("The host star information: $hostStarInformation"),
-            Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images")))),
+            if(fromPlanetList == true){
+              fromPlanetList = false,
+              Navigator.push(theContext, MaterialPageRoute(builder: (BuildContext context) => planetsList())),
+            }
+            else{
+              hostStarInformation = await getStarInformation(),
+              print("The host star information: $hostStarInformation"),
+              Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images")))),
+            }
           },
         ),
       ),
