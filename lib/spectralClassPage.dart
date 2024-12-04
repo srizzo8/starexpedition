@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:starexpedition4/registerPage.dart';
 
+import 'loginPage.dart';
 import 'main.dart' as myMain;
 
 String mySpectralClass = "";
@@ -549,6 +552,35 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
                       informationAboutClickedStar = await myMain.getStarInformation();
                       print(informationAboutClickedStar);
                       fromSpectralClassPage = true;
+
+                      //Is a user tracking this star?
+                      if(myNewUsername != "" && myUsername == ""){
+                        var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                        var docNameForNewUsers;
+                        theNewUser.docs.forEach((result){
+                          docNameForNewUsers = result.id;
+                        });
+
+                        DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                        Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                        myMain.starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMain.correctStar);
+                        print("starTracked: ${myMain.starTracked}");
+                      }
+                      else if(myNewUsername == "" && myUsername != ""){
+                        var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                        var docNameForExistingUsers;
+                        theExistingUser.docs.forEach((result){
+                          docNameForExistingUsers = result.id;
+                        });
+
+                        DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                        Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                        myMain.starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMain.correctStar);
+                        print("starTracked: ${myMain.starTracked}");
+                      }
+
                       Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
                     },
                     child: Container(

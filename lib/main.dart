@@ -791,6 +791,35 @@ class theStarExpeditionState extends State<StarExpedition> {
                   correctStar = starsForSearchBar[randomNumber].starName!;
                   starInfo = await getStarInformation();
                   featuredStarOfTheDayBool = true;
+
+                  //Is the star tracked by a user?
+                  if(myNewUsername != "" && myUsername == ""){
+                    var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                    var docNameForNewUsers;
+                    theNewUser.docs.forEach((result){
+                      docNameForNewUsers = result.id;
+                    });
+
+                    DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                    Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                    starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(correctStar);
+                    print("starTracked: ${starTracked}");
+                  }
+                  else if(myNewUsername == "" && myUsername != ""){
+                    var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                    var docNameForExistingUsers;
+                    theExistingUser.docs.forEach((result){
+                      docNameForExistingUsers = result.id;
+                    });
+
+                    DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                    Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                    starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(correctStar);
+                    print("starTracked: ${starTracked}");
+                  }
+
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
                   // correctStar = starsForSearchBar[randomNumber].starName!;
                   //starInfo = await getStarInformation();
@@ -816,6 +845,35 @@ class theStarExpeditionState extends State<StarExpedition> {
                   correctStar = starsForSearchBar[randomNumber].starName!;
                   starInfo = await getStarInformation();
                   featuredStarOfTheDayBool = true;
+
+                  //Is the star tracked by a user?
+                  if(myNewUsername != "" && myUsername == ""){
+                    var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                    var docNameForNewUsers;
+                    theNewUser.docs.forEach((result){
+                      docNameForNewUsers = result.id;
+                    });
+
+                    DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                    Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                    starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(correctStar);
+                    print("starTracked: ${starTracked}");
+                  }
+                  else if(myNewUsername == "" && myUsername != ""){
+                    var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                    var docNameForExistingUsers;
+                    theExistingUser.docs.forEach((result){
+                      docNameForExistingUsers = result.id;
+                    });
+
+                    DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                    Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                    starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(correctStar);
+                    print("starTracked: ${starTracked}");
+                  }
+
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
                   // correctStar = starsForSearchBar[randomNumber].starName!;
                   //starInfo = await getStarInformation();
