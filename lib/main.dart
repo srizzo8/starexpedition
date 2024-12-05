@@ -1551,7 +1551,8 @@ class articlePage extends StatelessWidget{
                     myStarIndex++;
                   }
                 }
-                return Column(
+                return SingleChildScrollView(
+                  child: Column(
                   children: [
                     Container(
                       height: 5,
@@ -2043,6 +2044,7 @@ class articlePage extends StatelessWidget{
                         ],
                       ),
                   ],
+                  ),
                 );
                 //];
               }
@@ -2106,7 +2108,8 @@ class planetArticle extends StatelessWidget{
             }
             else{
               if(snapshot.hasData){
-                return Column(
+                return SingleChildScrollView(
+                  child: Column(
                   children: <Widget>[
                     Container(
                       height: 5,
@@ -2449,6 +2452,7 @@ class planetArticle extends StatelessWidget{
                   "Temperature (in Kelvin): " + informationAboutPlanet[4].toString()),*/
                     ),
                   ],
+                  ),
                 );
               }
               else{
