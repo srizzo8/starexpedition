@@ -2087,15 +2087,43 @@ class planetArticle extends StatelessWidget{
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
-          onPressed: () async =>{
+          onPressed: () async {
             if(fromPlanetList == true){
-              fromPlanetList = false,
-              Navigator.push(theContext, MaterialPageRoute(builder: (BuildContext context) => planetsList())),
+              fromPlanetList = false;
+              Navigator.push(theContext, MaterialPageRoute(builder: (BuildContext context) => planetsList()));
             }
             else{
-              hostStarInformation = await getStarInformation(),
-              print("The host star information: $hostStarInformation"),
-              Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images")))),
+              hostStarInformation = await getStarInformation();
+              print("The host star information: $hostStarInformation");
+
+              if(myNewUsername != "" && myUsername == ""){
+                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                var docNameForNewUsers;
+                theNewUser.docs.forEach((result){
+                  docNameForNewUsers = result.id;
+                });
+
+                DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(correctStar);
+                print("starTracked: ${starTracked}");
+              }
+              else if(myNewUsername == "" && myUsername != ""){
+                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                var docNameForExistingUsers;
+                theExistingUser.docs.forEach((result){
+                  docNameForExistingUsers = result.id;
+                });
+
+                DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(correctStar);
+                print("starTracked: ${starTracked}");
+              };
+
+              Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));
             }
           },
         ),
