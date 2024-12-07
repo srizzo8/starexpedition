@@ -1820,11 +1820,42 @@ class articlePage extends StatelessWidget{
                                                           }).then((outcome) {
                                                             print("starsTracked updated!");
                                                           });
+
+                                                          if(myNewUsername != "" && myUsername == ""){
+                                                            var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                            var docNameForNewUsers;
+                                                            theNewUser.docs.forEach((result){
+                                                              docNameForNewUsers = result.id;
+                                                            });
+
+                                                            DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                                                            Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                                                            starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                            print("starTracked: ${starTracked}");
+                                                          }
+                                                          else if(myNewUsername == "" && myUsername != ""){
+                                                            var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                            var docNameForExistingUsers;
+                                                            theExistingUser.docs.forEach((result){
+                                                              docNameForExistingUsers = result.id;
+                                                            });
+
+                                                            DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                                                            Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                                                            starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                            print("starTracked: ${starTracked}");
+                                                          }
+
+                                                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+
+                                                          /*
                                                           Navigator.pop(bc);
                                                           showSearch(
                                                               context: context,
                                                               delegate: CustomSearchDelegate()
-                                                          );
+                                                          );*/
                                                         }
                                                       }
                                                   ),
@@ -1908,11 +1939,39 @@ class articlePage extends StatelessWidget{
                                                       }).then((outcome) {
                                                       print("starsTracked updated!");
                                                     });
-                                                    Navigator.pop(bc);
+                                                      if(myNewUsername != "" && myUsername == ""){
+                                                        var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                        var docNameForNewUsers;
+                                                        theNewUser.docs.forEach((result){
+                                                          docNameForNewUsers = result.id;
+                                                        });
+
+                                                        DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                                                        Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                                                        starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                        print("starTracked: ${starTracked}");
+                                                      }
+                                                      else if(myNewUsername == "" && myUsername != ""){
+                                                        var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                        var docNameForExistingUsers;
+                                                        theExistingUser.docs.forEach((result){
+                                                          docNameForExistingUsers = result.id;
+                                                        });
+
+                                                        DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                                                        Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                                                        starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                        print("starTracked: ${starTracked}");
+                                                      }
+
+                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+                                                    /*Navigator.pop(bc);
                                                     showSearch(
                                                         context: context,
                                                         delegate: CustomSearchDelegate()
-                                                    );
+                                                    );*/
                                                   }
                                                 }
                                               ),
@@ -1994,11 +2053,40 @@ class articlePage extends StatelessWidget{
                                                   print("Untracked the star!");
                                                 });
 
-                                                Navigator.pop(context);
+                                                if(myNewUsername != "" && myUsername == ""){
+                                                  var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                  var docNameForNewUsers;
+                                                  theNewUser.docs.forEach((result){
+                                                    docNameForNewUsers = result.id;
+                                                  });
+
+                                                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                                                  Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                                                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                  print("starTracked: ${starTracked}");
+                                                }
+                                                else if(myNewUsername == "" && myUsername != ""){
+                                                  var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                  var docNameForExistingUsers;
+                                                  theExistingUser.docs.forEach((result){
+                                                    docNameForExistingUsers = result.id;
+                                                  });
+
+                                                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                                                  Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                                                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                  print("starTracked: ${starTracked}");
+                                                }
+
+                                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+
+                                                /*Navigator.pop(context);
                                                 showSearch(
                                                     context: context,
                                                     delegate: CustomSearchDelegate()
-                                                );
+                                                );*/
                                               }
                                               else if(myNewUsername == "" && myUsername != ""){
                                                 var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -2020,11 +2108,40 @@ class articlePage extends StatelessWidget{
                                                   print("Untracked the star!");
                                                 });
 
-                                                Navigator.pop(context);
+                                                if(myNewUsername != "" && myUsername == ""){
+                                                  var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                  var docNameForNewUsers;
+                                                  theNewUser.docs.forEach((result){
+                                                    docNameForNewUsers = result.id;
+                                                  });
+
+                                                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                                                  Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                                                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                  print("starTracked: ${starTracked}");
+                                                }
+                                                else if(myNewUsername == "" && myUsername != ""){
+                                                  var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                  var docNameForExistingUsers;
+                                                  theExistingUser.docs.forEach((result){
+                                                    docNameForExistingUsers = result.id;
+                                                  });
+
+                                                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                                                  Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                                                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                  print("starTracked: ${starTracked}");
+                                                }
+
+                                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+
+                                                /*Navigator.pop(context);
                                                 showSearch(
                                                     context: context,
                                                     delegate: CustomSearchDelegate()
-                                                );
+                                                );*/
                                               }
                                             }
                                           ),
