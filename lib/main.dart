@@ -2381,10 +2381,41 @@ class planetArticle extends StatelessWidget{
                                                           print("planetsTracked updated!");
                                                         });
 
+                                                        //Is the planet tracked by the user?
+                                                        if(myNewUsername != "" && myUsername == ""){
+                                                          var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                          var theDocNameForNewUsers;
+                                                          theNewUser.docs.forEach((result){
+                                                            theDocNameForNewUsers = result.id;
+                                                          });
+
+                                                          DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                                                          Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                                          planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                          print("planetTracked: ${planetTracked}");
+                                                        }
+                                                        else if(myNewUsername == "" && myUsername != ""){
+                                                          var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                          var theDocNameForExistingUsers;
+                                                          theExistingUser.docs.forEach((result){
+                                                            theDocNameForExistingUsers = result.id;
+                                                          });
+
+                                                          DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                                                          Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                                          planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                          print("planetTracked: ${planetTracked}");
+                                                        }
+
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+
+                                                        /*
                                                         hostStarInformation = await getStarInformation();
                                                         print("hoststarinformation: ${hostStarInformation}");
                                                         Navigator.pop(theContext);
-                                                        Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));
+                                                        Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));*/
                                                       }
                                                     }
                                                 ),
@@ -2469,10 +2500,40 @@ class planetArticle extends StatelessWidget{
                                                           print("planetsTracked updated!");
                                                         });
 
-                                                        hostStarInformation = await getStarInformation();
+                                                        //Is the planet tracked by the user?
+                                                        if(myNewUsername != "" && myUsername == ""){
+                                                          var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                          var theDocNameForNewUsers;
+                                                          theNewUser.docs.forEach((result){
+                                                            theDocNameForNewUsers = result.id;
+                                                          });
+
+                                                          DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                                                          Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                                          planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                          print("planetTracked: ${planetTracked}");
+                                                        }
+                                                        else if(myNewUsername == "" && myUsername != ""){
+                                                          var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                          var theDocNameForExistingUsers;
+                                                          theExistingUser.docs.forEach((result){
+                                                            theDocNameForExistingUsers = result.id;
+                                                          });
+
+                                                          DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                                                          Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                                          planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                          print("planetTracked: ${planetTracked}");
+                                                        }
+
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+
+                                                        /*hostStarInformation = await getStarInformation();
                                                         print("hoststarinformation: ${hostStarInformation}");
                                                         Navigator.pop(context);
-                                                        Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));
+                                                        Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));*/
                                                       }
                                                     }
                                                 ),
@@ -2553,10 +2614,40 @@ class planetArticle extends StatelessWidget{
                                                       print("Untracked the planet!");
                                                     });
 
-                                                    hostStarInformation = await getStarInformation();
+                                                    //Is the planet tracked by the user?
+                                                    if(myNewUsername != "" && myUsername == ""){
+                                                      var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                      var theDocNameForNewUsers;
+                                                      theNewUser.docs.forEach((result){
+                                                        theDocNameForNewUsers = result.id;
+                                                      });
+
+                                                      DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                                                      Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                                      planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                      print("planetTracked: ${planetTracked}");
+                                                    }
+                                                    else if(myNewUsername == "" && myUsername != ""){
+                                                      var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                      var theDocNameForExistingUsers;
+                                                      theExistingUser.docs.forEach((result){
+                                                        theDocNameForExistingUsers = result.id;
+                                                      });
+
+                                                      DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                                                      Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                                      planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                      print("planetTracked: ${planetTracked}");
+                                                    }
+
+                                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+
+                                                    /*hostStarInformation = await getStarInformation();
                                                     print("hoststarinformation: ${hostStarInformation}");
                                                     Navigator.pop(context);
-                                                    Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));
+                                                    Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));*/
                                                   }
                                                   else if(myNewUsername == "" && myUsername != ""){
                                                     var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -2578,10 +2669,40 @@ class planetArticle extends StatelessWidget{
                                                       print("Untracked the planet!");
                                                     });
 
-                                                    hostStarInformation = await getStarInformation();
+                                                    //Is the planet tracked by the user?
+                                                    if(myNewUsername != "" && myUsername == ""){
+                                                      var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                      var theDocNameForNewUsers;
+                                                      theNewUser.docs.forEach((result){
+                                                        theDocNameForNewUsers = result.id;
+                                                      });
+
+                                                      DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                                                      Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                                      planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                      print("planetTracked: ${planetTracked}");
+                                                    }
+                                                    else if(myNewUsername == "" && myUsername != ""){
+                                                      var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                      var theDocNameForExistingUsers;
+                                                      theExistingUser.docs.forEach((result){
+                                                        theDocNameForExistingUsers = result.id;
+                                                      });
+
+                                                      DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                                                      Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                                      planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                      print("planetTracked: ${planetTracked}");
+                                                    }
+
+                                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+
+                                                    /*hostStarInformation = await getStarInformation();
                                                     print("hoststarinformation: ${hostStarInformation}");
                                                     Navigator.pop(context);
-                                                    Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));
+                                                    Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));*/
                                                   }
                                                 }
                                             ),
