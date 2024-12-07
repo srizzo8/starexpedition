@@ -456,7 +456,7 @@ List<myStars> starsForSearchBar = [
   myStars(starName: "Teegarden's Star", imagePath: "assets/images/teegardens_star.JPG"),
   myStars(starName: "TRAPPIST-1", imagePath: "assets/images/trappist_1.JPG",),
   myStars(starName: "Gliese 12", imagePath: "assets/images/gliese_12.JPG"),
-  myStars(starName: "HD 48498", imagePath: "assets/images/hd_48498.JPG"),
+  myStars(starName: "HD 48948", imagePath: "assets/images/hd_48948.JPG"),
   myStars(starName: "LHS 1140", imagePath: "assets/images/lhs_1140.JPG")
 ];
 
@@ -1484,11 +1484,12 @@ class articlePage extends StatelessWidget{
     final discoveryDate = await getPlanetAttribute.child("discovery_date").get();
     final distanceFromStar = await getPlanetAttribute.child("distance_from_star").get();
     final earthMasses = await getPlanetAttribute.child("earth_masses").get();
+    final knownGases = await getPlanetAttribute.child("known_gases").get();
     final orbitalPeriod = await getPlanetAttribute.child("orbital_period").get();
     final planetTemperature = await getPlanetAttribute.child("planet_temperature").get();
 
     return Future.delayed(Duration(seconds: 1), () {
-      return [discoveryDate.value.toString(), distanceFromStar.value.toString(), earthMasses.value.toString(), orbitalPeriod.value.toString(), planetTemperature.value.toString()];
+      return [discoveryDate.value.toString(), distanceFromStar.value.toString(), earthMasses.value.toString(), knownGases.value.toString(), orbitalPeriod.value.toString(), planetTemperature.value.toString()];
     });
   }
 
@@ -2180,7 +2181,7 @@ class planetArticle extends StatelessWidget{
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "Orbital period: ",
+                            text: "Known gases: ",
                             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                             children: <TextSpan>[
                               TextSpan(text: informationAboutPlanet[3].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
@@ -2189,10 +2190,19 @@ class planetArticle extends StatelessWidget{
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "Temperature (in Kelvin): ",
+                            text: "Orbital period: ",
                             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                             children: <TextSpan>[
                               TextSpan(text: informationAboutPlanet[4].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            text: "Temperature (in Kelvin): ",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(text: informationAboutPlanet[5].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
                             ],
                           ),
                         ),
