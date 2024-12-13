@@ -94,7 +94,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                FilteringTextInputFormatter.allow(RegExp("[0-9.]")),
               ]
               /*inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
@@ -149,21 +149,21 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                     content: dropdownTempValue == "Celsius" && secondDropdownTempValue == "Celsius"?
                     Text("You cannot convert Celsius to Celsius"):
                     dropdownTempValue == "Celsius" && secondDropdownTempValue == "Fahrenheit"?
-                    Text("${int.parse(myTemperature.text)} degrees Celsius is: \n${((int.parse(myTemperature.text)) * (9/5) + 32)} degrees Fahrenheit"):
+                    Text("${myTemperature.text} degrees Celsius is: \n${((double.parse(myTemperature.text)) * (9/5) + 32)} degrees Fahrenheit"):
                     dropdownTempValue == "Celsius" && secondDropdownTempValue == "Kelvin"?
-                    Text("${int.parse(myTemperature.text)} degrees Celsius is: \n${((int.parse(myTemperature.text)) + 273.15)} degrees Kelvin"):
+                    Text("${myTemperature.text} degrees Celsius is: \n${((double.parse(myTemperature.text)) + 273.15)} degrees Kelvin"):
                     dropdownTempValue == "Fahrenheit" && secondDropdownTempValue == "Celsius"?
-                    Text("${int.parse(myTemperature.text)} degrees Fahrenheit is: \n${(((int.parse(myTemperature.text)) - 32) * (5/9))} degrees Celsius"):
+                    Text("${myTemperature.text} degrees Fahrenheit is: \n${(((double.parse(myTemperature.text)) - 32) * (5/9))} degrees Celsius"):
                     dropdownTempValue == "Fahrenheit" && secondDropdownTempValue == "Fahrenheit"?
                     Text("You cannot convert Fahrenheit to Fahrenheit"):
                     dropdownTempValue == "Fahrenheit" && secondDropdownTempValue == "Kelvin"?
-                    Text("${int.parse(myTemperature.text)} degrees Fahrenheit is: \n${((((int.parse(myTemperature.text)) - 32) * (5/9)) + 273.15)} degrees Kelvin"):
+                    Text("${myTemperature.text} degrees Fahrenheit is: \n${((((double.parse(myTemperature.text)) - 32) * (5/9)) + 273.15)} degrees Kelvin"):
                     dropdownTempValue == "Kelvin" && secondDropdownTempValue == "Celsius"?
-                    Text("${int.parse(myTemperature.text)} degrees Kelvin is: \n${((int.parse(myTemperature.text)) - 273.15)} degrees Celsius"):
+                    Text("${myTemperature.text} degrees Kelvin is: \n${((double.parse(myTemperature.text)) - 273.15)} degrees Celsius"):
                     dropdownTempValue == "Kelvin" && secondDropdownTempValue == "Kelvin"?
                     Text("You cannot convert Kelvin to Kelvin"):
                     dropdownTempValue == "Kelvin" && secondDropdownTempValue == "Fahrenheit"?
-                    Text("${int.parse(myTemperature.text)} degrees Kelvin is: \n${((((int.parse(myTemperature.text)) - 273.15) * 1.8) + 32)} degrees Fahrenheit"):
+                    Text("${myTemperature.text} degrees Kelvin is: \n${((((double.parse(myTemperature.text)) - 273.15) * 1.8) + 32)} degrees Fahrenheit"):
                     Text(""),
                     actions: <Widget>[
                       TextButton(
@@ -210,7 +210,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                FilteringTextInputFormatter.allow(RegExp("[0-9.]")),
               ],
             ),
           ),
@@ -259,51 +259,51 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                     content: dropdownLengthValue == "AU" && secondDropdownLengthValue == "AU"?
                     Text("You cannot convert AU to AU"):
                     dropdownLengthValue == "AU" && secondDropdownLengthValue == "Kilometers"?
-                    Text("${int.parse(myLength.text)} AU is: \n${(int.parse(myLength.text) * 149597870.691)} kilometers"):
+                    Text("${myLength.text} AU is: \n${(double.parse(myLength.text) * 149597870.691)} kilometers"):
                     dropdownLengthValue == "AU" && secondDropdownLengthValue == "Light-years"?
-                    Text("${int.parse(myLength.text)} AU is: \n${((int.parse(myLength.text)) * (1/63241.077))} light-years"):
+                    Text("${myLength.text} AU is: \n${((double.parse(myLength.text)) * (1/63241.077))} light-years"):
                     dropdownLengthValue == "AU" && secondDropdownLengthValue == "Miles"?
-                    Text("${int.parse(myLength.text)} AU is: \n${((int.parse(myLength.text)) * 92955807.267)} miles"):
+                    Text("${myLength.text} AU is: \n${((double.parse(myLength.text)) * 92955807.267)} miles"):
                     dropdownLengthValue == "AU" && secondDropdownLengthValue == "Parsecs"?
-                    Text("${int.parse(myLength.text)} AU is: \n${(int.parse(myLength.text) / 206264.800)} parsecs"):
+                    Text("${myLength.text} AU is: \n${(double.parse(myLength.text) / 206264.800)} parsecs"):
                     dropdownLengthValue == "Kilometers" && secondDropdownLengthValue == "AU"?
-                    Text("${int.parse(myLength.text)} kilometers is: \n${((int.parse(myLength.text)) / 149597870.691)} AU"):
+                    Text("${myLength.text} kilometers is: \n${((double.parse(myLength.text)) / 149597870.691)} AU"):
                     dropdownLengthValue == "Kilometers" && secondDropdownLengthValue == "Kilometers"?
                     Text("You cannot convert kilometers to kilometers"):
                     dropdownLengthValue == "Kilometers" && secondDropdownLengthValue == "Light-years"?
-                    Text("${int.parse(myLength.text)} kilometers is: \n${((int.parse(myLength.text)) / 9460730472580)} light-years"):
+                    Text("${myLength.text} kilometers is: \n${((double.parse(myLength.text)) / 9460730472580)} light-years"):
                     dropdownLengthValue == "Kilometers" && secondDropdownLengthValue == "Miles"?
-                    Text("${int.parse(myLength.text)} kilometers is: \n${((int.parse(myLength.text)) * 0.621371)} miles"):
+                    Text("${myLength.text} kilometers is: \n${((double.parse(myLength.text)) * 0.621371)} miles"):
                     dropdownLengthValue == "Kilometers" && secondDropdownLengthValue == "Parsecs"?
-                    Text("${int.parse(myLength.text)} kilometers is: \n${((int.parse(myLength.text)) / 30856775814671.900)} parsecs"):
+                    Text("${myLength.text} kilometers is: \n${((double.parse(myLength.text)) / 30856775814671.900)} parsecs"):
                     dropdownLengthValue == "Light-years" && secondDropdownLengthValue == "AU"?
-                    Text("${int.parse(myLength.text)} light-years is: \n${((int.parse(myLength.text)) * 63241.077)} AU"):
+                    Text("${myLength.text} light-years is: \n${((double.parse(myLength.text)) * 63241.077)} AU"):
                     dropdownLengthValue == "Light-years" && secondDropdownLengthValue == "Kilometers"?
-                    Text("${int.parse(myLength.text)} light-years is: \n${((int.parse(myLength.text)) * 9460730572580)} kilometers"):
+                    Text("${myLength.text} light-years is: \n${((double.parse(myLength.text)) * 9460730572580)} kilometers"):
                     dropdownLengthValue == "Light-years" && secondDropdownLengthValue == "Light-years"?
                     Text("You cannot convert light-years to light-years"):
                     dropdownLengthValue == "Light-years" && secondDropdownLengthValue == "Miles"?
-                    Text("${int.parse(myLength.text)} light-years is: \n${((int.parse(myLength.text)) * 5878612843200)} miles"):
+                    Text("${myLength.text} light-years is: \n${((double.parse(myLength.text)) * 5878612843200)} miles"):
                     dropdownLengthValue == "Light-years" && secondDropdownLengthValue == "Parsecs"?
-                    Text("${int.parse(myLength.text)} light-years is: \n${((int.parse(myLength.text)) * 0.3066014)} parsecs"):
+                    Text("${myLength.text} light-years is: \n${((double.parse(myLength.text)) * 0.3066014)} parsecs"):
                     dropdownLengthValue == "Miles" && secondDropdownLengthValue == "AU"?
-                    Text("${int.parse(myLength.text)} miles is: \n${((int.parse(myLength.text)) / 92955807.267)} AU"):
+                    Text("${myLength.text} miles is: \n${((double.parse(myLength.text)) / 92955807.267)} AU"):
                     dropdownLengthValue == "Miles" && secondDropdownLengthValue == "Kilometers"?
-                    Text("${int.parse(myLength.text)} miles is: \n${((int.parse(myLength.text)) * 1.609344)} kilometers"):
+                    Text("${myLength.text} miles is: \n${((double.parse(myLength.text)) * 1.609344)} kilometers"):
                     dropdownLengthValue == "Miles" && secondDropdownLengthValue == "Light-years"?
-                    Text("${int.parse(myLength.text)} miles is: \n${((int.parse(myLength.text)) / 5878612843200)} light-years"):
+                    Text("${myLength.text} miles is: \n${((double.parse(myLength.text)) / 5878612843200)} light-years"):
                     dropdownLengthValue == "Miles" && secondDropdownLengthValue == "Miles"?
                     Text("You cannot convert miles to miles"):
                     dropdownLengthValue == "Miles" && secondDropdownLengthValue == "Parsecs"?
-                    Text("${int.parse(myLength.text)} miles is: \n${((int.parse(myLength.text)) / 19173511575400)} parsecs"):
+                    Text("${myLength.text} miles is: \n${((double.parse(myLength.text)) / 19173511575400)} parsecs"):
                     dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "AU"?
-                    Text("${int.parse(myLength.text)} parsecs is: \n${((int.parse(myLength.text)) * 206264.984)} AU"):
+                    Text("${myLength.text} parsecs is: \n${((double.parse(myLength.text)) * 206264.984)} AU"):
                     dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Kilometers"?
-                    Text("${int.parse(myLength.text)} parsecs is: \n${((int.parse(myLength.text)) * 30856775812800)} kilometers"):
+                    Text("${myLength.text} parsecs is: \n${((double.parse(myLength.text)) * 30856775812800)} kilometers"):
                     dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Light-years"?
-                    Text("${int.parse(myLength.text)} parsecs is: \n${((int.parse(myLength.text)) * 3.26156378)} light-years"):
+                    Text("${myLength.text} parsecs is: \n${((double.parse(myLength.text)) * 3.26156378)} light-years"):
                     dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Miles"?
-                    Text("${int.parse(myLength.text)} parsecs is: \n${((int.parse(myLength.text)) * 19173511575400)} miles"):
+                    Text("${myLength.text} parsecs is: \n${((double.parse(myLength.text)) * 19173511575400)} miles"):
                     dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Parsecs"?
                     Text("You cannot convert parsecs to parsecs"):
                     Text(""),
