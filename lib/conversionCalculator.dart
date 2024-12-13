@@ -85,12 +85,13 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
           Container(
             padding: const EdgeInsets.all(10.0),
             height: 50,
-            width: 150,
+            width: 175,
             alignment: Alignment.centerLeft,
             child: TextField(
               controller: myTemperature,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.all(5.0),
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
@@ -201,12 +202,13 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
           Container(
             padding: const EdgeInsets.all(10.0),
             height: 50,
-            width: 150,
+            width: 175,
             alignment: Alignment.centerLeft,
             child: TextField(
               controller: myLength,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.all(5.0),
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
