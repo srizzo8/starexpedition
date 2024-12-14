@@ -265,6 +265,9 @@ Future<void> main() async {
   });
   print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
 
+  //Sorting starsForSearchBar
+  starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+
   for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
     Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
     theUsers!.add(u);
@@ -275,6 +278,8 @@ Future<void> main() async {
     var star = s.starName!;
     allStars.add(star);
   }
+
+  allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
 
   print("All stars: ${allStars}");
 
@@ -290,6 +295,8 @@ Future<void> main() async {
     //All stars and their planets
     starsAndTheirPlanets[v.starName!] = info.keys;
   }
+
+  allPlanets.sort((p1, p2) => p1.toLowerCase().compareTo(p2.toLowerCase()));
 
   print("stars and their planets: ${starsAndTheirPlanets}");
 
@@ -564,6 +571,7 @@ class theStarExpeditionState extends State<StarExpedition> {
   theStarExpeditionState(this.starInfo);
   final CustomSearchDelegate csd = new CustomSearchDelegate();
 
+  //.sort((a, b) => a.starName!.compareTo(b.starName!));
   //userItemsExistingUsers? myChosenItemExistingUsers;
 
   @override
@@ -1092,8 +1100,10 @@ class CustomSearchDelegate extends SearchDelegate {
     for(var star in starsForSearchBar) {
       if (star.starName!.toLowerCase().contains(query)) {
         myMatchQuery.add(star!);
+        //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
       }
     }
+    //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
     otherNamesMap.forEach((key, value){
       for(var v in value){
         if(v != "N/A"){
@@ -1101,6 +1111,7 @@ class CustomSearchDelegate extends SearchDelegate {
             if(v!.toLowerCase().contains(query)){ //if the value contains query
               int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
               myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
+              //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
             }
             else{
               //continue
@@ -1217,6 +1228,8 @@ class CustomSearchDelegate extends SearchDelegate {
         }
       }
     }*/
+    //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+
     return ListView.builder(
       itemCount: myMatchQuery.length,
       itemBuilder: (context, index) {
@@ -1378,6 +1391,8 @@ class CustomSearchDelegate extends SearchDelegate {
           }
       }
     }*/
+
+    myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
 
     return ListView.builder(
       itemCount: myMatchQuery.length,
