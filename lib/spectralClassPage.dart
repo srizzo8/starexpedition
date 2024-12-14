@@ -459,6 +459,16 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
           break;
       }
     }
+
+    //Sorting stars of each spectral class alphabetically
+    getMStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+    getKStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+    getGStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+    getFStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+    getAStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+    getBStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+    getOStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+
     print("List of M-type stars: " + mStars.toString());
     print("List of K-type stars: " + kStars.toString());
     print("List of G-type stars: " + gStars.toString());
@@ -533,22 +543,17 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
               child: spectralClassListInformation(),
             )*/
           switchOn? Expanded(
-            child: ListView.separated(
+            child: ListView.builder(
               itemCount: fullListOfStars[indexPlaceSpectralClass()].length,
-              separatorBuilder: (context, index) => Container(height: 10),
               itemBuilder: (context, index){
-                return UnconstrainedBox(
-                  //color: Colors.white12,
-                  child: InkWell(
+                return ListTile(
+                  title: Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
                     onTap: () async{
-                      //clickedStar.add(myMain.myStars(starName: fullListOfStars[indexPlaceSpectralClass()][index]));
                       myMain.correctStar = fullListOfStars[indexPlaceSpectralClass()][index];
                       print(myMain.correctStar);
                       clickedStar.starName = myMain.correctStar;
                       print(clickedStar.starName);
-                      //clickedStar = ;
-                      //print(clickedStar);
-                      //print("This is the clicked star: " + clickedStar! as String);
+
                       informationAboutClickedStar = await myMain.getStarInformation();
                       print(informationAboutClickedStar);
                       fromSpectralClassPage = true;
@@ -583,41 +588,15 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
 
                       Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
                     },
-                    child: Container(
-                      //child: Container(
-                        /*constraints: const BoxConstraints(
-                          maxWidth: 100,
-                        ),*/
-                        child: Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
-                      //),
-                    ),
-                  ),
-                  //Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
-                );
-              }
+                  leading: Image.asset(myMain.starsForSearchBar[myMain.starsForSearchBar.indexWhere((star) => star.starName! == fullListOfStars[indexPlaceSpectralClass()][index])].imagePath!, fit: BoxFit.cover, height: 50, width: 50));
+                },
             ),
           ): Container(),
-            /*Column(
-              children: [
-
-              ],
-            ),*/
-            //),
-            //child: spectralClassListInformation(),
-        ]
+        ],
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
     );
   }
-
-  /*myMain.myStars starDecider(){
-    if(clickedStar != null){
-      print("clickedStar is empty!");
-    }
-    else{
-      myMain.myStars(imagePath:)
-    }
-  }*/
 
   int indexPlaceSpectralClass(){
     int myIndexPlace = 0;
@@ -647,64 +626,4 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
 
     return myIndexPlace;
     }
-  }
-
-  /*Text spectralClassListInformation(){
-    //Text myContainerText = RichText(text: TextSpan(text: "Not available at the moment"));
-    Text myContainerText = Text("Not available at the moment");
-    List starList = [];
-    switch(mySpectralClass){
-      case "M":
-        for(int m = 0; m < fullListOfStars[0].length; m++) {
-          starList.add(fullListOfStars[0][m]);
-          //myContainerText = Text(fullListOfStars[0][m], textAlign: TextAlign.center);
-        }
-        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
-        //myContainerText = RichText(text: TextSpan(text: starList.join("\n").toString()), textAlign: TextAlign.center);
-        break;
-      case "K":
-        for(int k = 0; k < fullListOfStars[1].length; k++){
-          starList.add(fullListOfStars[1][k]);
-        }
-        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
-        //myContainerText = RichText(text: TextSpan(text: starList.join("\n").toString()), textAlign: TextAlign.center);
-        break;
-      case "G":
-        for(int g = 0; g < fullListOfStars[2].length; g++){
-          starList.add(fullListOfStars[2][g]);
-        }
-        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
-        //myContainerText = RichText(text: TextSpan(text: starList.join("\n").toString()), textAlign: TextAlign.center);
-        break;
-      case "F":
-        for(int f = 0; f < fullListOfStars[3].length; f++){
-          starList.add(fullListOfStars[3][f]);
-        }
-        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
-        //myContainerText = RichText(text: TextSpan(text: starList.join("\n").toString()), textAlign: TextAlign.center);
-        break;
-      case "A":
-        for(int a = 0; a < fullListOfStars[4].length; a++){
-          starList.add(fullListOfStars[4][a]);
-        }
-        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
-        //myContainerText = RichText(text: TextSpan(text: starList.join("\n").toString()), textAlign: TextAlign.center);
-        break;
-      case "B":
-        for(int b = 0; b < fullListOfStars[5].length; b++){
-          starList.add(fullListOfStars[5][b]);
-        }
-        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
-        //myContainerText = RichText(text: TextSpan(text: starList.join("\n").toString()), textAlign: TextAlign.center);
-        break;
-      case "O":
-        for(int o = 0; o < fullListOfStars[6].length; o++){
-          starList.add(fullListOfStars[6][o]);
-        }
-        myContainerText = Text(starList.join("\n").toString(), textAlign: TextAlign.center);
-        //myContainerText = RichText(text: TextSpan(text: starList.join("\n").toString()), textAlign: TextAlign.center);
-        break;
-    }
-    return myContainerText;
-  }*/
-//}
+}
