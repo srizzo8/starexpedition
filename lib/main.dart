@@ -79,6 +79,8 @@ List allStars = [];
 List allPlanets = [];
 Map starsAndTheirPlanets = {};
 
+bool fromSearchBarToPlanetArticle = false;
+
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
 
@@ -1106,7 +1108,7 @@ class CustomSearchDelegate extends SearchDelegate {
 
     for(var planet in allPlanets){
       if(planet.toLowerCase().contains(query)){
-        myMatchQuery.add(myStars(starName: planet, imagePath: "not_available.png"));
+        myMatchQuery.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
       }
     }
     //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
@@ -1269,7 +1271,7 @@ class CustomSearchDelegate extends SearchDelegate {
 
     for(var planet in allPlanets){
       if(planet.toLowerCase().contains(query)){
-        myMatchQuery.add(myStars(starName: planet, imagePath: "not_available.png"));
+        myMatchQuery.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
       }
     }
 
@@ -1414,42 +1416,57 @@ class CustomSearchDelegate extends SearchDelegate {
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () async{
-              if(myMatchQuery[index].imagePath! != "not_available.png"){
-              correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
-              print(correctStar);
-              starInfo = await getStarInformation();
+              if(myMatchQuery[index].imagePath! != "assets/images/not_available.png"){
+                correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
+                print(correctStar);
+                starInfo = await getStarInformation();
 
-              if(myNewUsername != "" && myUsername == ""){
-                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                var docNameForNewUsers;
-                theNewUser.docs.forEach((result){
-                  docNameForNewUsers = result.id;
-                });
+                if(myNewUsername != "" && myUsername == ""){
+                  var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                  var docNameForNewUsers;
+                  theNewUser.docs.forEach((result){
+                    docNameForNewUsers = result.id;
+                  });
 
-                DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
-                Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                  Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
 
-                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
-                print("starTracked: ${starTracked}");
+                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
+                  print("starTracked: ${starTracked}");
+                }
+                else if(myNewUsername == "" && myUsername != ""){
+                  var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                  var docNameForExistingUsers;
+                  theExistingUser.docs.forEach((result){
+                    docNameForExistingUsers = result.id;
+                  });
+
+                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                  Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
+                  print("starTracked: ${starTracked}");
+                }
+
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
               }
-              else if(myNewUsername == "" && myUsername != ""){
-                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                var docNameForExistingUsers;
-                theExistingUser.docs.forEach((result){
-                  docNameForExistingUsers = result.id;
-                });
-
-                DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
-                Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
-
-                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
-                print("starTracked: ${starTracked}");
-              }
-
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
-            }
-            else{
+              else{
+                fromSearchBarToPlanetArticle = true;
                 correctPlanet = myMatchQuery[index].starName!;
+
+                starsAndTheirPlanets.forEach((key, value){
+                  print("key: ${key}, value: ${value}");
+                  for(var v in value){
+                    if(v == correctPlanet){
+                      correctStar = key;
+                      break;
+                    }
+                    else{
+                      //continue
+                    }
+                  }
+                });
+
                 var theStarInfo = await getStarInformation();
                 informationAboutPlanet = await articlePage(theStarInfo).getPlanetData();
 
@@ -1482,7 +1499,7 @@ class CustomSearchDelegate extends SearchDelegate {
                 }
 
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
-            }
+              }
             },
             leading: Image.asset(myMatchQuery[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
             //trailing: Icon(Icons.whatshot_rounded));
@@ -2273,6 +2290,13 @@ class planetArticle extends StatelessWidget{
             if(fromPlanetList == true){
               fromPlanetList = false;
               Navigator.push(theContext, MaterialPageRoute(builder: (BuildContext context) => planetsList()));
+            }
+            else if(fromSearchBarToPlanetArticle == true){
+              fromSearchBarToPlanetArticle = false;
+              showSearch(
+                context: theContext,
+                delegate: CustomSearchDelegate(),
+              );
             }
             else{
               hostStarInformation = await getStarInformation();
