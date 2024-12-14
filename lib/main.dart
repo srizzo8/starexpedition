@@ -612,11 +612,37 @@ class theStarExpeditionState extends State<StarExpedition> {
               alternateNames = otherNamesMap.values;
               print(alternateNames);
 
-              //showSearch
-              showSearch(
-                  context: context,
-                  // delegate to customize the search bar
-                  delegate: CustomSearchDelegate());
+              //Dialog for users to select whether they want to search for stars or planets
+              showDialog(
+                context: context,
+                builder: (BuildContext bc){
+                  return SimpleDialog(
+                    title: Text("Select what you would like to search for"),
+                    children: <Widget>[
+                      SimpleDialogOption(
+                        child: Text("Stars"),
+                        onPressed: (){
+                          //showSearch
+                          showSearch(
+                            context: context,
+                            // delegate to customize the search bar
+                            delegate: CustomSearchDelegate()
+                          );
+                        }
+                      ),
+                      SimpleDialogOption(
+                        child: Text("Planets"),
+                        onPressed: (){
+                          showSearch(
+                            context: context,
+                            delegate: CustomSearchDelegateForPlanets()
+                          );
+                        }
+                      ),
+                    ],
+                  );
+                }
+              );
             },
             icon: const Icon(Icons.search),
           )
@@ -1102,16 +1128,9 @@ class CustomSearchDelegate extends SearchDelegate {
     for(var star in starsForSearchBar) {
       if (star.starName!.toLowerCase().contains(query)) {
         myMatchQuery.add(star!);
-        //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
       }
     }
 
-    for(var planet in allPlanets){
-      if(planet.toLowerCase().contains(query)){
-        myMatchQuery.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
-      }
-    }
-    //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
     otherNamesMap.forEach((key, value){
       for(var v in value){
         if(v != "N/A"){
@@ -1119,7 +1138,6 @@ class CustomSearchDelegate extends SearchDelegate {
             if(v!.toLowerCase().contains(query)){ //if the value contains query
               int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
               myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
-              //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
             }
             else{
               //continue
@@ -1236,7 +1254,6 @@ class CustomSearchDelegate extends SearchDelegate {
         }
       }
     }*/
-    //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
 
     return ListView.builder(
       itemCount: myMatchQuery.length,
@@ -1259,19 +1276,10 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     List<myStars> myMatchQuery = [];
-    //HashMap<String?, String> otherNamesMatchQuery = new HashMap();
-    //myStars starInMatchQuery = myStars(starName: "", imagePath: "");
-
 
     for(var star in starsForSearchBar) {
       if (star.starName!.toLowerCase().contains(query)) {
         myMatchQuery.add(star!);
-      }
-    }
-
-    for(var planet in allPlanets){
-      if(planet.toLowerCase().contains(query)){
-        myMatchQuery.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
       }
     }
 
@@ -1416,7 +1424,6 @@ class CustomSearchDelegate extends SearchDelegate {
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () async{
-              if(myMatchQuery[index].imagePath! != "assets/images/not_available.png"){
                 correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
                 print(correctStar);
                 starInfo = await getStarInformation();
@@ -1449,10 +1456,86 @@ class CustomSearchDelegate extends SearchDelegate {
                 }
 
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
-              }
-              else{
+            },
+            leading: Image.asset(myMatchQuery[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
+            //trailing: Icon(Icons.whatshot_rounded));
+      },
+    );
+  }
+}
+
+class CustomSearchDelegateForPlanets extends SearchDelegate{
+  List<String> planetInfo = [];
+
+  // This is the first overwrite (to clear the search text)
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        onPressed: () {
+          query = '';
+        },
+        icon: Icon(Icons.clear),
+      ),
+    ];
+  }
+
+  // This is the second overwrite (to pop out of search menu)
+  //The "back" button
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const StarExpedition()));
+      },
+      icon: Icon(Icons.arrow_back),
+    );
+  }
+
+  // This is the third overwrite to show query result
+  @override
+  Widget buildResults(BuildContext context) {
+    List<myStars> myMatchQueryPlanets = [];
+
+    for(var planet in allPlanets){
+      if(planet.toLowerCase().contains(query)){
+        myMatchQueryPlanets.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
+      }
+    }
+
+    return ListView.builder(
+      itemCount: myMatchQueryPlanets.length,
+      itemBuilder: (context, index) {
+        var result = myMatchQueryPlanets[index]; //If user enters in a key, the result is the key.
+
+        return ListTile(
+          title: Text(result.starName!),
+        );
+      },
+    );
+  }
+
+  // This is the last overwrite (to show the querying process at the runtime)
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<myStars> myMatchQueryPlanets = [];
+
+    for(var planet in allPlanets){
+      if(planet.toLowerCase().contains(query)){
+        myMatchQueryPlanets.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
+      }
+    }
+
+    myMatchQueryPlanets.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+
+    return ListView.builder(
+      itemCount: myMatchQueryPlanets.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+            title: Text(myMatchQueryPlanets[index].starName!, style: TextStyle(color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
+            onTap: () async{
                 fromSearchBarToPlanetArticle = true;
-                correctPlanet = myMatchQuery[index].starName!;
+                correctPlanet = myMatchQueryPlanets[index].starName!;
 
                 starsAndTheirPlanets.forEach((key, value){
                   print("key: ${key}, value: ${value}");
@@ -1499,10 +1582,8 @@ class CustomSearchDelegate extends SearchDelegate {
                 }
 
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
-              }
             },
-            leading: Image.asset(myMatchQuery[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
-            //trailing: Icon(Icons.whatshot_rounded));
+            leading: Image.asset(myMatchQueryPlanets[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
       },
     );
   }
@@ -2295,7 +2376,7 @@ class planetArticle extends StatelessWidget{
               fromSearchBarToPlanetArticle = false;
               showSearch(
                 context: theContext,
-                delegate: CustomSearchDelegate(),
+                delegate: CustomSearchDelegateForPlanets(),
               );
             }
             else{
