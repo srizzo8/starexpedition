@@ -1103,6 +1103,12 @@ class CustomSearchDelegate extends SearchDelegate {
         //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
       }
     }
+
+    for(var planet in allPlanets){
+      if(planet.toLowerCase().contains(query)){
+        myMatchQuery.add(myStars(starName: planet, imagePath: "not_available.png"));
+      }
+    }
     //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
     otherNamesMap.forEach((key, value){
       for(var v in value){
@@ -1261,6 +1267,12 @@ class CustomSearchDelegate extends SearchDelegate {
       }
     }
 
+    for(var planet in allPlanets){
+      if(planet.toLowerCase().contains(query)){
+        myMatchQuery.add(myStars(starName: planet, imagePath: "not_available.png"));
+      }
+    }
+
     //IMPORTANT:
     otherNamesMap.forEach((key, value){
       for(var v in value){
@@ -1402,6 +1414,7 @@ class CustomSearchDelegate extends SearchDelegate {
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () async{
+              if(myMatchQuery[index].imagePath! != "not_available.png"){
               correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
               print(correctStar);
               starInfo = await getStarInformation();
@@ -1434,6 +1447,42 @@ class CustomSearchDelegate extends SearchDelegate {
               }
 
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
+            }
+            else{
+                correctPlanet = myMatchQuery[index].starName!;
+                var theStarInfo = await getStarInformation();
+                informationAboutPlanet = await articlePage(theStarInfo).getPlanetData();
+
+                //Is the planet tracked by a user?
+                if(myNewUsername != "" && myUsername == ""){
+                  var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                  var theDocNameForNewUsers;
+                  theNewUser.docs.forEach((result){
+                    theDocNameForNewUsers = result.id;
+                  });
+
+                  DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                  Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                  planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                  print("planetTracked: ${planetTracked}");
+                }
+                else if(myNewUsername == "" && myUsername != ""){
+                  var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                  var theDocNameForExistingUsers;
+                  theExistingUser.docs.forEach((result){
+                    theDocNameForExistingUsers = result.id;
+                  });
+
+                  DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                  Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                  planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                  print("planetTracked: ${planetTracked}");
+                }
+
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+            }
             },
             leading: Image.asset(myMatchQuery[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
             //trailing: Icon(Icons.whatshot_rounded));
