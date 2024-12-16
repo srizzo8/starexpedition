@@ -33,6 +33,8 @@ String secondDropdownTempValue = temperatureUnits[1];
 List<String> lengthUnits = ["AU", "Kilometers", "Light-years", "Miles", "Parsecs"];
 String dropdownLengthValue = lengthUnits[2];
 String secondDropdownLengthValue = lengthUnits[3];
+double? tempResults = 0.0;
+double? lengthResults = 0.0;
 
 class conversionCalculatorPageState extends State<conversionCalculatorPage>{
   static String nameOfRoute = '/conversionCalculator';
@@ -95,11 +97,42 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp("[0-9.]")),
-              ]
+                FilteringTextInputFormatter.allow(RegExp("[0-9.-]")),
+              ],
               /*inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
               ],*/
+              onChanged: (theTemp){
+                setState((){
+                  if(dropdownTempValue == "Celsius" && secondDropdownTempValue == "Celsius"){
+                    tempResults = double.parse(myTemperature.text);
+                  }
+                  else if(dropdownTempValue == "Celsius" && secondDropdownTempValue == "Fahrenheit"){
+                    tempResults = ((double.parse(myTemperature.text)) * (9/5) + 32);
+                  }
+                  else if(dropdownTempValue == "Celsius" && secondDropdownTempValue == "Kelvin"){
+                    tempResults = ((double.parse(myTemperature.text)) + 273.15);
+                  }
+                  else if(dropdownTempValue == "Fahrenheit" && secondDropdownTempValue == "Celsius"){
+                    tempResults = (((double.parse(myTemperature.text)) - 32) * (5/9));
+                  }
+                  else if(dropdownTempValue == "Fahrenheit" && secondDropdownTempValue == "Fahrenheit"){
+                    tempResults = double.parse(myTemperature.text);
+                  }
+                  else if(dropdownTempValue == "Fahrenheit" && secondDropdownTempValue == "Kelvin"){
+                    tempResults = ((((double.parse(myTemperature.text)) - 32) * (5/9)) + 273.15);
+                  }
+                  else if(dropdownTempValue == "Kelvin" && secondDropdownTempValue == "Celsius"){
+                    tempResults = ((double.parse(myTemperature.text)) - 273.15);
+                  }
+                  else if(dropdownTempValue == "Kelvin" && secondDropdownTempValue == "Kelvin"){
+                    tempResults = double.parse(myTemperature.text);
+                  }
+                  else if(dropdownTempValue == "Kelvin" && secondDropdownTempValue == "Fahrenheit"){
+                    tempResults = ((((double.parse(myTemperature.text)) - 273.15) * 1.8) + 32);
+                  }
+                });
+              }
             ),
           ),
           DropdownButton(
@@ -135,7 +168,11 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
           Container(
             height: 5,
           ),
-          Center(
+          Container(
+            alignment: Alignment.center,
+            child: Text("Result: ${tempResults.toString()}"),
+          ),
+          /*Center(
             child: InkWell(
               child: Ink(
                 color: Colors.black,
@@ -180,7 +217,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                 );
               }
             ),
-          ),
+          ),*/
           Container(
             height: 20,
           ),
@@ -214,6 +251,85 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp("[0-9.]")),
               ],
+              onChanged: (theLength){
+                setState((){
+                  if(dropdownLengthValue == "AU" && secondDropdownLengthValue == "AU"){
+                    lengthResults = double.parse(myLength.text);
+                  }
+                  else if(dropdownLengthValue == "AU" && secondDropdownLengthValue == "Kilometers"){
+                    lengthResults = (double.parse(myLength.text) * 149597870.691);
+                  }
+                  else if(dropdownLengthValue == "AU" && secondDropdownLengthValue == "Light-years"){
+                    lengthResults = ((double.parse(myLength.text)) * (1/63241.077));
+                  }
+                  else if(dropdownLengthValue == "AU" && secondDropdownLengthValue == "Miles"){
+                    lengthResults = ((double.parse(myLength.text)) * 92955807.267);
+                  }
+                  else if(dropdownLengthValue == "AU" && secondDropdownLengthValue == "Parsecs"){
+                    lengthResults = (double.parse(myLength.text) / 206264.800);
+                  }
+                  else if(dropdownLengthValue == "Kilometers" && secondDropdownLengthValue == "AU"){
+                    lengthResults = ((double.parse(myLength.text)) / 149597870.691);
+                  }
+                  else if(dropdownLengthValue == "Kilometers" && secondDropdownLengthValue == "Kilometers"){
+                    lengthResults = double.parse(myLength.text);
+                  }
+                  else if(dropdownLengthValue == "Kilometers" && secondDropdownLengthValue == "Light-years"){
+                    lengthResults = ((double.parse(myLength.text)) / 9460730472580);
+                  }
+                  else if(dropdownLengthValue == "Kilometers" && secondDropdownLengthValue == "Miles"){
+                    lengthResults = ((double.parse(myLength.text)) * 0.621371);
+                  }
+                  else if(dropdownLengthValue == "Kilometers" && secondDropdownLengthValue == "Parsecs"){
+                    lengthResults = ((double.parse(myLength.text)) / 30856775814671.900);
+                  }
+                  else if(dropdownLengthValue == "Light-years" && secondDropdownLengthValue == "AU"){
+                    lengthResults = ((double.parse(myLength.text)) * 63241.077);
+                  }
+                  else if(dropdownLengthValue == "Light-years" && secondDropdownLengthValue == "Kilometers"){
+                    lengthResults = ((double.parse(myLength.text)) * 9460730572580);
+                  }
+                  else if(dropdownLengthValue == "Light-years" && secondDropdownLengthValue == "Light-years"){
+                    lengthResults = double.parse(myLength.text);
+                  }
+                  else if(dropdownLengthValue == "Light-years" && secondDropdownLengthValue == "Miles"){
+                    lengthResults = ((double.parse(myLength.text)) * 5878612843200);
+                  }
+                  else if(dropdownLengthValue == "Light-years" && secondDropdownLengthValue == "Parsecs"){
+                    lengthResults = ((double.parse(myLength.text)) * 0.3066014);
+                  }
+                  else if(dropdownLengthValue == "Miles" && secondDropdownLengthValue == "AU"){
+                    lengthResults = ((double.parse(myLength.text)) / 92955807.267);
+                  }
+                  else if(dropdownLengthValue == "Miles" && secondDropdownLengthValue == "Kilometers"){
+                    lengthResults = ((double.parse(myLength.text)) * 1.609344);
+                  }
+                  else if(dropdownLengthValue == "Miles" && secondDropdownLengthValue == "Light-years"){
+                    lengthResults = ((double.parse(myLength.text)) / 5878612843200);
+                  }
+                  else if(dropdownLengthValue == "Miles" && secondDropdownLengthValue == "Miles"){
+                    lengthResults = double.parse(myLength.text);
+                  }
+                  else if(dropdownLengthValue == "Miles" && secondDropdownLengthValue == "Parsecs"){
+                    lengthResults = ((double.parse(myLength.text)) / 19173511575400);
+                  }
+                  else if(dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "AU"){
+                    lengthResults = ((double.parse(myLength.text)) * 206264.984);
+                  }
+                  else if(dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Kilometers"){
+                    lengthResults = ((double.parse(myLength.text)) * 30856775812800);
+                  }
+                  else if(dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Light-years"){
+                    lengthResults = ((double.parse(myLength.text)) * 3.26156378);
+                  }
+                  else if(dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Miles"){
+                    lengthResults = ((double.parse(myLength.text)) * 19173511575400);
+                  }
+                  else if(dropdownLengthValue == "Parsecs" && secondDropdownLengthValue == "Parsecs"){
+                    lengthResults = double.parse(myLength.text);
+                  }
+                });
+              }
             ),
           ),
           DropdownButton(
@@ -246,7 +362,14 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                 });
               }
           ),
-          Center(
+          Container(
+            height: 5,
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Text("Result: ${lengthResults.toString()}"),
+          ),
+          /*Center(
             child: InkWell(
               child: Ink(
                 color: Colors.black,
@@ -323,7 +446,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                 );
               }
             ),
-          ),
+          ),*/
         ],
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
