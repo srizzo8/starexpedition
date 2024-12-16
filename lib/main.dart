@@ -57,6 +57,8 @@ bool clickOnName = false;
 var userProfileData;
 var userProfileDoc;
 var usersBlurb;
+var usersInterests;
+var usersLocation;
 var numberOfPostsUserHasMade;
 var starsUserTracked;
 var planetsUserTracked;
@@ -987,11 +989,15 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                     if(myUsername != "" && myNewUsername == ""){
                       await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
                         usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                        usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
+                        usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
                         numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
                         starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
                         planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
                       });
                       print("usersBlurb: ${usersBlurb}");
+                      print("usersInterests: ${usersInterests}");
+                      print("usersLocation: ${usersLocation}");
                       print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
                       print("starsUserTracked: ${starsUserTracked}");
                       print("planetsUserTracked: ${planetsUserTracked}");
@@ -1000,11 +1006,15 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                     else if(myUsername == "" && myNewUsername != ""){
                       await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
                         usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                        usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
+                        usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
                         numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
                         starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
                         planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
                       });
                       print("usersBlurb: ${usersBlurb}");
+                      print("usersInterests: ${usersInterests}");
+                      print("usersLocation: ${usersLocation}");
                       print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
                       print("starsUserTracked: ${starsUserTracked}");
                       print("planetsUserTracked: ${planetsUserTracked}");

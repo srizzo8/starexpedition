@@ -30,6 +30,8 @@ import 'technologiesPage.dart';
 import 'feedbackAndSuggestionsPage.dart';
 
 var myInformation;
+var myInterests;
+var myLocation;
 var dataOfUser;
 var myDocName;
 var userInformation;
@@ -99,6 +101,8 @@ class userProfilePageState extends State<userProfilePage>{
 
 class editingMyUserProfile extends StatelessWidget{
   TextEditingController informationAboutMyselfController = TextEditingController();
+  TextEditingController interestsController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
 
   Widget build(BuildContext context){
     return Scaffold(
@@ -114,7 +118,8 @@ class editingMyUserProfile extends StatelessWidget{
           }
         ),
       ),
-      body: Column(
+      body: SingleChildScrollView(
+        child: Column(
         children: <Widget>[
           Container(
             height: 5,
@@ -134,7 +139,37 @@ class editingMyUserProfile extends StatelessWidget{
               ),
               maxLines: null,
               maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              controller: informationAboutMyselfController,
+              controller: informationAboutMyselfController..text = "${myMain.usersBlurb}",
+            ),
+          ),
+          Container(
+            height: 5,
+          ),
+          Padding(
+            padding: EdgeInsets.all(20.0),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: "Your interests",
+                contentPadding: EdgeInsets.symmetric(vertical: 80),
+              ),
+              maxLines: null,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+              controller: interestsController..text = "${myMain.usersInterests}",
+            ),
+          ),
+          Container(
+            height: 5,
+          ),
+          Padding(
+            padding: EdgeInsets.all(20.0),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: "Your location",
+                contentPadding: EdgeInsets.symmetric(vertical: 80),
+              ),
+              maxLines: 1,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+              controller: locationController..text = "${myMain.usersLocation}",
             ),
           ),
           Center(
@@ -158,6 +193,30 @@ class editingMyUserProfile extends StatelessWidget{
                     print("You have updated the user information (for already existing users)!");
                   });
 
+                  myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                  myInterests.docs.forEach((myResult){
+                    dataOfUser = myResult.data();
+                    myDocName = myResult.id;
+                  });
+
+                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                    "usernameProfileInformation.userInterests": interestsController.text,
+                  }).then((i){
+                    print("You have updated the user interests (for already existing users)!");
+                  });
+
+                  myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                  myLocation.docs.forEach((myResult){
+                    dataOfUser = myResult.data();
+                    myDocName = myResult.id;
+                  });
+
+                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                    "usernameProfileInformation.userLocation": locationController.text,
+                  }).then((i){
+                    print("You have updated the user location (for already existing users)!");
+                  });
+
                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
                 }
                 else if(myUsername == "" && myNewUsername != ""){
@@ -173,12 +232,37 @@ class editingMyUserProfile extends StatelessWidget{
                     print("You have updated the user information (for new users)!");
                   });
 
+                  myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                  myInformation.docs.forEach((myResult){
+                    dataOfUser = myResult.data();
+                    myDocName = myResult.id;
+                  });
+
+                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                    "usernameProfileInformation.userInterests": interestsController.text,
+                  }).then((j){
+                    print("You have updated the user interests (for new users)!");
+                  });
+
+                  myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                  myLocation.docs.forEach((myResult){
+                    dataOfUser = myResult.data();
+                    myDocName = myResult.id;
+                  });
+
+                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                    "usernameProfileInformation.userLocation": locationController.text,
+                  }).then((j){
+                    print("You have updated the user location (for new users)!");
+                  });
+
                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
                 }
               }
             ),
           ),
         ],
+        ),
       )
     );
   }
@@ -224,6 +308,32 @@ class userProfileInUserPerspective extends StatelessWidget{
             child: myUsername != "" && myNewUsername == ""?
                 (myMain.usersBlurb != ""? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
                 (myMain.usersBlurb != ""? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Text("\nYour Interests:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: myUsername != "" && myNewUsername == ""?
+            (myMain.usersInterests != ""? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
+            (myMain.usersInterests != ""? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Text("\nYour Location:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: myUsername != "" && myNewUsername == ""?
+            (myMain.usersLocation != ""? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
+            (myMain.usersLocation != ""? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
           ),
           Container(
             height: 5,
@@ -364,6 +474,32 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             child: !(theUsersData["usernameProfileInformation"]["userInformation"].isEmpty)?
               Text("${theUsersData["usernameProfileInformation"]["userInformation"]}"):
               Text("N/A", textAlign: TextAlign.center),
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Text("\n${theUsersData["username"]}'s Interests:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: !(theUsersData["usernameProfileInformation"]["userInterests"].isEmpty)?
+            Text("${theUsersData["usernameProfileInformation"]["userInterests"]}"):
+            Text("N/A", textAlign: TextAlign.center),
+          ),
+          Container(
+            height: 5,
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Text("\n${theUsersData["username"]}'s Location:", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: !(theUsersData["usernameProfileInformation"]["userLocation"].isEmpty)?
+            Text("${theUsersData["usernameProfileInformation"]["userLocation"]}"):
+            Text("N/A", textAlign: TextAlign.center),
           ),
           Container(
             height: 5,

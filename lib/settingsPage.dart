@@ -81,7 +81,28 @@ class settingsPageState extends State<settingsPage>{
             child: Ink(
               child: Text("Update Profile"),
             ),
-            onTap: (){
+            onTap: () async{
+              //Adding info about user blurb, interests, and location
+              if(myUsername != "" && myNewUsername == ""){
+                await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
+                  myMain.usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                  myMain.usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
+                  myMain.usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
+                  //myMain.numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                  //myMain.starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
+                  //myMain.planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
+                });
+              }
+              else if(myUsername == "" && myNewUsername != ""){
+                await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
+                  myMain.usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                  myMain.usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
+                  myMain.usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
+                  //myMain.numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                  //myMain.starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
+                  //myMain.planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
+                });
+              }
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => editingMyUserProfile()));
             }
           )
