@@ -27,7 +27,7 @@ import 'package:sqflite/sqflite.dart';
 import 'users_firestore_database_information/theUserInformation.dart';
 import 'users_firestore_database_information/userDatabaseFirestoreInfo.dart';
 //import 'database_information/usersDatabaseInfo.dart';
-
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 String myNewUsername = "";
 String myNewEmail = "";
@@ -43,6 +43,8 @@ List<String> numRegExp = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 List<String> letterRegExp = ['A', 'a', 'B', 'b', 'C', 'c', 'D', 'd', 'E', 'e', 'F', 'f', 'G', 'g', 'H', 'h', 'I', 'i', 'J', 'j', 'K', 'k', 'L', 'l', 'M', 'm', 'N', 'n', 'O', 'o', 'P', 'p', 'Q', 'q', 'R', 'r', 'S', 's', 'T', 't', 'U', 'u', 'V', 'v', 'W', 'w', 'X', 'x', 'Y', 'y', 'Z', 'z'];
 
 List<String> possibleUsernameChars = numRegExp + letterRegExp + ['_', '.'];
+
+final myKey = "Sixteen char key";
 
 bool checkSpecialCharacters(String p){
   var myPassList = p.split("");//json.decode(p).cast<String>().toList();
@@ -130,6 +132,21 @@ bool checkEmailValidity(String e){
   else{
     return false;
   }
+}
+
+encrypt.Encrypted encryptMyPassword(String myKey, String myPass){
+  final theKey = encrypt.Key.fromUtf8(myKey);
+  final myEncrypter = encrypt.Encrypter(encrypt.AES(theKey, mode: encrypt.AESMode.cbc));
+  final initialVector = encrypt.IV.fromUtf8(myKey.substring(0, 16));
+  encrypt.Encrypted myEncryptedData = myEncrypter.encrypt(myPass, iv: initialVector);
+  return myEncryptedData;
+}
+
+String decryptMyPassword(String myKey, encrypt.Encrypted encryptedInfo){
+  final theKey = encrypt.Key.fromUtf8(myKey);
+  final myEncrypter = encrypt.Encrypter(encrypt.AES(theKey, mode: encrypt.AESMode.cbc));
+  final initialVector = encrypt.IV.fromUtf8(myKey.substring(0, 16));
+  return myEncrypter.decrypt(encryptedInfo, iv: initialVector);
 }
 
 class registerPage extends StatefulWidget{
@@ -290,19 +307,9 @@ class registerPageState extends State<registerPage>{
                 child: Text("Sign Up for Star Expedition", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),
               ),
                 onTap: () async{
-                  /*if(theUsername.text.length >= 3 && theUsername.text.length <= 25 && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)){
-                    validUsername = true;
-                  }
-                  else{
-                    validUsername = false;
-                  }
-
-                  if(checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
-                    validPassword = true;
-                  }
-                  else{
-                    validPassword = false;
-                  }*/
+                  //Encrypting one's pass
+                  encrypt.Encrypted e = encryptMyPassword(myKey, password.text);
+                  String eBaseSixtyFour = e.base64;
 
                   print("theUsers: ${myMain.theUsers}");
                   //If there are no users:
@@ -311,19 +318,19 @@ class registerPageState extends State<registerPage>{
                       userId = 0;
                       myNewUsername = theUsername.text;
                       myNewEmail = email.text;
-                      myNewPassword = password.text;
+                      myNewPassword = eBaseSixtyFour;//password.text;
                       Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
                       var theNewUser = User(
                         id: userId,
                         username: theUsername.text,
                         emailAddress: email.text,
-                        password: password.text,
+                        password: eBaseSixtyFour,
                         usernameLowercased: theUsername.text.toLowerCase(),
                         usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
                       );
                       createUser(theNewUser);
-                      userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                      userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
+                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
                       myMain.theUsers!.add(dasUser);
                       print(myMain.theUsers);
                       myMain.discussionBoardLogin = false;
@@ -335,21 +342,21 @@ class registerPageState extends State<registerPage>{
                       userId = 0;
                       myNewUsername = theUsername.text;
                       myNewEmail = email.text;
-                      myNewPassword = password.text;
+                      myNewPassword = eBaseSixtyFour;
                       Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
                       var theNewUser = User(
                         id: userId,
                         username: theUsername.text,
                         emailAddress: email.text,
-                        password: password.text,
+                        password: eBaseSixtyFour,
                         usernameLowercased: theUsername.text.toLowerCase(),
                         usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
                       );
                       createUser(theNewUser);
                       //dbService.addUser(theNewUser);
                       //dbService.getUsers();
-                      userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                      userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
+                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
                       myMain.theUsers!.add(dasUser);
                       print(myMain.theUsers);
                       myMain.discussionBoardLogin = false;
@@ -367,21 +374,21 @@ class registerPageState extends State<registerPage>{
                       });
                       myNewUsername = theUsername.text;
                       myNewEmail = email.text;
-                      myNewPassword = password.text;
+                      myNewPassword = eBaseSixtyFour;
                       Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
                       var theNewUser = User(
                           id: userId,
                           username: theUsername.text,
                           emailAddress: email.text,
-                          password: password.text,
+                          password: eBaseSixtyFour,
                           usernameLowercased: theUsername.text.toLowerCase(),
                           usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
                       );
                       createUser(theNewUser);
                       //dbService.addUser(theNewUser);
                       //dbService.getUsers();
-                      userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                      userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
+                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
                       myMain.theUsers!.add(dasUser);
                       print(myMain.theUsers);
                       myMain.discussionBoardLogin = false;
@@ -396,21 +403,21 @@ class registerPageState extends State<registerPage>{
                       });
                       myNewUsername = theUsername.text;
                       myNewEmail = email.text;
-                      myNewPassword = password.text;
+                      myNewPassword = eBaseSixtyFour;
                       Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
                       var theNewUser = User(
                           id: userId,
                           username: theUsername.text,
                           emailAddress: email.text,
-                          password: password.text,
+                          password: eBaseSixtyFour,
                           usernameLowercased: theUsername.text.toLowerCase(),
                           usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
                       );
                       createUser(theNewUser);
                       //dbService.addUser(theNewUser);
                       //dbService.getUsers();
-                      userEmailPasswordList.add([theUsername.text, email.text, password.text]);
-                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: password.text);
+                      userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
+                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
                       myMain.theUsers!.add(dasUser);
                       print(myMain.theUsers);
                       myMain.discussionBoardLogin = false;
