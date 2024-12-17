@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -148,6 +149,12 @@ class loginPageState extends State<loginPage>{
                         print("userDocument: $userDocument");
                       }
 
+                      encrypt.Encrypted encryptedEnteredPass = theRegisterPage.encryptMyPassword(theRegisterPage.myKey, passwordController.text);
+                      print("Encrypted pass: ${encryptedEnteredPass.base64}");
+
+                      //print("userdocument[password]: ${userDocument["password"]}");
+                      //print("checking: ${theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"])}");
+
                       //if(usernameList.contains(usernameController.text.toLowerCase())
 
                       /*var passwordDocument;
@@ -159,7 +166,8 @@ class loginPageState extends State<loginPage>{
 
                       //if(userLowercased == usernameController.text.toLowerCase())
                       //if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
-                      if(userDocument != null && userDocument["usernameLowercased"] == usernameController.text.toLowerCase() && userDocument["password"] == passwordController.text && usernameController.text != "" && passwordController.text != ""){ //myMain.theUsers!.contains(usernameController.text)
+                      if(userDocument != null && userDocument["usernameLowercased"] == usernameController.text.toLowerCase() && passwordController.text == theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"]) && usernameController.text != "" && passwordController.text != ""){ //myMain.theUsers!.contains(usernameController.text)
+                        print("userDocument is NOT null");
                         if(myMain.discussionBoardLogin == true){
                           await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
                             myUsername = theUn.docs.first.data()["username"];

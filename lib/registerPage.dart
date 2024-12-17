@@ -142,11 +142,11 @@ encrypt.Encrypted encryptMyPassword(String myKey, String myPass){
   return myEncryptedData;
 }
 
-String decryptMyPassword(String myKey, encrypt.Encrypted encryptedInfo){
+String decryptMyPassword(String myKey, String encryptedInfo){
   final theKey = encrypt.Key.fromUtf8(myKey);
   final myEncrypter = encrypt.Encrypter(encrypt.AES(theKey, mode: encrypt.AESMode.cbc));
   final initialVector = encrypt.IV.fromUtf8(myKey.substring(0, 16));
-  return myEncrypter.decrypt(encryptedInfo, iv: initialVector);
+  return myEncrypter.decrypt(encrypt.Encrypted.fromBase64(encryptedInfo), iv: initialVector);
 }
 
 class registerPage extends StatefulWidget{
