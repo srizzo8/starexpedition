@@ -1091,7 +1091,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                     //continue
                   }
 
-                  if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == encryptMyPassword(myKey, docForUsername["password"]).base64){
+                  if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == decryptMyPassword(myKey, docForUsername["password"])){
                     print("Your email will change");
 
                     FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
@@ -1147,7 +1147,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                       }
                     );
                   }
-                  else if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == encryptMyPassword(myKey, docForUsername["password"]).base64){
+                  else if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == decryptMyPassword(myKey, docForUsername["password"])){
                     //The current and new email addresses do not match
                     showDialog(
                       context: context,
@@ -1170,7 +1170,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                       }
                     );
                   }
-                  else if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text != encryptMyPassword(myKey, docForUsername["password"]).base64){
+                  else if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text != decryptMyPassword(myKey, docForUsername["password"])){
                     //The password the user entered does not match with his or her password
                     showDialog(
                       context: context,
@@ -1193,7 +1193,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                       }
                     );
                   }
-                  else if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text != encryptMyPassword(myKey, docForUsername["password"]).base64){
+                  else if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text != decryptMyPassword(myKey, docForUsername["password"])){
                     showDialog(
                       context: context,
                       builder: (BuildContext bc){
