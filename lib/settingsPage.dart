@@ -228,7 +228,8 @@ class changePasswordPageState extends State<changePasswordPage>{
                     });
                     print("userDoc[password]: ${userDoc["password"].toString()}");
 
-                    usersPass = userDoc["password"];
+                    usersPass = decryptMyPassword(myKey, userDoc["password"]);
+                    print("usersPass: ${usersPass}");
 
                     if(currentPasswordController.text == usersPass && newPasswordController.text == secondNewPasswordController.text){
                       if(currentPasswordController.text == newPasswordController.text && newPasswordController.text == secondNewPasswordController.text && currentPasswordController.text == secondNewPasswordController.text){
@@ -393,7 +394,7 @@ class changePasswordPageState extends State<changePasswordPage>{
 
                         print("gettingDocName: ${gettingDocName.toString()}");
 
-                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : newPasswordController.text}).whenComplete(() async{
+                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
                           print("Updated");
                         }).catchError((e) => print("This is your error: ${e}"));
 
@@ -505,7 +506,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                     });
                     print("userDoc[password]: ${userDoc["password"].toString()}");
 
-                    usersPass = userDoc["password"];
+                    usersPass = decryptMyPassword(myKey, userDoc["password"]);
 
                     if(currentPasswordController.text == usersPass && newPasswordController.text == secondNewPasswordController.text){
                       if(currentPasswordController.text == newPasswordController.text && newPasswordController.text == secondNewPasswordController.text && currentPasswordController.text == secondNewPasswordController.text){
@@ -691,7 +692,7 @@ class changePasswordPageState extends State<changePasswordPage>{
 
                         print("gettingDocName: ${gettingDocName.toString()}");
 
-                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : newPasswordController.text}).whenComplete(() async{
+                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
                           print("Updated");
                         }).catchError((e) => print("This is your error: ${e}"));
 
@@ -1090,7 +1091,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                     //continue
                   }
 
-                  if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == docForUsername["password"]){
+                  if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == encryptMyPassword(myKey, docForUsername["password"]).base64){
                     print("Your email will change");
 
                     FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
@@ -1146,7 +1147,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                       }
                     );
                   }
-                  else if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == docForUsername["password"]){
+                  else if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == encryptMyPassword(myKey, docForUsername["password"]).base64){
                     //The current and new email addresses do not match
                     showDialog(
                       context: context,
@@ -1169,7 +1170,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                       }
                     );
                   }
-                  else if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text != docForUsername["password"]){
+                  else if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text != encryptMyPassword(myKey, docForUsername["password"]).base64){
                     //The password the user entered does not match with his or her password
                     showDialog(
                       context: context,
@@ -1192,7 +1193,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                       }
                     );
                   }
-                  else if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text != docForUsername["password"]){
+                  else if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text != encryptMyPassword(myKey, docForUsername["password"]).base64){
                     showDialog(
                       context: context,
                       builder: (BuildContext bc){
