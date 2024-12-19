@@ -135,7 +135,7 @@ class changePasswordPageState extends State<changePasswordPage>{
       usersMessage.add(Text("Current password is empty"));
     }
     if(currentPasswordController.text != usersPass && currentPasswordController.text != ""){
-      usersMessage.add(Text("The current password that you entered does not match with your password"));
+      usersMessage.add(Text("The current password that you entered is not correct"));
     }
     if(newPasswordController.text == ""){
       usersMessage.add(Text("New password is empty"));
@@ -435,9 +435,37 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
   var gettingDocName;
   var docForUsername;
   var docForPassword;
-  //var usersPreviousEmailAddress;
+
   var du;
   var usersEmailAddress;
+  List messageForUsers = [];
+
+  List<Text> dialogMessageChangeEmailAddress(List<String> info){
+    List<Text> usersMessage = [];
+    if(currentEmailAddressController.text == ""){
+      usersMessage.add(Text("Current email address is empty"));
+    }
+    if(currentEmailAddressController.text != docForUsername["emailAddress"] && currentEmailAddressController.text != ""){
+      usersMessage.add(Text("The current email address that you entered is not correct"));
+    }
+    if(newEmailAddressController.text == ""){
+      usersMessage.add(Text("New email address is empty"));
+    }
+    if(currentEmailAddressController.text == docForUsername["emailAddress"] && currentEmailAddressController.text == newEmailAddressController.text && currentEmailAddressController.text != "" && newEmailAddressController.text != ""){
+      usersMessage.add(Text("Your new email address cannot be your current email address"));
+    }
+    if(checkEmailValidity(newEmailAddressController.text) == false && newEmailAddressController.text != ""){
+      usersMessage.add(Text("Your new email address is invalid"));
+    }
+    if(myPasswordController.text == ""){
+      usersMessage.add(Text("Password is empty"));
+    }
+    if(myPasswordController.text != decryptMyPassword(myKey, docForUsername["password"]) && myPasswordController.text != ""){
+      usersMessage.add(Text("The password that you have entered is not correct"));
+    }
+
+    return usersMessage;
+  }
 
   Widget build(BuildContext context){
     return Scaffold(
@@ -524,7 +552,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                 child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white)),
               ),
               onTap: () async{
-                if(currentEmailAddressController.text != "" && newEmailAddressController.text != "" && myPasswordController.text != ""){
+                //if(currentEmailAddressController.text != "" && newEmailAddressController.text != "" && myPasswordController.text != ""){
                   if(myUsername != "" && myNewUsername == ""){
                     myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
                     myEmailResult.docs.forEach((myResult){
@@ -535,6 +563,79 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                     print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
                     usersEmailForEmailChangeMessage = docForUsername["emailAddress"];
                     userForEmailChange = myUsername;
+
+                    messageForUsers = dialogMessageChangeEmailAddress([currentEmailAddressController.text, newEmailAddressController.text, myPasswordController.text]);
+
+                    if(messageForUsers.isEmpty){
+                      //email address successfully changed
+                      print("Your email will change");
+
+                      FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
+                        print("Updated the email address");
+                      }).catchError((e) => print("This is your error: ${e}"));
+
+                      var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                      newEmailResult.docs.forEach((theResult){
+                        du = theResult.data();
+                        print("This is the result: ${theResult.data()}");
+                        //var gettingDn = theResult.id;
+                      });
+
+                      print("This is new user email address: ${docForUsername["emailAddress"]}");
+
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext bc){
+                            return AlertDialog(
+                              title: Text("Email Address Change Successful"),
+                              content: Text("You have successfully changed your email address"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    usersEmailAddress = docForUsername["emailAddress"],
+                                    usersNewEmail = du["emailAddress"],
+                                    print("usersNewEmail: ${usersNewEmail}"),
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                    emailNotifications.emailAddressChangeConfirmationEmail(),
+                                    currentEmailAddressController.text = "",
+                                    newEmailAddressController.text = "",
+                                    myPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                      );
+                    }
+                    else{
+                      showDialog(
+                        context: context,
+                        builder: (myContent) => AlertDialog(
+                          title: Text("Email Address Change Unsuccessful"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(messageForUsers.length, (i){
+                              return messageForUsers[i];
+                            }),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: (){
+                                Navigator.pop(context);
+                                currentEmailAddressController.text = "";
+                                newEmailAddressController.text = "";
+                                myPasswordController.text = "";
+                              },
+                              child: Container(
+                                child: const Text("Ok"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   }
                   else if(myUsername == "" && myNewUsername != ""){
                     myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -546,274 +647,80 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                     print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
                     usersEmailForEmailChangeMessage = docForUsername["emailAddress"];
                     userForEmailChange = myNewUsername;
-                  }
-                  else{
-                    //continue
-                  }
 
-                  if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == decryptMyPassword(myKey, docForUsername["password"])){
-                    print("Your email will change");
+                    messageForUsers = dialogMessageChangeEmailAddress([currentEmailAddressController.text, newEmailAddressController.text, myPasswordController.text]);
 
-                    FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
-                      print("Updated the email address");
-                    }).catchError((e) => print("This is your error: ${e}"));
+                    if(messageForUsers.isEmpty){
+                      //email address successfully changed
+                      print("Your email will change");
 
-                    //Getting new email address for an email to the new email address
-                    if(myUsername != "" && myNewUsername == ""){
-                      var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                      newEmailResult.docs.forEach((theResult){
-                        du = theResult.data();
-                        print("This is the result: ${theResult.data()}");
-                        //var gettingDn = theResult.id;
-                      });
-                    }
-                    else if(myUsername == "" && myNewUsername != ""){
+                      FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
+                        print("Updated the email address");
+                      }).catchError((e) => print("This is your error: ${e}"));
+
                       var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
                       newEmailResult.docs.forEach((theResult){
                         du = theResult.data();
                         print("This is the result: ${theResult.data()}");
                         //var gettingDn = theResult.id;
                       });
-                    }
 
-                    print("This is new user email address: ${docForUsername["emailAddress"]}");
+                      print("This is new user email address: ${docForUsername["emailAddress"]}");
 
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext bc){
-                        return AlertDialog(
-                          title: Text("Email Address Change Successful"),
-                          content: Text("You have successfully changed your email address"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => {
-                                //theUser = "",
-                                //theNewUser = myNewUsername,
-                                usersEmailAddress = docForUsername["emailAddress"],
-                                usersNewEmail = du["emailAddress"],
-                                print("usersNewEmail: ${usersNewEmail}"),
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                emailNotifications.emailAddressChangeConfirmationEmail(),
-                                //Navigator.pop(context),
-                                //emailNotifications.emailChangeConfirmationEmail(),
-                                currentEmailAddressController.text = "",
-                                newEmailAddressController.text = "",
-                                myPasswordController.text = "",
-                              },
-                              child: Text("Ok"),
-                            ),
-                          ],
-                        );
-                      }
-                    );
-                  }
-                  else if(currentEmailAddressController.text != newEmailAddressController.text && myPasswordController.text == decryptMyPassword(myKey, docForUsername["password"])){
-                    //The current and new email addresses do not match
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext bc){
-                        return AlertDialog(
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext bc){
+                            return AlertDialog(
+                              title: Text("Email Address Change Successful"),
+                              content: Text("You have successfully changed your email address"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    usersEmailAddress = docForUsername["emailAddress"],
+                                    usersNewEmail = du["emailAddress"],
+                                    print("usersNewEmail: ${usersNewEmail}"),
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                    emailNotifications.emailAddressChangeConfirmationEmail(),
+                                    currentEmailAddressController.text = "",
+                                    newEmailAddressController.text = "",
+                                    myPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                      );
+                    }
+                    else{
+                      showDialog(
+                        context: context,
+                        builder: (myContent) => AlertDialog(
                           title: Text("Email Address Change Unsuccessful"),
-                          content: Text("The email address change was unsuccessful because the current email address that you entered in and the new email address that you entered in do not match"),
-                          actions: [
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(messageForUsers.length, (i){
+                              return messageForUsers[i];
+                            }),
+                          ),
+                          actions: <Widget>[
                             TextButton(
-                              onPressed: () => {
-                                Navigator.pop(context),
-                                currentEmailAddressController.text = "",
-                                newEmailAddressController.text = "",
-                                myPasswordController.text = "",
+                              onPressed: (){
+                                Navigator.pop(context);
+                                currentEmailAddressController.text = "";
+                                newEmailAddressController.text = "";
+                                myPasswordController.text = "";
                               },
-                              child: Text("Ok"),
+                              child: Container(
+                                child: const Text("Ok"),
+                              ),
                             ),
                           ],
-                        );
-                      }
-                    );
+                        ),
+                      );
+                    }
                   }
-                  else if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text != decryptMyPassword(myKey, docForUsername["password"])){
-                    //The password the user entered does not match with his or her password
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext bc){
-                        return AlertDialog(
-                          title: Text("Email Address Change Unsuccessful"),
-                          content: Text("The email address change was unsuccessful because the password that you entered in is not correct"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => {
-                                Navigator.pop(context),
-                                currentEmailAddressController.text = "",
-                                newEmailAddressController.text = "",
-                                myPasswordController.text = "",
-                              },
-                              child: Text("Ok"),
-                            ),
-                          ],
-                        );
-                      }
-                    );
-                  }
-                  else if(currentEmailAddressController.text == newEmailAddressController.text && myPasswordController.text != decryptMyPassword(myKey, docForUsername["password"])){
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext bc){
-                        return AlertDialog(
-                          title: Text("Email Address Change Unsuccessful"),
-                          content: Text("The email address change was unsuccessful because the current email address that you entered in and the new email address that you entered in do not match and the password that you entered in is not correct"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => {
-                                Navigator.pop(context),
-                                currentEmailAddressController.text = "",
-                                newEmailAddressController.text = "",
-                                myPasswordController.text = "",
-                              },
-                              child: Text("Ok"),
-                            ),
-                          ],
-                        );
-                      }
-                    );
-                  }
-                }
-                else if(currentEmailAddressController.text == "" && newEmailAddressController.text != "" && myPasswordController.text != ""){
-                  //Nothing is entered in the "current email address" section
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext bc){
-                      return AlertDialog(
-                        title: Text("Email Address Change Unsuccessful"),
-                        content: Text("The email address change was unsuccessful because you need to enter in your current email address"),
-                        actions: [
-                          TextButton(
-                            onPressed: () => {
-                              Navigator.pop(context),
-                              currentEmailAddressController.text = "",
-                              newEmailAddressController.text = "",
-                              myPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                }
-                else if(currentEmailAddressController.text != "" && newEmailAddressController.text != "" && myPasswordController.text == ""){
-                  //Nothing is entered in the "new email address" section
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext bc){
-                      return AlertDialog(
-                        title: Text("Email Address Change Unsuccessful"),
-                        content: Text("The email address change was unsuccessful because you have forgotten to enter in your password"),
-                        actions: [
-                          TextButton(
-                            onPressed: () => {
-                              Navigator.pop(context),
-                              currentEmailAddressController.text = "",
-                              newEmailAddressController.text = "",
-                              myPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                }
-                else if(currentEmailAddressController.text == "" && newEmailAddressController.text == "" && myPasswordController.text != ""){
-                  //Nothing is entered in the "current email address" and "new email address" sections
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext bc){
-                      return AlertDialog(
-                        title: Text("Email Address Change Unsuccessful"),
-                        content: Text("The email address change was unsuccessful because you have forgotten to enter in your current email address and the new email address that you have chosen"),
-                        actions: [
-                          TextButton(
-                            onPressed: () => {
-                              Navigator.pop(context),
-                              currentEmailAddressController.text = "",
-                              newEmailAddressController.text = "",
-                              myPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                }
-                else if(currentEmailAddressController.text == "" && newEmailAddressController.text != "" && myPasswordController.text == ""){
-                  //Nothing is entered in the "current email address" and "password" sections
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext bc){
-                      return AlertDialog(
-                        title: Text("Email Address Change Unsuccessful"),
-                        content: Text("The email address change was unsuccessful because you have forgotten to enter in your current email address and your password"),
-                        actions: [
-                          TextButton(
-                            onPressed: () => {
-                              Navigator.pop(context),
-                              currentEmailAddressController.text = "",
-                              newEmailAddressController.text = "",
-                              myPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                }
-                else if(currentEmailAddressController.text != "" && newEmailAddressController.text == "" && myPasswordController.text == ""){
-                  //Nothing is entered in the "new email address" and "password" sections
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext bc){
-                      return AlertDialog(
-                        title: Text("Email Address Change Unsuccessful"),
-                        content: Text("The email address change was unsuccessful because you have forgotten to enter in the new email address that you have chosen and your password"),
-                        actions: [
-                          TextButton(
-                            onPressed: () => {
-                              Navigator.pop(context),
-                              currentEmailAddressController.text = "",
-                              newEmailAddressController.text = "",
-                              myPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                }
-                else if(currentEmailAddressController.text == "" && newEmailAddressController.text == "" && myPasswordController.text == ""){
-                  //Nothing is entered in the "current email address", "new email address", and "password" sections
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext bc){
-                      return AlertDialog(
-                        title: Text("Email Address Change Unsuccessful"),
-                        content: Text("The email address change was unsuccessful because you have forgotten to enter in your current email address, the new email address that you have chosen, and your password"),
-                        actions: [
-                          TextButton(
-                            onPressed: () => {
-                              Navigator.pop(context),
-                              currentEmailAddressController.text = "",
-                              newEmailAddressController.text = "",
-                              myPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                }
               }
             ),
           ),
