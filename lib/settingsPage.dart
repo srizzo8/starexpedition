@@ -127,6 +127,42 @@ class changePasswordPageState extends State<changePasswordPage>{
   var userDoc;
   var gettingDocName;
   var usersPass;
+  List messageForUsers = [];
+
+  List<Text> dialogMessageChangePassword(List<String> info){
+    List<Text> usersMessage = [];
+    if(currentPasswordController.text == ""){
+      usersMessage.add(Text("Current password is empty"));
+    }
+    if(currentPasswordController.text != usersPass && currentPasswordController.text != ""){
+      usersMessage.add(Text("The current password that you entered does not match with your password"));
+    }
+    if(newPasswordController.text == ""){
+      usersMessage.add(Text("New password is empty"));
+    }
+    if(secondNewPasswordController.text == ""){
+      usersMessage.add(Text("Confirm new password is empty"));
+    }
+    if((checkLetters(newPasswordController.text) == false || checkLetters(secondNewPasswordController.text) == false) && newPasswordController.text != "" && secondNewPasswordController.text != ""){
+      usersMessage.add(Text("Your new password must have at least one character"));
+    }
+    if((checkNumbers(newPasswordController.text) == false || checkNumbers(secondNewPasswordController.text) == false) && newPasswordController.text != "" && secondNewPasswordController.text != ""){
+      usersMessage.add(Text("Your new password must have at least one number"));
+    }
+    if((checkSpecialCharacters(newPasswordController.text) == false || checkSpecialCharacters(secondNewPasswordController.text) == false) && newPasswordController.text != "" && secondNewPasswordController.text != ""){
+      usersMessage.add(Text("Your new password must have at least one special character"));
+    }
+    if(((newPasswordController.text).length < 8 || (secondNewPasswordController.text).length < 8) && newPasswordController.text != "" && secondNewPasswordController.text != ""){
+      usersMessage.add(Text("Your new password must have at least 8 characters"));
+    }
+    if(newPasswordController.text != secondNewPasswordController.text && newPasswordController.text != "" && secondNewPasswordController.text != ""){
+      usersMessage.add(Text("The passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match"));
+    }
+    if((currentPasswordController.text == newPasswordController.text || currentPasswordController.text == secondNewPasswordController.text) && currentPasswordController.text == usersPass && newPasswordController.text != "" && secondNewPasswordController.text != ""){
+      usersMessage.add(Text("Your new password cannot be your current password"));
+    }
+    return usersMessage;
+  }
 
   Widget build(BuildContext context){
     return Scaffold(
@@ -218,595 +254,122 @@ class changePasswordPageState extends State<changePasswordPage>{
                 print("newPasswordController.text: ${newPasswordController.text}");
                 print("secondNewPasswordController.text: ${secondNewPasswordController.text}");
                 print("myUsername = ${myUsername}, myNewUsername = ${myNewUsername}");
-                if(currentPasswordController.text != "" && newPasswordController.text != "" && secondNewPasswordController.text != ""){
-                  if(myUsername != "" && myNewUsername == ""){
-                    myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                    myUserResult.docs.forEach((result){
-                      userDoc = result.data();
-                      print("This is the result: ${result.data()}");
-                      gettingDocName = result.id;
-                    });
-                    print("userDoc[password]: ${userDoc["password"].toString()}");
+                if(myUsername != "" && myNewUsername == ""){
+                  myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                  myUserResult.docs.forEach((result){
+                    userDoc = result.data();
+                    print("This is the result: ${result.data()}");
+                    gettingDocName = result.id;
+                  });
+                  print("userDoc[password]: ${userDoc["password"].toString()}");
 
-                    usersPass = decryptMyPassword(myKey, userDoc["password"]);
-                    print("usersPass: ${usersPass}");
+                  usersPass = decryptMyPassword(myKey, userDoc["password"]);
+                  print("usersPass: ${usersPass}");
 
-                    if(currentPasswordController.text == usersPass && newPasswordController.text == secondNewPasswordController.text){
-                      if(currentPasswordController.text == newPasswordController.text && newPasswordController.text == secondNewPasswordController.text && currentPasswordController.text == secondNewPasswordController.text){
-                        //The new password cannot be the current password
-                        print("Old and new are the same");
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password cannot be your current password"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == true && (newPasswordController.text).length >= 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one special character"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length >= 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one number"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == true && (newPasswordController.text).length < 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must be at least 8 characters long"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length < 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one special character and be at least 8 characters long"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length < 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one number and be at least 8 characters long"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length < 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one special character, at least one number, and be at least 8 characters long"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else{
-                        //Password successfully changed
-                        print("The old password is correct");
+                  messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
 
-                        print("gettingDocName: ${gettingDocName.toString()}");
+                  if(messageForUsers.isEmpty){
+                    //Password successfully changed
+                    print("gettingDocName: ${gettingDocName.toString()}");
 
-                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
-                          print("Updated");
-                        }).catchError((e) => print("This is your error: ${e}"));
+                    FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
+                      print("Updated");
+                    }).catchError((e) => print("This is your error: ${e}"));
 
-                        print("This is new user password: ${userDoc["password"]}");
+                    print("This is new user password: ${userDoc["password"]}");
 
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext bc){
-                            return AlertDialog(
-                              title: Text("Password Change Successful"),
-                              content: Text("You have successfully changed your password"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => {
-                                    theUser = myUsername,
-                                    theNewUser = "",
-                                    usersEmail = userDoc["emailAddress"],
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                    emailNotifications.passwordChangeConfirmationEmail(),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext bc){
+                        return AlertDialog(
+                          title: Text("Password Change Successful"),
+                          content: Text("You have successfully changed your password"),
+                          actions: [
+                            TextButton(
+                              onPressed: () => {
+                                theUser = myUsername,
+                                theNewUser = "",
+                                usersEmail = userDoc["emailAddress"],
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                emailNotifications.passwordChangeConfirmationEmail(),
+                                currentPasswordController.text = "",
+                                newPasswordController.text = "",
+                                secondNewPasswordController.text = "",
+                              },
+                              child: Text("Ok"),
+                            ),
+                          ],
+                       );
                       }
-                    }
-                    else if(currentPasswordController.text != usersPass && newPasswordController.text == secondNewPasswordController.text){
-                      //Current password entered does not match with your password
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext myContext){
-                          return AlertDialog(
-                            title: Text("Password Change Unsuccessful"),
-                            content: Text("The current password that you entered does not match with your password"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  currentPasswordController.text = "",
-                                  newPasswordController.text = "",
-                                  secondNewPasswordController.text = "",
-                                },
-                                child: Text("Ok"),
-                              ),
-                            ],
-                          );
-                        }
-                      );
-                    }
-                    else if(currentPasswordController.text == usersPass && newPasswordController.text != secondNewPasswordController.text){
-                      //The passwords entered in the "new password" and "confirm new password" sections do not match
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext myContext){
-                          return AlertDialog(
-                            title: Text("Password Change Unsuccessful"),
-                            content: Text("The passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  currentPasswordController.text = "",
-                                  newPasswordController.text = "",
-                                  secondNewPasswordController.text = "",
-                                },
-                                child: Text("Ok"),
-                              ),
-                            ],
-                          );
-                        }
-                      );
-                    }
-                    else if(currentPasswordController.text != usersPass && newPasswordController.text != secondNewPasswordController.text){
-                      //Current password entered does not match with your password
-                      //The passwords entered in the "new password" and "confirm new password" sections do not match
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext myContext){
-                          return AlertDialog(
-                            title: Text("Password Change Unsuccessful"),
-                            content: Text("The current password that you entered does not match with your password\nThe passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  currentPasswordController.text = "",
-                                  newPasswordController.text = "",
-                                  secondNewPasswordController.text = "",
-                                },
-                                child: Text("Ok"),
-                              ),
-                            ],
-                          );
-                        }
-                      );
-                    }
+                    );
                   }
-                  else if(myUsername == "" && myNewUsername != ""){
-                    myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                    myUserResult.docs.forEach((result){
-                      userDoc = result.data();
-                      print("This is the result: ${result.data()}");
-                      gettingDocName = result.id;
-                    });
-                    print("userDoc[password]: ${userDoc["password"].toString()}");
-
-                    usersPass = decryptMyPassword(myKey, userDoc["password"]);
-
-                    if(currentPasswordController.text == usersPass && newPasswordController.text == secondNewPasswordController.text){
-                      if(currentPasswordController.text == newPasswordController.text && newPasswordController.text == secondNewPasswordController.text && currentPasswordController.text == secondNewPasswordController.text){
-                        //The new password cannot be the current password
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password cannot be your current password"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == true && (newPasswordController.text).length >= 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one special character"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length >= 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one number"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == true && (newPasswordController.text).length < 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must be at least 8 characters long"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length <= 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one special character and one number"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == true && (newPasswordController.text).length < 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one special character and be at least 8 characters long"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == true && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length < 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one number and be at least 8 characters long"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else if(checkSpecialCharacters(newPasswordController.text) == false && checkNumbers(newPasswordController.text) == false && (newPasswordController.text).length < 8){
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext myContext){
-                            return AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Text("Your new password must have at least one special character, at least one number, and be at least 8 characters long"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>{
-                                    Navigator.pop(context),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                      else{
-                        //Password successfully changed
-                        print("The old password is correct");
-
-                        print("gettingDocName: ${gettingDocName.toString()}");
-
-                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
-                          print("Updated");
-                        }).catchError((e) => print("This is your error: ${e}"));
-
-                        print("This is new user password: ${userDoc["password"]}");
-
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext bc){
-                            return AlertDialog(
-                              title: Text("Password Change Successful"),
-                              content: Text("You have successfully changed your password"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => {
-                                    theUser = "",
-                                    theNewUser = myNewUsername,
-                                    usersEmail = userDoc["emailAddress"],
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                    emailNotifications.passwordChangeConfirmationEmail(),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                      }
-                    }
-                    else if(currentPasswordController.text != usersPass && newPasswordController.text == secondNewPasswordController.text){
-                      //Current password entered does not match with your password
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext myContext){
-                          return AlertDialog(
-                            title: Text("Password Change Unsuccessful"),
-                            content: Text("The current password that you entered does not match with your password"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  currentPasswordController.text = "",
-                                  newPasswordController.text = "",
-                                  secondNewPasswordController.text = "",
-                                },
-                                child: Text("Ok"),
-                              ),
-                            ],
-                          );
-                        }
-                      );
-                    }
-                    else if(currentPasswordController.text == usersPass && newPasswordController.text != secondNewPasswordController.text){
-                      //The passwords entered in the "new password" and "confirm new password" sections do not match
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext myContext){
-                          return AlertDialog(
-                            title: Text("Password Change Unsuccessful"),
-                            content: Text("The passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  currentPasswordController.text = "",
-                                  newPasswordController.text = "",
-                                  secondNewPasswordController.text = "",
-                                },
-                                child: Text("Ok"),
-                              ),
-                            ],
-                          );
-                        }
-                      );
-                    }
-                    else if(currentPasswordController.text != usersPass && newPasswordController.text != secondNewPasswordController.text){
-                      //Current password entered does not match with your password
-                      //The passwords entered in the "new password" and "confirm new password" sections do not match
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext myContext){
-                          return AlertDialog(
-                            title: Text("Password Change Unsuccessful"),
-                            content: Text("The current password that you entered does not match with your password\nThe passwords that you entered in the \"New Password\" and \"Confirm New Password\" sections do not match"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  currentPasswordController.text = "",
-                                  newPasswordController.text = "",
-                                  secondNewPasswordController.text = "",
-                                },
-                                child: Text("Ok"),
-                              ),
-                            ],
-                          );
-                        }
-                      );
-                    }
+                  else{
+                    showDialog(
+                      context: context,
+                      builder: (myContent) => AlertDialog(
+                        title: Text("Password Change Unsuccessful"),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(messageForUsers.length, (i){
+                            return messageForUsers[i];
+                          }),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: (){
+                              Navigator.of(myContent).pop();
+                              currentPasswordController.text = "";
+                              newPasswordController.text = "";
+                              secondNewPasswordController.text = "";
+                            },
+                            child: Container(
+                              child: const Text("Ok"),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   }
                 }
-                else if(currentPasswordController.text == "" && newPasswordController.text != "" && secondNewPasswordController.text != ""){
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext myContext){
+                else if(myUsername == "" && myNewUsername != ""){
+                  myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                  myUserResult.docs.forEach((result){
+                    userDoc = result.data();
+                    print("This is the result: ${result.data()}");
+                    gettingDocName = result.id;
+                  });
+                  print("userDoc[password]: ${userDoc["password"].toString()}");
+
+                  usersPass = decryptMyPassword(myKey, userDoc["password"]);
+                  print("usersPass: ${usersPass}");
+
+                  messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
+
+                  if(messageForUsers.isEmpty){
+                    //Password successfully changed
+                    print("gettingDocName: ${gettingDocName.toString()}");
+
+                    FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
+                      print("Updated");
+                    }).catchError((e) => print("This is your error: ${e}"));
+
+                    print("This is new user password: ${userDoc["password"]}");
+
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext bc){
                       return AlertDialog(
-                        title: Text("Password Change Unsuccessful"),
-                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password"),
+                        title: Text("Password Change Successful"),
+                        content: Text("You have successfully changed your password"),
                         actions: [
                           TextButton(
-                            onPressed: () =>{
-                              Navigator.pop(context),
+                            onPressed: () => {
+                              theUser = "",
+                              theNewUser = myNewUsername,
+                              usersEmail = userDoc["emailAddress"],
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                              emailNotifications.passwordChangeConfirmationEmail(),
                               currentPasswordController.text = "",
                               newPasswordController.text = "",
                               secondNewPasswordController.text = "",
@@ -818,137 +381,34 @@ class changePasswordPageState extends State<changePasswordPage>{
                     }
                   );
                 }
-                else if(currentPasswordController.text == "" && newPasswordController.text == "" && secondNewPasswordController.text != ""){
+                else{
                   showDialog(
                     context: context,
-                    builder: (BuildContext myContext){
-                      return AlertDialog(
-                        title: Text("Password Change Unsuccessful"),
-                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password and the new password that you have chosen in the \"New Password\" section"),
-                        actions: [
-                          TextButton(
-                            onPressed: () =>{
-                              Navigator.pop(context),
-                              currentPasswordController.text = "",
-                              newPasswordController.text = "",
-                              secondNewPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
+                    builder: (myContent) => AlertDialog(
+                      title: Text("Password Change Unsuccessful"),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: List.generate(messageForUsers.length, (i){
+                          return messageForUsers[i];
+                        }),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: (){
+                            Navigator.of(myContent).pop();
+                            currentPasswordController.text = "";
+                            newPasswordController.text = "";
+                            secondNewPasswordController.text = "";
+                          },
+                          child: Container(
+                            child: const Text("Ok"),
                           ),
-                        ],
-                      );
-                    }
+                        ),
+                      ],
+                    ),
                   );
                 }
-                else if(currentPasswordController.text == "" && newPasswordController.text != "" && secondNewPasswordController.text == ""){
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext myContext){
-                      return AlertDialog(
-                        title: Text("Password Change Unsuccessful"),
-                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password and the new password that you have chosen in the \"Confirm New Password\" section"),
-                        actions: [
-                          TextButton(
-                            onPressed: () =>{
-                              Navigator.pop(context),
-                              currentPasswordController.text = "",
-                              newPasswordController.text = "",
-                              secondNewPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                }
-                else if(currentPasswordController.text != "" && newPasswordController.text == "" && secondNewPasswordController.text != ""){
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext myContext){
-                      return AlertDialog(
-                        title: Text("Password Change Unsuccessful"),
-                        content: Text("The password change was unsuccessful because you have forgotten to enter in the new password that you have chosen in the \"New Password\" section"),
-                        actions: [
-                          TextButton(
-                            onPressed: () =>{
-                              Navigator.pop(context),
-                              currentPasswordController.text = "",
-                              newPasswordController.text = "",
-                              secondNewPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                }
-                else if(currentPasswordController.text != "" && newPasswordController.text != "" && secondNewPasswordController.text == ""){
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext myContext){
-                      return AlertDialog(
-                        title: Text("Password Change Unsuccessful"),
-                        content: Text("The password change was unsuccessful because you have forgotten to enter in the new password that you have chosen in the \"Confirm New Password\" section"),
-                        actions: [
-                          TextButton(
-                            onPressed: () =>{
-                              Navigator.pop(context),
-                              currentPasswordController.text = "",
-                              newPasswordController.text = "",
-                              secondNewPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                }
-                else if(currentPasswordController.text != "" && newPasswordController.text == "" && secondNewPasswordController.text == ""){
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext myContext){
-                      return AlertDialog(
-                        title: Text("Password Change Unsuccessful"),
-                        content: Text("The password change was unsuccessful because you have forgotten to enter in the new password that you have chosen in the \"New Password\" section and the new password that you have chosen in the \"Confirm New Password\" section"),
-                        actions: [
-                          TextButton(
-                            onPressed: () =>{
-                              Navigator.pop(context),
-                              currentPasswordController.text = "",
-                              newPasswordController.text = "",
-                              secondNewPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                }
-                else if(currentPasswordController.text == "" && newPasswordController.text == "" && secondNewPasswordController.text == ""){
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext myContext){
-                      return AlertDialog(
-                        title: Text("Password Change Unsuccessful"),
-                        content: Text("The password change was unsuccessful because you have forgotten to enter in your current password, the new password that you have chosen in the \"New Password\" section, and the new password that you have chosen in the \"Confirm New Password\" section"),
-                        actions: [
-                          TextButton(
-                            onPressed: () =>{
-                              Navigator.pop(context),
-                              currentPasswordController.text = "",
-                              newPasswordController.text = "",
-                              secondNewPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
-                      );
-                    }
-                  );
                 }
               }
             ),
