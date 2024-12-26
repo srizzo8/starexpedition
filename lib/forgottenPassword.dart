@@ -370,14 +370,17 @@ class resetPasswordState extends State<resetPassword>{
     List<Text> messageForUser = [];
     String usersPass = await getUsersPassword(theUsersUsername);
 
-    if(newPassController == ""){
+    if(newPassController.text == ""){
       messageForUser.add(Text("New password is empty"));
     }
-    if(confirmNewPassController == ""){
+    if(confirmNewPassController.text == ""){
       messageForUser.add(Text("Confirm new password is empty"));
     }
-    if(newPassController == usersPass && newPassController != "" || confirmNewPassController == usersPass && confirmNewPassController != ""){
+    if(newPassController.text == usersPass && newPassController.text != "" || confirmNewPassController.text == usersPass && confirmNewPassController.text != ""){
       messageForUser.add(Text("Your new password cannot be your current password"));
+    }
+    if(newPassController.text != confirmNewPassController.text && newPassController.text != "" && confirmNewPassController.text != ""){
+      messageForUser.add(Text("The new password and confirm new password that you have entered do not match"));
     }
 
     return messageForUser;
@@ -440,9 +443,32 @@ class resetPasswordState extends State<resetPassword>{
                           content: const Text("You have successfully resetted your password"),
                           actions: [
                             TextButton(
-                              onPressed: () async => {
+                              onPressed: () async {
+                                //Changing a user's password
+                                /*var docForUser;
+                                var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersUsername.toLowerCase()).get();
+                                theUserResult.docs.forEach((outcome){
+                                  docForUser = outcome.data();
+                                  print("This is the outcome: ${outcome.data()}");
+                                });*/
+                                var docForUser;
+                                var gettingTheDocName;
+                                var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersUsername.toLowerCase()).get();
+                                theUserResult.docs.forEach((result){
+                                  docForUser = result.data();
+                                  print("This is the result: ${docForUser}");
+                                  gettingTheDocName = result.id;
+                                  print("gettingTheDocName: ${gettingTheDocName}");
+                                });
+
+                                FirebaseFirestore.instance.collection("User").doc(gettingTheDocName).update({"password" : encryptMyPassword(myKey, newPassController.text).base64}).whenComplete(() async{
+                                  print("Updated");
+                                }).catchError((e) => print("This is your error: ${e}"));
+
                                 //Leads to the Star Expedition home page
-                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
+                                myUsername = theUsersUsername;
+                                loginBool = true;
+                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition()));
                               },
                               child: const Text("Ok"),
                             )
