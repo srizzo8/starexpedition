@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:starexpedition4/forgottenPassword.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
@@ -20,6 +21,7 @@ import 'database_information/databaseService.dart';
 import 'database_information/usersDatabaseInfo.dart';
 import 'users_firestore_database_information/theUserInformation.dart';
 import 'users_firestore_database_information/userDatabaseFirestoreInfo.dart';
+import 'forgottenPassword.dart' as forgottenPassword;
 
 import 'main.dart' as myMain;
 
@@ -322,6 +324,29 @@ class loginPageState extends State<loginPage>{
           ),
           Center(
             child: Container(
+              child: Text("If you have forgotten your password, click the button below:"),
+            ),
+          ),
+          Center(
+            child: Container(
+              height: 5,
+            ),
+          ),
+          Center(
+            child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  padding: EdgeInsets.all(5.0),
+                  //height: 20,
+                  child: Text("Forgotten Password", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
+                ),
+                onTap: () async{
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPassword.forgottenPassword()));
+                }
+            ),
+          ),
+          Center(
+            child: Container(
               child: Text("If you do not have an account, you can create an account:", style: TextStyle(fontSize: 14.0)),
             ),
           ),
@@ -336,7 +361,7 @@ class loginPageState extends State<loginPage>{
                   color: Colors.black,
                   padding: EdgeInsets.all(5.0),
                   //height: 20,
-                  child: Text("Sign up", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
+                  child: Text("Sign Up", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                 ),
                   onTap: () async{
                     //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);

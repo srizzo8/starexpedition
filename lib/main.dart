@@ -28,7 +28,6 @@ import 'package:starexpedition4/conversionCalculator.dart';
 import 'package:starexpedition4/settingsPage.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
-import 'package:starexpedition4/starsAndPlanetsList.dart';
 
 import 'loginPage.dart';
 
@@ -783,7 +782,7 @@ class theStarExpeditionState extends State<StarExpedition> {
             child: Text('Star Expedition is an app that allows its users to view and research stars and planets that are potentially capable of supporting life outside our Solar System. Star Expedition will include stars whose spectral classes range from M8 to A5, are within 100 light-years from Earth, and have confirmed terrestrial planets in their habitable zones and planets that are terrestrial and in the habitable zones of their respective stars. Currently, Star Expedition features ${allStars.length} stars and ${allPlanets.length} planets.\n', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'), textAlign: TextAlign.center),
             //height: 200,
           ),
-          Container(
+          /*Container(
             alignment: Alignment.center,
             child: InkWell(
               child: Ink(
@@ -806,7 +805,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                 Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => planetsList()));
               }
             ),
-          ),
+          ),*/
           Container(
             child: Text("\n"),
           ),
@@ -1693,10 +1692,6 @@ class articlePage extends StatelessWidget{
               featuredStarOfTheDayBool = false,
               Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => StarExpedition())),
             }
-            else if(fromStarList == true){
-              fromStarList = false,
-              Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => starsList())),
-            }
             else{
               showSearch(
                 context: bc,
@@ -2378,11 +2373,7 @@ class planetArticle extends StatelessWidget{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () async {
-            if(fromPlanetList == true){
-              fromPlanetList = false;
-              Navigator.push(theContext, MaterialPageRoute(builder: (BuildContext context) => planetsList()));
-            }
-            else if(fromSearchBarToPlanetArticle == true){
+            if(fromSearchBarToPlanetArticle == true){
               fromSearchBarToPlanetArticle = false;
               showSearch(
                 context: theContext,

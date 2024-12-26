@@ -20,6 +20,7 @@ import 'registerPage.dart' as registerPage;
 //import 'package:flutter_secure_storage/flutter_secure_storage.dart' as secureStorage;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:starexpedition4/settingsPage.dart' as settingsPage;
+import 'package:starexpedition4/forgottenPassword.dart' as forgottenPassword;
 
 class emailNotifications extends StatelessWidget {
   const emailNotifications ({Key? key}) : super(key: key);
@@ -219,5 +220,47 @@ Future<void> emailAddressChangeConfirmationEmail() async{
 
   //The connection
   var theConnection = PersistentConnection(theSmtpServer);
+  await theConnection.close();
+}
+
+Future<int> sixDigitCode() async{
+  Random r = new Random();
+  List<int> myCode = [];
+
+  for(int i = 0; i < 6; i++){
+    int digit = r.nextInt(10);
+    myCode.add(digit);
+  }
+
+  var joinDigits = myCode.join('');
+  int mySixDigitCode = int.parse(joinDigits);
+  return mySixDigitCode;
+}
+
+Future<void> sixDigitCodeEmail(int i) async{
+  //Sending the email
+  await dotenv.load(fileName: "dotenv.env");
+
+  var myEmailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
+  var myPasswordForSmtpServer = dotenv.env["APP_PASS"];
+
+  var mySmtpServer = gmail(myEmailForSmtpServer!, myPasswordForSmtpServer!);
+
+  var sixDigitCodeMessage = Message()
+    ..from = Address("starexpedition.theapp@gmail.com")
+    ..recipients.add(forgottenPassword.theUsersEmail)
+    ..subject = "Password Reset Code"
+    ..text = "Hi ${forgottenPassword.theUsersUsername},\n\nWe have noticed that you have forgotten your password. Please enter in this 6-digit verification code into Star Expedition: \n${i}\nOnce you have entered it in, you may reset your password.\n\nBest,\nStar Expedition"
+  ;
+
+  try{
+    final sendingReport = await send(sixDigitCodeMessage, mySmtpServer);
+    print("The message sent: ${sendingReport.toString()}");
+  }
+  on MailerException catch(e){
+    print("The message was not sent: ${e.toString()}");
+  }
+
+  var theConnection = PersistentConnection(mySmtpServer);
   await theConnection.close();
 }
