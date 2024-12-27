@@ -261,6 +261,9 @@ class editingMyUserProfile extends StatelessWidget{
               }
             ),
           ),
+          Container(
+            height: 5,
+          ),
         ],
         ),
       )

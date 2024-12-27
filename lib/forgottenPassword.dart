@@ -184,14 +184,21 @@ class forgottenPasswordState extends State<forgottenPassword>{
                           content: const Text("You will receive an email containing further instructions regarding retrieving the password of your account"),
                           actions: [
                             TextButton(
-                              onPressed: () async => {
+                              onPressed: () async{
+                                //Getting the person's username
+                                var docForUser;
+                                var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myUsernameController.text).toLowerCase()).get();
+                                theUserResult.docs.forEach((outcome){
+                                  docForUser = outcome.data();
+                                  print("docForUser: ${docForUser}");
+                                });
                                 //Leads to a page that has a six-digit code emailed to a user
-                                theUsersUsername = myUsernameController.text,
-                                theUsersEmail = myEmailController.text,
-                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPasswordCodeEntry())),
-                                mySixDigitCode = await emailNotifications.sixDigitCode(),
-                                print("mySixDigitCode: ${mySixDigitCode}"),
-                                emailNotifications.sixDigitCodeEmail(mySixDigitCode),
+                                theUsersUsername = docForUser["username"];
+                                theUsersEmail = myEmailController.text;
+                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPasswordCodeEntry()));
+                                mySixDigitCode = await emailNotifications.sixDigitCode();
+                                print("mySixDigitCode: ${mySixDigitCode}");
+                                emailNotifications.sixDigitCodeEmail(mySixDigitCode);
                               },
                               child: const Text("Ok"),
                             )
@@ -272,7 +279,8 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
           Container(
             height: 5,
           ),
-          Center(
+          Container(
+            padding: const EdgeInsets.all(20.0),
             child: TextField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -288,7 +296,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
               child: Ink(
                 color: Colors.black,
                 padding: EdgeInsets.all(5.0),
-                 child: Text("Submit", style: TextStyle(color: Colors.white)),
+                child: Text("Submit", style: TextStyle(color: Colors.white)),
               ),
               onTap: (){
                 //Go to "changing password" screen
@@ -405,6 +413,16 @@ class resetPasswordState extends State<resetPassword>{
             height: 5,
           ),
           Center(
+            child: Container(
+              padding: const EdgeInsets.all(0.0),
+              alignment: Alignment.centerLeft,
+              child: Text("New Password", style: TextStyle(fontSize: 14.0)),
+              height: 20,
+              width: 380,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(20.0),
             child: TextField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -413,7 +431,20 @@ class resetPasswordState extends State<resetPassword>{
               obscureText: true,
             ),
           ),
+          Container(
+            height: 5,
+          ),
           Center(
+            child: Container(
+              padding: const EdgeInsets.all(0.0),
+              alignment: Alignment.centerLeft,
+              child: Text("Confirm New Password", style: TextStyle(fontSize: 14.0)),
+              height: 20,
+              width: 380,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(20.0),
             child: TextField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),

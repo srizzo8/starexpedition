@@ -228,7 +228,13 @@ Future<int> sixDigitCode() async{
   List<int> myCode = [];
 
   for(int i = 0; i < 6; i++){
-    int digit = r.nextInt(10);
+    int digit = 0;
+    if(i == 0){
+      digit = r.nextInt(9) + 1;
+    }
+    else{
+      digit = r.nextInt(10);
+    }
     myCode.add(digit);
   }
 
