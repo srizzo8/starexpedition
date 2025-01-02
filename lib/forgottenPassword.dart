@@ -25,7 +25,7 @@ import 'package:json_editor/json_editor.dart';
 var theUsersUsername;
 var theUsersEmail;
 
-int mySixDigitCode = 0;
+String mySixDigitCode = "";
 
 class forgottenPassword extends StatefulWidget{
   const forgottenPassword ({Key? key}) : super(key: key);
@@ -247,16 +247,16 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
   TextEditingController numberController = TextEditingController();
   List<Text> usersMessage = [];
 
-  List<Text> dialogMessageForgottenPasswordCode(int enteredPasscode){
+  List<Text> dialogMessageForgottenPasswordCode(String enteredPasscode){
     List<Text> messageForUser = [];
 
     if(numberController.text == ""){
       messageForUser.add(Text("Passcode is empty"));
     }
-    if(enteredPasscode != mySixDigitCode){
+    if(enteredPasscode != mySixDigitCode && numberController.text != "" && (numberController.text).length >= 6){
       messageForUser.add(Text("The code that you have entered in is not correct"));
     }
-    if((numberController.text).length < 6){
+    if((numberController.text).length < 6 && numberController.text != ""){
       messageForUser.add(Text("The code that you have entered in has less than six digits"));
     }
 
@@ -302,7 +302,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
               ),
               onTap: (){
                 //Go to "changing password" screen
-                usersMessage = dialogMessageForgottenPasswordCode(int.parse(numberController.text));
+                usersMessage = dialogMessageForgottenPasswordCode(numberController.text);
                 if(usersMessage.isEmpty){
                   showDialog(
                       context: context,

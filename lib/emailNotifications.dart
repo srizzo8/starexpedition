@@ -223,7 +223,7 @@ Future<void> emailAddressChangeConfirmationEmail() async{
   await theConnection.close();
 }
 
-Future<int> sixDigitCode() async{
+Future<String> sixDigitCode() async{
   Random r = new Random();
   List<int> myCode = [];
 
@@ -239,11 +239,11 @@ Future<int> sixDigitCode() async{
   }
 
   var joinDigits = myCode.join('');
-  int mySixDigitCode = int.parse(joinDigits);
+  String mySixDigitCode = joinDigits;
   return mySixDigitCode;
 }
 
-Future<void> sixDigitCodeEmail(int i) async{
+Future<void> sixDigitCodeEmail(String s) async{
   //Sending the email
   await dotenv.load(fileName: "dotenv.env");
 
@@ -256,7 +256,7 @@ Future<void> sixDigitCodeEmail(int i) async{
     ..from = Address("starexpedition.theapp@gmail.com")
     ..recipients.add(forgottenPassword.theUsersEmail)
     ..subject = "Password Reset Code"
-    ..text = "Hi ${forgottenPassword.theUsersUsername},\n\nWe have noticed that you have forgotten your password. Please enter in this 6-digit verification code into Star Expedition: \n${i}\nOnce you have entered it in, you may reset your password.\n\nBest,\nStar Expedition"
+    ..text = "Hi ${forgottenPassword.theUsersUsername},\n\nWe have noticed that you have forgotten your password. Please enter in this 6-digit verification code into Star Expedition: \n${s}\nOnce you have entered it in, you may reset your password.\n\nBest,\nStar Expedition"
   ;
 
   try{
