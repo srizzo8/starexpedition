@@ -393,6 +393,18 @@ class resetPasswordState extends State<resetPassword>{
     if(newPassController.text != confirmNewPassController.text && newPassController.text != "" && confirmNewPassController.text != ""){
       messageForUser.add(Text("The new password and confirm new password that you have entered do not match"));
     }
+    if((checkLetters(newPassController.text) == false || checkLetters(confirmNewPassController.text) == false) && newPassController.text != "" && confirmNewPassController.text != ""){
+      messageForUser.add(Text("Your new password must contain at least one letter"));
+    }
+    if((checkNumbers(newPassController.text) == false || checkNumbers(confirmNewPassController.text) == false) && newPassController.text != "" && confirmNewPassController.text != ""){
+      messageForUser.add(Text("Your new password must contain at least one number"));
+    }
+    if((checkSpecialCharacters(newPassController.text) == false || checkSpecialCharacters(confirmNewPassController.text) == false) && newPassController.text != "" && confirmNewPassController.text != ""){
+      messageForUser.add(Text("Your new password must contain at least one special character"));
+    }
+    if(((newPassController.text).length < 8 || (confirmNewPassController.text).length < 8) && newPassController.text != "" && confirmNewPassController.text != ""){
+      messageForUser.add(Text("Your new password must be at least 8 characters long"));
+    }
 
     return messageForUser;
   }
