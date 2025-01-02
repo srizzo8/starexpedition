@@ -223,6 +223,8 @@ class forgottenPasswordState extends State<forgottenPassword>{
                         TextButton(
                           onPressed: (){
                             Navigator.pop(context);
+                            myUsernameController.text = "";
+                            myEmailController.text = "";
                           },
                           child: Container(
                             child: const Text("Ok"),
@@ -337,6 +339,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
                         TextButton(
                           onPressed: (){
                             Navigator.pop(context);
+                            numberController.text = "";
                           },
                           child: Container(
                             child: const Text("Ok"),
@@ -496,10 +499,10 @@ class resetPasswordState extends State<resetPassword>{
                                   print("Updated");
                                 }).catchError((e) => print("This is your error: ${e}"));
 
-                                //Leads to the Star Expedition home page
-                                myUsername = theUsersUsername;
-                                loginBool = true;
-                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition()));
+                                //Leads to the Star Expedition login page:
+                                //myUsername = theUsersUsername;
+                                //loginBool = true;
+                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage()));
                               },
                               child: const Text("Ok"),
                             )
@@ -523,6 +526,8 @@ class resetPasswordState extends State<resetPassword>{
                       actions: <Widget>[
                         TextButton(
                           onPressed: (){
+                            newPassController.text = "";
+                            confirmNewPassController.text = "";
                             Navigator.pop(context);
                           },
                           child: Container(
