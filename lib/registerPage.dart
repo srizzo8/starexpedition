@@ -372,6 +372,7 @@ class registerPageState extends State<registerPage>{
                       await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
                         userId = myNumber.docs.first.data()["id"] + 1;
                       });
+
                       myNewUsername = theUsername.text;
                       myNewEmail = email.text;
                       myNewPassword = eBaseSixtyFour;

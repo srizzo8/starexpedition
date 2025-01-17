@@ -22,6 +22,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:starexpedition4/settingsPage.dart' as settingsPage;
 import 'package:starexpedition4/forgottenPassword.dart' as forgottenPassword;
 
+var myPort;
+
 class emailNotifications extends StatelessWidget {
   const emailNotifications ({Key? key}) : super(key: key);
 
@@ -107,7 +109,18 @@ Future<void> registrationConfirmationEmail() async{
   var emailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
   var passwordForSmtpServer = dotenv.env["APP_PASS"];
 
-  var smtpServer = gmail(emailForSmtpServer!, passwordForSmtpServer!);
+  var smtpServer = SmtpServer("smtp.gmail.com", port: 25, username: emailForSmtpServer!, password: passwordForSmtpServer!);
+
+  //Trying to check if port 25 works:
+  try{
+    print("Testing if port 25 works:");
+    final mySocket = await Socket.connect("smtp.gmail.com", 25, timeout: Duration(seconds: 10));
+    print("Port 25 works.");
+    mySocket.destroy();
+  }
+  catch(e){
+    print("Unfortunately, port 25 did not work: ${e}");
+  }
 
   var myMessage = Message()
     ..from = Address("starexpedition.theapp@gmail.com")
@@ -135,7 +148,7 @@ Future<void> passwordChangeConfirmationEmail() async{
   var myEmailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
   var myPasswordForSmtpServer = dotenv.env["APP_PASS"];
 
-  var mySmtpServer = gmail(myEmailForSmtpServer!, myPasswordForSmtpServer!);
+  var mySmtpServer = SmtpServer("smtp.gmail.com", port: 25, username: myEmailForSmtpServer!, password: myPasswordForSmtpServer!);
 
   if(settingsPage.theUser != "" && settingsPage.theNewUser == ""){
     var passwordChangeConfirmationMessageExistingUser = Message()
@@ -184,7 +197,7 @@ Future<void> emailAddressChangeConfirmationEmail() async{
   var theEmailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
   var thePasswordForSmtpServer = dotenv.env["APP_PASS"];
 
-  var theSmtpServer = gmail(theEmailForSmtpServer!, thePasswordForSmtpServer!);
+  var theSmtpServer = SmtpServer("smtp.gmail.com", port: 25, username: theEmailForSmtpServer!, password: thePasswordForSmtpServer!);
 
   //For previous email address
   var emailChangeConfirmationMessageForPreviousEmailAddress = Message()
@@ -250,7 +263,7 @@ Future<void> sixDigitCodeEmail(String s) async{
   var myEmailForSmtpServer = dotenv.env["EMAIL_ADDRESS"];
   var myPasswordForSmtpServer = dotenv.env["APP_PASS"];
 
-  var mySmtpServer = gmail(myEmailForSmtpServer!, myPasswordForSmtpServer!);
+  var mySmtpServer = SmtpServer("smtp.gmail.com", port: 25, username: myEmailForSmtpServer!, password: myPasswordForSmtpServer!);
 
   var sixDigitCodeMessage = Message()
     ..from = Address("starexpedition.theapp@gmail.com")
