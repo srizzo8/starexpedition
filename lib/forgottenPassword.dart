@@ -25,6 +25,8 @@ import 'package:json_editor/json_editor.dart';
 var theUsersUsername;
 var theUsersEmail;
 
+var checkForEmail;
+
 String mySixDigitCode = "";
 
 class forgottenPassword extends StatefulWidget{
@@ -56,45 +58,75 @@ class forgottenPasswordState extends State<forgottenPassword>{
   var docForUser;
   var docForEmail;
 
-  Future<bool> compareDocuments(String username, String emailAddress) async{
+  Future<bool> usernameEmailMatch(String username, String emailAddress) async{
     bool match = false;
 
-    var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: username.toLowerCase()).get();
-    theUserResult.docs.forEach((uOutcome){
-      docForUser = uOutcome.data();
-    });
-
-    var theEmailResult = await FirebaseFirestore.instance.collection("User").where("emailAddress", isEqualTo: emailAddress).get();
-    theEmailResult.docs.forEach((eOutcome){
-      docForEmail = eOutcome.data();
-    });
-
-    if(docForUser == docForEmail){
-      match = true;
+    if((myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == myUsernameController.text.toLowerCase()) != -1)){
+      var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: username.toLowerCase()).get();
+      theUserResult.docs.forEach((uOutcome){
+        docForUser = uOutcome.data();
+      });
     }
     else{
       match = false;
     }
 
+    if((myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == myUsernameController.text.toLowerCase()) != -1)){
+      if(docForUser["emailAddress"] == myEmailController.text){
+        match = true;
+      }
+      else{
+        match = false;
+      }
+    }
+
     return match;
   }
 
-  List<Text> dialogMessageForgottenPassword(List<String> l){
+  Future<List<Text>> dialogMessageForgottenPassword(List<String> l) async{
     List<Text> messageForUser = [];
 
+    var usernameEmailResults = await usernameEmailMatch(myUsernameController.text, myEmailController.text);
+    print(usernameEmailResults);
+
+    //Checking if a username is registered on Star Expedition:
+    List<String> listOfUsernames = [];
+
+    var usernameResults = await FirebaseFirestore.instance.collection("User").orderBy("usernameLowercased", descending: true).get();
+    usernameResults.docs.forEach((person){
+      var userDoc = person.data();
+      var theUsername = userDoc["usernameLowercased"];
+      listOfUsernames.add(theUsername);
+    });
+
+    print("Username list: ${listOfUsernames}");
+
+    //Checking if an email address is registered on Star Expedition:
+    List<String> listOfEmailAddresses = [];
+
+    var emailAddressResults = await FirebaseFirestore.instance.collection("User").orderBy("emailAddress", descending: true).get();
+    emailAddressResults.docs.forEach((ea){
+      var emailAddressDoc = ea.data();
+      var theEmailAddress = emailAddressDoc["emailAddress"];
+      listOfEmailAddresses.add(theEmailAddress);
+    });
+
+    print("Email Address list: ${listOfEmailAddresses}");
+
+    //Generating messages for the user:
     if(myUsernameController.text == ""){
       messageForUser.add(Text("Username is empty"));
+    }
+    if(!(listOfUsernames.contains(myUsernameController.text.toLowerCase())) && myUsernameController.text != ""){
+      messageForUser.add(Text("Username not registered on Star Expedition"));
     }
     if(myEmailController.text == ""){
       messageForUser.add(Text("Email is empty"));
     }
-    if((myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == myUsernameController.text.toLowerCase()) == -1) && myUsernameController.text != ""){
-      messageForUser.add(Text("Username not registered on Star Expedition"));
-    }
-    if((myMain.theUsers!.indexWhere((person) => person.email?.toLowerCase() == myEmailController.text.toLowerCase()) == -1) && myEmailController.text != ""){
+    if(!(listOfEmailAddresses.contains(myEmailController.text)) && myEmailController.text != ""){
       messageForUser.add(Text("Email address not registered on Star Expedition"));
     }
-    if(compareDocuments(myUsernameController.text, myEmailController.text) == false){
+    if(usernameEmailResults == false && listOfUsernames.contains(myUsernameController.text.toLowerCase()) && listOfEmailAddresses.contains(myEmailController.text) && myUsernameController.text != "" && myEmailController.text != ""){
       messageForUser.add(Text("The email address that you have entered does not belong to the username that you have entered"));
     }
 
@@ -174,7 +206,8 @@ class forgottenPasswordState extends State<forgottenPassword>{
               ),
               onTap: () async{
                 print("Pressed");
-                usersMessage = dialogMessageForgottenPassword([myUsernameController.text, myEmailController.text]);
+                usersMessage = await dialogMessageForgottenPassword([myUsernameController.text, myEmailController.text]);
+
                 if(usersMessage.isEmpty){
                   showDialog(
                       context: context,
