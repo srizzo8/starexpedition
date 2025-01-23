@@ -138,13 +138,14 @@ class forgottenPasswordState extends State<forgottenPassword>{
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
-        /*leading: IconButton(
+        leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            print("Hello"),
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage())),
+            print("Going to login page"),
           }
-        ),*/
+        ),
       ),
       body: Wrap(
         children: <Widget>[
@@ -301,6 +302,14 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () =>{
+              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage())),
+              print("Going to login page"),
+            }
+        ),
       ),
       body: Wrap(
         children: <Widget>[
@@ -447,6 +456,14 @@ class resetPasswordState extends State<resetPassword>{
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () =>{
+              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage())),
+              print("Going to login page"),
+            }
+        ),
       ),
       body: Wrap(
         children: <Widget>[
