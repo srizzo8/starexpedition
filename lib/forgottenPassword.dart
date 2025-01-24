@@ -142,9 +142,31 @@ class forgottenPasswordState extends State<forgottenPassword>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage())),
-            print("Going to login page"),
-          }
+            showDialog(
+              context: context,
+              builder: (BuildContext myContext){
+                return AlertDialog(
+                  title: const Text("Are you sure you want to quit attempting to reset your password?"),
+                  content: const Text("You will be redirected to the login page"),
+                  actions: [
+                    TextButton(
+                      onPressed: () async{
+                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage()));
+                        print("Going to login page");
+                      },
+                      child: Text("Yes"),
+                    ),
+                    TextButton(
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
+                      child: Text("No"),
+                    )
+                  ],
+                );
+              }
+            ),
+          },
         ),
       ),
       body: Wrap(
@@ -306,8 +328,30 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
-              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage())),
-              print("Going to login page"),
+              showDialog(
+                  context: context,
+                  builder: (BuildContext myContext){
+                    return AlertDialog(
+                      title: const Text("Are you sure you want to quit attempting to reset your password?"),
+                      content: const Text("You will be redirected to the login page"),
+                      actions: [
+                        TextButton(
+                          onPressed: () async{
+                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage()));
+                            print("Going to login page");
+                          },
+                          child: Text("Yes"),
+                        ),
+                        TextButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
+                          child: Text("No"),
+                        )
+                      ],
+                    );
+                  }
+              ),
             }
         ),
       ),
@@ -460,8 +504,30 @@ class resetPasswordState extends State<resetPassword>{
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
-              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage())),
-              print("Going to login page"),
+              showDialog(
+                  context: context,
+                  builder: (BuildContext myContext){
+                    return AlertDialog(
+                      title: const Text("Are you sure you want to quit attempting to reset your password?"),
+                      content: const Text("You will be redirected to the login page"),
+                      actions: [
+                        TextButton(
+                          onPressed: () async{
+                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage()));
+                            print("Going to login page");
+                          },
+                          child: Text("Yes"),
+                        ),
+                        TextButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
+                          child: Text("No"),
+                        )
+                      ],
+                    );
+                  }
+              ),
             }
         ),
       ),
