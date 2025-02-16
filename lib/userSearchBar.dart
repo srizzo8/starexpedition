@@ -84,6 +84,9 @@ class mySearch extends SearchDelegate{
         myMatchQuery.add(guy);
       }
     }
+
+    myMatchQuery.sort((u1, u2) => u1.compareTo(u2));
+
     return ListView.builder(
       itemCount: myMatchQuery.length,
       itemBuilder: (bc4, index){
