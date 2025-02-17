@@ -299,17 +299,23 @@ class registerPageState extends State<registerPage>{
             ),
           ),
           Center(
-            child: InkWell(
-              child: Ink(
-                color: Colors.black,
-                padding: EdgeInsets.all(5.0),
-                //height: 20,
-                child: Text("Sign Up for Star Expedition", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
               ),
-                onTap: () async{
+              child: InkWell(
+                child: Ink(
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("Sign Up for Star Expedition", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),
+                  ),
+                ),
+                onPressed: () async{
                   //Encrypting one's pass
-                  encrypt.Encrypted e = encryptMyPassword(myKey, password.text);
-                  String eBaseSixtyFour = e.base64;
+                  String eBaseSixtyFour = "";
+                  if(password.text != ""){
+                    encrypt.Encrypted e = encryptMyPassword(myKey, password.text);
+                    eBaseSixtyFour = e.base64;
+                  }
 
                   print("theUsers: ${myMain.theUsers}");
                   //If there are no users:
@@ -448,229 +454,6 @@ class registerPageState extends State<registerPage>{
                           }),
                         ),
 
-
-                        /*theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username already exists"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username not valid; usernames must be between 3 and 25 characters long and consist of letters, numbers, and underscores"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Email empty"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text == ""?
-                        Text("Password empty"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Password must contain at least one special character"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Password must contain at least one number"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Password must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Password must contain at least one special character\nPassword must contain at least one number"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Password must contain at least one special character\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Password must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Password must contain at least one special character\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username empty\nEmail empty"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username already exists\nEmail empty"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text == ""?
-                        Text("Username empty\nPassword empty"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text == ""?
-                        Text("Username already exists\nPassword empty"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username empty\nPassword must contain at least one special character"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Username empty\nPassword must contain at least one number"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Username empty\nPassword must be at least 8 characters long"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Username empty\nPassword must contain at least one special character\nPassword must contain at least one number"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Username empty\nPassword must contain at least one special character\nPassword must be at least 8 characters long"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Username empty\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Username empty\nPassword must contain at least one special character\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username already exists\nPassword must contain at least one special character"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Username already exists\nPassword must contain at least one number"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Username already exists\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Username already exists\nPassword must contain at least one special character\nPassword must contain at least one number"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Username already exists\nPassword must contain at least one special character\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Username already exists\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Username already exists\nPassword must contain at least one special character\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text == ""?
-                        Text("Email empty\nPassword empty"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Email empty\nPassword must contain at least one special character"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Email empty\nPassword must contain at least one number"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Email empty\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Email empty\nPassword must contain at least one special character\nPassword must contain at least one number"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Email empty\nPassword must contain at least one special character\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Email empty\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Email empty\nPassword must contain at least one special character\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text == ""?
-                        Text("Username empty\nEmail empty\nPassword empty"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text == ""?
-                        Text("Username already exists\nEmail empty\nPassword empty"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username empty\nEmail empty\nPassword must contain at least one special character"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Username empty\nEmail empty\nPassword must contain at least one number"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Username empty\nEmail empty\nPassword must be at least 8 characters long"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Username empty\nEmail empty\nPassword must contain at least one special character\nPassword must contain at least one number"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Username empty\nEmail empty\nPassword must contain at least one special character\nPassword must be at least 8 characters long"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Username empty\nEmail empty\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Username empty\nEmail empty\nPassword must contain at least one special character\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username already exists\nEmail empty\nPassword must contain at least one special character"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Username already exists\nEmail empty\nPassword must contain at least one number"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Username already exists\nEmail empty\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Username already exists\nEmail empty\nPassword must contain at least one special character\nPassword must contain at least one number"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Username already exists\nEmail empty\nPassword must contain at least one special character\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Username already exists\nEmail empty\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && validUsername == true && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length < 8?
-                        Text("Username already exists\nEmail empty\nPassword must contain at least one special character\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        Text(""),*/
-
-                        //More info:
-                        /*theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Username already exists"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8 && (theUsername.text.length < 3 || theUsername.text.length > 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Usernames must contain anywhere between 3 and 25 characters"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && !(RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text))?
-                        Text("Usernames must only contain letters, numbers, and/or underscores"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8 && (theUsername.text.length < 3 || theUsername.text.length > 25) && !(RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text))?
-                        Text("Usernames must contain anywhere between 3 and 25 characters\nUsernames must only contain letters, numbers, and/or underscores"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Email empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text == ""?
-                        Text("Password empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length >= 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Password must contain at least one special character"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length >= 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Password must contain at least one number"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length < 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Password must be at least 8 characters long"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length >= 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Password must contain at least one special character\nPassword must contain at least one number"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length < 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Password must contain at least one special character\nPassword must be at least 8 characters long"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length < 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Password must contain at least one special character\nPassword must contain at least one number\nPassword must be at least 8 characters long"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Username empty\nEmail empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8 && (theUsername.text.length >= 3 && theUsername.text.length <= 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Username already exists\nEmail empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text == "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8 && (theUsername.text.length < 3 || theUsername.text.length > 25) && RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text)?
-                        Text("Usernames must contain anywhere between 3 and 25 characters\nEmail empty"):
-                        theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 && email.text == "" && password.text == ""?
-                        Text("Username already exists\nPassword empty"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length >= 8?
-                        Text("Username empty\nPassword must contain at least one special character"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Username empty\nPassword must contain at least one number"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Username empty\nPassword must be at least 8 characters long"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == false && (password.text).length >= 8?
-                        Text("Username empty\nPassword must contain at least one special character\nPassword must contain at least one number"):
-                        theUsername.text == "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && email.text != "" && password.text != "" && checkSpecialCharacters(password.text) == false && checkNumbers(password.text) == true && (password.text).length < 8?
-                        Text("Username empty\nPassword must contain at least one special character\nPassword must be at least 8 characters long"):*/
-
-                        //Important:
-                        /*theUsername.text == "" || email.text == "" || password.text == "" || (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1 ||  checkSpecialCharacters(password.text) == false || checkNumbers(password.text) == false || (password.text).length < 8 || (theUsername.text.length < 3 || theUsername.text.length > 25)?
-                            theUsername.text == ""?
-                              email.text == ""?
-                                  password.text == ""?
-                                    Text("Username empty\nEmail empty\nPassword empty"):
-                                  checkSpecialCharacters(password.text) == false?
-                                    Text("Username empty\nEmail empty\nPassword must contain at least one special character"):
-                                  checkNumbers(password.text) == false?
-                                    Text("Username empty\nEmail empty\nPassword must contain at least one number"):
-                                  (password.text).length < 8?
-                                    Text("Username empty\nEmail empty\nPassword must be at least 8 characters long"):
-                                Text("Username empty\nEmail empty"):
-                              password.text == ""?
-                                  email.text == ""?
-                                    Text("Username empty\nEmail empty\nPassword empty"):
-                                Text("Username empty\nPassword empty"):
-                              checkSpecialCharacters(password.text) == false?
-                                  email.text == ""?
-                                    checkNumbers(password.text) == false?
-                                      Text("Username empty\nEmail empty\nPassword must contain at least one special character\nPassword must contain at least one number"):
-                                    Text("Username empty\nEmail empty\nPassword must contain at least one special character"):
-                                  checkNumbers(password.text) == false?
-                                    Text("Username empty\nPassword must contain at least one special character\nPassword must contain at least one number"):
-                                  (password.text).length < 8?
-                                    Text("Username empty\nPassword must contain at least one special character\nPassword must be at least 8 characters long"):
-                                Text("Username empty\nPassword must contain at least one special character"):
-                              checkNumbers(password.text) == false?
-                                  email.text == ""?
-                                    Text("Username empty\nEmail empty\nPassword must contain at least one number"):
-                                Text("Username empty\nPassword must contain at least one number"):
-                              (password.text).length < 8?
-                                Text("Username empty\nPassword must be at least 8 characters long"):
-                              Text("Username empty\n"):
-                            email.text == ""?
-                              Text("Email empty\n"):
-                            (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1?
-                              Text("Username already exists\n"):
-                            checkSpecialCharacters(password.text) == false?
-                              Text("Password must contain at least one special character\n"):
-                            checkNumbers(password.text) == false?
-                              Text("Password must contain at least one number\n"):
-                            (password.text).length < 8?
-                              Text("Password must contain at least one number\n"):
-                            (theUsername.text.length < 3 || theUsername.text.length > 25)?
-                              Text("Usernames must contain anywhere between 3 and 25 characters\n"):
-                            Text(""):
-                            Text(""),
-                        /*Text("Username empty\n"):
-                        email.text == ""?
-                        Text("Email empty\n"):
-                        password.text == ""?
-                        Text("Password empty\n"):
-                        (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) != -1?
-                        Text("Username already exists\n"):
-                        checkSpecialCharacters(password.text) == false?
-                        Text("Password must contain at least one special character\n"):
-                        checkNumbers(password.text) == false?
-                        Text("Password must contain at least one number\n"):
-                        (password.text).length < 8?
-                        Text("Password must be at least 8 characters long\n"):
-                        (theUsername.text.length < 3 || theUsername.text.length > 25)?
-                        Text("Usernames must contain anywhere between 3 and 25 characters\n"):
-                        !(RegExp(r'^[A-Za-z0-9_]+$').hasMatch(theUsername.text))?
-                        Text("Usernames must only contain letters, numbers, and/or underscores\n"):
-                        Text(""),*/*/
                         actions: <Widget>[
                           TextButton(
                             onPressed: (){

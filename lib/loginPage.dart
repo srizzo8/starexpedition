@@ -127,78 +127,81 @@ class loginPageState extends State<loginPage>{
             ),
           ),
           Center(
-              child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  //height: 20,
-                  padding: EdgeInsets.all(5.0),
-                  child: Text("Log in", style: TextStyle(color: Colors.white)),// style: TextStyle(fontSize: 12.0)), //style: TextStyle(fontSize: 14.0, color: Colors.white)),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
                 ),
-                  onTap: () async{
-                    if(usernameController.text != "" && passwordController.text != "") {
-                      var userDocument;
+                child: InkWell(
+                  child: Ink(
+                    padding: EdgeInsets.all(5.0),
+                    child: Text("Log in", style: TextStyle(color: Colors.white)),// style: TextStyle(fontSize: 12.0)), //style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                  ),
+                ),
+                onPressed: () async{
+                  if(usernameController.text != "" && passwordController.text != "") {
+                    var userDocument;
 
-                      //userResult
-                      if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
-                        var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
-                        userResult.docs.forEach((outcome){
-                          userDocument = outcome.data();
-                          //userLowercased = outcome.data()["username"].toLowerCase();
-                          print("This is the outcome: ${outcome.data()}");
-                        });
+                    //userResult
+                    if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
+                      var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
+                      userResult.docs.forEach((outcome){
+                        userDocument = outcome.data();
+                        //userLowercased = outcome.data()["username"].toLowerCase();
+                        print("This is the outcome: ${outcome.data()}");
+                      });
 
-                        print("keys: ${userDocument["password"]}");
-                        print("userDocument: $userDocument");
-                      }
+                      print("keys: ${userDocument["password"]}");
+                      print("userDocument: $userDocument");
+                    }
 
-                      encrypt.Encrypted encryptedEnteredPass = theRegisterPage.encryptMyPassword(theRegisterPage.myKey, passwordController.text);
-                      print("Encrypted pass: ${encryptedEnteredPass.base64}");
+                    encrypt.Encrypted encryptedEnteredPass = theRegisterPage.encryptMyPassword(theRegisterPage.myKey, passwordController.text);
+                    print("Encrypted pass: ${encryptedEnteredPass.base64}");
 
-                      //print("userdocument[password]: ${userDocument["password"]}");
-                      //print("checking: ${theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"])}");
+                    //print("userdocument[password]: ${userDocument["password"]}");
+                    //print("checking: ${theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"])}");
 
-                      //if(usernameList.contains(usernameController.text.toLowerCase())
+                    //if(usernameList.contains(usernameController.text.toLowerCase())
 
-                      /*var passwordDocument;
+                    /*var passwordDocument;
                       var passwordResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: passwordController.text).get();
                       passwordResult.docs.forEach((outcome){
                         passwordDocument = outcome.data();
                       });*/
-                      //print("passwordDocument: $passwordDocument");
+                    //print("passwordDocument: $passwordDocument");
 
-                      //if(userLowercased == usernameController.text.toLowerCase())
-                      //if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
-                      if(userDocument != null && userDocument["usernameLowercased"] == usernameController.text.toLowerCase() && passwordController.text == theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"]) && usernameController.text != "" && passwordController.text != ""){ //myMain.theUsers!.contains(usernameController.text)
-                        print("userDocument is NOT null");
-                        if(myMain.discussionBoardLogin == true){
-                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
-                            myUsername = theUn.docs.first.data()["username"];
-                          });
-                          print("Logging in as: " + myUsername);
-                          print("myNewUsername: " + theRegisterPage.myNewUsername);
-                          Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
-                          myMain.discussionBoardLogin = false;
-                          loginBool = true;
-                        }
-                        else{
-                          print("Logging in 123");
-                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
-                            myUsername = theUn.docs.first.data()["username"];
-                          });
-
-                          print("Logging in as " + myUsername);
-                          Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
-                          print("myUsername: " + myUsername);
-                          print("myNewUsername: " + theRegisterPage.myNewUsername);
-                          loginBool = true;
-                          //print("Outcome: ${userDocument.keys.sort()}");
-                        }
+                    //if(userLowercased == usernameController.text.toLowerCase())
+                    //if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
+                    if(userDocument != null && userDocument["usernameLowercased"] == usernameController.text.toLowerCase() && passwordController.text == theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"]) && usernameController.text != "" && passwordController.text != ""){ //myMain.theUsers!.contains(usernameController.text)
+                      print("userDocument is NOT null");
+                      if(myMain.discussionBoardLogin == true){
+                        await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
+                          myUsername = theUn.docs.first.data()["username"];
+                        });
+                        print("Logging in as: " + myUsername);
+                        print("myNewUsername: " + theRegisterPage.myNewUsername);
+                        Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
+                        myMain.discussionBoardLogin = false;
+                        loginBool = true;
                       }
                       else{
-                        //print("userDocument info: ${userDocument["usernameLowercased"]}, ${userDocument["password"]}");
-                        //print("passwordDocument: $passwordDocument");
-                        if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
-                          showDialog(
+                        print("Logging in 123");
+                        await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
+                          myUsername = theUn.docs.first.data()["username"];
+                        });
+
+                        print("Logging in as " + myUsername);
+                        Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                        print("myUsername: " + myUsername);
+                        print("myNewUsername: " + theRegisterPage.myNewUsername);
+                        loginBool = true;
+                        //print("Outcome: ${userDocument.keys.sort()}");
+                      }
+                    }
+                    else{
+                      //print("userDocument info: ${userDocument["usernameLowercased"]}, ${userDocument["password"]}");
+                      //print("passwordDocument: $passwordDocument");
+                      if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
+                        showDialog(
                             context: context,
                             builder: (BuildContext theContext){
                               return AlertDialog(
@@ -214,108 +217,108 @@ class loginPageState extends State<loginPage>{
                                 ],
                               );
                             }
-                          );
-                        }
-                        else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1){
-                          userDocument = null;
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext theContext){
-                                return AlertDialog(
-                                  title: const Text("Login unsuccessful"),
-                                  content: const Text("The username you have entered does not exist"),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => {
-                                        Navigator.pop(context),
-                                      },
-                                      child: const Text("Ok"),
-                                    )
-                                  ],
-                                );
-                              }
-                          );
-                        }
+                        );
+                      }
+                      else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1){
+                        userDocument = null;
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext theContext){
+                              return AlertDialog(
+                                title: const Text("Login unsuccessful"),
+                                content: const Text("The username you have entered does not exist"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => {
+                                      Navigator.pop(context),
+                                    },
+                                    child: const Text("Ok"),
+                                  )
+                                ],
+                              );
+                            }
+                        );
                       }
                     }
-                    else if(usernameController.text == "" && passwordController.text != ""){
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext theContext){
-                            return AlertDialog(
-                              title: const Text("Login unsuccessful"),
-                              content: const Text("Username is empty"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => {
-                                    Navigator.pop(context),
-                                  },
-                                  child: const Text("Ok"),
-                                )
-                              ],
-                            );
-                          }
-                      );
-                    }
-                    else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1 && usernameController.text != "" && passwordController.text == ""){
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext theContext){
-                            return AlertDialog(
-                              title: const Text("Login unsuccessful"),
-                              content: const Text("Password is empty"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => {
-                                    Navigator.pop(context),
-                                  },
-                                  child: const Text("Ok"),
-                                )
-                              ],
-                            );
-                          }
-                      );
-                    }
-                    else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1 && usernameController.text != "" && passwordController.text == ""){
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext theContext){
-                            return AlertDialog(
-                              title: const Text("Login unsuccessful"),
-                              content: const Text("The username you have entered does not exist\nPassword is empty"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => {
-                                    Navigator.pop(context),
-                                  },
-                                  child: const Text("Ok"),
-                                )
-                              ],
-                            );
-                          }
-                      );
-                    }
-                    else if(usernameController.text == "" && passwordController.text == ""){
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext theContext){
-                            return AlertDialog(
-                              title: const Text("Login unsuccessful"),
-                              content: const Text("Username is empty\nPassword is empty"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => {
-                                    Navigator.pop(context),
-                                  },
-                                  child: const Text("Ok"),
-                                )
-                              ],
-                            );
-                          }
-                      );
-                    }
                   }
-              ),
+                  else if(usernameController.text == "" && passwordController.text != ""){
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext theContext){
+                          return AlertDialog(
+                            title: const Text("Login unsuccessful"),
+                            content: const Text("Username is empty"),
+                            actions: [
+                              TextButton(
+                                onPressed: () => {
+                                  Navigator.pop(context),
+                                },
+                                child: const Text("Ok"),
+                              )
+                            ],
+                          );
+                        }
+                    );
+                  }
+                  else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1 && usernameController.text != "" && passwordController.text == ""){
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext theContext){
+                          return AlertDialog(
+                            title: const Text("Login unsuccessful"),
+                            content: const Text("Password is empty"),
+                            actions: [
+                              TextButton(
+                                onPressed: () => {
+                                  Navigator.pop(context),
+                                },
+                                child: const Text("Ok"),
+                              )
+                            ],
+                          );
+                        }
+                    );
+                  }
+                  else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1 && usernameController.text != "" && passwordController.text == ""){
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext theContext){
+                          return AlertDialog(
+                            title: const Text("Login unsuccessful"),
+                            content: const Text("The username you have entered does not exist\nPassword is empty"),
+                            actions: [
+                              TextButton(
+                                onPressed: () => {
+                                  Navigator.pop(context),
+                                },
+                                child: const Text("Ok"),
+                              )
+                            ],
+                          );
+                        }
+                    );
+                  }
+                  else if(usernameController.text == "" && passwordController.text == ""){
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext theContext){
+                          return AlertDialog(
+                            title: const Text("Login unsuccessful"),
+                            content: const Text("Username is empty\nPassword is empty"),
+                            actions: [
+                              TextButton(
+                                onPressed: () => {
+                                  Navigator.pop(context),
+                                },
+                                child: const Text("Ok"),
+                              )
+                            ],
+                          );
+                        }
+                    );
+                  }
+                }
+            ),
           ),
           Center(
             child: Container(
@@ -333,16 +336,24 @@ class loginPageState extends State<loginPage>{
             ),
           ),
           Center(
-            child: InkWell(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+              ),
+              child: InkWell(
                 child: Ink(
-                  color: Colors.black,
+                  //color: Colors.black,
                   padding: EdgeInsets.all(5.0),
                   //height: 20,
                   child: Text("Forgotten Password", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                 ),
-                onTap: () async{
+                /*onPressed: () async{
                   Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPassword.forgottenPassword()));
-                }
+                }*/
+              ),
+              onPressed: () async{
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPassword.forgottenPassword()));
+              }
             ),
           ),
           Center(
@@ -356,6 +367,10 @@ class loginPageState extends State<loginPage>{
             ),
           ),
           Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+              ),
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
@@ -363,13 +378,14 @@ class loginPageState extends State<loginPage>{
                   //height: 20,
                   child: Text("Sign Up", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                 ),
-                  onTap: () async{
-                    //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
-                    databaseService().initMyDatabase();
-                    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => theRegisterPage.registerPage()));
-                    print("Signing up");
-                  }
               ),
+              onPressed: () async{
+                //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
+                databaseService().initMyDatabase();
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => theRegisterPage.registerPage()));
+                print("Signing up");
+              }
+            ),
           ),
         ],
       ),
