@@ -173,92 +173,97 @@ class editingMyUserProfile extends StatelessWidget{
             ),
           ),
           Center(
-            child: InkWell(
-              child: Ink(
-                color: Colors.black,
-                padding: EdgeInsets.all(5.0),
-                child: Text("Update Profile", style: TextStyle(color: Colors.white)),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
               ),
-              onTap: () async{
-                if(myUsername != "" && myNewUsername == ""){
-                  myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                  myInformation.docs.forEach((myResult){
-                    dataOfUser = myResult.data();
-                    myDocName = myResult.id;
-                  });
+              child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("Update Profile", style: TextStyle(color: Colors.white)),
+                ),
+              ),
+              onPressed: () async{
+                  if(myUsername != "" && myNewUsername == ""){
+                    myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                    myInformation.docs.forEach((myResult){
+                      dataOfUser = myResult.data();
+                      myDocName = myResult.id;
+                    });
 
-                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                    "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
-                  }).then((i){
-                    print("You have updated the user information (for already existing users)!");
-                  });
+                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                      "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
+                    }).then((i){
+                      print("You have updated the user information (for already existing users)!");
+                    });
 
-                  myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                  myInterests.docs.forEach((myResult){
-                    dataOfUser = myResult.data();
-                    myDocName = myResult.id;
-                  });
+                    myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                    myInterests.docs.forEach((myResult){
+                      dataOfUser = myResult.data();
+                      myDocName = myResult.id;
+                    });
 
-                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                    "usernameProfileInformation.userInterests": interestsController.text,
-                  }).then((i){
-                    print("You have updated the user interests (for already existing users)!");
-                  });
+                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                      "usernameProfileInformation.userInterests": interestsController.text,
+                    }).then((i){
+                      print("You have updated the user interests (for already existing users)!");
+                    });
 
-                  myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                  myLocation.docs.forEach((myResult){
-                    dataOfUser = myResult.data();
-                    myDocName = myResult.id;
-                  });
+                    myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                    myLocation.docs.forEach((myResult){
+                      dataOfUser = myResult.data();
+                      myDocName = myResult.id;
+                    });
 
-                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                    "usernameProfileInformation.userLocation": locationController.text,
-                  }).then((i){
-                    print("You have updated the user location (for already existing users)!");
-                  });
+                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                      "usernameProfileInformation.userLocation": locationController.text,
+                    }).then((i){
+                      print("You have updated the user location (for already existing users)!");
+                    });
 
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
+                  }
+                  else if(myUsername == "" && myNewUsername != ""){
+                    myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                    myInformation.docs.forEach((myResult){
+                      dataOfUser = myResult.data();
+                      myDocName = myResult.id;
+                    });
+
+                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                      "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
+                    }).then((j){
+                      print("You have updated the user information (for new users)!");
+                    });
+
+                    myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                    myInformation.docs.forEach((myResult){
+                      dataOfUser = myResult.data();
+                      myDocName = myResult.id;
+                    });
+
+                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                      "usernameProfileInformation.userInterests": interestsController.text,
+                    }).then((j){
+                      print("You have updated the user interests (for new users)!");
+                    });
+
+                    myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                    myLocation.docs.forEach((myResult){
+                      dataOfUser = myResult.data();
+                      myDocName = myResult.id;
+                    });
+
+                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                      "usernameProfileInformation.userLocation": locationController.text,
+                    }).then((j){
+                      print("You have updated the user location (for new users)!");
+                    });
+
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
+                  }
                 }
-                else if(myUsername == "" && myNewUsername != ""){
-                  myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                  myInformation.docs.forEach((myResult){
-                    dataOfUser = myResult.data();
-                    myDocName = myResult.id;
-                  });
-
-                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                    "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
-                  }).then((j){
-                    print("You have updated the user information (for new users)!");
-                  });
-
-                  myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                  myInformation.docs.forEach((myResult){
-                    dataOfUser = myResult.data();
-                    myDocName = myResult.id;
-                  });
-
-                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                    "usernameProfileInformation.userInterests": interestsController.text,
-                  }).then((j){
-                    print("You have updated the user interests (for new users)!");
-                  });
-
-                  myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                  myLocation.docs.forEach((myResult){
-                    dataOfUser = myResult.data();
-                    myDocName = myResult.id;
-                  });
-
-                  FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                    "usernameProfileInformation.userLocation": locationController.text,
-                  }).then((j){
-                    print("You have updated the user location (for new users)!");
-                  });
-
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
-                }
-              }
             ),
           ),
           Container(

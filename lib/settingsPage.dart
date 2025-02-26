@@ -176,7 +176,8 @@ class changePasswordPageState extends State<changePasswordPage>{
           }
         ),
       ),
-      body: Column(
+      body: SingleChildScrollView(
+        child: Column(
         children: <Widget>[
           Container(
             height: 5,
@@ -243,178 +244,184 @@ class changePasswordPageState extends State<changePasswordPage>{
             ),
           ),
           Center(
-            child: InkWell(
-              child: Ink(
-                color: Colors.black,
-                padding: EdgeInsets.all(5.0),
-                child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white)),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
               ),
-              onTap: () async{
-                print("currentPasswordController.text: ${currentPasswordController.text}");
-                print("newPasswordController.text: ${newPasswordController.text}");
-                print("secondNewPasswordController.text: ${secondNewPasswordController.text}");
-                print("myUsername = ${myUsername}, myNewUsername = ${myNewUsername}");
-                if(myUsername != "" && myNewUsername == ""){
-                  myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                  myUserResult.docs.forEach((result){
-                    userDoc = result.data();
-                    print("This is the result: ${result.data()}");
-                    gettingDocName = result.id;
-                  });
-                  print("userDoc[password]: ${userDoc["password"].toString()}");
+              child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white)),
+                ),
+              ),
+              onPressed: () async{
+                  print("currentPasswordController.text: ${currentPasswordController.text}");
+                  print("newPasswordController.text: ${newPasswordController.text}");
+                  print("secondNewPasswordController.text: ${secondNewPasswordController.text}");
+                  print("myUsername = ${myUsername}, myNewUsername = ${myNewUsername}");
+                  if(myUsername != "" && myNewUsername == ""){
+                    myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                    myUserResult.docs.forEach((result){
+                      userDoc = result.data();
+                      print("This is the result: ${result.data()}");
+                      gettingDocName = result.id;
+                    });
+                    print("userDoc[password]: ${userDoc["password"].toString()}");
 
-                  usersPass = decryptMyPassword(myKey, userDoc["password"]);
-                  print("usersPass: ${usersPass}");
+                    usersPass = decryptMyPassword(myKey, userDoc["password"]);
+                    print("usersPass: ${usersPass}");
 
-                  messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
+                    messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
 
-                  if(messageForUsers.isEmpty){
-                    //Password successfully changed
-                    print("gettingDocName: ${gettingDocName.toString()}");
+                    if(messageForUsers.isEmpty){
+                      //Password successfully changed
+                      print("gettingDocName: ${gettingDocName.toString()}");
 
-                    FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
-                      print("Updated");
-                    }).catchError((e) => print("This is your error: ${e}"));
+                      FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
+                        print("Updated");
+                      }).catchError((e) => print("This is your error: ${e}"));
 
-                    print("This is new user password: ${userDoc["password"]}");
+                      print("This is new user password: ${userDoc["password"]}");
 
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext bc){
-                        return AlertDialog(
-                          title: Text("Password Change Successful"),
-                          content: Text("You have successfully changed your password"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => {
-                                theUser = myUsername,
-                                theNewUser = "",
-                                usersEmail = userDoc["emailAddress"],
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                emailNotifications.passwordChangeConfirmationEmail(),
-                                currentPasswordController.text = "",
-                                newPasswordController.text = "",
-                                secondNewPasswordController.text = "",
-                              },
-                              child: Text("Ok"),
-                            ),
-                          ],
-                       );
-                      }
-                    );
-                  }
-                  else{
-                    showDialog(
-                      context: context,
-                      builder: (myContent) => AlertDialog(
-                        title: Text("Password Change Unsuccessful"),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: List.generate(messageForUsers.length, (i){
-                            return messageForUsers[i];
-                          }),
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: (){
-                              Navigator.of(myContent).pop();
-                              currentPasswordController.text = "";
-                              newPasswordController.text = "";
-                              secondNewPasswordController.text = "";
-                            },
-                            child: Container(
-                              child: const Text("Ok"),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                }
-                else if(myUsername == "" && myNewUsername != ""){
-                  myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                  myUserResult.docs.forEach((result){
-                    userDoc = result.data();
-                    print("This is the result: ${result.data()}");
-                    gettingDocName = result.id;
-                  });
-                  print("userDoc[password]: ${userDoc["password"].toString()}");
-
-                  usersPass = decryptMyPassword(myKey, userDoc["password"]);
-                  print("usersPass: ${usersPass}");
-
-                  messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
-
-                  if(messageForUsers.isEmpty){
-                    //Password successfully changed
-                    print("gettingDocName: ${gettingDocName.toString()}");
-
-                    FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
-                      print("Updated");
-                    }).catchError((e) => print("This is your error: ${e}"));
-
-                    print("This is new user password: ${userDoc["password"]}");
-
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext bc){
-                      return AlertDialog(
-                        title: Text("Password Change Successful"),
-                        content: Text("You have successfully changed your password"),
-                        actions: [
-                          TextButton(
-                            onPressed: () => {
-                              theUser = "",
-                              theNewUser = myNewUsername,
-                              usersEmail = userDoc["emailAddress"],
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                              emailNotifications.passwordChangeConfirmationEmail(),
-                              currentPasswordController.text = "",
-                              newPasswordController.text = "",
-                              secondNewPasswordController.text = "",
-                            },
-                            child: Text("Ok"),
-                          ),
-                        ],
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext bc){
+                            return AlertDialog(
+                              title: Text("Password Change Successful"),
+                              content: Text("You have successfully changed your password"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    theUser = myUsername,
+                                    theNewUser = "",
+                                    usersEmail = userDoc["emailAddress"],
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                    emailNotifications.passwordChangeConfirmationEmail(),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
                       );
                     }
-                  );
-                }
-                else{
-                  showDialog(
-                    context: context,
-                    builder: (myContent) => AlertDialog(
-                      title: Text("Password Change Unsuccessful"),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: List.generate(messageForUsers.length, (i){
-                          return messageForUsers[i];
-                        }),
-                      ),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: (){
-                            Navigator.of(myContent).pop();
-                            currentPasswordController.text = "";
-                            newPasswordController.text = "";
-                            secondNewPasswordController.text = "";
-                          },
-                          child: Container(
-                            child: const Text("Ok"),
+                    else{
+                      showDialog(
+                        context: context,
+                        builder: (myContent) => AlertDialog(
+                          title: Text("Password Change Unsuccessful"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(messageForUsers.length, (i){
+                              return messageForUsers[i];
+                            }),
                           ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: (){
+                                Navigator.of(myContent).pop();
+                                currentPasswordController.text = "";
+                                newPasswordController.text = "";
+                                secondNewPasswordController.text = "";
+                              },
+                              child: Container(
+                                child: const Text("Ok"),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
+                      );
+                    }
+                  }
+                  else if(myUsername == "" && myNewUsername != ""){
+                    myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                    myUserResult.docs.forEach((result){
+                      userDoc = result.data();
+                      print("This is the result: ${result.data()}");
+                      gettingDocName = result.id;
+                    });
+                    print("userDoc[password]: ${userDoc["password"].toString()}");
+
+                    usersPass = decryptMyPassword(myKey, userDoc["password"]);
+                    print("usersPass: ${usersPass}");
+
+                    messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
+
+                    if(messageForUsers.isEmpty){
+                      //Password successfully changed
+                      print("gettingDocName: ${gettingDocName.toString()}");
+
+                      FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
+                        print("Updated");
+                      }).catchError((e) => print("This is your error: ${e}"));
+
+                      print("This is new user password: ${userDoc["password"]}");
+
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext bc){
+                            return AlertDialog(
+                              title: Text("Password Change Successful"),
+                              content: Text("You have successfully changed your password"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    theUser = "",
+                                    theNewUser = myNewUsername,
+                                    usersEmail = userDoc["emailAddress"],
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                    emailNotifications.passwordChangeConfirmationEmail(),
+                                    currentPasswordController.text = "",
+                                    newPasswordController.text = "",
+                                    secondNewPasswordController.text = "",
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                      );
+                    }
+                    else{
+                      showDialog(
+                        context: context,
+                        builder: (myContent) => AlertDialog(
+                          title: Text("Password Change Unsuccessful"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(messageForUsers.length, (i){
+                              return messageForUsers[i];
+                            }),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: (){
+                                Navigator.of(myContent).pop();
+                                currentPasswordController.text = "";
+                                newPasswordController.text = "";
+                                secondNewPasswordController.text = "";
+                              },
+                              child: Container(
+                                child: const Text("Ok"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  }
                 }
-                }
-              }
             ),
           ),
         ],
       ),
+    ),
     );
   }
 }
@@ -480,7 +487,8 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
           }
         ),
       ),
-      body: Column(
+      body: SingleChildScrollView(
+        child: Column(
         children: <Widget>[
           Container(
             height: 5,
@@ -545,14 +553,19 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
             ),
           ),
           Center(
-            child: InkWell(
-              child: Ink(
-                color: Colors.black,
-                padding: EdgeInsets.all(5.0),
-                child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white)),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
               ),
-              onTap: () async{
-                //if(currentEmailAddressController.text != "" && newEmailAddressController.text != "" && myPasswordController.text != ""){
+              child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white)),
+                ),
+              ),
+                onPressed: () async{
+                  //if(currentEmailAddressController.text != "" && newEmailAddressController.text != "" && myPasswordController.text != ""){
                   if(myUsername != "" && myNewUsername == ""){
                     myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
                     myEmailResult.docs.forEach((myResult){
@@ -721,11 +734,12 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                       );
                     }
                   }
-              }
+                }
             ),
           ),
         ],
       ),
+    ),
     );
   }
 }
