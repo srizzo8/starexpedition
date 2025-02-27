@@ -60,28 +60,48 @@ class settingsPageState extends State<settingsPage>{
           Container(
             child: Text("Settings", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
-          InkWell(
-            child: Ink(
-              //alignment: Alignment.center,
-              child: Text("Change Password"),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(175, 36),
+              maximumSize: Size(175, 36),
+              primary: Colors.black,
             ),
-            onTap: (){
+            child: InkWell(
+              child: Ink(
+                child: Text("Change Password"),
+              ),
+            ),
+            onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changePasswordPage()));
             }
           ),
-          InkWell(
-            child: Ink(
-              child: Text("Change Email Address"),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(175, 36),
+              maximumSize: Size(175, 36),
+              primary: Colors.black,
             ),
-            onTap: (){
+            child: InkWell(
+              child: Ink(
+                child: Text("Change Email Address"),
+              ),
+            ),
+            onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changeEmailAddressPage()));
             }
           ),
-          InkWell(
-            child: Ink(
-              child: Text("Update Profile"),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(175, 36),
+              maximumSize: Size(175, 36),
+              primary: Colors.black,
             ),
-            onTap: () async{
+            child: InkWell(
+              child: Ink(
+                child: Text("Update Profile"),
+              ),
+            ),
+            onPressed: () async{
               //Adding info about user blurb, interests, and location
               if(myUsername != "" && myNewUsername == ""){
                 await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
@@ -105,7 +125,7 @@ class settingsPageState extends State<settingsPage>{
               }
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => editingMyUserProfile()));
             }
-          )
+          ),
         ],
       ),
     );
