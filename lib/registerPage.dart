@@ -114,7 +114,7 @@ bool checkEmailValidity(String e){
     print("emailAddressParts: ${emailAddressParts}");
     if(emailAddressParts.length == 2){
       if(emailAddressParts[0] != "" && !(emailAddressParts[0].contains(" ")) && emailAddressParts[1] != ""){
-        if(emailAddressParts[1] == "gmail.com" || emailAddressParts[1] == "yahoo.com" || emailAddressParts[1] == "icloud.com" || emailAddressParts[1] == "hotmail.com" || emailAddressParts[1] == "outlook.com" || emailAddressParts[1] == "aol.com"){
+        if((emailAddressParts[1]).toLowerCase() == ("gmail.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("yahoo.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("icloud.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("hotmail.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("outlook.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("aol.com").toLowerCase()){
           return true;
         }
         else{
