@@ -452,16 +452,16 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
     if(currentEmailAddressController.text == ""){
       usersMessage.add(Text("Current email address is empty"));
     }
-    if(currentEmailAddressController.text != docForUsername["emailAddress"] && currentEmailAddressController.text != ""){
+    if((currentEmailAddressController.text).toLowerCase() != (docForUsername["emailAddress"]).toLowerCase() && currentEmailAddressController.text != ""){
       usersMessage.add(Text("The current email address that you entered is not correct"));
     }
     if(newEmailAddressController.text == ""){
       usersMessage.add(Text("New email address is empty"));
     }
-    if(newEmailAddressController.text == docForUsername["emailAddress"] && newEmailAddressController.text != ""){
+    if((newEmailAddressController.text).toLowerCase() == (docForUsername["emailAddress"]).toLowerCase() && newEmailAddressController.text != ""){
       usersMessage.add(Text("Your new email address cannot be your current email address"));
     }
-    if(currentEmailAddressController.text == newEmailAddressController.text && currentEmailAddressController.text != "" && newEmailAddressController.text != ""){
+    if((currentEmailAddressController.text).toLowerCase() == (newEmailAddressController.text).toLowerCase() && currentEmailAddressController.text != "" && newEmailAddressController.text != ""){
       usersMessage.add(Text("Current email address and new email address cannot match"));
     }
     if(checkEmailValidity(newEmailAddressController.text) == false && newEmailAddressController.text != ""){
