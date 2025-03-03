@@ -130,47 +130,120 @@ class editingMyUserProfile extends StatelessWidget{
           Container(
             height: 5,
           ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: "Information about yourself",
-                contentPadding: EdgeInsets.symmetric(vertical: 80),
-              ),
-              maxLines: null,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              controller: informationAboutMyselfController..text = "${myMain.usersBlurb}",
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(
+                  child: Center(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: 400,
+                      ),
+                      child: Scrollbar(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          reverse: true,
+                          child: SizedBox(
+                            //height: 170,
+                            child: TextField(
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Information about yourself",
+                                //contentPadding: EdgeInsets.symmetric(vertical: 80),
+                              ),
+                              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                              controller: informationAboutMyselfController..text = "${myMain.usersBlurb}",
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ),
+                ),
+              ]
+            ),
+          ),
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 400,
+                          ),
+                          child: Scrollbar(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              reverse: true,
+                              child: SizedBox(
+                                //height: 170,
+                                child: TextField(
+                                  maxLines: null,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: "Your interests",
+                                  ),
+                                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                  controller: interestsController..text = "${myMain.usersInterests}",
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
+            ),
+          ),
+          IntrinsicHeight(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 400,
+                          ),
+                          child: Scrollbar(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              reverse: true,
+                              child: SizedBox(
+                                height: 100,
+                                child: TextField(
+                                  maxLines: null,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: "Your location",
+                                  ),
+                                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                  controller: locationController..text = "${myMain.usersLocation}",
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
             ),
           ),
           Container(
             height: 5,
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: "Your interests",
-                contentPadding: EdgeInsets.symmetric(vertical: 80),
-              ),
-              maxLines: null,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              controller: interestsController..text = "${myMain.usersInterests}",
-            ),
-          ),
-          Container(
-            height: 5,
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: "Your location",
-                contentPadding: EdgeInsets.symmetric(vertical: 80),
-              ),
-              maxLines: 1,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              controller: locationController..text = "${myMain.usersLocation}",
-            ),
           ),
           Center(
             child: ElevatedButton(
