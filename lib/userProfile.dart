@@ -127,9 +127,6 @@ class editingMyUserProfile extends StatelessWidget{
           Container(
             child: Text("Editing Your Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
-          Container(
-            height: 5,
-          ),
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -147,9 +144,9 @@ class editingMyUserProfile extends StatelessWidget{
                           scrollDirection: Axis.vertical,
                           reverse: true,
                           child: SizedBox(
-                            //height: 170,
                             child: TextField(
-                              maxLines: null,
+                              minLines: 5,
+                              maxLines: 5,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: "Information about yourself",
@@ -185,9 +182,9 @@ class editingMyUserProfile extends StatelessWidget{
                               scrollDirection: Axis.vertical,
                               reverse: true,
                               child: SizedBox(
-                                //height: 170,
                                 child: TextField(
-                                  maxLines: null,
+                                  minLines: 5,
+                                  maxLines: 5,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
                                     labelText: "Your interests",
@@ -222,9 +219,9 @@ class editingMyUserProfile extends StatelessWidget{
                               scrollDirection: Axis.vertical,
                               reverse: true,
                               child: SizedBox(
-                                height: 100,
                                 child: TextField(
-                                  maxLines: null,
+                                  minLines: 5,
+                                  maxLines: 5,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
                                     labelText: "Your location",
