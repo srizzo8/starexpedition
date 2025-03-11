@@ -135,35 +135,43 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                   Container(
                     height: 10,
                   ),
-                  InkWell(
-                      child: Ink(
-                        //child: Text(discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString()),//Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
-                        child: Text.rich(
-                          TextSpan(
-                            text: "${mySublistsDbu[theCurrentPageDbu][index]["threadTitle"].toString()}\nBy: ",
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: "${mySublistsDbu[theCurrentPageDbu][index]["poster"].toString()}",
-                                  recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                    dbuClickedOnUser = true,
-                                    nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase()).get(),
-                                    nameData.docs.forEach((person){
-                                      theUsersData = person.data();
-                                    }),
-                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                  }
-                              ),
-                              TextSpan(
-                                text: " ",
-                              ),
-                            ],
-                          ),
-                        ),
-                        height: 30,
-                        width: 360,
-                        color: Colors.grey[300],
+                  Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.grey[300],
                       ),
-                      onTap: () async {
+                      child: InkWell(
+                        child: Ink(
+                          //child: Text(discussionBoardPage.discussionBoardUpdatesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.discussionBoardUpdatesThreads[index]["poster"].toString()),//Text(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][0]),
+                          child: Text.rich(
+                            TextSpan(
+                              text: "${mySublistsDbu[theCurrentPageDbu][index]["threadTitle"].toString()}\nBy: ",
+                              style: TextStyle(color: Colors.black),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: "${mySublistsDbu[theCurrentPageDbu][index]["poster"].toString()}",
+                                  style: TextStyle(color: Colors.black),
+                                  recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                  dbuClickedOnUser = true,
+                                  nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase()).get(),
+                                  nameData.docs.forEach((person){
+                                    theUsersData = person.data();
+                                  }),
+                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                }
+                                ),
+                                TextSpan(
+                                  text: " ",
+                                ),
+                              ],
+                            ),
+                          ),
+                          height: 30,
+                          width: 360,
+                          color: Colors.grey[300],
+                        ),
+                      ),
+                      onPressed: () async {
                         print("This is index: $index");
                         print("listOfDbuThreads is null? ${listOfDbuThreads == null}");
                         print("I clicked on a thread");
@@ -200,42 +208,43 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                         //print("theDbuThreadRepliesSorted: ${sortedList}");
 
                         /*
-                      if(theDbuThreadReplies.length >= 2){
-                      theDbuThreadReplies.sort((r1, r2){
-                        print("r1 and r2: ${r1}, ${r2}");
-                        if(r1["time"].isBefore(r2["time"]) && !(r2["time"].isBefore(r1["time"]))){
-                          return 1;
-                        }
-                        else if(r2["time"].isBefore(r1["time"]) && !(r1["time"].isBefore(r2["time"]))){
-                          return -1;
-                        }
-                        return r1["time"].compareTo(r2["time"]);
-                      });
-                      }
-                      else{
-                        print("You need at least two elements in theDbuThreadReplies! ${theDbuThreadReplies.length}");
-                      }
+                                if(theDbuThreadReplies.length >= 2){
+                                theDbuThreadReplies.sort((r1, r2){
+                                  print("r1 and r2: ${r1}, ${r2}");
+                                  if(r1["time"].isBefore(r2["time"]) && !(r2["time"].isBefore(r1["time"]))){
+                                    return 1;
+                                  }
+                                  else if(r2["time"].isBefore(r1["time"]) && !(r1["time"].isBefore(r2["time"]))){
+                                    return -1;
+                                  }
+                                  return r1["time"].compareTo(r2["time"]);
+                                });
+                                }
+                                else{
+                                  print("You need at least two elements in theDbuThreadReplies! ${theDbuThreadReplies.length}");
+                                }
 
-                      if(theDbuThreadReplies.length >= 2){
-                        print("theDbuThreadReplies: $theDbuThreadReplies");
-                        var i = theDbuThreadReplies.sort((r1, r2) => r1["time"].toString().compareTo(r2["time"].toString()));
-                        print("Value of i: $i");
-                      }
-                      else{
-                        print("theDbuThreadReplies: $theDbuThreadReplies");
-                        //print("theDbuThreadReplies[0][time]: ${theDbuThreadReplies[0]["time"]}");
-                      }*/
+                                if(theDbuThreadReplies.length >= 2){
+                                  print("theDbuThreadReplies: $theDbuThreadReplies");
+                                  var i = theDbuThreadReplies.sort((r1, r2) => r1["time"].toString().compareTo(r2["time"].toString()));
+                                  print("Value of i: $i");
+                                }
+                                else{
+                                  print("theDbuThreadReplies: $theDbuThreadReplies");
+                                  //print("theDbuThreadReplies[0][time]: ${theDbuThreadReplies[0]["time"]}");
+                                }*/
 
                         //print(theDbuThreadReplies[0]["threadNumber"]);
                         //print(theDbuThreadReplies.where((sr) => sr.replyContent == "Four!"));
                         print("Number of theDbuThreadReplies: ${theDbuThreadReplies.length}");
                         //}
                         /*await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3])).get().then((num){
-                        discussionBoardUpdatesThreadId = num.docs.first.data()["threadId"];
-                      });*/
+                                  discussionBoardUpdatesThreadId = num.docs.first.data()["threadId"];
+                                });*/
                         //print("This is discussionBoardUpdatesThreadId: ${discussionBoardUpdatesThreadId}");
                         Navigator.push(context, MaterialPageRoute(builder: (context) => discussionBoardUpdatesThreadsPage()));//myIndexPlace = index;
                       }
+                    ),
                   ),
                 ],
               );
@@ -264,17 +273,24 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
             child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-            height: 30,
-            width: 120,
             margin: EdgeInsets.only(left: 250.0),
             alignment: Alignment.center,
-            child: InkWell(
-              child: Ink(
-                color: Colors.black,
-                padding: EdgeInsets.all(5.0),
-                child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
               ),
-              onTap: (){
+              child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                  height: 30,
+                  width: 120,
+                  //margin: EdgeInsets.only(left: 250.0),
+                  //alignment: Alignment.center,
+                ),
+              ),
+              onPressed: (){
                 print(discussionBoardUpdatesBool);
                 discussionBoardUpdatesBool = true;
                 print(discussionBoardUpdatesBool);

@@ -212,7 +212,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                       alignment: Alignment.center,
                       //margin: EdgeInsets.only(left: 200.0),
                       padding: EdgeInsets.all(5.0),
-                      child: Text("Reply to Thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+                      child: Text("Reply to Thread", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                     ),
                   ),
                 ),

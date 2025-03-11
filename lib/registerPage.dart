@@ -306,7 +306,7 @@ class registerPageState extends State<registerPage>{
               child: InkWell(
                 child: Ink(
                   padding: EdgeInsets.all(5.0),
-                  child: Text("Sign Up for Star Expedition", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),
+                  child: Text("Sign Up for Star Expedition", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),
                   ),
                 ),
                 onPressed: () async{

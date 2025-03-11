@@ -221,13 +221,18 @@ class forgottenPasswordState extends State<forgottenPassword>{
             ),
           ),
           Center(
-            child: InkWell(
-              child: Ink(
-                color: Colors.black,
-                padding: EdgeInsets.all(5.0),
-                child: Text("Submit", style: TextStyle(color: Colors.white)),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
               ),
-              onTap: () async{
+              child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                ),
+              ),
+              onPressed: () async{
                 print("Pressed");
                 usersMessage = await dialogMessageForgottenPassword([myUsernameController.text, myEmailController.text]);
 
@@ -380,13 +385,18 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
             ),
           ),
           Center(
-            child: InkWell(
-              child: Ink(
-                color: Colors.black,
-                padding: EdgeInsets.all(5.0),
-                child: Text("Submit", style: TextStyle(color: Colors.white)),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
               ),
-              onTap: (){
+              child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                ),
+              ),
+              onPressed: (){
                 //Go to "changing password" screen
                 usersMessage = dialogMessageForgottenPasswordCode(numberController.text);
                 if(usersMessage.isEmpty){
@@ -588,13 +598,18 @@ class resetPasswordState extends State<resetPassword>{
             height: 5,
           ),
           Center(
-            child: InkWell(
-              child: Ink(
-                color: Colors.black,
-                padding: EdgeInsets.all(5.0),
-                child: Text("Reset Your Password", style: TextStyle(color: Colors.white)),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
               ),
-              onTap: () async{
+              child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("Reset Your Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                ),
+              ),
+              onPressed: () async{
                 usersMessage = await dialogMessageForgottenPassword([newPassController.text, confirmNewPassController.text]);
                 if(usersMessage.isEmpty){
                   showDialog(

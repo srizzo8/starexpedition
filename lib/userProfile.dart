@@ -251,7 +251,7 @@ class editingMyUserProfile extends StatelessWidget{
                 child: Ink(
                   color: Colors.black,
                   padding: EdgeInsets.all(5.0),
-                  child: Text("Update Profile", style: TextStyle(color: Colors.white)),
+                  child: Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
               onPressed: () async{

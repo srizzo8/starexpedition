@@ -68,7 +68,7 @@ class settingsPageState extends State<settingsPage>{
             ),
             child: InkWell(
               child: Ink(
-                child: Text("Change Password"),
+                child: Text("Change Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
               ),
             ),
             onPressed: (){
@@ -83,7 +83,7 @@ class settingsPageState extends State<settingsPage>{
             ),
             child: InkWell(
               child: Ink(
-                child: Text("Change Email Address"),
+                child: Text("Change Email Address", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
               ),
             ),
             onPressed: (){
@@ -98,7 +98,7 @@ class settingsPageState extends State<settingsPage>{
             ),
             child: InkWell(
               child: Ink(
-                child: Text("Update Profile"),
+                child: Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
               ),
             ),
             onPressed: () async{
@@ -272,7 +272,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                 child: Ink(
                   color: Colors.black,
                   padding: EdgeInsets.all(5.0),
-                  child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white)),
+                  child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
               onPressed: () async{
@@ -584,7 +584,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                 child: Ink(
                   color: Colors.black,
                   padding: EdgeInsets.all(5.0),
-                  child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white)),
+                  child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
                 onPressed: () async{

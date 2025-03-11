@@ -102,7 +102,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                             color: Colors.grey[300],
                             child: Container(
                               alignment: Alignment.center,
-                              child: Text(subforumList[index], textAlign: TextAlign.center, style: TextStyle(color: Colors.black)),
+                              child: Text(subforumList[index], textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
                             ),
                           ),
                         ),

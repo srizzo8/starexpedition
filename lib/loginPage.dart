@@ -134,7 +134,7 @@ class loginPageState extends State<loginPage>{
                 child: InkWell(
                   child: Ink(
                     padding: EdgeInsets.all(5.0),
-                    child: Text("Log in", style: TextStyle(color: Colors.white)),// style: TextStyle(fontSize: 12.0)), //style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                    child: Text("Log in", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),// style: TextStyle(fontSize: 12.0)), //style: TextStyle(fontSize: 14.0, color: Colors.white)),
                   ),
                 ),
                 onPressed: () async{
@@ -345,7 +345,7 @@ class loginPageState extends State<loginPage>{
                   //color: Colors.black,
                   padding: EdgeInsets.all(5.0),
                   //height: 20,
-                  child: Text("Forgotten Password", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
+                  child: Text("Forgotten Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                 ),
                 /*onPressed: () async{
                   Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPassword.forgottenPassword()));
@@ -376,7 +376,7 @@ class loginPageState extends State<loginPage>{
                   color: Colors.black,
                   padding: EdgeInsets.all(5.0),
                   //height: 20,
-                  child: Text("Sign Up", style: TextStyle(color: Colors.white)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
+                  child: Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                 ),
               ),
               onPressed: () async{
