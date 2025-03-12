@@ -115,34 +115,42 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
                   Container(
                     height: 10,
                   ),
-                  InkWell(
-                      child: Ink(
-                        child: Text.rich(
-                          TextSpan(
-                            text: "${mySublistsFas[theCurrentPageFas][index]["threadTitle"].toString()}\nBy: ",
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: "${mySublistsFas[theCurrentPageFas][index]["poster"].toString()}",
-                                  recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                    fasClickedOnUser = true,
-                                    fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFas[theCurrentPageFas][index]["poster"].toString().toLowerCase()).get(),
-                                    fasNameData.docs.forEach((person){
-                                      theUsersData = person.data();
-                                    }),
-                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                  }
-                              ),
-                              TextSpan(
-                                text: " ",
-                              ),
-                            ],
-                          ),
-                        ),
-                        height: 30,
-                        width: 360,
-                        color: Colors.grey[300],
+                  Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.grey[300],
                       ),
-                      onTap: () async{
+                      child: InkWell(
+                          child: Ink(
+                            child: Text.rich(
+                              TextSpan(
+                                text: "${mySublistsFas[theCurrentPageFas][index]["threadTitle"].toString()}\nBy: ",
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text: "${mySublistsFas[theCurrentPageFas][index]["poster"].toString()}",
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                        fasClickedOnUser = true,
+                                        fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFas[theCurrentPageFas][index]["poster"].toString().toLowerCase()).get(),
+                                        fasNameData.docs.forEach((person){
+                                          theUsersData = person.data();
+                                        }),
+                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                      }
+                                  ),
+                                  TextSpan(
+                                    text: " ",
+                                  ),
+                                ],
+                              ),
+                            ),
+                            height: 30,
+                            width: 360,
+                            color: Colors.grey[300],
+                          ),
+                      ),
+                      onPressed: () async{
                         print("This is index: $index");
                         print("listOfFasThreads is null? ${listOfFasThreads == null}");
                         print("I clicked on a thread");
@@ -178,6 +186,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
 
                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => feedbackAndSuggestionsThreadsPage()));
                       }
+                    ),
                   ),
                 ],
               );
@@ -208,27 +217,30 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
           ),
           //InkWell(
           Container(
-            //color: Colors.black,
-            height: 30,
-            width: 130,
             margin: EdgeInsets.only(left: 250.0),
             alignment: Alignment.center,
-            child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
-                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
-                ),
-                onTap: (){
-                  print(fasBool);
-                  fasBool = true;
-                  print(fasBool);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
-                  print("I am going to write a new thread.");
-                }
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+              ),
+              child: InkWell(
+                  child: Ink(
+                    color: Colors.black,
+                    padding: EdgeInsets.all(5.0),
+                    child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                    height: 30,
+                    width: 120,
+                  ),
+              ),
+              onPressed: (){
+                print(fasBool);
+                fasBool = true;
+                print(fasBool);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+                print("I am going to write a new thread.");
+              }
             ),
           ),
-          //),
           Expanded(
             child: listOfFasThreads.length != 0? myPagesFas[theCurrentPageFas] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),
           ),

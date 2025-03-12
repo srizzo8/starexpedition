@@ -196,7 +196,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                 child: Ink(
                   color: Colors.black,
                   padding: EdgeInsets.all(5.0),
-                  child: Text("Rules for each subforum", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+                  child: Text("Rules for each subforum", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                 ),
               ),
               onPressed: (){

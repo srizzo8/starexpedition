@@ -146,11 +146,11 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                           child: Text.rich(
                             TextSpan(
                               text: "${mySublistsDbu[theCurrentPageDbu][index]["threadTitle"].toString()}\nBy: ",
-                              style: TextStyle(color: Colors.black),
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                               children: <TextSpan>[
                                 TextSpan(
                                   text: "${mySublistsDbu[theCurrentPageDbu][index]["poster"].toString()}",
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                   recognizer: TapGestureRecognizer()..onTap = () async =>{
                                   dbuClickedOnUser = true,
                                   nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase()).get(),

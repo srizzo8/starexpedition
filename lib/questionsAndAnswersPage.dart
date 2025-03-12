@@ -110,72 +110,81 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                     Container(
                       height: 10,
                     ),
-                    InkWell(
-                        child: Ink(
-                          //child: Text(discussionBoardPage.questionsAndAnswersThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString()),//Text(reversedQuestionsAndAnswersThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedQuestionsAndAnswersThreadsIterable.toList()[index][0]),
-                          child: Text.rich(
-                            TextSpan(
-                              text: "${mySublistsQaa[theCurrentPageQaa][index]["threadTitle"].toString()}\nBy: ",
-                              children: <TextSpan>[
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.grey[300],
+                        ),
+                        child: InkWell(
+                            child: Ink(
+                              //child: Text(discussionBoardPage.questionsAndAnswersThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.questionsAndAnswersThreads[index]["poster"].toString()),//Text(reversedQuestionsAndAnswersThreadsIterable.toList()[index][1] + "\n" + "By: " + reversedQuestionsAndAnswersThreadsIterable.toList()[index][0]),
+                              child: Text.rich(
                                 TextSpan(
-                                    text: "${mySublistsQaa[theCurrentPageQaa][index]["poster"].toString()}",
-                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                      qaaClickedOnUser = true,
-                                      qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsQaa[theCurrentPageQaa][index]["poster"].toString().toLowerCase()).get(),
-                                      qaaNameData.docs.forEach((person){
-                                        theUsersData = person.data();
-                                      }),
-                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                    }
+                                  text: "${mySublistsQaa[theCurrentPageQaa][index]["threadTitle"].toString()}\nBy: ",
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: "${mySublistsQaa[theCurrentPageQaa][index]["poster"].toString()}",
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                          qaaClickedOnUser = true,
+                                          qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsQaa[theCurrentPageQaa][index]["poster"].toString().toLowerCase()).get(),
+                                          qaaNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
+                                    ),
+                                    TextSpan(
+                                      text: " ",
+                                    ),
+                                  ],
                                 ),
-                                TextSpan(
-                                  text: " ",
-                                ),
-                              ],
+                              ),
+                              height: 30,
+                              width: 360,
+                              color: Colors.grey[300],
                             ),
                           ),
-                          height: 30,
-                          width: 360,
-                          color: Colors.grey[300],
-                        ),
-                        onTap: () async {
-                          print("This is index: $index");
-                          print("listOfQaaThreads is null? ${listOfQaaThreads == null}");
-                          print("I clicked on a thread");
+                          onPressed: () async {
+                            print("This is index: $index");
+                            print("listOfQaaThreads is null? ${listOfQaaThreads == null}");
+                            print("I clicked on a thread");
 
-                          myIndexPlaceQaa = index;
-                          myLocation = theCurrentPageQaa;
+                            myIndexPlaceQaa = index;
+                            myLocation = theCurrentPageQaa;
 
-                          threadAuthorQaa = mySublistsQaa[theCurrentPageQaa][index]["poster"].toString();
-                          threadTitleQaa = mySublistsQaa[theCurrentPageQaa][index]["threadTitle"].toString();
-                          threadContentQaa = mySublistsQaa[theCurrentPageQaa][index]["threadContent"].toString();
-                          threadID = mySublistsQaa[theCurrentPageQaa][index]["threadId"].toString();
+                            threadAuthorQaa = mySublistsQaa[theCurrentPageQaa][index]["poster"].toString();
+                            threadTitleQaa = mySublistsQaa[theCurrentPageQaa][index]["threadTitle"].toString();
+                            threadContentQaa = mySublistsQaa[theCurrentPageQaa][index]["threadContent"].toString();
+                            threadID = mySublistsQaa[theCurrentPageQaa][index]["threadId"].toString();
 
-                          print(discussionBoardPage.questionsAndAnswersThreads![index]);
-                          print("${threadAuthorQaa} + ${threadTitleQaa} + ${threadContentQaa} + ${threadID}");
-                          print("context: ${context}");
-                          await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                            myDocQaa = d.docs.first.id;
-                            print(myDocQaa);
-                          });
+                            print(discussionBoardPage.questionsAndAnswersThreads![index]);
+                            print("${threadAuthorQaa} + ${threadTitleQaa} + ${threadContentQaa} + ${threadID}");
+                            print("context: ${context}");
+                            await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                              myDocQaa = d.docs.first.id;
+                              print(myDocQaa);
+                            });
 
-                          await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies");
+                            await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies");
 
-                          QuerySnapshot qaaRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").get();
-                          theQaaThreadReplies = qaaRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                            QuerySnapshot qaaRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").get();
+                            theQaaThreadReplies = qaaRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
 
-                          print(theQaaThreadReplies.runtimeType);
-                          //print(theQaaThreadReplies[0]["time"].toDate().runtimeType);
+                            print(theQaaThreadReplies.runtimeType);
+                            //print(theQaaThreadReplies[0]["time"].toDate().runtimeType);
 
-                          print(DateTime.now().runtimeType);
+                            print(DateTime.now().runtimeType);
 
-                          (theQaaThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
+                            (theQaaThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
 
-                          print("Number of theQaaThreadReplies: ${theQaaThreadReplies.length}");
-                          //}
+                            print("Number of theQaaThreadReplies: ${theQaaThreadReplies.length}");
+                            //}
 
-                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => questionsAndAnswersThreadsPage()));
-                        }
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => questionsAndAnswersThreadsPage()));
+                          }
+                      ),
                     ),
                   ],
                 );
@@ -205,17 +214,22 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
             child: Text("Questions and Answers Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-              height: 30,
-              width: 120,
               margin: EdgeInsets.only(left: 250.0),
               alignment: Alignment.center,
-              child: InkWell(
-                child: Ink(
-                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
-                  padding: EdgeInsets.all(5.0),
-                  color: Colors.black,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
                 ),
-                onTap: (){
+                child: InkWell(
+                  child: Ink(
+                    color: Colors.black,
+                    padding: EdgeInsets.all(5.0),
+                    child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                    height: 30,
+                    width: 120,
+                  ),
+                ),
+                onPressed: (){
                   print(questionsAndAnswersBool);
                   questionsAndAnswersBool = true;
                   print(questionsAndAnswersBool);

@@ -132,35 +132,43 @@ class projectsPageState extends State<projectsPage>{
                     Container(
                       height: 10,
                     ),
-                    InkWell(
-                        child: Ink(
-                          //child: Text(discussionBoardPage.projectsThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.projectsThreads[index]["poster"].toString()),
-                          child: Text.rich(
-                            TextSpan(
-                              text: "${mySublistsProjects[theCurrentPage][index]["threadTitle"].toString()}\nBy: ",//"${discussionBoardPage.projectsThreads[index]["threadTitle"].toString()}\nBy: ",
-                              children: <TextSpan>[
-                                TextSpan(
-                                    text: "${mySublistsProjects[theCurrentPage][index]["poster"].toString()}",//"${discussionBoardPage.projectsThreads[index]["poster"].toString()}",
-                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                      projectsClickedOnUser = true,
-                                      projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjects[theCurrentPage][index]["poster"].toString().toLowerCase()).get(),
-                                      projectsNameData.docs.forEach((person){
-                                        theUsersData = person.data();
-                                      }),
-                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                    }
-                                ),
-                                TextSpan(
-                                  text: " ",
-                                ),
-                              ],
-                            ),
-                          ),
-                          height: 30,
-                          width: 360,
-                          color: Colors.grey[300],
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.grey[300],
                         ),
-                        onTap: () async{
+                        child: InkWell(
+                          child: Ink(
+                            //child: Text(discussionBoardPage.projectsThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.projectsThreads[index]["poster"].toString()),
+                            child: Text.rich(
+                              TextSpan(
+                                text: "${mySublistsProjects[theCurrentPage][index]["threadTitle"].toString()}\nBy: ",//"${discussionBoardPage.projectsThreads[index]["threadTitle"].toString()}\nBy: ",
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text: "${mySublistsProjects[theCurrentPage][index]["poster"].toString()}",//"${discussionBoardPage.projectsThreads[index]["poster"].toString()}",
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                        projectsClickedOnUser = true,
+                                        projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjects[theCurrentPage][index]["poster"].toString().toLowerCase()).get(),
+                                        projectsNameData.docs.forEach((person){
+                                          theUsersData = person.data();
+                                        }),
+                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                      }
+                                  ),
+                                  TextSpan(
+                                    text: " ",
+                                  ),
+                                ],
+                              ),
+                            ),
+                            height: 30,
+                            width: 360,
+                            color: Colors.grey[300],
+                          ),
+                        ),
+                        onPressed: () async{
                           print("This is index: $index");
                           print("listOfProjectsThreads is null? ${listOfProjectsThreads == null}");
                           print("I clicked on a thread");
@@ -197,10 +205,8 @@ class projectsPageState extends State<projectsPage>{
                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => projectsThreadContent()));
                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => projectsThreadsPage()));
                         }
+                      ),
                     ),
-                    /*Expanded(
-                        child: Text("${myPages[theCurrentPage]}"),
-                      ),*/
                   ],
                 );
               }
@@ -230,24 +236,29 @@ class projectsPageState extends State<projectsPage>{
             child: Text("Projects Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-              height: 30,
-              width: 120,
-              margin: EdgeInsets.only(left: 250.0),
-              alignment: Alignment.center,
+            margin: EdgeInsets.only(left: 250.0),
+            alignment: Alignment.center,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+              ),
               child: InkWell(
                 child: Ink(
-                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                   padding: EdgeInsets.all(5.0),
                   color: Colors.black,
+                  height: 30,
+                  width: 120,
                 ),
-                onTap: (){
-                   print(projectsBool);
-                   projectsBool = true;
-                   print(projectsBool);
-                   Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
-                   print("I am going to write a new thread.");
-                }
               ),
+              onPressed: (){
+                print(projectsBool);
+                projectsBool = true;
+                print(projectsBool);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+                print("I am going to write a new thread.");
+              }
+            ),
           ),
           Expanded(
             child: listOfProjectsThreads.length != 0? myPages[theCurrentPage] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),//myPages[theCurrentPage],

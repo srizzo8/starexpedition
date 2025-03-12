@@ -110,35 +110,43 @@ class technologiesPageState extends State<technologiesPage>{
                     Container(
                       height: 10,
                     ),
-                    InkWell(
-                        child: Ink(
-                          //child: Text(discussionBoardPage.technologiesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.technologiesThreads[index]["poster"].toString()),
-                          child: Text.rich(
-                            TextSpan(
-                              text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["threadTitle"].toString()}\nBy: ",
-                              children: <TextSpan>[
-                                TextSpan(
-                                    text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString()}",
-                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                      technologiesClickedOnUser = true,
-                                      technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString().toLowerCase()).get(),
-                                      technologiesNameData.docs.forEach((person){
-                                        theUsersData = person.data();
-                                      }),
-                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                    }
-                                ),
-                                TextSpan(
-                                  text: " ",
-                                ),
-                              ],
-                            ),
-                          ),
-                          height: 30,
-                          width: 360,
-                          color: Colors.grey[300],
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.grey[300],
                         ),
-                        onTap: () async{
+                        child: InkWell(
+                          child: Ink(
+                            //child: Text(discussionBoardPage.technologiesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.technologiesThreads[index]["poster"].toString()),
+                            child: Text.rich(
+                              TextSpan(
+                                text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["threadTitle"].toString()}\nBy: ",
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString()}",
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                        technologiesClickedOnUser = true,
+                                        technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString().toLowerCase()).get(),
+                                        technologiesNameData.docs.forEach((person){
+                                          theUsersData = person.data();
+                                        }),
+                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                      }
+                                  ),
+                                  TextSpan(
+                                    text: " ",
+                                  ),
+                                ],
+                              ),
+                            ),
+                            height: 30,
+                            width: 360,
+                            color: Colors.grey[300],
+                          ),
+                        ),
+                        onPressed: () async{
                           print("This is index: $index");
                           print("listOfTechnologiesThreads is null? ${listOfTechnologiesThreads == null}");
                           print("I clicked on a thread");
@@ -174,6 +182,7 @@ class technologiesPageState extends State<technologiesPage>{
 
                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => technologiesThreadsPage()));
                         }
+                      ),
                     ),
                   ],
                 );
@@ -203,24 +212,29 @@ class technologiesPageState extends State<technologiesPage>{
             child: Text("Technologies Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-              height: 30,
-              width: 120,
-              margin: EdgeInsets.only(left: 250.0),
-              alignment: Alignment.center,
+            margin: EdgeInsets.only(left: 250.0),
+            alignment: Alignment.center,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+              ),
               child: InkWell(
                 child: Ink(
-                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
+                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                   padding: EdgeInsets.all(5.0),
                   color: Colors.black,
+                  height: 30,
+                  width: 120,
                 ),
-                onTap: (){
-                  print(technologiesBool);
-                  technologiesBool = true;
-                  print(technologiesBool);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
-                  print("I am going to write a new thread.");
-                }
               ),
+              onPressed: (){
+                print(technologiesBool);
+                technologiesBool = true;
+                print(technologiesBool);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+                print("I am going to write a new thread.");
+              }
+            ),
           ),
           Expanded(
             child: listOfTechnologiesThreads.length != 0? myPagesTechnologies[theCurrentPageTechnologies] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),
