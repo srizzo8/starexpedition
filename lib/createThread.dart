@@ -120,6 +120,24 @@ class createThreadState extends State<createThread>{
                 actions: [
                   TextButton(
                     onPressed: () => {
+                      if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == false){
+                        discussionBoardUpdatesPage.discussionBoardUpdatesBool = false,
+                      }
+                      else if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == true && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == false){
+                        questionsAndAnswersPage.questionsAndAnswersBool = false,
+                      }
+                      else if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == true && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == false){
+                        technologiesPage.technologiesBool = false,
+                      }
+                      else if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == true && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == false){
+                        projectsPage.projectsBool = false,
+                      }
+                      else if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == true && feedbackAndSuggestionsPage.fasBool == false){
+                        newDiscoveriesPage.newDiscoveriesBool = false,
+                      }
+                      else if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == false && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == true){
+                        feedbackAndSuggestionsPage.fasBool = false,
+                      },
                       Navigator.pop(context),
                       Navigator.pop(context),
                     },
@@ -307,6 +325,7 @@ class createThreadState extends State<createThread>{
                 onPressed: () async{
                   //print('Posting the thread');
                   print(discussionBoardUpdatesPage.discussionBoardUpdatesBool);
+                  print(technologiesPage.technologiesBool);
                   if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
                     usernameController.text = theLoginPage.myUsername;
                   }
