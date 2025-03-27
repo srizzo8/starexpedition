@@ -230,7 +230,7 @@ class projectsPageState extends State<projectsPage>{
       body: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: 10,
           ),
           Container(
             child: Text("Projects Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
@@ -410,15 +410,22 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                       Column(
                           children: <Widget>[
                             Container(
-                              height: 5,
+                              height: 10,
                             ),
-                            Container(
-                              //child: Text("Reply to: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: "Reply to: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
-                                  children: <TextSpan>[
-                                    TextSpan(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.blueGrey[300],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Container(
+                                //child: Text("Reply to: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Reply to: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                         recognizer: TapGestureRecognizer()..onTap = () async =>{
                                           projectsClickedOnUser = true,
@@ -428,23 +435,35 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                           }),
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                         }
-                                    ),
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                  ],
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                color: Colors.blueGrey[300],
+                                width: 320,
                               ),
-                              color: Colors.blueGrey[300],
-                              width: 360,
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
-                            Container(
-                              //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: "Posted on: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
-                                  children: <TextSpan>[
-                                    TextSpan(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[300],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Container(
+                                //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Posted on: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
                                         recognizer: TapGestureRecognizer()..onTap = () async =>{
                                           projectsClickedOnUser = true,
@@ -454,24 +473,35 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                           }),
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                         }
-                                    ),
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text: "\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}",
-                                    ),
-                                  ],
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                color: Colors.grey[300],
+                                width: 320,
                               ),
-                              color: Colors.grey[300],
-                              width: 360,
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
-                            InkWell(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[500],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: InkWell(
                                 child: Ink(
                                   child: Text("Reply"),
                                   color: Colors.grey[500],
-                                  width: 360,
+                                  width: 320,
                                 ),
                                 onTap: () async{
                                   replyToReplyTimeP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["time"];
@@ -513,20 +543,31 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                   projectsReplyingToReplyBool = true;
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                                 }
+                              ),
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
                           ]
                       ): Column(
                           children: <Widget>[
                             Container(
-                              height: 5,
+                              height: 10,
                             ),
-                            Container(
-                              //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: "Posted on: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
-                                  children: <TextSpan>[
-                                    TextSpan(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[300],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Container(
+                                //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Posted on: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
                                         recognizer: TapGestureRecognizer()..onTap = () async =>{
                                           projectsClickedOnUser = true,
@@ -536,24 +577,35 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                           }),
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                         }
-                                    ),
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text: "\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}",
-                                    ),
-                                  ],
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                color: Colors.grey[300],
+                                width: 320,
                               ),
-                              color: Colors.grey[300],
-                              width: 360,
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
-                            InkWell(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[500],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: InkWell(
                                 child: Ink(
                                   child: Text("Reply"),
                                   color: Colors.grey[500],
-                                  width: 360,
+                                  width: 320,
                                 ),
                                 onTap: () async{
                                   replyToReplyTimeP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["time"];
@@ -598,6 +650,10 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                   projectsReplyingToReplyBool = true;
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                                 }
+                              ),
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
                           ]
                       ),
@@ -623,39 +679,60 @@ class projectsThreadContent extends State<projectsThreadsPage>{
       body: SingleChildScrollView(
         child: Wrap(
         children: <Widget>[
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              //child: Text("Thread title: " + threadTitleP + "\n" + "Posted by: " + threadAuthorP + "\n" + threadContentP),
-              child: Text.rich(
-                TextSpan(
-                  text: "Thread title: ${threadTitleP}\nPosted by: ",
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: "${threadAuthorP}",
-                      recognizer: TapGestureRecognizer()..onTap = () async =>{
-                        projectsClickedOnUser = true,
-                        projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorP.toLowerCase()).get(),
-                        projectsNameData.docs.forEach((person){
-                          theUsersData = person.data();
-                        }),
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                      }
-                    ),
-                    TextSpan(
-                      text: " ",
-                    ),
-                    TextSpan(
-                      text: "\n${threadContentP}",
-                    ),
-                  ],
-                )
-              ),
-              color: Colors.grey[300],
-              alignment: Alignment.topLeft,
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.grey[300],
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                child: Padding(
+                  padding: EdgeInsets.all(10.0),
+                  //child: Text("Thread title: " + threadTitleP + "\n" + "Posted by: " + threadAuthorP + "\n" + threadContentP),
+                  child: Text.rich(
+                    TextSpan(
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                      text: "Thread title: ${threadTitleP}\nPosted by: ",
+                      children: <TextSpan>[
+                        TextSpan(
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          text: "${threadAuthorP}",
+                          recognizer: TapGestureRecognizer()..onTap = () async =>{
+                            projectsClickedOnUser = true,
+                            projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorP.toLowerCase()).get(),
+                            projectsNameData.docs.forEach((person){
+                              theUsersData = person.data();
+                            }),
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                          }
+                        ),
+                        TextSpan(
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          text: " ",
+                        ),
+                        TextSpan(
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          text: "\n${threadContentP}",
+                        ),
+                      ],
+                    )
+                  ),
+                ),
+                color: Colors.grey[300],
+                alignment: Alignment.topLeft,
+              ),
+            ),
+            onPressed: (){
+              //Does nothing
+            }
           ),
-          InkWell(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.grey[500],
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: InkWell(
               child: Ink(
                 color: Colors.grey[500],
                 height: 20,
@@ -672,6 +749,10 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                 print('Replying to the thread');
               }
+            ),
+            onPressed: (){
+              //Does nothing
+            }
           ),
           Center(
             child: listOfProjectsThreadReplies.length != 0? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Text("There are no replies to this thread yet. Be the first to reply!"),

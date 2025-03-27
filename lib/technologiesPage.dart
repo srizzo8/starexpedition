@@ -290,125 +290,166 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                     children: <Widget>[
                       mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replyContent"] != null && mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replier"] != null?
                       Column(
-                          children: <Widget>[
-                            Container(
-                              height: 5,
+                        children: <Widget>[
+                          Container(
+                            height: 10,
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blueGrey[300],
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
-                            Container(
+                            child: Container(
                               //child: Text("Reply to: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
                               child: Text.rich(
-                                  TextSpan(
-                                    text: "Reply to: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: "${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
-                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                            technologiesClickedOnUser = true,
-                                            technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
-                                            technologiesNameData.docs.forEach((person){
-                                              theUsersData = person.data();
-                                            }),
-                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          }
-                                      ),
-                                      TextSpan(
-                                        text: " ",
-                                      ),
-                                    ],
-                                  )
+                                TextSpan(
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                  text: "Reply to: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: "${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                        technologiesClickedOnUser = true,
+                                        technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                        technologiesNameData.docs.forEach((person){
+                                          theUsersData = person.data();
+                                        }),
+                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                      }
+                                    ),
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: " ",
+                                    ),
+                                  ],
+                                )
                               ),
                               color: Colors.blueGrey[300],
-                              width: 360,
+                              width: 320,
                             ),
-                            Container(
+                            onPressed: (){
+                              //Does nothing
+                            }
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey[300],
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Container(
                               //child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
                               child: Text.rich(
                                 TextSpan(
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                   text: "Posted on: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
                                   children: <TextSpan>[
                                     TextSpan(
-                                        text: "${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString()}",
-                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                          technologiesClickedOnUser = true,
-                                          technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                          technologiesNameData.docs.forEach((person){
-                                            theUsersData = person.data();
-                                          }),
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        }
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: "${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString()}",
+                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                        technologiesClickedOnUser = true,
+                                        technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                        technologiesNameData.docs.forEach((person){
+                                          theUsersData = person.data();
+                                        }),
+                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                      }
                                     ),
                                     TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                       text: " ",
                                     ),
                                     TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                       text: "\n${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replyContent"].toString()}",
                                     ),
                                   ],
                                 ),
                               ),
                               color: Colors.grey[300],
-                              width: 360,
+                              width: 320,
                             ),
-                            InkWell(
-                                child: Ink(
-                                  child: Text("Reply"),
-                                  color: Colors.grey[500],
-                                  width: 360,
-                                ),
-                                onTap: () async{
-                                  replyToReplyTimeT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["time"];
-                                  replyToReplyContentT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["replyContent"].toString();
-                                  replyToReplyPosterT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["replier"].toString();
+                            onPressed: (){
+                              //Does nothing
+                            }
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey[500],
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: InkWell(
+                              child: Ink(
+                                child: Text("Reply"),
+                                color: Colors.grey[500],
+                                width: 320,
+                              ),
+                              onTap: () async{
+                                replyToReplyTimeT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["time"];
+                                replyToReplyContentT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["replyContent"].toString();
+                                replyToReplyPosterT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["replier"].toString();
 
-                                  print("This is replyToReplyTime: $replyToReplyTimeT");
+                                print("This is replyToReplyTime: $replyToReplyTimeT");
 
-                                  await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                    myDocT = d.docs.first.id;
-                                    print(myDocT);
-                                  });
+                                await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                  myDocT = d.docs.first.id;
+                                  print(myDocT);
+                                });
 
-                                  await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").where("time", isEqualTo: replyToReplyTimeT).get().then((rd) {
-                                    replyToReplyDocT = rd.docs.first.id;
-                                    print(replyToReplyDocT);
-                                  });
-
-                                  print(theTThreadReplies);
+                                await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").where("time", isEqualTo: replyToReplyTimeT).get().then((rd) {
+                                  replyToReplyDocT = rd.docs.first.id;
                                   print(replyToReplyDocT);
+                                });
 
-                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").doc(replyToReplyDocT).get();
-                                  print(ds.data());
-                                  print(ds.data().runtimeType);
-                                  print(mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeT));
+                                print(theTThreadReplies);
+                                print(replyToReplyDocT);
 
-                                  myIndex = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeT);
-                                  myReplyToReplyT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][myIndex];
-                                  myReplyToReplyTMap = Map.from(myReplyToReplyT);
+                                DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").doc(replyToReplyDocT).get();
+                                print(ds.data());
+                                print(ds.data().runtimeType);
+                                print(mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeT));
 
-                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentT, replyToReplyPosterT, myReplyToReplyTMap];
-                                  tRepliesToReplies.add(tempReplyToReplyList);
+                                myIndex = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeT);
+                                myReplyToReplyT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][myIndex];
+                                myReplyToReplyTMap = Map.from(myReplyToReplyT);
 
-                                  print("myReplyToReplyTMap: ${myReplyToReplyTMap}");
-                                  print("myReplyToReplyT: ${myReplyToReplyT["replyContent"]}");
-                                  print("This is myIndex: $myIndex");
+                                List<dynamic> tempReplyToReplyList = [replyToReplyContentT, replyToReplyPosterT, myReplyToReplyTMap];
+                                tRepliesToReplies.add(tempReplyToReplyList);
 
-                                  technologiesReplyBool = true;
-                                  technologiesReplyingToReplyBool = true;
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                }
+                                print("myReplyToReplyTMap: ${myReplyToReplyTMap}");
+                                print("myReplyToReplyT: ${myReplyToReplyT["replyContent"]}");
+                                print("This is myIndex: $myIndex");
+
+                                technologiesReplyBool = true;
+                                technologiesReplyingToReplyBool = true;
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                              }
                             ),
-                          ]
+                            onPressed: (){
+                              //Does nothing
+                            }
+                          ),
+                        ]
                       ): Column(
                           children: <Widget>[
                             Container(
-                              height: 5,
+                              height: 10,
                             ),
-                            Container(
-                              //child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: "Posted on: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
-                                  children: <TextSpan>[
-                                    TextSpan(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[300],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Container(
+                                //child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Posted on: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: "${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString()}",
                                         recognizer: TapGestureRecognizer()..onTap = () async =>{
                                           technologiesClickedOnUser = true,
@@ -418,24 +459,35 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                           }),
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                         }
-                                    ),
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text: "\n${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replyContent"].toString()}",
-                                    ),
-                                  ],
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "\n${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                color: Colors.grey[300],
+                                width: 320,
                               ),
-                              color: Colors.grey[300],
-                              width: 360,
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
-                            InkWell(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[500],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: InkWell(
                                 child: Ink(
                                   child: Text("Reply"),
                                   color: Colors.grey[500],
-                                  width: 360,
+                                  width: 320,
                                 ),
                                 onTap: () async{
                                   replyToReplyTimeT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["time"];
@@ -480,6 +532,10 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                   technologiesReplyingToReplyBool = true;
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                                 }
+                              ),
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
                           ]
                       ),
@@ -506,39 +562,60 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
       body: SingleChildScrollView(
         child: Wrap(
         children: <Widget>[
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              //child: Text("Thread title: " + threadTitleT + "\n" + "Posted by: " + threadAuthorT + "\n" + threadContentT),
-              child: Text.rich(
-                TextSpan(
-                  text: "Thread title: ${threadTitleT}\nPosted by: ",
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: "${threadAuthorT}",
-                      recognizer: TapGestureRecognizer()..onTap = () async =>{
-                        technologiesClickedOnUser = true,
-                        technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorT.toLowerCase()).get(),
-                        technologiesNameData.docs.forEach((person){
-                          theUsersData = person.data();
-                        }),
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                      }
-                    ),
-                    TextSpan(
-                      text: " ",
-                    ),
-                    TextSpan(
-                      text: "\n${threadContentT}",
-                    ),
-                  ],
-                )
-              ),
-              color: Colors.grey[300],
-              alignment: Alignment.topLeft,
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.grey[300],
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                child: Padding(
+                  padding: EdgeInsets.all(10.0),
+                  //child: Text("Thread title: " + threadTitleT + "\n" + "Posted by: " + threadAuthorT + "\n" + threadContentT),
+                  child: Text.rich(
+                    TextSpan(
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                      text: "Thread title: ${threadTitleT}\nPosted by: ",
+                      children: <TextSpan>[
+                        TextSpan(
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          text: "${threadAuthorT}",
+                          recognizer: TapGestureRecognizer()..onTap = () async =>{
+                            technologiesClickedOnUser = true,
+                            technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorT.toLowerCase()).get(),
+                            technologiesNameData.docs.forEach((person){
+                              theUsersData = person.data();
+                            }),
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                          }
+                        ),
+                        TextSpan(
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          text: " ",
+                        ),
+                        TextSpan(
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          text: "\n${threadContentT}",
+                        ),
+                      ],
+                    )
+                  ),
+                ),
+                color: Colors.grey[300],
+                alignment: Alignment.topLeft,
+              ),
+            ),
+            onPressed: (){
+              //Does nothing
+            }
           ),
-          InkWell(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.grey[500],
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: InkWell(
               child: Ink(
                 color: Colors.grey[500],
                 height: 20,
@@ -556,6 +633,10 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                 //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                 print('Replying to the thread');
               }
+            ),
+            onPressed: (){
+              //Does nothing
+            }
           ),
           Center(
             child: listOfTechnologiesThreadReplies.length != 0? myPagesTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies] : Text("There are no replies to this thread yet. Be the first to reply!"),

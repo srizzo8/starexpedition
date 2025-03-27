@@ -121,34 +121,34 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
                         primary: Colors.grey[300],
                       ),
                       child: InkWell(
-                          child: Ink(
-                            child: Text.rich(
-                              TextSpan(
-                                text: "${mySublistsFas[theCurrentPageFas][index]["threadTitle"].toString()}\nBy: ",
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: "${mySublistsFas[theCurrentPageFas][index]["poster"].toString()}",
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                        fasClickedOnUser = true,
-                                        fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFas[theCurrentPageFas][index]["poster"].toString().toLowerCase()).get(),
-                                        fasNameData.docs.forEach((person){
-                                          theUsersData = person.data();
-                                        }),
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                      }
-                                  ),
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                ],
-                              ),
+                        child: Ink(
+                          child: Text.rich(
+                            TextSpan(
+                              text: "${mySublistsFas[theCurrentPageFas][index]["threadTitle"].toString()}\nBy: ",
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: "${mySublistsFas[theCurrentPageFas][index]["poster"].toString()}",
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                      fasClickedOnUser = true,
+                                      fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFas[theCurrentPageFas][index]["poster"].toString().toLowerCase()).get(),
+                                      fasNameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      }),
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    }
+                                ),
+                                TextSpan(
+                                  text: " ",
+                                ),
+                              ],
                             ),
-                            height: 30,
-                            width: 360,
-                            color: Colors.grey[300],
                           ),
+                          height: 30,
+                          width: 360,
+                          color: Colors.grey[300],
+                        ),
                       ),
                       onPressed: () async{
                         print("This is index: $index");
@@ -224,13 +224,13 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
                 primary: Colors.black,
               ),
               child: InkWell(
-                  child: Ink(
-                    color: Colors.black,
-                    padding: EdgeInsets.all(5.0),
-                    child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                    height: 30,
-                    width: 120,
-                  ),
+                child: Ink(
+                  color: Colors.black,
+                  padding: EdgeInsets.all(5.0),
+                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                  height: 30,
+                  width: 120,
+                ),
               ),
               onPressed: (){
                 print(fasBool);
@@ -245,13 +245,13 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
             child: listOfFasThreads.length != 0? myPagesFas[theCurrentPageFas] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),
           ),
           NumberPaginator(
-              height: 50,
-              numberPages: listOfFasThreads.length != 0? numberOfPagesFas : 1,
-              onPageChange: (myIndexFas){
-                setState((){
-                  theCurrentPageFas = myIndexFas;
-                });
-              }
+            height: 50,
+            numberPages: listOfFasThreads.length != 0? numberOfPagesFas : 1,
+            onPageChange: (myIndexFas){
+              setState((){
+                theCurrentPageFas = myIndexFas;
+              });
+            }
           ),
         ],
       ),
@@ -297,14 +297,21 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                     Column(
                         children: <Widget>[
                           Container(
-                            height: 5,
+                            height: 10,
                           ),
-                          Container(
-                            child: Text.rich(
-                              TextSpan(
-                                text: "Reply to: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
-                                children: <TextSpan>[
-                                  TextSpan(
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blueGrey[300],
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Container(
+                              child: Text.rich(
+                                TextSpan(
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                  text: "Reply to: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                       text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         fasClickedOnUser = true,
@@ -314,22 +321,34 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                         }),
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
-                                  ),
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                ],
+                                    ),
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: " ",
+                                    ),
+                                  ],
+                                ),
                               ),
+                              color: Colors.blueGrey[300],
+                              width: 320,
                             ),
-                            color: Colors.blueGrey[300],
-                            width: 360,
+                            onPressed: (){
+                              //Does nothing
+                            }
                           ),
-                          Container(
-                            child: Text.rich(
-                              TextSpan(
-                                text: "Posted on: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
-                                children: <TextSpan>[
-                                  TextSpan(
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey[300],
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Container(
+                              child: Text.rich(
+                                TextSpan(
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                  text: "Posted on: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                       text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         fasClickedOnUser = true,
@@ -339,24 +358,35 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                         }),
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
-                                  ),
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                  TextSpan(
-                                    text: "\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}",
-                                  ),
-                                ],
+                                    ),
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: "\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}",
+                                    ),
+                                  ],
+                                ),
                               ),
+                              color: Colors.grey[300],
+                              width: 320,
                             ),
-                            color: Colors.grey[300],
-                            width: 360,
+                            onPressed: (){
+                              //Does nothing
+                            }
                           ),
-                          InkWell(
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey[500],
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: InkWell(
                               child: Ink(
                                 child: Text("Reply"),
                                 color: Colors.grey[500],
-                                width: 360,
+                                width: 320,
                               ),
                               onTap: () async{
                                 replyToReplyTimeFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["time"];
@@ -398,19 +428,30 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                 fasReplyingToReplyBool = true;
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                               }
+                            ),
+                            onPressed: (){
+                              //Does nothing
+                            }
                           ),
                         ]
                     ): Column(
                         children: <Widget>[
                           Container(
-                            height: 5,
+                            height: 10,
                           ),
-                          Container(
-                            child: Text.rich(
-                              TextSpan(
-                                text: "Posted on: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
-                                children: <TextSpan>[
-                                  TextSpan(
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey[300],
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Container(
+                              child: Text.rich(
+                                TextSpan(
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                  text: "Posted on: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                       text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         fasClickedOnUser = true,
@@ -420,24 +461,35 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                         }),
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
-                                  ),
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                  TextSpan(
-                                    text: "\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}",
-                                  ),
-                                ],
+                                    ),
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: " ",
+                                    ),
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: "\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}",
+                                    ),
+                                  ],
+                                ),
                               ),
+                              color: Colors.grey[300],
+                              width: 320,
                             ),
-                            color: Colors.grey[300],
-                            width: 360,
+                            onPressed: (){
+                              //Does nothing
+                            }
                           ),
-                          InkWell(
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey[500],
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: InkWell(
                               child: Ink(
                                 child: Text("Reply"),
                                 color: Colors.grey[500],
-                                width: 360,
+                                width: 320,
                               ),
                               onTap: () async{
                                 replyToReplyTimeFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["time"];
@@ -482,6 +534,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                 fasReplyingToReplyBool = true;
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                               }
+                            ),
+                            onPressed: (){
+                              //Does nothing
+                            }
                           ),
                         ]
                     ),
@@ -508,38 +564,59 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
       body: SingleChildScrollView(
         child: Wrap(
           children: <Widget>[
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                child: Text.rich(
-                  TextSpan(
-                    text: "Thread title: ${threadTitleFas}\nPosted by: ",
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: "${threadAuthorFas}",
-                          recognizer: TapGestureRecognizer()..onTap = () async =>{
-                            fasClickedOnUser = true,
-                            fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorFas.toLowerCase()).get(),
-                            fasNameData.docs.forEach((person){
-                              theUsersData = person.data();
-                            }),
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                          }
-                      ),
-                      TextSpan(
-                        text: " ",
-                      ),
-                      TextSpan(
-                        text: "\n${threadContentFas}",
-                      )
-                    ],
-                  ),
-                ),
-                color: Colors.grey[300],
-                alignment: Alignment.topLeft,
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.grey[300],
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text.rich(
+                      TextSpan(
+                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                        text: "Thread title: ${threadTitleFas}\nPosted by: ",
+                        children: <TextSpan>[
+                          TextSpan(
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                            text: "${threadAuthorFas}",
+                            recognizer: TapGestureRecognizer()..onTap = () async =>{
+                              fasClickedOnUser = true,
+                              fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorFas.toLowerCase()).get(),
+                              fasNameData.docs.forEach((person){
+                                theUsersData = person.data();
+                              }),
+                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                            }
+                          ),
+                          TextSpan(
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                            text: " ",
+                          ),
+                          TextSpan(
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                            text: "\n${threadContentFas}",
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  color: Colors.grey[300],
+                  alignment: Alignment.topLeft,
+                ),
+              ),
+              onPressed: (){
+                //Does nothing
+              }
             ),
-            InkWell(
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.grey[500],
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: InkWell(
                 child: Ink(
                   color: Colors.grey[500],
                   height: 20,
@@ -556,6 +633,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                   print('Replying to the thread');
                 }
+              ),
+              onPressed: (){
+                //Does nothing
+              }
             ),
             Center(
               child: listOfFasThreadReplies.length != 0? myPagesFasThreadReplies[theCurrentPageFasThreadReplies] : Text("There are no replies to this thread yet. Be the first to reply!"),

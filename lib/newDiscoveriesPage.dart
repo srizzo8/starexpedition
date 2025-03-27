@@ -290,17 +290,24 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                     children: <Widget>[
                       mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replyContent"] != null && mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"] != null?
                       Column(
-                          children: <Widget>[
-                            Container(
-                              height: 5,
+                        children: <Widget>[
+                          Container(
+                            height: 10,
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blueGrey[300],
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
-                            Container(
-                              //child: Text("Reply to: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: "Reply to: ${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
-                                  children: <TextSpan>[
-                                    TextSpan(
+                            child: Container(
+                                //child: Text("Reply to: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Reply to: ${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                         recognizer: TapGestureRecognizer()..onTap = () async =>{
                                           ndClickedOnUser = true,
@@ -310,23 +317,35 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                           }),
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                         }
-                                    ),
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                  ],
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                color: Colors.blueGrey[300],
+                                width: 320,
                               ),
-                              color: Colors.blueGrey[300],
-                              width: 360,
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
-                            Container(
-                              //child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: "Posted on: ${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
-                                  children: <TextSpan>[
-                                    TextSpan(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[300],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Container(
+                                //child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Posted on: ${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString()}",
                                         recognizer: TapGestureRecognizer()..onTap = () async =>{
                                           ndClickedOnUser = true,
@@ -336,24 +355,35 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                           }),
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                         }
-                                    ),
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text: "\n${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()}",
-                                    ),
-                                  ],
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "\n${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                color: Colors.grey[300],
+                                width: 320,
                               ),
-                              color: Colors.grey[300],
-                              width: 360,
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
-                            InkWell(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[500],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: InkWell(
                                 child: Ink(
                                   child: Text("Reply"),
                                   color: Colors.grey[500],
-                                  width: 360,
+                                  width: 320,
                                 ),
                                 onTap: () async{
                                   replyToReplyTimeNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies]![index]["time"];
@@ -395,20 +425,31 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                   newDiscoveriesReplyingToReplyBool = true;
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                                 }
+                              ),
+                              onPressed: (){
+                                //Does nothibg
+                              }
                             ),
                           ]
                       ): Column(
                           children: <Widget>[
                             Container(
-                              height: 5,
+                              height: 10,
                             ),
-                            Container(
-                              //child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: "Posted on: ${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
-                                  children: <TextSpan>[
-                                    TextSpan(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[300],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Container(
+                                //child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Posted on: ${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString()}",
                                         recognizer: TapGestureRecognizer()..onTap = () async =>{
                                           ndClickedOnUser = true,
@@ -418,24 +459,35 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                           }),
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                         }
-                                    ),
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      text: "\n${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()}",
-                                    ),
-                                  ],
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "\n${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                color: Colors.grey[300],
+                                width: 320,
                               ),
-                              color: Colors.grey[300],
-                              width: 360,
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
-                            InkWell(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[500],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: InkWell(
                                 child: Ink(
                                   child: Text("Reply"),
                                   color: Colors.grey[500],
-                                  width: 360,
+                                  width: 320,
                                 ),
                                 onTap: () async{
                                   replyToReplyTimeNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies]![index]["time"];
@@ -480,6 +532,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                   newDiscoveriesReplyingToReplyBool = true;
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                                 }
+                              ),
+                              onPressed: (){
+                                //Does nothing
+                              }
                             ),
                           ]
                       ),
@@ -506,53 +562,78 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
       body: SingleChildScrollView(
         child: Wrap(
         children: <Widget>[
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              child: Text.rich(
-                TextSpan(
-                  text: "Thread title: ${threadTitleNd}\nPosted by: ",
-                  children: <TextSpan>[
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.grey[300],
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                child: Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text.rich(
                     TextSpan(
-                      text: "${threadAuthorNd}",
-                      recognizer: TapGestureRecognizer()..onTap = () async =>{
-                        ndClickedOnUser = true,
-                        ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorNd.toLowerCase()).get(),
-                        ndNameData.docs.forEach((person){
-                          theUsersData = person.data();
-                        }),
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                      }
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                      text: "Thread title: ${threadTitleNd}\nPosted by: ",
+                      children: <TextSpan>[
+                        TextSpan(
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          text: "${threadAuthorNd}",
+                          recognizer: TapGestureRecognizer()..onTap = () async =>{
+                            ndClickedOnUser = true,
+                            ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorNd.toLowerCase()).get(),
+                            ndNameData.docs.forEach((person){
+                              theUsersData = person.data();
+                            }),
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                          }
+                        ),
+                        TextSpan(
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          text: " ",
+                        ),
+                        TextSpan(
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          text: "\n${threadContentNd}",
+                        )
+                      ],
                     ),
-                    TextSpan(
-                      text: " ",
-                    ),
-                    TextSpan(
-                      text: "\n${threadContentNd}",
-                    )
-                  ],
+                  ),
+                ),
+                color: Colors.grey[300],
+                alignment: Alignment.topLeft,
+              ),
+            ),
+            onPressed: (){
+              //Does nothing
+            }
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.grey[500],
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: InkWell(
+              child: Ink(
+                color: Colors.grey[500],
+                height: 20,
+                child: Container(
+                  alignment: Alignment.topCenter,
+                  child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
-              color: Colors.grey[300],
-              alignment: Alignment.topLeft,
+              onTap: (){
+                newDiscoveriesReplyingToReplyBool = false;
+                newDiscoveriesReplyBool = true;
+                print(reversedNewDiscoveriesThreadsIterable.toList());
+                print(threadID);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                print('Replying to the thread');
+              }
             ),
-          ),
-          InkWell(
-            child: Ink(
-              color: Colors.grey[500],
-              height: 20,
-              child: Container(
-                alignment: Alignment.topCenter,
-                child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-            ),
-            onTap: (){
-              newDiscoveriesReplyingToReplyBool = false;
-              newDiscoveriesReplyBool = true;
-              print(reversedNewDiscoveriesThreadsIterable.toList());
-              print(threadID);
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-              print('Replying to the thread');
+            onPressed: (){
+              //Does nothing
             }
           ),
           Center(
