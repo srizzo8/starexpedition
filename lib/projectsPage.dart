@@ -499,7 +499,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                               ),
                               child: InkWell(
                                 child: Ink(
-                                  child: Text("Reply"),
+                                  child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                                   color: Colors.grey[500],
                                   width: 320,
                                 ),
@@ -603,7 +603,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                               ),
                               child: InkWell(
                                 child: Ink(
-                                  child: Text("Reply"),
+                                  child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                                   color: Colors.grey[500],
                                   width: 320,
                                 ),
@@ -738,7 +738,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                 height: 20,
                 child: Container(
                   alignment: Alignment.topCenter,
-                  child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
                 ),
               ),
               onTap: (){

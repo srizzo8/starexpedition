@@ -384,7 +384,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                             ),
                             child: InkWell(
                               child: Ink(
-                                child: Text("Reply"),
+                                child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                                 color: Colors.grey[500],
                                 width: 320,
                               ),
@@ -487,7 +487,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                             ),
                             child: InkWell(
                               child: Ink(
-                                child: Text("Reply"),
+                                child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                                 color: Colors.grey[500],
                                 width: 320,
                               ),
@@ -622,7 +622,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                   height: 20,
                   child: Container(
                     alignment: Alignment.topCenter,
-                    child: Text("Reply to thread", style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
                   ),
                 ),
                 onTap: (){
