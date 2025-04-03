@@ -18,7 +18,7 @@ import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:starexpedition4/emailNotifications.dart' as emailNotifications;
 import 'package:starexpedition4/userProfile.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show MaxLengthEnforcement, rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 
@@ -181,7 +181,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
           Container(
             height: 5,
           ),
-          Center(
+          /*Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),
               alignment: Alignment.centerLeft,
@@ -198,11 +198,48 @@ class forgottenPasswordState extends State<forgottenPassword>{
                 border: OutlineInputBorder(),
               ),
             ),
+          ),*/
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(
+                    child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: 400,
+                            ),
+                            child: Scrollbar(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                reverse: true,
+                                child: SizedBox(
+                                  child: TextField(
+                                    minLines: 1,
+                                    maxLines: 1,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: "Username",
+                                    ),
+                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                    controller: myUsernameController,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                    )
+                ),
+              ],
+            ),
           ),
           Container(
             height: 5,
           ),
-          Center(
+          /*Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),
               alignment: Alignment.centerLeft,
@@ -218,6 +255,43 @@ class forgottenPasswordState extends State<forgottenPassword>{
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
               ),
+            ),
+          ),*/
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(
+                    child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: 400,
+                            ),
+                            child: Scrollbar(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                reverse: true,
+                                child: SizedBox(
+                                  child: TextField(
+                                    minLines: 1,
+                                    maxLines: 1,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: "Email address",
+                                    ),
+                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                    controller: myEmailController,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                    )
+                ),
+              ],
             ),
           ),
           Center(
@@ -372,7 +446,45 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
           Container(
             height: 5,
           ),
-          Container(
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(
+                    child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: 400,
+                            ),
+                            child: Scrollbar(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                reverse: true,
+                                child: SizedBox(
+                                  child: TextField(
+                                    minLines: 1,
+                                    maxLines: 1,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: "Six-digit code",
+                                    ),
+                                    maxLength: 6,
+                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                    controller: numberController,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                    )
+                ),
+              ],
+            ),
+          ),
+          /*Container(
             padding: const EdgeInsets.all(20.0),
             child: TextField(
               decoration: const InputDecoration(
@@ -383,7 +495,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
               obscureText: true,
               keyboardType: TextInputType.number,
             ),
-          ),
+          ),*/
           Center(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -553,7 +665,7 @@ class resetPasswordState extends State<resetPassword>{
           Container(
             height: 5,
           ),
-          Center(
+          /*Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),
               alignment: Alignment.centerLeft,
@@ -571,11 +683,49 @@ class resetPasswordState extends State<resetPassword>{
               controller: newPassController,
               obscureText: true,
             ),
+          ),*/
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(
+                    child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: 400,
+                            ),
+                            child: Scrollbar(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                reverse: true,
+                                child: SizedBox(
+                                  child: TextField(
+                                    minLines: 1,
+                                    maxLines: 1,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: "New password",
+                                    ),
+                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                    controller: newPassController,
+                                    obscureText: true,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                    )
+                ),
+              ],
+            ),
           ),
           Container(
             height: 5,
           ),
-          Center(
+          /*Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),
               alignment: Alignment.centerLeft,
@@ -592,6 +742,44 @@ class resetPasswordState extends State<resetPassword>{
               ),
               controller: confirmNewPassController,
               obscureText: true,
+            ),
+          ),*/
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(
+                    child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: 400,
+                            ),
+                            child: Scrollbar(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                reverse: true,
+                                child: SizedBox(
+                                  child: TextField(
+                                    minLines: 1,
+                                    maxLines: 1,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: "Confirm new password",
+                                    ),
+                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                    controller: confirmNewPassController,
+                                    obscureText: true,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                    )
+                ),
+              ],
             ),
           ),
           Container(
