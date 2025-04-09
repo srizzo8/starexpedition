@@ -137,22 +137,25 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
               }
             ),
           ),
-          DropdownButton(
-            value: dropdownTempValue,
-            icon: Icon(Icons.keyboard_arrow_down),
-            items: temperatureUnits.map((String tu){
-              return DropdownMenuItem(
-                value: tu,
-                child: Text(tu),
-              );
-            }).toList(),
-            onChanged: (String? newTempUnit){
-              setState((){
-                dropdownTempValue = newTempUnit!;
-              });
-            }
+          DropdownButtonHideUnderline(
+            child: DropdownButton(
+              value: dropdownTempValue,
+              icon: Icon(Icons.keyboard_arrow_down),
+              items: temperatureUnits.map((String tu){
+                return DropdownMenuItem(
+                  value: tu,
+                  child: Text(tu),
+                );
+              }).toList(),
+              onChanged: (String? newTempUnit){
+                setState((){
+                  dropdownTempValue = newTempUnit!;
+                });
+              }
+            ),
           ),
-          DropdownButton(
+          DropdownButtonHideUnderline(
+            child: DropdownButton(
               value: secondDropdownTempValue,
               icon: Icon(Icons.keyboard_arrow_down),
               items: temperatureUnits.map((String stu){
@@ -166,6 +169,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                   secondDropdownTempValue = secondNewTempUnit!;
                 });
               }
+            ),
           ),
           Container(
             height: 5,
@@ -336,7 +340,8 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
               }
             ),
           ),
-          DropdownButton(
+          DropdownButtonHideUnderline(
+            child: DropdownButton(
               value: dropdownLengthValue,
               icon: Icon(Icons.keyboard_arrow_down),
               items: lengthUnits.map((String lu){
@@ -350,8 +355,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                   dropdownLengthValue = newLengthUnit!;
                 });
               }
+            ),
           ),
-          DropdownButton(
+          DropdownButtonHideUnderline(
+            child: DropdownButton(
               value: secondDropdownLengthValue,
               icon: Icon(Icons.keyboard_arrow_down),
               items: lengthUnits.map((String slu){
@@ -365,6 +372,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                   secondDropdownLengthValue = secondNewLengthUnit!;
                 });
               }
+            ),
           ),
           Container(
             height: 5,
