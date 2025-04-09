@@ -173,207 +173,211 @@ class spectralClassPageState extends State<spectralClassPage>{
           Container(
             height: 5,
           ),
-          Container(
-            alignment: Alignment.topCenter,
-            child: Text(
-                "Spectral Classes of Stars", textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-            height: 30,
+          Center(
+            child: Container(
+              //alignment: Alignment.topCenter,
+              child: Text("Spectral Classes of Stars", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+              height: 30,
+            ),
           ),
-          DataTable(
-            columnSpacing: 30.0,
-            columns: [
-              DataColumn(label: Align(
-                alignment: Alignment.center,
-                child: Text('Spectral Class', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-              ),
-              DataColumn(label: Align(
-                alignment: Alignment.center,
-                child: Text('Temperature', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-              ),
-              DataColumn(label: Align(
-                alignment: Alignment.center,
-                child: Text('Stars with Articles', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-              ),
-            ],
-            rows: [
-              DataRow(cells: [
-                DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('M'),
-                  ),
-                ),
-                DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('2500-3800 K'),
-                  ),
-                ),
-                //DataCell(Text('Proxima Centauri')),
-                DataCell(Align(
+          Center(
+            child: DataTable(
+              columnSpacing: 30.0,
+              columns: [
+                DataColumn(label: Align(
                   alignment: Alignment.center,
-                  child: InkWell(
-                    child: Text(spectralClassCount[0].toString(), style: TextStyle(color: Colors.black)),
-                    onTap: (){
-                      print("You clicked me!");
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                      mySpectralClass = "M";
-                    },
-                  ),
-                  ),
+                  child: Text('Spectral Class', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
                 ),
+                DataColumn(label: Align(
+                  alignment: Alignment.center,
+                  child: Text('Temperature', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                ),
+                DataColumn(label: Align(
+                  alignment: Alignment.center,
+                  child: Text('Stars with Articles', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                ),
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('M'),
+                    ),
+                  ),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('2500-3800 K'),
+                    ),
+                  ),
+                  //DataCell(Text('Proxima Centauri')),
+                  DataCell(Align(
+                    alignment: Alignment.center,
+                    child: InkWell(
+                      child: Text(spectralClassCount[0].toString(), style: TextStyle(color: Colors.black)),
+                      onTap: (){
+                        print("You clicked me!");
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                        mySpectralClass = "M";
+                      },
+                    ),
+                    ),
+                  ),
+                ]),
+                DataRow(cells: [
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('K'),
+                    ),
+                  ),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('3800-5300 K'),
+                    ),
+                  ),
+                  DataCell(Align(
+                    alignment: Alignment.center,
+                    child: InkWell(
+                      child: Text(spectralClassCount[1].toString(), style: TextStyle(color: Colors.black)),
+                      onTap: (){
+                        print('You clicked me!');
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                        mySpectralClass = "K";
+                      },
+                    ),
+                  ),
+                  ),
               ]),
-              DataRow(cells: [
-                DataCell(Align(
+                DataRow(cells: [
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('G'),
+                    ),
+                  ),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('5300-6000 K'),
+                    ),
+                  ),
+                  DataCell(Align(
                     alignment: Alignment.center,
-                    child: Text('K'),
+                    child: InkWell(
+                      child: Text(spectralClassCount[2].toString(), style: TextStyle(color: Colors.black)),
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                        mySpectralClass = "G";
+                      },
+                    ),
                   ),
-                ),
-                DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('3800-5300 K'),
-                  ),
-                ),
-                DataCell(Align(
-                  alignment: Alignment.center,
-                  child: InkWell(
-                    child: Text(spectralClassCount[1].toString(), style: TextStyle(color: Colors.black)),
-                    onTap: (){
-                      print('You clicked me!');
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                      mySpectralClass = "K";
-                    },
-                  ),
-                ),
-                ),
-            ]),
-              DataRow(cells: [
-                DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('G'),
-                  ),
-                ),
-                DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('5300-6000 K'),
-                  ),
-                ),
-                DataCell(Align(
-                  alignment: Alignment.center,
-                  child: InkWell(
-                    child: Text(spectralClassCount[2].toString(), style: TextStyle(color: Colors.black)),
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                      mySpectralClass = "G";
-                    },
-                  ),
-                ),
-                ),      //Text(spectralClassCount[2].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))),
-            ]),
-              DataRow(cells: [
-                DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('F'),
-                  ),
-                ),
-                DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('6000-7300 K'),
-                  ),
-                ),
-                DataCell(Align(
-                  alignment: Alignment.center,
-                  child: InkWell(
-                    child: Text(spectralClassCount[3].toString(), style: TextStyle(color: Colors.black)),
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                      mySpectralClass = "F";
-                    },
-                  ),
-                )
-                ),
+                  ),      //Text(spectralClassCount[2].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))),
               ]),
-              DataRow(cells: [
-                DataCell(Align(
+                DataRow(cells: [
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('F'),
+                    ),
+                  ),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('6000-7300 K'),
+                    ),
+                  ),
+                  DataCell(Align(
                     alignment: Alignment.center,
-                    child: Text('A'),
+                    child: InkWell(
+                      child: Text(spectralClassCount[3].toString(), style: TextStyle(color: Colors.black)),
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                        mySpectralClass = "F";
+                      },
+                    ),
+                  )
                   ),
-                ),
-                DataCell(Align(
+                ]),
+                DataRow(cells: [
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('A'),
+                    ),
+                  ),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('7300-10000 K'),
+                    ),
+                  ),
+                  DataCell(Align(
                     alignment: Alignment.center,
-                    child: Text('7300-10000 K'),
+                    child: InkWell(
+                      child: Text(spectralClassCount[4].toString(), style: TextStyle(color: Colors.black)),
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                        mySpectralClass = "A";
+                      },
+                    ),
+                  )
                   ),
-                ),
-                DataCell(Align(
-                  alignment: Alignment.center,
-                  child: InkWell(
-                    child: Text(spectralClassCount[4].toString(), style: TextStyle(color: Colors.black)),
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                      mySpectralClass = "A";
-                    },
+                ]),
+                DataRow(cells: [
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('B'),
+                    ),
                   ),
-                )
-                ),
-              ]),
-              DataRow(cells: [
-                DataCell(Align(
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('10000-30000 K'),
+                    ),
+                  ),
+                  DataCell(Align(
                     alignment: Alignment.center,
-                    child: Text('B'),
+                    child: InkWell(
+                      child: Text(spectralClassCount[5].toString(), style: TextStyle(color: Colors.black)),
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                        mySpectralClass = "B";
+                      },
+                    ),
+                  )
                   ),
-                ),
-                DataCell(Align(
+                ]),
+                DataRow(cells: [
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('O'),
+                    ),
+                  ),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('30000+ K'),
+                    ),
+                  ),
+                  DataCell(Align(
                     alignment: Alignment.center,
-                    child: Text('10000-30000 K'),
+                    child: InkWell(
+                      child: Text(spectralClassCount[6].toString(), style: TextStyle(color: Colors.black)),
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                        mySpectralClass = "O";
+                      },
+                    ),
+                  )
                   ),
-                ),
-                DataCell(Align(
-                  alignment: Alignment.center,
-                  child: InkWell(
-                    child: Text(spectralClassCount[5].toString(), style: TextStyle(color: Colors.black)),
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                      mySpectralClass = "B";
-                    },
-                  ),
-                )
-                ),
-              ]),
-              DataRow(cells: [
-                DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('O'),
-                  ),
-                ),
-                DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('30000+ K'),
-                  ),
-                ),
-                DataCell(Align(
-                  alignment: Alignment.center,
-                  child: InkWell(
-                    child: Text(spectralClassCount[6].toString(), style: TextStyle(color: Colors.black)),
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                      mySpectralClass = "O";
-                    },
-                  ),
-                )
-                ),
-              ]),
-            ],
+                ]),
+              ],
+            ),
           ),
-          Container(
-            child: Text("Sources", textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-            height: 20,
-            width: 360,
+          Center(
+            child: Container(
+              child: Text("Sources", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+              height: 20,
+              width: 360,
+            ),
           ),
-          Container(
-            child: Text("https://www.handprint.com/ASTRO/specclass.html",
-                textAlign: TextAlign.center),
-            height: 20,
-            width: 360,
+          Center(
+            child: Container(
+              child: Text("https://www.handprint.com/ASTRO/specclass.html", textAlign: TextAlign.center),
+              height: 20,
+              width: 360,
+            ),
           ),
         ],
       ),
