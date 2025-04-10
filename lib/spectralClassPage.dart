@@ -184,17 +184,20 @@ class spectralClassPageState extends State<spectralClassPage>{
             child: DataTable(
               columnSpacing: 30.0,
               columns: [
-                DataColumn(label: Align(
-                  alignment: Alignment.center,
-                  child: Text('Spectral Class', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                DataColumn(label: Expanded(
+                  child: Center(
+                    child: Text('Spectral Class', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                  ),
                 ),
-                DataColumn(label: Align(
-                  alignment: Alignment.center,
-                  child: Text('Temperature', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                DataColumn(label: Expanded(
+                  child: Center(
+                    child: Text('Temperature', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                  ),
                 ),
-                DataColumn(label: Align(
-                  alignment: Alignment.center,
-                  child: Text('Stars with Articles', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                DataColumn(label: Expanded(
+                  child: Center(
+                    child: Text('Stars with Articles', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                  ),
                 ),
               ],
               rows: [
@@ -205,7 +208,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                     ),
                   ),
                   DataCell(Align(
-                      alignment: Alignment.center,
+                      //alignment: Alignment.center,
                       child: Text('2500-3800 K'),
                     ),
                   ),
