@@ -857,9 +857,9 @@ class resetPasswordState extends State<resetPassword>{
                       actions: <Widget>[
                         TextButton(
                           onPressed: (){
+                            Navigator.pop(context);
                             newPassController.text = "";
                             confirmNewPassController.text = "";
-                            Navigator.pop(context);
                           },
                           child: Container(
                             child: const Text("Ok"),

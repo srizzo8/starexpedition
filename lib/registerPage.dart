@@ -515,6 +515,9 @@ class registerPageState extends State<registerPage>{
                           TextButton(
                             onPressed: (){
                               Navigator.of(myContent).pop();
+                              theUsername.text = "";
+                              email.text = "";
+                              password.text = "";
                             },
                             child: Container(
                               child: const Text("Ok"),

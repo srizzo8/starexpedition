@@ -238,6 +238,8 @@ class loginPageState extends State<loginPage>{
                                   TextButton(
                                     onPressed: () => {
                                       Navigator.pop(context),
+                                      usernameController.text = "",
+                                      passwordController.text = "",
                                     },
                                     child: const Text("Ok"),
                                   )
@@ -258,6 +260,8 @@ class loginPageState extends State<loginPage>{
                                   TextButton(
                                     onPressed: () => {
                                       Navigator.pop(context),
+                                      usernameController.text = "",
+                                      passwordController.text = "",
                                     },
                                     child: const Text("Ok"),
                                   )
@@ -279,6 +283,8 @@ class loginPageState extends State<loginPage>{
                               TextButton(
                                 onPressed: () => {
                                   Navigator.pop(context),
+                                  usernameController.text = "",
+                                  passwordController.text = "",
                                 },
                                 child: const Text("Ok"),
                               )
@@ -298,6 +304,8 @@ class loginPageState extends State<loginPage>{
                               TextButton(
                                 onPressed: () => {
                                   Navigator.pop(context),
+                                  usernameController.text = "",
+                                  passwordController.text = "",
                                 },
                                 child: const Text("Ok"),
                               )
@@ -317,6 +325,8 @@ class loginPageState extends State<loginPage>{
                               TextButton(
                                 onPressed: () => {
                                   Navigator.pop(context),
+                                  usernameController.text = "",
+                                  passwordController.text = "",
                                 },
                                 child: const Text("Ok"),
                               )
@@ -336,6 +346,8 @@ class loginPageState extends State<loginPage>{
                               TextButton(
                                 onPressed: () => {
                                   Navigator.pop(context),
+                                  usernameController.text = "",
+                                  passwordController.text = "",
                                 },
                                 child: const Text("Ok"),
                               )
