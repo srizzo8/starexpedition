@@ -52,11 +52,11 @@ class userProfilePageState extends State<userProfilePage>{
         centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () =>{
-            Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
-          }
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () =>{
+              Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
+            }
         ),
       ),
       body: Column(
@@ -71,18 +71,18 @@ class userProfilePageState extends State<userProfilePage>{
             height: 5,
           ),
           Container(
-            child: Text("User")
+              child: Text("User")
           ),
           InkWell(
-            child: Ink(
-              child: Container(
-                child: Text("Edit My User Profile", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                color: Colors.black,
+              child: Ink(
+                child: Container(
+                  child: Text("Edit My User Profile", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                  color: Colors.black,
+                ),
               ),
-            ),
-            onTap: (){
-              print("Button clicked!");
-            }
+              onTap: (){
+                print("Button clicked!");
+              }
           ),
           Container(
             height: 5,
@@ -106,242 +106,242 @@ class editingMyUserProfile extends StatelessWidget{
 
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Star Expedition"),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () =>{
-            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage())),
-            print("Going back to settings page"),
-          }
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Star Expedition"),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              color: Colors.white,
+              onPressed: () =>{
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage())),
+                print("Going back to settings page"),
+              }
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-        children: <Widget>[
-          Container(
-            height: 5,
-          ),
-          Container(
-            child: Text("Editing Your Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(
-                  child: Center(
-                  child: Container(
-                    padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: 400,
-                      ),
-                      child: Scrollbar(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          reverse: true,
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 5,
-                              maxLines: 5,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Information about yourself",
-                                //contentPadding: EdgeInsets.symmetric(vertical: 80),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 5,
+              ),
+              Container(
+                child: Text("Editing Your Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+              ),
+              IntrinsicHeight(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Flexible(
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: 400,
                               ),
-                              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                              controller: informationAboutMyselfController..text = "${myMain.usersBlurb}",
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  ),
-                ),
-              ]
-            ),
-          ),
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: 400,
-                          ),
-                          child: Scrollbar(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              reverse: true,
-                              child: SizedBox(
-                                child: TextField(
-                                  minLines: 5,
-                                  maxLines: 5,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: "Your interests",
+                              child: Scrollbar(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  reverse: true,
+                                  child: SizedBox(
+                                    child: TextField(
+                                      minLines: 5,
+                                      maxLines: 5,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: "Information about yourself",
+                                        //contentPadding: EdgeInsets.symmetric(vertical: 80),
+                                      ),
+                                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                      controller: informationAboutMyselfController..text = "${myMain.usersBlurb}",
+                                    ),
                                   ),
-                                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                  controller: interestsController..text = "${myMain.usersInterests}",
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: 400,
-                          ),
-                          child: Scrollbar(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              reverse: true,
-                              child: SizedBox(
-                                child: TextField(
-                                  minLines: 5,
-                                  maxLines: 5,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: "Your location",
+                    ]
+                ),
+              ),
+              IntrinsicHeight(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Flexible(
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: 400,
+                              ),
+                              child: Scrollbar(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  reverse: true,
+                                  child: SizedBox(
+                                    child: TextField(
+                                      minLines: 5,
+                                      maxLines: 5,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: "Your interests",
+                                      ),
+                                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                      controller: interestsController..text = "${myMain.usersInterests}",
+                                    ),
                                   ),
-                                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                  controller: locationController..text = "${myMain.usersLocation}",
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          Container(
-            height: 5,
-          ),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-              ),
-              child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
-                  child: Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                    ]
                 ),
               ),
-              onPressed: () async{
-                  if(myUsername != "" && myNewUsername == ""){
-                    myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                    myInformation.docs.forEach((myResult){
-                      dataOfUser = myResult.data();
-                      myDocName = myResult.id;
-                    });
+              IntrinsicHeight(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Flexible(
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: 400,
+                              ),
+                              child: Scrollbar(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  reverse: true,
+                                  child: SizedBox(
+                                    child: TextField(
+                                      minLines: 5,
+                                      maxLines: 5,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: "Your location",
+                                      ),
+                                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                      controller: locationController..text = "${myMain.usersLocation}",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
+                ),
+              ),
+              Container(
+                height: 5,
+              ),
+              Center(
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.black,
+                    ),
+                    child: InkWell(
+                      child: Ink(
+                        color: Colors.black,
+                        padding: EdgeInsets.all(5.0),
+                        child: Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                      ),
+                    ),
+                    onPressed: () async{
+                      if(myUsername != "" && myNewUsername == ""){
+                        myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                        myInformation.docs.forEach((myResult){
+                          dataOfUser = myResult.data();
+                          myDocName = myResult.id;
+                        });
 
-                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                      "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
-                    }).then((i){
-                      print("You have updated the user information (for already existing users)!");
-                    });
+                        FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                          "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
+                        }).then((i){
+                          print("You have updated the user information (for already existing users)!");
+                        });
 
-                    myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                    myInterests.docs.forEach((myResult){
-                      dataOfUser = myResult.data();
-                      myDocName = myResult.id;
-                    });
+                        myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                        myInterests.docs.forEach((myResult){
+                          dataOfUser = myResult.data();
+                          myDocName = myResult.id;
+                        });
 
-                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                      "usernameProfileInformation.userInterests": interestsController.text,
-                    }).then((i){
-                      print("You have updated the user interests (for already existing users)!");
-                    });
+                        FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                          "usernameProfileInformation.userInterests": interestsController.text,
+                        }).then((i){
+                          print("You have updated the user interests (for already existing users)!");
+                        });
 
-                    myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                    myLocation.docs.forEach((myResult){
-                      dataOfUser = myResult.data();
-                      myDocName = myResult.id;
-                    });
+                        myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                        myLocation.docs.forEach((myResult){
+                          dataOfUser = myResult.data();
+                          myDocName = myResult.id;
+                        });
 
-                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                      "usernameProfileInformation.userLocation": locationController.text,
-                    }).then((i){
-                      print("You have updated the user location (for already existing users)!");
-                    });
+                        FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                          "usernameProfileInformation.userLocation": locationController.text,
+                        }).then((i){
+                          print("You have updated the user location (for already existing users)!");
+                        });
 
-                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
-                  }
-                  else if(myUsername == "" && myNewUsername != ""){
-                    myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                    myInformation.docs.forEach((myResult){
-                      dataOfUser = myResult.data();
-                      myDocName = myResult.id;
-                    });
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
+                      }
+                      else if(myUsername == "" && myNewUsername != ""){
+                        myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                        myInformation.docs.forEach((myResult){
+                          dataOfUser = myResult.data();
+                          myDocName = myResult.id;
+                        });
 
-                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                      "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
-                    }).then((j){
-                      print("You have updated the user information (for new users)!");
-                    });
+                        FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                          "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
+                        }).then((j){
+                          print("You have updated the user information (for new users)!");
+                        });
 
-                    myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                    myInformation.docs.forEach((myResult){
-                      dataOfUser = myResult.data();
-                      myDocName = myResult.id;
-                    });
+                        myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                        myInformation.docs.forEach((myResult){
+                          dataOfUser = myResult.data();
+                          myDocName = myResult.id;
+                        });
 
-                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                      "usernameProfileInformation.userInterests": interestsController.text,
-                    }).then((j){
-                      print("You have updated the user interests (for new users)!");
-                    });
+                        FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                          "usernameProfileInformation.userInterests": interestsController.text,
+                        }).then((j){
+                          print("You have updated the user interests (for new users)!");
+                        });
 
-                    myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                    myLocation.docs.forEach((myResult){
-                      dataOfUser = myResult.data();
-                      myDocName = myResult.id;
-                    });
+                        myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                        myLocation.docs.forEach((myResult){
+                          dataOfUser = myResult.data();
+                          myDocName = myResult.id;
+                        });
 
-                    FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                      "usernameProfileInformation.userLocation": locationController.text,
-                    }).then((j){
-                      print("You have updated the user location (for new users)!");
-                    });
+                        FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                          "usernameProfileInformation.userLocation": locationController.text,
+                        }).then((j){
+                          print("You have updated the user location (for new users)!");
+                        });
 
-                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
-                  }
-                }
-            ),
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
+                      }
+                    }
+                ),
+              ),
+              Container(
+                height: 5,
+              ),
+            ],
           ),
-          Container(
-            height: 5,
-          ),
-        ],
-        ),
-      )
+        )
     );
   }
 }
@@ -355,86 +355,86 @@ class userProfileInUserPerspective extends StatelessWidget{
         centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () =>{
-            Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
-          }
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () =>{
+              Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
+            }
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
-        children: <Widget>[
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: myUsername != "" && myNewUsername == ""?
-                Text("${myUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)):
-                Text("${myNewUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\nInformation About You:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: myUsername != "" && myNewUsername == ""?
+          children: <Widget>[
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: myUsername != "" && myNewUsername == ""?
+              Text("${myUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)):
+              Text("${myNewUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\nInformation About You:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: myUsername != "" && myNewUsername == ""?
                 (myMain.usersBlurb != ""? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
                 (myMain.usersBlurb != ""? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\nYour Interests:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: myUsername != "" && myNewUsername == ""?
-            (myMain.usersInterests != ""? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
-            (myMain.usersInterests != ""? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\nYour Location:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: myUsername != "" && myNewUsername == ""?
-            (myMain.usersLocation != ""? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
-            (myMain.usersLocation != ""? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("${myMain.numberOfPostsUserHasMade}", textAlign: TextAlign.center),
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\nStars Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            height: 5,
-          ),
-          /*SingleChildScrollView(
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\nYour Interests:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: myUsername != "" && myNewUsername == ""?
+                (myMain.usersInterests != ""? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
+                (myMain.usersInterests != ""? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\nYour Location:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: myUsername != "" && myNewUsername == ""?
+                (myMain.usersLocation != ""? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
+                (myMain.usersLocation != ""? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("${myMain.numberOfPostsUserHasMade}", textAlign: TextAlign.center),
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\nStars Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              height: 5,
+            ),
+            /*SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: ListView.builder(
                 itemCount: myMain.starsUserTracked.length,
@@ -445,43 +445,43 @@ class userProfileInUserPerspective extends StatelessWidget{
                   );
                 }),
           ),*/
-          Column(
-            children: <Widget>[
-              //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
-              if(!(myMain.starsUserTracked.isEmpty))
-                for(int s = 0; s < (myMain.starsUserTracked.keys.toList()).length; s++)
-                  Text("${myMain.starsUserTracked.keys.toList()[s]}\n${myMain.starsUserTracked.values.toList()[s]}\n", textAlign: TextAlign.center),
+            Column(
+              children: <Widget>[
+                //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
+                if(!(myMain.starsUserTracked.isEmpty))
+                  for(int s = 0; s < (myMain.starsUserTracked.keys.toList()).length; s++)
+                    Text("${myMain.starsUserTracked.keys.toList()[s]}\n${myMain.starsUserTracked.values.toList()[s]}\n", textAlign: TextAlign.center),
 
-              if(myMain.starsUserTracked.isEmpty)
-                Text("N/A", textAlign: TextAlign.center),
-              /*}
+                if(myMain.starsUserTracked.isEmpty)
+                  Text("N/A", textAlign: TextAlign.center),
+                /*}
               else{
                 Text("N/A", textAlign: TextAlign.center),
               }*/
-            ],
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\nPlanets Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            height: 5,
-          ),
-          Column(
-            children: <Widget>[
-              //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
-              if(!(myMain.planetsUserTracked.isEmpty))
-                for(int p = 0; p < (myMain.planetsUserTracked.keys.toList()).length; p++)
-                  Text("${myMain.planetsUserTracked.keys.toList()[p]}\n${myMain.planetsUserTracked.values.toList()[p]}\n", textAlign: TextAlign.center),
+              ],
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\nPlanets Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              height: 5,
+            ),
+            Column(
+              children: <Widget>[
+                //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
+                if(!(myMain.planetsUserTracked.isEmpty))
+                  for(int p = 0; p < (myMain.planetsUserTracked.keys.toList()).length; p++)
+                    Text("${myMain.planetsUserTracked.keys.toList()[p]}\n${myMain.planetsUserTracked.values.toList()[p]}\n", textAlign: TextAlign.center),
 
-              if(myMain.planetsUserTracked.isEmpty)
-                Text("N/A", textAlign: TextAlign.center),
-            ],
-          ),
-        ],
+                if(myMain.planetsUserTracked.isEmpty)
+                  Text("N/A", textAlign: TextAlign.center),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -509,125 +509,125 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
                 Navigator.of(bc).pop(),
               }
               else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == true && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == false){
-                projectsClickedOnUser = false,
-                Navigator.of(bc).pop(),
-              }
-              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == true && technologiesClickedOnUser == false && fasClickedOnUser == false){
-                qaaClickedOnUser = false,
-                Navigator.of(bc).pop(),
-              }
-              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == true && fasClickedOnUser == false){
-                technologiesClickedOnUser = false,
-                Navigator.of(bc).pop(),
-              }
-              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == true){
-                fasClickedOnUser = false,
-                Navigator.of(bc).pop(),
-              }
-              else{
-                Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => userSearchBarPage())),
-              }
+                  projectsClickedOnUser = false,
+                  Navigator.of(bc).pop(),
+                }
+                else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == true && technologiesClickedOnUser == false && fasClickedOnUser == false){
+                    qaaClickedOnUser = false,
+                    Navigator.of(bc).pop(),
+                  }
+                  else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == true && fasClickedOnUser == false){
+                      technologiesClickedOnUser = false,
+                      Navigator.of(bc).pop(),
+                    }
+                    else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == true){
+                        fasClickedOnUser = false,
+                        Navigator.of(bc).pop(),
+                      }
+                      else{
+                          Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => userSearchBarPage())),
+                        }
             }
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
-        children: <Widget>[
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("${theUsersData["username"]}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\nInformation About ${theUsersData["username"]}:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: !(theUsersData["usernameProfileInformation"]["userInformation"].isEmpty)?
-              Text("${theUsersData["usernameProfileInformation"]["userInformation"]}"):
+          children: <Widget>[
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("${theUsersData["username"]}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\nInformation About ${theUsersData["username"]}:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: !(theUsersData["usernameProfileInformation"]["userInformation"].isEmpty)?
+                Text("${theUsersData["usernameProfileInformation"]["userInformation"]}", textAlign: TextAlign.center):
+                Text("N/A", textAlign: TextAlign.center),
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\n${theUsersData["username"]}'s Interests:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: !(theUsersData["usernameProfileInformation"]["userInterests"].isEmpty)?
+              Text("${theUsersData["usernameProfileInformation"]["userInterests"]}", textAlign: TextAlign.center):
               Text("N/A", textAlign: TextAlign.center),
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\n${theUsersData["username"]}'s Interests:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: !(theUsersData["usernameProfileInformation"]["userInterests"].isEmpty)?
-            Text("${theUsersData["usernameProfileInformation"]["userInterests"]}"):
-            Text("N/A", textAlign: TextAlign.center),
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\n${theUsersData["username"]}'s Location:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: !(theUsersData["usernameProfileInformation"]["userLocation"].isEmpty)?
-            Text("${theUsersData["usernameProfileInformation"]["userLocation"]}"):
-            Text("N/A", textAlign: TextAlign.center),
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("${theUsersData["usernameProfileInformation"]["numberOfPosts"]}"),
-          ),
-          Container(
-            height : 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\nStars Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            height: 5,
-          ),
-          Column(
-            children: <Widget>[
-              if(!(theUsersData["usernameProfileInformation"]["starsTracked"].isEmpty))
-                for(int s = 0; s < (theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()).length; s++)
-                  Text("${theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s]}\n${theUsersData["usernameProfileInformation"]["starsTracked"].values.toList()[s]}\n", textAlign: TextAlign.center),
-
-              if(theUsersData["usernameProfileInformation"]["starsTracked"].isEmpty)
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\n${theUsersData["username"]}'s Location:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: !(theUsersData["usernameProfileInformation"]["userLocation"].isEmpty)?
+                Text("${theUsersData["usernameProfileInformation"]["userLocation"]}", textAlign: TextAlign.center):
                 Text("N/A", textAlign: TextAlign.center),
-            ],
-          ),
-          Container(
-            height: 5,
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-            child: Text("\nPlanets Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Column(
-            children: <Widget>[
-              //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
-              if(!(theUsersData["usernameProfileInformation"]["planetsTracked"].isEmpty))
-                for(int p = 0; p < (theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()).length; p++)
-                  Text("${theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p]}\n${theUsersData["usernameProfileInformation"]["planetsTracked"].values.toList()[p]}\n", textAlign: TextAlign.center),
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("${theUsersData["usernameProfileInformation"]["numberOfPosts"]}"),
+            ),
+            Container(
+              height : 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\nStars Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Container(
+              height: 5,
+            ),
+            Column(
+              children: <Widget>[
+                if(!(theUsersData["usernameProfileInformation"]["starsTracked"].isEmpty))
+                  for(int s = 0; s < (theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()).length; s++)
+                    Text("${theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s]}\n${theUsersData["usernameProfileInformation"]["starsTracked"].values.toList()[s]}\n", textAlign: TextAlign.center),
 
-              if(theUsersData["usernameProfileInformation"]["planetsTracked"].isEmpty)
-                Text("N/A", textAlign: TextAlign.center),
-            ],
-          ),
-        ],
+                if(theUsersData["usernameProfileInformation"]["starsTracked"].isEmpty)
+                  Text("N/A", textAlign: TextAlign.center),
+              ],
+            ),
+            Container(
+              height: 5,
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Text("\nPlanets Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Column(
+              children: <Widget>[
+                //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
+                if(!(theUsersData["usernameProfileInformation"]["planetsTracked"].isEmpty))
+                  for(int p = 0; p < (theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()).length; p++)
+                    Text("${theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p]}\n${theUsersData["usernameProfileInformation"]["planetsTracked"].values.toList()[p]}\n", textAlign: TextAlign.center),
+
+                if(theUsersData["usernameProfileInformation"]["planetsTracked"].isEmpty)
+                  Text("N/A", textAlign: TextAlign.center),
+              ],
+            ),
+          ],
         ),
       ),
     );
