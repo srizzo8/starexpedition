@@ -177,8 +177,12 @@ class spectralClassPageState extends State<spectralClassPage>{
             child: Container(
               //alignment: Alignment.topCenter,
               child: Text("Spectral Classes of Stars", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-              height: 30,
             ),
+          ),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            child: Text("This page has information regarding each star spectral class. "
+                "To see a list of stars that have articles on Star Expedition that belong to a certain spectral class, click the number in the \"Stars with Articles\" column.", textAlign: TextAlign.center),
           ),
           Center(
             child: DataTable(
