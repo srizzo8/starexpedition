@@ -190,31 +190,31 @@ class spectralClassPageState extends State<spectralClassPage>{
               columns: [
                 DataColumn(label: Expanded(
                   child: Center(
-                    child: Text('Spectral Class', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-                  ),
+                      child: Text('Spectral Class', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                ),
                 ),
                 DataColumn(label: Expanded(
                   child: Center(
-                    child: Text('Temperature', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-                  ),
+                      child: Text('Temperature', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                ),
                 ),
                 DataColumn(label: Expanded(
                   child: Center(
-                    child: Text('Stars with Articles', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-                  ),
+                      child: Text('Stars with Articles', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
+                ),
                 ),
               ],
               rows: [
                 DataRow(cells: [
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('M'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('M'),
+                  ),
                   ),
                   DataCell(Align(
-                      //alignment: Alignment.center,
-                      child: Text('2500-3800 K'),
-                    ),
+                    //alignment: Alignment.center,
+                    child: Text('2500-3800 K'),
+                  ),
                   ),
                   //DataCell(Text('Proxima Centauri')),
                   DataCell(Align(
@@ -227,19 +227,19 @@ class spectralClassPageState extends State<spectralClassPage>{
                         mySpectralClass = "M";
                       },
                     ),
-                    ),
+                  ),
                   ),
                 ]),
                 DataRow(cells: [
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('K'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('K'),
+                  ),
                   ),
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('3800-5300 K'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('3800-5300 K'),
+                  ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -253,17 +253,17 @@ class spectralClassPageState extends State<spectralClassPage>{
                     ),
                   ),
                   ),
-              ]),
+                ]),
                 DataRow(cells: [
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('G'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('G'),
+                  ),
                   ),
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('5300-6000 K'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('5300-6000 K'),
+                  ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -276,17 +276,17 @@ class spectralClassPageState extends State<spectralClassPage>{
                     ),
                   ),
                   ),      //Text(spectralClassCount[2].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))),
-              ]),
+                ]),
                 DataRow(cells: [
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('F'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('F'),
+                  ),
                   ),
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('6000-7300 K'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('6000-7300 K'),
+                  ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -302,14 +302,14 @@ class spectralClassPageState extends State<spectralClassPage>{
                 ]),
                 DataRow(cells: [
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('A'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('A'),
+                  ),
                   ),
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('7300-10000 K'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('7300-10000 K'),
+                  ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -325,14 +325,14 @@ class spectralClassPageState extends State<spectralClassPage>{
                 ]),
                 DataRow(cells: [
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('B'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('B'),
+                  ),
                   ),
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('10000-30000 K'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('10000-30000 K'),
+                  ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -348,14 +348,14 @@ class spectralClassPageState extends State<spectralClassPage>{
                 ]),
                 DataRow(cells: [
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('O'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('O'),
+                  ),
                   ),
                   DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('30000+ K'),
-                    ),
+                    alignment: Alignment.center,
+                    child: Text('30000+ K'),
+                  ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -390,7 +390,7 @@ class spectralClassPageState extends State<spectralClassPage>{
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
     );
-  //});
+    //});
     /*return Scaffold(
       appBar: AppBar(
         title: Text("Star Expedition"),
@@ -520,15 +520,15 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
     List<String> informationAboutClickedStar = [];
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text("Star Expedition"),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () =>{
-            Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage())),
-          }
-        )
+          centerTitle: true,
+          title: Text("Star Expedition"),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              color: Colors.white,
+              onPressed: () =>{
+                Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage())),
+              }
+          )
       ),
       body: fullListOfStars.isEmpty? Center(child: CircularProgressIndicator()):
       Column(
@@ -547,7 +547,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
           /*Container(
             height: 300,
             width: 360,*/
-            /*child: InkWell(
+          /*child: InkWell(
               onTap: (){
                 print('You clicked on a star!');
               },
@@ -558,7 +558,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
               itemCount: fullListOfStars[indexPlaceSpectralClass()].length,
               itemBuilder: (context, index){
                 return ListTile(
-                  title: Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
+                    title: Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
                     onTap: () async{
                       myMain.correctStar = fullListOfStars[indexPlaceSpectralClass()][index];
                       print(myMain.correctStar);
@@ -568,6 +568,8 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
                       informationAboutClickedStar = await myMain.getStarInformation();
                       print(informationAboutClickedStar);
                       fromSpectralClassPage = true;
+
+                      myMain.starFileContent = await myMain.readStarFile();
 
                       //Is a user tracking this star?
                       if(myNewUsername != "" && myUsername == ""){
@@ -599,8 +601,8 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
 
                       Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
                     },
-                  leading: Image.asset(myMain.starsForSearchBar[myMain.starsForSearchBar.indexWhere((star) => star.starName! == fullListOfStars[indexPlaceSpectralClass()][index])].imagePath!, fit: BoxFit.cover, height: 50, width: 50));
-                },
+                    leading: Image.asset(myMain.starsForSearchBar[myMain.starsForSearchBar.indexWhere((star) => star.starName! == fullListOfStars[indexPlaceSpectralClass()][index])].imagePath!, fit: BoxFit.cover, height: 50, width: 50));
+              },
             ),
           ): Container(),
         ],
@@ -636,5 +638,5 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
     }
 
     return myIndexPlace;
-    }
+  }
 }

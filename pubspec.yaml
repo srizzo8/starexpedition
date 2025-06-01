@@ -79,6 +79,7 @@ flutter:
   assets:
     - assets/images/
     - assets/jsonfiles/
+    - assets/text_files/star_files/
     - json/
     - dotenv.env
 
