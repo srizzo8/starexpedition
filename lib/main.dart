@@ -1622,7 +1622,7 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
             onTap: () async{
               fromSearchBarToPlanetArticle = true;
               correctPlanet = myMatchQueryPlanets[index].starName!;
-              //readPlanetFile(correctPlanet);
+
               planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
 
               starsAndTheirPlanets.forEach((key, value){
