@@ -83,6 +83,7 @@ Map starsAndTheirPlanets = {};
 bool fromSearchBarToPlanetArticle = false;
 
 String starFileContent = "";
+String planetFileContent = "";
 
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
@@ -263,9 +264,6 @@ Future<String> readStarFile() async{
   int starsIndex = starsForSearchBar.indexWhere((star) => star.starName! == correctStar);
   print("starsIndex: ${starsIndex}");
   try{
-    //Declaring the file
-    //final starFile = File(starsForSearchBar[starsIndex].articlePath!);
-
     //Reading the file
     final fileContent = await rootBundle.loadString(starsForSearchBar[starsIndex].articlePath!);
     print("fileContent: ${fileContent}");
@@ -276,6 +274,56 @@ Future<String> readStarFile() async{
     //Return "N/A" if there is an error
     return "N/A";
   }
+}
+
+Future<String> readPlanetFile(String planetPath) async{
+  //Getting the path of the planet text file path
+  /*final getPlanetAttribute = FirebaseDatabase.instance.ref("${correctStar}/Planets/${planetClicked}");
+  final planetTextFilePath = await getPlanetAttribute.child("planet_text_file_path").get();
+  String planetTextFilePathAsString = "";*/
+
+  /*Future.delayed(Duration(seconds: 1), () {
+    planetTextFilePathAsString = planetTextFilePath.value.toString();
+  });
+
+  print("planettextfilepathasstring: ${planetTextFilePathAsString}");
+  */
+  //planetPath = informationAboutPlanet[6].toString();
+  print("planet path: ${planetPath}");
+  //Reading the planet text file
+  try{
+    final planetFileContent = await rootBundle.loadString(planetPath);
+    print("planetFileContent: ${planetFileContent}");
+
+    return planetFileContent;
+  }
+  catch(e){
+    return "N/A";
+  }
+
+  /*starsAndTheirPlanets.values.forEach((planet){
+    for(int p = 0; p < planet.length; p++){
+      if(p == planetClicked){
+      }
+      else{
+        //continue
+      }
+    }
+  });*/
+
+  /*starsAndTheirPlanets.keys.forEach((star){
+    if(starsAndTheirPlanets[star] == correctStar){
+      planetsIndex = starsAndTheirPlanets.keys.indexOf(star);
+    }
+  });
+  print("planetsIndex: ${planetsIndex}");
+  try{
+    //Reading the file
+    final fileContent = 
+  }
+  catch(e){
+    return "N/A";
+  }*/
 }
 
 Future<void> main() async {
@@ -1574,6 +1622,8 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
             onTap: () async{
               fromSearchBarToPlanetArticle = true;
               correctPlanet = myMatchQueryPlanets[index].starName!;
+              //readPlanetFile(correctPlanet);
+              planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
 
               starsAndTheirPlanets.forEach((key, value){
                 print("key: ${key}, value: ${value}");
@@ -1687,9 +1737,10 @@ class articlePage extends StatelessWidget{
     final knownGases = await getPlanetAttribute.child("known_gases").get();
     final orbitalPeriod = await getPlanetAttribute.child("orbital_period").get();
     final planetTemperature = await getPlanetAttribute.child("planet_temperature").get();
+    final planetTextFilePath = await getPlanetAttribute.child("planet_text_file_path").get();
 
     return Future.delayed(Duration(seconds: 1), () {
-      return [discoveryDate.value.toString(), distanceFromStar.value.toString(), earthMasses.value.toString(), knownGases.value.toString(), orbitalPeriod.value.toString(), planetTemperature.value.toString()];
+      return [discoveryDate.value.toString(), distanceFromStar.value.toString(), earthMasses.value.toString(), knownGases.value.toString(), orbitalPeriod.value.toString(), planetTemperature.value.toString(), planetTextFilePath.value.toString()];
     });
   }
 
@@ -1927,6 +1978,9 @@ class articlePage extends StatelessWidget{
                                           onPressed: () async {
                                             correctPlanet = myData[index];
                                             informationAboutPlanet = await getPlanetData();
+
+                                            planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
+
                                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
                                             //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
                                             //Navigator.push(context, new MaterialPageRoute(builder: (context) => new planetArticle(starAndPlanetInfo: new starAndPlanetInformation)));
@@ -2382,6 +2436,9 @@ class articlePage extends StatelessWidget{
                       ),
                       Center(
                         child: Text(starFileContent),
+                      ),
+                      Container(
+                        height: 5,
                       ),
                     ],
                   ),
@@ -2945,6 +3002,19 @@ class planetArticle extends StatelessWidget{
                               ),
                             ),
                         ],
+                      ),
+                      Container(
+                        height: 5,
+                      ),
+                      Center(
+                        child: Text("\nOnline Articles about ${correctPlanet}",
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                      ),
+                      Center(
+                        child: Text(planetFileContent),
+                      ),
+                      Container(
+                        height: 5,
                       ),
                     ],
                   ),
