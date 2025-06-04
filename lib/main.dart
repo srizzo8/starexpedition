@@ -1623,8 +1623,6 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
               fromSearchBarToPlanetArticle = true;
               correctPlanet = myMatchQueryPlanets[index].starName!;
 
-              planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
-
               starsAndTheirPlanets.forEach((key, value){
                 print("key: ${key}, value: ${value}");
                 for(var v in value){
@@ -1640,6 +1638,8 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
 
               var theStarInfo = await getStarInformation();
               informationAboutPlanet = await articlePage(theStarInfo).getPlanetData();
+
+              planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
 
               //Is the planet tracked by a user?
               if(myNewUsername != "" && myUsername == ""){
