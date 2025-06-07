@@ -529,19 +529,19 @@ List<myStars> starsForSearchBar = [
   myStars(starName: "Luyten's Star", imagePath: "assets/images/luytens_star.jpg"),
   myStars(starName: "Kapteyn's Star", imagePath: "assets/images/kapteyns_star.jpg"),
   myStars(starName: "Wolf 1061", imagePath: "assets/images/wolf_1061.jpg"),
-  myStars(starName: "Gliese 876", imagePath: "assets/images/gliese_876.jpg"),
-  myStars(starName: "Gliese 581", imagePath: "assets/images/gliese_581.jpg"),
+  myStars(starName: "Gliese 876", imagePath: "assets/images/gliese_876.jpg", articlePath: "assets/text_files/star_files/gliese_876.txt"),
+  myStars(starName: "Gliese 581", imagePath: "assets/images/gliese_581.jpg", articlePath: "assets/text_files/star_files/gliese_581.txt"),
   myStars(starName: "Lacaille 9352", imagePath: "assets/images/lacaille_9352.jpg"),
-  myStars(starName: "Gliese 667 C", imagePath: "assets/images/gliese_667_c.jpg"),
+  myStars(starName: "Gliese 667 C", imagePath: "assets/images/gliese_667_c.jpg", articlePath: "assets/text_files/star_files/gliese_667_c.txt"),
   myStars(starName: "HD 85512", imagePath: "assets/images/hd_85512.jpg"),
   myStars(starName: "LHS 475", imagePath: "assets/images/lhs_475.JPG"),
   myStars(starName: "Wolf 359", imagePath: "assets/images/wolf_359.JPG"),
   myStars(starName: "Teegarden's Star", imagePath: "assets/images/teegardens_star.JPG"),
   myStars(starName: "TRAPPIST-1", imagePath: "assets/images/trappist_1.JPG",),
-  myStars(starName: "Gliese 12", imagePath: "assets/images/gliese_12.JPG"),
-  myStars(starName: "HD 48948", imagePath: "assets/images/hd_48948.JPG"),
+  myStars(starName: "Gliese 12", imagePath: "assets/images/gliese_12.JPG", articlePath: "assets/text_files/star_files/gliese_12.txt"),
+  myStars(starName: "HD 48948", imagePath: "assets/images/hd_48948.JPG", articlePath: "assets/text_files/star_files/hd_48948.txt"),
   myStars(starName: "LHS 1140", imagePath: "assets/images/lhs_1140.JPG"),
-  myStars(starName: "82 G Eridani", imagePath: "assets/images/82_g_eridani.png")
+  myStars(starName: "82 G Eridani", imagePath: "assets/images/82_g_eridani.png", articlePath: "assets/text_files/star_files/82_g_eridani.txt")
 ];
 
 class MyApp extends StatelessWidget {
