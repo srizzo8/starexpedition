@@ -933,7 +933,8 @@ class theStarExpeditionState extends State<StarExpedition> {
                       featuredStarOfTheDayBool = true;
                       starFileContent = await readStarFile();
                       listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
-                      listOfStarUrls.remove("");
+
+                      listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
                       print("listofstarurls: ${listOfStarUrls.toString()}");
                       print("size of listofstarurls: ${listOfStarUrls.length}");
@@ -993,7 +994,8 @@ class theStarExpeditionState extends State<StarExpedition> {
                   featuredStarOfTheDayBool = true;
                   starFileContent = await readStarFile();
                   listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
-                  listOfStarUrls.remove("");
+
+                  listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
                   //Is the star tracked by a user?
                   if(myNewUsername != "" && myUsername == ""){
@@ -1550,7 +1552,8 @@ class CustomSearchDelegate extends SearchDelegate {
               starInfo = await getStarInformation();
               starFileContent = await readStarFile();
               listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
-              listOfStarUrls.remove("");
+
+              listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
               if(myNewUsername != "" && myUsername == ""){
                 var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -1679,7 +1682,8 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
 
               planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
               listOfPlanetUrls = planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
-              listOfPlanetUrls.remove("");
+
+              listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
               //Is the planet tracked by a user?
               if(myNewUsername != "" && myUsername == ""){
@@ -2021,7 +2025,8 @@ class articlePage extends StatelessWidget{
 
                                             planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
                                             listOfPlanetUrls = planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
-                                            listOfPlanetUrls.remove("");
+
+                                            listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
                                             print("listOfPlanetUrls: ${listOfPlanetUrls}");
 
@@ -2552,7 +2557,8 @@ class planetArticle extends StatelessWidget{
 
               starFileContent = await readStarFile();
               listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
-              listOfStarUrls.remove("");
+
+              listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
               if(myNewUsername != "" && myUsername == ""){
                 var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -3078,13 +3084,6 @@ class planetArticle extends StatelessWidget{
                               ),
                             ),
                         ),
-                      ),
-                      /*Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(listOfPlanetUrls.length, (int indexPlace) => Text("${listOfPlanetUrls[indexPlace]}\n", textAlign: TextAlign.center))
-                      ),*/
-                      Container(
-                        height: 5,
                       ),
                     ],
                   ),
