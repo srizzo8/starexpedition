@@ -8,6 +8,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -32,6 +33,8 @@ import 'package:starexpedition4/userSearchBar.dart';
 import 'loginPage.dart';
 
 import 'package:sentry_flutter/sentry_flutter.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -84,6 +87,9 @@ bool fromSearchBarToPlanetArticle = false;
 
 String starFileContent = "";
 String planetFileContent = "";
+
+List<String> listOfStarUrls = [];
+List<String> listOfPlanetUrls = [];
 
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
@@ -325,6 +331,29 @@ Future<String> readPlanetFile(String planetPath) async{
     return "N/A";
   }*/
 }
+
+/*List<String> reachEachLineInTextFile(String contentFromFile){
+  List<String> fileContentAsList = contentFromFile.split("\n");
+  return fileContentAsList;
+  /*try{
+    final myFile = File(filePath);
+    List<String> fileLines = myFile.readAsLinesSync();
+
+    for(String s in fileLines){
+      if(s == ""){
+        fileLines.remove("");
+      }
+      else{
+        //continue
+      }
+    }
+
+    return fileLines;
+  }
+  catch (e){
+    return [];
+  }*/
+}*/
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -903,6 +932,11 @@ class theStarExpeditionState extends State<StarExpedition> {
                       starInfo = await getStarInformation();
                       featuredStarOfTheDayBool = true;
                       starFileContent = await readStarFile();
+                      listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+                      listOfStarUrls.remove("");
+
+                      print("listofstarurls: ${listOfStarUrls.toString()}");
+                      print("size of listofstarurls: ${listOfStarUrls.length}");
 
                       //Is the star tracked by a user?
                       if(myNewUsername != "" && myUsername == ""){
@@ -958,6 +992,8 @@ class theStarExpeditionState extends State<StarExpedition> {
                   starInfo = await getStarInformation();
                   featuredStarOfTheDayBool = true;
                   starFileContent = await readStarFile();
+                  listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+                  listOfStarUrls.remove("");
 
                   //Is the star tracked by a user?
                   if(myNewUsername != "" && myUsername == ""){
@@ -1513,6 +1549,8 @@ class CustomSearchDelegate extends SearchDelegate {
               print(correctStar);
               starInfo = await getStarInformation();
               starFileContent = await readStarFile();
+              listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+              listOfStarUrls.remove("");
 
               if(myNewUsername != "" && myUsername == ""){
                 var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -1640,6 +1678,8 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
               informationAboutPlanet = await articlePage(theStarInfo).getPlanetData();
 
               planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
+              listOfPlanetUrls = planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+              listOfPlanetUrls.remove("");
 
               //Is the planet tracked by a user?
               if(myNewUsername != "" && myUsername == ""){
@@ -1980,6 +2020,10 @@ class articlePage extends StatelessWidget{
                                             informationAboutPlanet = await getPlanetData();
 
                                             planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
+                                            listOfPlanetUrls = planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+                                            listOfPlanetUrls.remove("");
+
+                                            print("listOfPlanetUrls: ${listOfPlanetUrls}");
 
                                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
                                             //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
@@ -2434,8 +2478,18 @@ class articlePage extends StatelessWidget{
                         child: Text("\nOnline Articles about ${correctStar}",
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
                       ),
-                      Center(
-                        child: Text(starFileContent),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(listOfStarUrls.length, (int indexPlace) =>
+                            Center(
+                              child: InkWell(
+                                child: Text("${listOfStarUrls[indexPlace]}\n", textAlign: TextAlign.center),
+                                onTap: (){
+                                  launchUrl(Uri.parse("${listOfStarUrls[indexPlace]}"));
+                                }
+                              ),
+                            ),
+                        ),
                       ),
                       Container(
                         height: 5,
@@ -2497,6 +2551,8 @@ class planetArticle extends StatelessWidget{
               print("The host star information: $hostStarInformation");
 
               starFileContent = await readStarFile();
+              listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+              listOfStarUrls.remove("");
 
               if(myNewUsername != "" && myUsername == ""){
                 var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -3010,9 +3066,23 @@ class planetArticle extends StatelessWidget{
                         child: Text("\nOnline Articles about ${correctPlanet}",
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
                       ),
-                      Center(
-                        child: Text(planetFileContent),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(listOfPlanetUrls.length, (int indexPlace) =>
+                            Center(
+                              child: InkWell(
+                                  child: Text("${listOfPlanetUrls[indexPlace]}\n", textAlign: TextAlign.center),
+                                  onTap: (){
+                                    launchUrl(Uri.parse("${listOfPlanetUrls[indexPlace]}"));
+                                  }
+                              ),
+                            ),
+                        ),
                       ),
+                      /*Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(listOfPlanetUrls.length, (int indexPlace) => Text("${listOfPlanetUrls[indexPlace]}\n", textAlign: TextAlign.center))
+                      ),*/
                       Container(
                         height: 5,
                       ),

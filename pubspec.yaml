@@ -53,6 +53,7 @@ dependencies:
   email_sender: ^1.1.6
   sentry_flutter: ^8.10.1
   encrypt: ^5.0.1
+  url_launcher: ^6.1.10
 
 dev_dependencies:
   flutter_test:
