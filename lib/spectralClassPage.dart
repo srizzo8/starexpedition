@@ -570,6 +570,9 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
                       fromSpectralClassPage = true;
 
                       myMain.starFileContent = await myMain.readStarFile();
+                      myMain.listOfStarUrls = myMain.starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+
+                      myMain.listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
                       //Is a user tracking this star?
                       if(myNewUsername != "" && myUsername == ""){
