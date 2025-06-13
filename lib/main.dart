@@ -2483,6 +2483,9 @@ class articlePage extends StatelessWidget{
                         child: Text("\nOnline Articles about ${correctStar}",
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
                       ),
+                      Container(
+                        height: 5,
+                      ),
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: List.generate(listOfStarUrls.length, (int indexPlace) =>
@@ -3074,6 +3077,9 @@ class planetArticle extends StatelessWidget{
                       Center(
                         child: Text("\nOnline Articles about ${correctPlanet}",
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                      ),
+                      Container(
+                        height: 5,
                       ),
                       Column(
                         mainAxisSize: MainAxisSize.min,
