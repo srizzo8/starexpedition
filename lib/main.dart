@@ -2487,11 +2487,14 @@ class articlePage extends StatelessWidget{
                         mainAxisSize: MainAxisSize.min,
                         children: List.generate(listOfStarUrls.length, (int indexPlace) =>
                             Center(
-                              child: InkWell(
-                                child: Text("${listOfStarUrls[indexPlace]}\n", textAlign: TextAlign.center),
-                                onTap: (){
-                                  launchUrl(Uri.parse("${listOfStarUrls[indexPlace]}"));
-                                }
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0),
+                                child: InkWell(
+                                  child: Text("${listOfStarUrls[indexPlace]}\n", textAlign: TextAlign.center),
+                                  onTap: (){
+                                    launchUrl(Uri.parse("${listOfStarUrls[indexPlace]}"));
+                                  }
+                                ),
                               ),
                             ),
                         ),
@@ -3076,11 +3079,14 @@ class planetArticle extends StatelessWidget{
                         mainAxisSize: MainAxisSize.min,
                         children: List.generate(listOfPlanetUrls.length, (int indexPlace) =>
                             Center(
-                              child: InkWell(
-                                  child: Text("${listOfPlanetUrls[indexPlace]}\n", textAlign: TextAlign.center),
-                                  onTap: (){
-                                    launchUrl(Uri.parse("${listOfPlanetUrls[indexPlace]}"));
-                                  }
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0),
+                                child: InkWell(
+                                    child: Text("${listOfPlanetUrls[indexPlace]}\n", textAlign: TextAlign.center),
+                                    onTap: (){
+                                      launchUrl(Uri.parse("${listOfPlanetUrls[indexPlace]}"));
+                                    }
+                                ),
                               ),
                             ),
                         ),
