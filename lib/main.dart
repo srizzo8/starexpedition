@@ -648,8 +648,9 @@ Future<List<String>> getStarInformation() async{
   final starDiscoverer = await starReference.child("star_discoverer").get();
   final starDiscoveryDate = await starReference.child("star_discovery_date").get();
   final starTemperature = await starReference.child("star_temperature").get();
+  final starImageSource = await starReference.child("image_source").get();
 
-  return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString()];
+  return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString(), starImageSource.value.toString()];
 }
 
 Future<Map<String, List>> getOtherNames() async{
@@ -1859,6 +1860,18 @@ class articlePage extends StatelessWidget{
                           height: 200,
                           width: 200,
                           fit: BoxFit.cover,
+                        ),
+                      ),
+                      Container(
+                        height: 5,
+                      ),
+                      Center(
+                        child: Text("Image Source\n", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                          child: Text(starInfo[10].toString(), textAlign: TextAlign.center),
                         ),
                       ),
                       Container(
