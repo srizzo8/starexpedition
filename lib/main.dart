@@ -325,7 +325,7 @@ Future<String> readPlanetFile(String planetPath) async{
   print("planetsIndex: ${planetsIndex}");
   try{
     //Reading the file
-    final fileContent = 
+    final fileContent =
   }
   catch(e){
     return "N/A";
@@ -2506,10 +2506,10 @@ class articlePage extends StatelessWidget{
                               child: Padding(
                                 padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0),
                                 child: InkWell(
-                                  child: Text("${listOfStarUrls[indexPlace]}\n", textAlign: TextAlign.center),
-                                  onTap: (){
-                                    launchUrl(Uri.parse("${listOfStarUrls[indexPlace]}"));
-                                  }
+                                    child: Text("${listOfStarUrls[indexPlace]}\n", textAlign: TextAlign.center),
+                                    onTap: (){
+                                      launchUrl(Uri.parse("${listOfStarUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
+                                    }
                                 ),
                               ),
                             ),
@@ -3103,7 +3103,7 @@ class planetArticle extends StatelessWidget{
                                 child: InkWell(
                                     child: Text("${listOfPlanetUrls[indexPlace]}\n", textAlign: TextAlign.center),
                                     onTap: (){
-                                      launchUrl(Uri.parse("${listOfPlanetUrls[indexPlace]}"));
+                                      launchUrl(Uri.parse("${listOfPlanetUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
                                     }
                                 ),
                               ),
