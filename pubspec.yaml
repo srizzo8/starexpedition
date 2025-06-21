@@ -55,6 +55,7 @@ dependencies:
   encrypt: ^5.0.1
   url_launcher: ^6.1.10
   webview_flutter: ^4.0.7
+  advance_pdf_viewer_fork: ^2.0.0
 
 dev_dependencies:
   flutter_test:

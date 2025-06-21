@@ -5,6 +5,7 @@ import 'dart:io';
 //import 'dart:js';
 import 'dart:math';
 //import 'dart:html';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:starexpedition4/pdfViewer.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
 
 import 'package:starexpedition4/discussionBoardPage.dart';
@@ -29,12 +31,17 @@ import 'package:starexpedition4/conversionCalculator.dart';
 import 'package:starexpedition4/settingsPage.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
+import 'package:starexpedition4/pdfViewer.dart';
 
 import 'loginPage.dart';
 
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:url_launcher/url_launcher.dart';
+
+//import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
+import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
 
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
@@ -90,6 +97,9 @@ String planetFileContent = "";
 
 List<String> listOfStarUrls = [];
 List<String> listOfPlanetUrls = [];
+
+int starListUrlIndex = 0;
+int planetListUrlIndex = 0;
 
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
@@ -2508,7 +2518,16 @@ class articlePage extends StatelessWidget{
                                 child: InkWell(
                                     child: Text("${listOfStarUrls[indexPlace]}\n", textAlign: TextAlign.center),
                                     onTap: (){
-                                      launchUrl(Uri.parse("${listOfStarUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
+                                      starListUrlIndex = indexPlace;
+                                      if(!(listOfStarUrls[indexPlace].contains("pdf"))){
+                                        launchUrl(Uri.parse("${listOfStarUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
+                                        print("Not a pdf file");
+                                      }
+                                      else{
+                                        //Navigator.push(bc, MaterialPageRoute(builder: (bc) => pdfViewer(urlOfPdf: listOfStarUrls[indexPlace])));
+                                        Navigator.push(bc, MaterialPageRoute(builder: (bc) => pdfViewer()));
+                                        print("A pdf file. starListUrlIndex is: ${starListUrlIndex.toString()}");
+                                      }
                                     }
                                 ),
                               ),
