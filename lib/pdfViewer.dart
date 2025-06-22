@@ -73,9 +73,10 @@ class pdfViewerState extends State<pdfViewer>{
               );
             }
             else{
-              return Container(
+              /*return Container(
                 child: Text("PDF not found", textAlign: TextAlign.center),
-              );
+              );*/
+              return Center(child: CircularProgressIndicator());
             }
           }
         )
