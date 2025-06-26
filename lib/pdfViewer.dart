@@ -13,6 +13,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
@@ -41,6 +42,12 @@ import 'package:starexpedition4/main.dart' as myMain;
 
 import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
 
+import 'package:http/http.dart' as http;
+
+//import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+
+//import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
 class pdfViewer extends StatefulWidget{
   const pdfViewer({Key? key}) : super(key: key);
 
@@ -59,28 +66,56 @@ class pdfViewerState extends State<pdfViewer>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            Navigator.pop(bc),
+            if(myMain.starPdfBool == true){
+              myMain.starPdfBool = false,
+              Navigator.pop(bc),
+            }
+            else if(myMain.planetPdfBool == true){
+              myMain.planetPdfBool = false,
+              myMain.myPlanetPdfFile = null,
+              Navigator.pop(bc),
+            }
           }
         ),
       ),
-      body: SizedBox.expand(
+      body: myMain.starPdfBool == true && myMain.planetPdfBool == false? SizedBox.expand(
         child: FutureBuilder(
-          future: PDFDocument.fromURL(myMain.listOfStarUrls[myMain.starListUrlIndex]),
+          future: myMain.myStarPdfFile,//PDFDocument.fromURL(myMain.listOfStarUrls[myMain.starListUrlIndex]),
           builder: (bc, snapshot){
             if(snapshot.hasData){
               return PDFViewer(
                 document: snapshot.data as PDFDocument,
+                showPicker: false,
               );
             }
             else{
-              /*return Container(
-                child: Text("PDF not found", textAlign: TextAlign.center),
-              );*/
               return Center(child: CircularProgressIndicator());
             }
           }
         )
-      )
+      ): myMain.starPdfBool == false && myMain.planetPdfBool == true? SizedBox.expand(
+        child: FutureBuilder(
+            future: myMain.myPlanetPdfFile,//PDFDocument.fromFile(File(myMain.listOfPlanetUrls[myMain.planetListUrlIndex])),
+            builder: (bc, snapshot){
+              if(snapshot.hasData){
+                return PDFViewer(
+                  document: snapshot.data as PDFDocument,
+                  showPicker: false,
+                );
+              }
+              else{
+                //final myResponse = http.get(Uri.parse(myMain.listOfPlanetUrls[myMain.planetListUrlIndex]));
+                //print("It is a: ${myResponse.headers["content-type"]}");
+                return Center(child: CircularProgressIndicator());
+              }
+            }
+        ),
+      ):
+      /*PDF().fromUrl(
+        myMain.listOfPlanetUrls[myMain.planetListUrlIndex],
+        //placeholder: Center(child: CircularProgressIndicator()),
+      ):*/
+      SizedBox.expand(),
     );
   }
 }

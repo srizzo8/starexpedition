@@ -43,6 +43,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
 
+import 'package:http/http.dart' as http;
+
+//import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+
 /* String correctString = "";
 FirebaseDatabase database = FirebaseDatabase.instance;
 DatabaseReference ref = FirebaseDatabase.instance.ref(myString);*/
@@ -100,6 +104,12 @@ List<String> listOfPlanetUrls = [];
 
 int starListUrlIndex = 0;
 int planetListUrlIndex = 0;
+
+bool starPdfBool = false;
+bool planetPdfBool = false;
+
+var myStarPdfFile;
+var myPlanetPdfFile;
 
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
@@ -2517,7 +2527,7 @@ class articlePage extends StatelessWidget{
                                 padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0),
                                 child: InkWell(
                                     child: Text("${listOfStarUrls[indexPlace]}\n", textAlign: TextAlign.center),
-                                    onTap: (){
+                                    onTap: () async{
                                       starListUrlIndex = indexPlace;
                                       if(!(listOfStarUrls[indexPlace].contains("pdf"))){
                                         launchUrl(Uri.parse("${listOfStarUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
@@ -2525,10 +2535,46 @@ class articlePage extends StatelessWidget{
                                       }
                                       else{
                                         //Navigator.push(bc, MaterialPageRoute(builder: (bc) => pdfViewer(urlOfPdf: listOfStarUrls[indexPlace])));
+                                        starPdfBool = true;
+                                        /*var response = await http.get(Uri.parse(listOfStarUrls[indexPlace]));
+                                        var myDirectory = await getTemporaryDirectory();
+                                        var temporaryStarPdfFile = File("${myDirectory.path}/temp.pdf");
+                                        await temporaryStarPdfFile.writeAsBytes(response.bodyBytes);
+                                        myStarPdfFile = PDFDocument.fromFile(temporaryStarPdfFile);
                                         Navigator.push(bc, MaterialPageRoute(builder: (bc) => pdfViewer()));
                                         print("A pdf file. starListUrlIndex is: ${starListUrlIndex.toString()}");
-                                      }
+                                        var someBytes = response.bodyBytes.take(10).toList();
+                                        print("The first ten bytes: ${someBytes}");*/
+                                        var myResponse = await http.get(Uri.parse(listOfStarUrls[indexPlace]));
+
+                                        if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
+                                          //Creating a temporary file
+                                          var temporaryDirectory = await getTemporaryDirectory();
+                                          var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
+                                          await temporaryFile.writeAsBytes(myResponse.bodyBytes);
+
+                                          //Giving myStarPdfFile the temporary file
+                                          myStarPdfFile = PDFDocument.fromFile(temporaryFile);
+
+                                          //Going to the page that has the PDF
+                                          Navigator.push(bc, MaterialPageRoute(builder: (theContext) => pdfViewer()));
+                                          print("A pdf file. starListUrlIndex is: ${starListUrlIndex.toString()}");
+                                        }
+                                        else{
+                                          print("Unfortunately, the PDF file failed to load. This is the status code: ${myResponse.statusCode}");
+                                          print("myResponse.headers[content-type]?: ${myResponse.headers["content-type"]}");
+                                          if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
+                                            //Did not load in the correct Star Expedition format and failed to load as a PDF
+                                          }
+                                          else if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
+                                            //Did not load in the correct Star Expedition format
+                                          }
+                                          else if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
+                                            //Failed to load as a PDF
+                                          }
+                                        }
                                     }
+                                  }
                                 ),
                               ),
                             ),
@@ -3121,8 +3167,83 @@ class planetArticle extends StatelessWidget{
                                 padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0),
                                 child: InkWell(
                                     child: Text("${listOfPlanetUrls[indexPlace]}\n", textAlign: TextAlign.center),
-                                    onTap: (){
-                                      launchUrl(Uri.parse("${listOfPlanetUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
+                                    onTap: () async{
+                                      planetListUrlIndex = indexPlace;
+                                      if(!(listOfPlanetUrls[indexPlace].contains("pdf"))){
+                                        launchUrl(Uri.parse("${listOfPlanetUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
+                                        print("Not a pdf file");
+                                      }
+                                      else{
+                                        planetPdfBool = true;
+
+                                        //Making a temporary PDF file:
+                                        /*var response = await http.get(Uri.parse(listOfPlanetUrls[indexPlace]));
+                                        var myDirectory = await getTemporaryDirectory();
+                                        var temporaryPlanetPdfFile = File("${myDirectory.path}/temp.pdf");
+                                        await temporaryPlanetPdfFile.writeAsBytes(response.bodyBytes);
+
+                                        //Flushing the PDF file:
+                                        var openSyncFile = temporaryPlanetPdfFile.openSync(mode: FileMode.write);
+                                        openSyncFile.writeFromSync(response.bodyBytes);
+                                        openSyncFile.flushSync();
+                                        openSyncFile.closeSync();*/
+
+                                        //Adding a delay before setting myPlanetPdfFile to a PDF value:
+                                        //await Future.delayed(Duration(milliseconds: 500));
+
+                                        //Is the full file downloaded? They must be the same.
+                                        //print("This is the expected length: ${response.headers["content-length"]}");
+                                        //print("This is the actual length: ${response.bodyBytes.length}");*/
+
+                                        //Streaming the file to a disk (DO NOT REMOVE):
+                                        /*var myClient = http.Client();
+                                        var myRequest = http.Request("GET", Uri.parse(listOfPlanetUrls[indexPlace]));
+                                        var response = await myClient.send(myRequest);
+
+                                        var temporaryPlanetPdfFile = File("${(await getTemporaryDirectory()).path}/tempPdf.pdf");
+                                        var sink = temporaryPlanetPdfFile.openWrite();
+
+                                        await response.stream.pipe(sink);
+                                        await sink.flush();
+                                        await sink.close();
+
+                                        //Storing the PDF file in a variable and allowing users to view it:
+                                        myPlanetPdfFile = PDFDocument.fromFile(temporaryPlanetPdfFile);
+                                        */
+                                        //Another way how the app can allow users to access a PDF file:
+                                        var myResponse = await http.get(Uri.parse(listOfPlanetUrls[indexPlace]));
+
+                                        if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
+                                          //Creating a temporary file
+                                          var temporaryDirectory = await getTemporaryDirectory();
+                                          var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
+                                          await temporaryFile.writeAsBytes(myResponse.bodyBytes);
+
+                                          //Giving myPlanetPdfFile the temporary file
+                                          myPlanetPdfFile = PDFDocument.fromFile(temporaryFile);
+
+                                          //Going to the page that has the PDF
+                                          Navigator.push(theContext, MaterialPageRoute(builder: (theContext) => pdfViewer()));
+                                          print("A pdf file. planetListUrlIndex is: ${planetListUrlIndex.toString()}");
+                                        }
+                                        else{
+                                          print("Unfortunately, the PDF file failed to load. This is the status code: ${myResponse.statusCode}");
+                                          print("myResponse.headers[content-type]?: ${myResponse.headers["content-type"]}");
+                                          if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
+                                            //Did not load in the correct Star Expedition format and failed to load as a PDF
+                                          }
+                                          else if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
+                                            //Did not load in the correct Star Expedition format
+                                          }
+                                          else if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
+                                            //Failed to load as a PDF
+                                          }
+                                        }
+
+                                        //Testing to see if the PDF is actually a PDF:
+                                        /*var someBytes = response.bodyBytes.take(10).toList();
+                                        print("The first ten bytes: ${someBytes}");*/
+                                      }
                                     }
                                 ),
                               ),
