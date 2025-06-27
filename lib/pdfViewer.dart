@@ -80,7 +80,7 @@ class pdfViewerState extends State<pdfViewer>{
       ),
       body: myMain.starPdfBool == true && myMain.planetPdfBool == false? SizedBox.expand(
         child: FutureBuilder(
-          future: myMain.myStarPdfFile,//PDFDocument.fromURL(myMain.listOfStarUrls[myMain.starListUrlIndex]),
+          future: myMain.myStarPdfFile,
           builder: (bc, snapshot){
             if(snapshot.hasData){
               return PDFViewer(
@@ -95,7 +95,7 @@ class pdfViewerState extends State<pdfViewer>{
         )
       ): myMain.starPdfBool == false && myMain.planetPdfBool == true? SizedBox.expand(
         child: FutureBuilder(
-            future: myMain.myPlanetPdfFile,//PDFDocument.fromFile(File(myMain.listOfPlanetUrls[myMain.planetListUrlIndex])),
+            future: myMain.myPlanetPdfFile,
             builder: (bc, snapshot){
               if(snapshot.hasData){
                 return PDFViewer(
@@ -104,17 +104,11 @@ class pdfViewerState extends State<pdfViewer>{
                 );
               }
               else{
-                //final myResponse = http.get(Uri.parse(myMain.listOfPlanetUrls[myMain.planetListUrlIndex]));
-                //print("It is a: ${myResponse.headers["content-type"]}");
                 return Center(child: CircularProgressIndicator());
               }
             }
         ),
       ):
-      /*PDF().fromUrl(
-        myMain.listOfPlanetUrls[myMain.planetListUrlIndex],
-        //placeholder: Center(child: CircularProgressIndicator()),
-      ):*/
       SizedBox.expand(),
     );
   }

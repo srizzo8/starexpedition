@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:starexpedition4/pdfViewer.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
@@ -1751,6 +1752,8 @@ class articlePage extends StatelessWidget{
   final List<String> starInfo;
   articlePage(this.starInfo);
 
+  List<Text> starPdfMessageForUser = [];
+
   void getKeys(Map myMap){ // This is for getting planet names, which are keys
     //Making the star's planets in alphabetical order
     var planetsList = myMap.keys.toList()..sort();
@@ -1807,6 +1810,24 @@ class articlePage extends StatelessWidget{
     return Future.delayed(Duration(seconds: 1), () {
       return [discoveryDate.value.toString(), distanceFromStar.value.toString(), earthMasses.value.toString(), knownGases.value.toString(), orbitalPeriod.value.toString(), planetTemperature.value.toString(), planetTextFilePath.value.toString()];
     });
+  }
+
+  List<Text> starPdfDialogMessage(http.Response response){
+    List<Text> messageForUser = [];
+
+    if(response.statusCode != 200){
+      //Did not load in the correct Star Expedition format
+      messageForUser.add(Text("Did not load in the correct Star Expedition format"));
+    }
+    /*else if(response.statusCode != 200 && response.headers?["content-type"]?.contains("application/pdf") == true){
+      //Did not load in the correct Star Expedition format
+    }*/
+    if(response.headers?["content-type"]?.contains("application/pdf") == false){
+      //Failed to load as a PDF
+      messageForUser.add(Text("Failed to load as a PDF"));
+    }
+
+    return messageForUser;
   }
 
   @override
@@ -2534,17 +2555,8 @@ class articlePage extends StatelessWidget{
                                         print("Not a pdf file");
                                       }
                                       else{
-                                        //Navigator.push(bc, MaterialPageRoute(builder: (bc) => pdfViewer(urlOfPdf: listOfStarUrls[indexPlace])));
                                         starPdfBool = true;
-                                        /*var response = await http.get(Uri.parse(listOfStarUrls[indexPlace]));
-                                        var myDirectory = await getTemporaryDirectory();
-                                        var temporaryStarPdfFile = File("${myDirectory.path}/temp.pdf");
-                                        await temporaryStarPdfFile.writeAsBytes(response.bodyBytes);
-                                        myStarPdfFile = PDFDocument.fromFile(temporaryStarPdfFile);
-                                        Navigator.push(bc, MaterialPageRoute(builder: (bc) => pdfViewer()));
-                                        print("A pdf file. starListUrlIndex is: ${starListUrlIndex.toString()}");
-                                        var someBytes = response.bodyBytes.take(10).toList();
-                                        print("The first ten bytes: ${someBytes}");*/
+
                                         var myResponse = await http.get(Uri.parse(listOfStarUrls[indexPlace]));
 
                                         if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
@@ -2563,7 +2575,7 @@ class articlePage extends StatelessWidget{
                                         else{
                                           print("Unfortunately, the PDF file failed to load. This is the status code: ${myResponse.statusCode}");
                                           print("myResponse.headers[content-type]?: ${myResponse.headers["content-type"]}");
-                                          if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
+                                          /*if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
                                             //Did not load in the correct Star Expedition format and failed to load as a PDF
                                           }
                                           else if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
@@ -2571,7 +2583,34 @@ class articlePage extends StatelessWidget{
                                           }
                                           else if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
                                             //Failed to load as a PDF
-                                          }
+                                          }*/
+
+                                          starPdfMessageForUser = starPdfDialogMessage(myResponse);
+
+                                          showDialog(
+                                            context: bc,
+                                            builder: (myContent) => AlertDialog(
+                                              title: const Text("Error"),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: List.generate(starPdfMessageForUser.length, (i){
+                                                  return starPdfMessageForUser[i];
+                                                }),
+                                              ),
+
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: (){
+                                                    Navigator.of(myContent).pop();
+                                                  },
+                                                  child: Container(
+                                                    child: const Text("Ok"),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          );
                                         }
                                     }
                                   }
@@ -2617,6 +2656,23 @@ class planetArticle extends StatelessWidget{
 
   List<String>? informationAboutStarsPlanets = [];
   List<String> hostStarInformation = [];
+
+  List<Text> planetPdfMessageForUser = [];
+
+  List<Text> planetPdfDialogMessage(http.Response response){
+    List<Text> messageForUser = [];
+
+    if(response.statusCode != 200){
+      //Did not load in the correct Star Expedition format
+      messageForUser.add(Text("Did not load in the correct Star Expedition format"));
+    }
+    if(response.headers?["content-type"]?.contains("application/pdf") == false){
+      //Failed to load as a PDF
+      messageForUser.add(Text("Failed to load as a PDF"));
+    }
+
+    return messageForUser;
+  }
 
   @override
   Widget build(BuildContext theContext) {
@@ -3176,41 +3232,6 @@ class planetArticle extends StatelessWidget{
                                       else{
                                         planetPdfBool = true;
 
-                                        //Making a temporary PDF file:
-                                        /*var response = await http.get(Uri.parse(listOfPlanetUrls[indexPlace]));
-                                        var myDirectory = await getTemporaryDirectory();
-                                        var temporaryPlanetPdfFile = File("${myDirectory.path}/temp.pdf");
-                                        await temporaryPlanetPdfFile.writeAsBytes(response.bodyBytes);
-
-                                        //Flushing the PDF file:
-                                        var openSyncFile = temporaryPlanetPdfFile.openSync(mode: FileMode.write);
-                                        openSyncFile.writeFromSync(response.bodyBytes);
-                                        openSyncFile.flushSync();
-                                        openSyncFile.closeSync();*/
-
-                                        //Adding a delay before setting myPlanetPdfFile to a PDF value:
-                                        //await Future.delayed(Duration(milliseconds: 500));
-
-                                        //Is the full file downloaded? They must be the same.
-                                        //print("This is the expected length: ${response.headers["content-length"]}");
-                                        //print("This is the actual length: ${response.bodyBytes.length}");*/
-
-                                        //Streaming the file to a disk (DO NOT REMOVE):
-                                        /*var myClient = http.Client();
-                                        var myRequest = http.Request("GET", Uri.parse(listOfPlanetUrls[indexPlace]));
-                                        var response = await myClient.send(myRequest);
-
-                                        var temporaryPlanetPdfFile = File("${(await getTemporaryDirectory()).path}/tempPdf.pdf");
-                                        var sink = temporaryPlanetPdfFile.openWrite();
-
-                                        await response.stream.pipe(sink);
-                                        await sink.flush();
-                                        await sink.close();
-
-                                        //Storing the PDF file in a variable and allowing users to view it:
-                                        myPlanetPdfFile = PDFDocument.fromFile(temporaryPlanetPdfFile);
-                                        */
-                                        //Another way how the app can allow users to access a PDF file:
                                         var myResponse = await http.get(Uri.parse(listOfPlanetUrls[indexPlace]));
 
                                         if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
@@ -3229,7 +3250,7 @@ class planetArticle extends StatelessWidget{
                                         else{
                                           print("Unfortunately, the PDF file failed to load. This is the status code: ${myResponse.statusCode}");
                                           print("myResponse.headers[content-type]?: ${myResponse.headers["content-type"]}");
-                                          if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
+                                          /*if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
                                             //Did not load in the correct Star Expedition format and failed to load as a PDF
                                           }
                                           else if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
@@ -3237,12 +3258,34 @@ class planetArticle extends StatelessWidget{
                                           }
                                           else if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
                                             //Failed to load as a PDF
-                                          }
-                                        }
+                                          }*/
+                                          planetPdfMessageForUser = planetPdfDialogMessage(myResponse);
 
-                                        //Testing to see if the PDF is actually a PDF:
-                                        /*var someBytes = response.bodyBytes.take(10).toList();
-                                        print("The first ten bytes: ${someBytes}");*/
+                                          showDialog(
+                                            context: theContext,
+                                            builder: (myContent) => AlertDialog(
+                                              title: const Text("Error"),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: List.generate(planetPdfMessageForUser.length, (i){
+                                                  return planetPdfMessageForUser[i];
+                                                }),
+                                              ),
+
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: (){
+                                                    Navigator.of(myContent).pop();
+                                                  },
+                                                  child: Container(
+                                                    child: const Text("Ok"),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        }
                                       }
                                     }
                                 ),
