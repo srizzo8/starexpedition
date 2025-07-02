@@ -57,7 +57,8 @@ dependencies:
   webview_flutter: ^4.0.7
   advance_pdf_viewer_fork: ^2.0.0
   http: ^0.13.5
-  flutter_cached_pdfview: ^0.4.3
+  easy_pdf_viewer: ^1.0.8
+
 
 dev_dependencies:
   flutter_test:

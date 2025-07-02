@@ -42,7 +42,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 //import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
+//import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
+
+import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 
 import 'package:http/http.dart' as http;
 

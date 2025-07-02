@@ -5,7 +5,7 @@ import 'dart:io';
 //import 'dart:js';
 import 'dart:math';
 //import 'dart:html';
-//import 'dart:typed_data';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -40,13 +40,15 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:starexpedition4/main.dart' as myMain;
 
-import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
+//import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
 
 import 'package:http/http.dart' as http;
 
 //import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 
 //import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
+import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 
 class pdfViewer extends StatefulWidget{
   const pdfViewer({Key? key}) : super(key: key);
@@ -56,6 +58,34 @@ class pdfViewer extends StatefulWidget{
 }
 
 class pdfViewerState extends State<pdfViewer>{
+  TextEditingController starPdfPageController = TextEditingController();
+  int myStarPdfPage = 0;
+  int totalStarPdfPages = 0;
+  List<PDFPage?> starPdfPages = [];
+  late PageController starPageController;
+  late int myStarPageNumber;
+  //ScrollController starScrollController = ScrollController();
+  //PDFViewerController starPageController = PDFViewerController();
+
+  TextEditingController planetPdfPageController = TextEditingController();
+  int myPlanetPdfPage = 1;
+  int totalPlanetPdfPages = 0;
+  //PdfViewerController planetPageController = PdfViewerController();
+  //PageController myStarPageController = PageController();
+
+  void goToPage({int? myPage}){
+    starPageController.jumpToPage(myPage != null ? myPage : myStarPageNumber - 1);
+  }
+  /*void goToPage(int myPage){
+    if(starPageController.hasClients){
+      starPageController.goToPage(myPage - 1);
+    }
+  }*/
+
+  void animateToPage({int? myPage}){
+    starPageController.animateToPage(myPage != null ? myPage : myStarPageNumber - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
+  }
+
   @override
   Widget build(BuildContext bc){
     return Scaffold(
@@ -78,21 +108,132 @@ class pdfViewerState extends State<pdfViewer>{
           }
         ),
       ),
-      body: myMain.starPdfBool == true && myMain.planetPdfBool == false? SizedBox.expand(
-        child: FutureBuilder(
-          future: myMain.myStarPdfFile,
-          builder: (bc, snapshot){
-            if(snapshot.hasData){
-              return PDFViewer(
-                document: snapshot.data as PDFDocument,
-                showPicker: false,
-              );
-            }
-            else{
-              return Center(child: CircularProgressIndicator());
-            }
-          }
-        )
+      body: myMain.starPdfBool == true && myMain.planetPdfBool == false?
+      Column(
+        children: <Widget>[
+          Expanded(
+            child: FutureBuilder(
+              future: myMain.myStarPdfFile,
+              builder: (bc, snapshot){
+                if(snapshot.hasData){
+                  starPdfPages = List.filled((snapshot.data as PDFDocument).count, null);
+                  starPageController = PageController();
+                  myStarPageNumber = starPageController.initialPage + 1;
+                  print(starPdfPages.length);
+                  print(myStarPageNumber);
+                  totalStarPdfPages = (snapshot.data as PDFDocument).count;
+                  return PDFViewer(
+                    document: snapshot.data as PDFDocument,
+                    pickerButtonColor: Colors.red,
+                    onPageChanged: (int myCurrentPage){
+                      myStarPdfPage = myCurrentPage;
+                      print("myStarPdfPage: ${myStarPdfPage}");
+                    },
+                    controller: starPageController,
+                  );
+                  /*return PdfViewer.openAsset(
+                    "${snapshot.data as String}",
+                    viewerController: starPageController,
+                  );*/
+                  /*starPdfController = PdfController(
+                    document: snapshot.data as Future<PdfDocument>,
+                    initialPage: 1,
+                  );*/
+                  /*return PDFViewer(
+                    document: snapshot.data as PDFDocument,
+                    showPicker: false,
+                    //key: ValueKey(currentStarPdfPage),
+                  );*/
+                  /*return PdfView(
+                    controller: starPdfController,
+                    onDocumentLoaded: (myPdfDocument){
+                      setState((){
+                        allStarPdfPages = myPdfDocument.pagesCount;
+                      });
+                    },
+                    onPageChanged: (myPage){
+                      setState((){
+                        myStarPdfPage = myPage;
+                      });
+                    }
+                  );*/
+                }
+                else{
+                  return Center(child: CircularProgressIndicator());
+                }
+              }
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: starPdfPageController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: "Page:",
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 5,
+                ),
+                ElevatedButton(
+                  child: Text("Go", textAlign: TextAlign.center),
+                  onPressed: (){
+                    int? pageUserIsOn = int.tryParse(starPdfPageController.text);
+                    if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalStarPdfPages){
+                      //setState((){
+                        //if(starScrollController.hasClients){
+                          myStarPageNumber = pageUserIsOn;
+
+                          //jumpToPage(page: myStarPdfPage);
+                          //Navigator.of(bc).pop(myStarPdfPage);
+
+                          //myStarPdfPage++;
+                          animateToPage();
+                          goToPage();
+                        //}
+                      //});
+                      print("myStarPdfPage: ${myStarPdfPage}");
+                      //starPageController.goToPage(pageNumber: pageUserIsOn);
+                    }
+                    else{
+                      showDialog(
+                        context: bc,
+                        builder: (myContent) => AlertDialog(
+                          title: const Text("Error"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Center(
+                                child: Text("The page number that you have entered in is invalid."),
+                              ),
+                            ],
+                          ),
+
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: (){
+                                Navigator.of(myContent).pop();
+                              },
+                              child: Container(
+                                child: const Text("Ok"),
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }
+                  }
+                ),
+              ],
+            ),
+          ),
+        ]
       ): myMain.starPdfBool == false && myMain.planetPdfBool == true? SizedBox.expand(
         child: FutureBuilder(
             future: myMain.myPlanetPdfFile,
@@ -100,8 +241,16 @@ class pdfViewerState extends State<pdfViewer>{
               if(snapshot.hasData){
                 return PDFViewer(
                   document: snapshot.data as PDFDocument,
-                  showPicker: false,
+                  pickerButtonColor: Colors.red,
+                  onPageChanged: (int myCurrentPage){
+                    myPlanetPdfPage = myCurrentPage;
+                  }
                 );
+                /*return PdfViewer.openAsset(
+                  //document: snapshot.data as PDFDocument,
+                  "${snapshot.data as String}",
+                  viewerController: planetPageController,
+                );*/
               }
               else{
                 return Center(child: CircularProgressIndicator());
