@@ -60,15 +60,26 @@ class pdfViewerState extends State<pdfViewer>{
   late int myStarPageNumber;
 
   TextEditingController planetPdfPageController = TextEditingController();
-  int myPlanetPdfPage = 1;
+  int myPlanetPdfPage = 0;
   int totalPlanetPdfPages = 0;
+  List<PDFPage?> planetPdfPages = [];
+  late PageController planetPageController;
+  late int myPlanetPageNumber;
 
-  void goToPage({int? myPage}){
+  void goToStarPdfPage({int? myPage}){
     starPageController.jumpToPage(myPage != null ? myPage : myStarPageNumber - 1);
   }
 
-  void animateToPage({int? myPage}){
+  void animateToStarPdfPage({int? myPage}){
     starPageController.animateToPage(myPage != null ? myPage : myStarPageNumber - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
+  }
+
+  void goToPlanetPdfPage({int? myPage}){
+    planetPageController.jumpToPage(myPage != null ? myPage : myPlanetPageNumber - 1);
+  }
+
+  void animateToPlanetPdfPage({int? myPage}){
+    planetPageController.animateToPage(myPage != null ? myPage : myPlanetPageNumber - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
   }
 
   @override
@@ -147,8 +158,8 @@ class pdfViewerState extends State<pdfViewer>{
                         if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalStarPdfPages){
                           myStarPageNumber = pageUserIsOn;
 
-                          animateToPage();
-                          goToPage();
+                          animateToStarPdfPage();
+                          goToStarPdfPage();
 
                           print("myStarPdfPage: ${myStarPdfPage}");
                         }
@@ -166,7 +177,6 @@ class pdfViewerState extends State<pdfViewer>{
                                   ),
                                 ],
                               ),
-
                               actions: <Widget>[
                                 TextButton(
                                   onPressed: (){
@@ -188,7 +198,6 @@ class pdfViewerState extends State<pdfViewer>{
             Container(
               height: 5,
             ),
-
             Padding(
               padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
               child: Row(
@@ -201,8 +210,8 @@ class pdfViewerState extends State<pdfViewer>{
                     onPressed: (){
                       if(myStarPageNumber > 1){
                         myStarPageNumber = 1;
-                        animateToPage();
-                        goToPage();
+                        animateToStarPdfPage();
+                        goToStarPdfPage();
                       }
                       else{
                         print("Nothing needed");
@@ -216,8 +225,8 @@ class pdfViewerState extends State<pdfViewer>{
                       onPressed: (){
                         if(myStarPageNumber > 1){
                           myStarPageNumber = myStarPageNumber - 1;
-                          animateToPage();
-                          goToPage();
+                          animateToStarPdfPage();
+                          goToStarPdfPage();
                         }
                         else{
                           print("Nothing needed");
@@ -231,8 +240,8 @@ class pdfViewerState extends State<pdfViewer>{
                       onPressed: (){
                         if(myStarPageNumber < totalStarPdfPages){
                           myStarPageNumber = myStarPageNumber + 1;
-                          animateToPage();
-                          goToPage();
+                          animateToStarPdfPage();
+                          goToStarPdfPage();
                         }
                         else{
                           print("Nothing needed");
@@ -246,8 +255,8 @@ class pdfViewerState extends State<pdfViewer>{
                       onPressed: (){
                         if(myStarPageNumber < totalStarPdfPages){
                           myStarPageNumber = totalStarPdfPages;
-                          animateToPage();
-                          goToPage();
+                          animateToStarPdfPage();
+                          goToStarPdfPage();
                         }
                         else{
                           print("Nothing needed");
@@ -258,24 +267,169 @@ class pdfViewerState extends State<pdfViewer>{
               ),
             ),
           ],
-      ): myMain.starPdfBool == false && myMain.planetPdfBool == true? SizedBox.expand(
-        child: FutureBuilder(
-            future: myMain.myPlanetPdfFile,
-            builder: (bc, snapshot){
-              if(snapshot.hasData){
-                return PDFViewer(
-                    document: snapshot.data as PDFDocument,
-                    pickerButtonColor: Colors.red,
-                    onPageChanged: (int myCurrentPage){
-                      myPlanetPdfPage = myCurrentPage;
+      ): myMain.starPdfBool == false && myMain.planetPdfBool == true?
+        Column(
+          children: <Widget>[
+            Expanded(
+            child: FutureBuilder(
+                future: myMain.myPlanetPdfFile,
+                builder: (bc, snapshot){
+                  if(snapshot.hasData){
+                    planetPdfPages = List.filled((snapshot.data as PDFDocument).count, null);
+                    planetPageController = PageController();
+                    myPlanetPageNumber = planetPageController.initialPage + 1;
+                    print(planetPdfPages.length);
+                    print(myPlanetPageNumber);
+                    totalPlanetPdfPages = (snapshot.data as PDFDocument).count;
+                    return PDFViewer(
+                      document: snapshot.data as PDFDocument,
+                      showPicker: false,
+                      showNavigation: false,
+                      onPageChanged: (int myCurrentPage){
+                        myPlanetPdfPage = myCurrentPage;
+                        print("myPlanetPdfPage: ${myPlanetPdfPage}");
+                      },
+                      controller: planetPageController,
+                    );
+                  }
+                  else{
+                    return Center(child: CircularProgressIndicator());
+                  }
+                }
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: planetPdfPageController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: "Page:",
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 5,
+                ),
+                ElevatedButton(
+                    child: Text("Go", textAlign: TextAlign.center),
+                    onPressed: (){
+                      int? pageUserIsOn = int.tryParse(planetPdfPageController.text);
+                      if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalPlanetPdfPages){
+                        myPlanetPageNumber = pageUserIsOn;
+
+                        animateToPlanetPdfPage();
+                        goToPlanetPdfPage();
+
+                        print("myPlanetPdfPage: ${myPlanetPdfPage}");
+                      }
+                      else{
+                        showDialog(
+                          context: bc,
+                          builder: (myContent) => AlertDialog(
+                            title: const Text("Error"),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Center(
+                                  child: Text("The page number that you have entered in is invalid."),
+                                ),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: (){
+                                  Navigator.of(myContent).pop();
+                                },
+                                child: Container(
+                                  child: const Text("Ok"),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      }
                     }
-                );
-              }
-              else{
-                return Center(child: CircularProgressIndicator());
-              }
-            }
-        ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: 5,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ElevatedButton(
+                    child: Container(
+                      child: Text("|<", textAlign: TextAlign.center),
+                    ),
+                    onPressed: (){
+                      if(myPlanetPageNumber > 1){
+                        myPlanetPageNumber = 1;
+                        animateToPlanetPdfPage();
+                        goToPlanetPdfPage();
+                      }
+                      else{
+                        print("Nothing needed");
+                      }
+                    }
+                ),
+                ElevatedButton(
+                    child: Container(
+                      child: Text("<", textAlign: TextAlign.center),
+                    ),
+                    onPressed: (){
+                      if(myPlanetPageNumber > 1){
+                        myPlanetPageNumber = myPlanetPageNumber - 1;
+                        animateToPlanetPdfPage();
+                        goToPlanetPdfPage();
+                      }
+                      else{
+                        print("Nothing needed");
+                      }
+                    }
+                ),
+                ElevatedButton(
+                    child: Container(
+                      child: Text(">", textAlign: TextAlign.center),
+                    ),
+                    onPressed: (){
+                      if(myPlanetPageNumber < totalPlanetPdfPages){
+                        myPlanetPageNumber = myPlanetPageNumber + 1;
+                        animateToPlanetPdfPage();
+                        goToPlanetPdfPage();
+                      }
+                      else{
+                        print("Nothing needed");
+                      }
+                    }
+                ),
+                ElevatedButton(
+                    child: Container(
+                      child: Text(">|", textAlign: TextAlign.center),
+                    ),
+                    onPressed: (){
+                      if(myPlanetPageNumber < totalPlanetPdfPages){
+                        myPlanetPageNumber = totalPlanetPdfPages;
+                        animateToPlanetPdfPage();
+                        goToPlanetPdfPage();
+                      }
+                      else{
+                        print("Nothing needed");
+                      }
+                    }
+                ),
+              ],
+            ),
+          ),
+        ],
       ):
       SizedBox.expand(),
     );
