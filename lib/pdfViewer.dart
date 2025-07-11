@@ -22,7 +22,7 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show FilteringTextInputFormatter, rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
@@ -58,6 +58,7 @@ class pdfViewerState extends State<pdfViewer>{
   List<PDFPage?> starPdfPages = [];
   late PageController starPageController;
   late int myStarPageNumber;
+  List<Text> myStarPdfMessage = [];
 
   TextEditingController planetPdfPageController = TextEditingController();
   int myPlanetPdfPage = 0;
@@ -65,6 +66,7 @@ class pdfViewerState extends State<pdfViewer>{
   List<PDFPage?> planetPdfPages = [];
   late PageController planetPageController;
   late int myPlanetPageNumber;
+  List<Text> myPlanetPdfMessage = [];
 
   void goToStarPdfPage({int? myPage}){
     starPageController.jumpToPage(myPage != null ? myPage : myStarPageNumber - 1);
@@ -80,6 +82,38 @@ class pdfViewerState extends State<pdfViewer>{
 
   void animateToPlanetPdfPage({int? myPage}){
     planetPageController.animateToPage(myPage != null ? myPage : myPlanetPageNumber - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
+  }
+
+  bool checkNumbersOnly(String num){
+    List<String> validCharacters = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+    for(int i = 0; i < num.length; i++){
+      if(!(validCharacters.contains(num[i]))){
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  List<Text> pdfDialogMessage(String s, String t){
+    List<Text> messageForUser = [];
+
+    print("this is s: $s");
+    print("this is t: $t");
+
+    if(s == ""){
+      messageForUser.add(Text("Page number cannot be left blank"));
+    }
+    else if(s != ""){
+      if(checkNumbersOnly(s) == true && (int.parse(s) < 1 || int.parse(s) > int.parse(t))){
+        messageForUser.add(Text("Page number is invalid"));
+      }
+      else{
+        //continue
+      }
+    }
+    return messageForUser;
   }
 
   @override
@@ -143,6 +177,9 @@ class pdfViewerState extends State<pdfViewer>{
                     child: TextField(
                       controller: starPdfPageController,
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                       decoration: const InputDecoration(
                         labelText: "Page:",
                       ),
@@ -155,7 +192,7 @@ class pdfViewerState extends State<pdfViewer>{
                       child: Text("Go", textAlign: TextAlign.center),
                       onPressed: (){
                         int? pageUserIsOn = int.tryParse(starPdfPageController.text);
-                        if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalStarPdfPages){
+                        if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalStarPdfPages && !pageUserIsOn.toString().contains(".")){
                           myStarPageNumber = pageUserIsOn;
 
                           animateToStarPdfPage();
@@ -164,6 +201,14 @@ class pdfViewerState extends State<pdfViewer>{
                           print("myStarPdfPage: ${myStarPdfPage}");
                         }
                         else{
+                          if(pageUserIsOn == null){
+                            print("a page number is null");
+                            myStarPdfMessage = pdfDialogMessage("", totalStarPdfPages.toString());
+                          }
+                          else{
+                            myStarPdfMessage = pdfDialogMessage(pageUserIsOn.toString(), totalStarPdfPages.toString());
+                          }
+
                           showDialog(
                             context: bc,
                             builder: (myContent) => AlertDialog(
@@ -171,11 +216,9 @@ class pdfViewerState extends State<pdfViewer>{
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Center(
-                                    child: Text("The page number that you have entered in is invalid."),
-                                  ),
-                                ],
+                                children: List.generate(myStarPdfMessage.length, (i){
+                                  return myStarPdfMessage[i];
+                                }),
                               ),
                               actions: <Widget>[
                                 TextButton(
@@ -318,7 +361,7 @@ class pdfViewerState extends State<pdfViewer>{
                     child: Text("Go", textAlign: TextAlign.center),
                     onPressed: (){
                       int? pageUserIsOn = int.tryParse(planetPdfPageController.text);
-                      if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalPlanetPdfPages){
+                      if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalPlanetPdfPages && !pageUserIsOn.toString().contains(".")){
                         myPlanetPageNumber = pageUserIsOn;
 
                         animateToPlanetPdfPage();
@@ -327,6 +370,14 @@ class pdfViewerState extends State<pdfViewer>{
                         print("myPlanetPdfPage: ${myPlanetPdfPage}");
                       }
                       else{
+                        if(pageUserIsOn == null){
+                          print("a page number is null");
+                          myPlanetPdfMessage = pdfDialogMessage("", totalPlanetPdfPages.toString());
+                        }
+                        else{
+                          myPlanetPdfMessage = pdfDialogMessage(pageUserIsOn.toString(), totalPlanetPdfPages.toString());
+                        }
+
                         showDialog(
                           context: bc,
                           builder: (myContent) => AlertDialog(
@@ -334,11 +385,9 @@ class pdfViewerState extends State<pdfViewer>{
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Center(
-                                  child: Text("The page number that you have entered in is invalid."),
-                                ),
-                              ],
+                              children: List.generate(myPlanetPdfMessage.length, (i){
+                                return myPlanetPdfMessage[i];
+                              }),
                             ),
                             actions: <Widget>[
                               TextButton(
