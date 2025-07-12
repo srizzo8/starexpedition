@@ -178,7 +178,7 @@ class pdfViewerState extends State<pdfViewer>{
                       controller: starPdfPageController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                       ],
                       decoration: const InputDecoration(
                         labelText: "Page:",
@@ -349,6 +349,9 @@ class pdfViewerState extends State<pdfViewer>{
                   child: TextField(
                     controller: planetPdfPageController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
                     decoration: const InputDecoration(
                       labelText: "Page:",
                     ),
