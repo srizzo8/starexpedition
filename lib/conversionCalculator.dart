@@ -15,7 +15,7 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
-import 'package:flutter/services.dart' show FilteringTextInputFormatter, rootBundle;
+import 'package:flutter/services.dart' show FilteringTextInputFormatter, TextInputFormatter, rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 
@@ -25,6 +25,57 @@ class conversionCalculatorPage extends StatefulWidget{
   @override
   conversionCalculatorPageState createState() => conversionCalculatorPageState();
 }
+
+class decimalAndMinusExpectedFormat extends TextInputFormatter{
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue myOldValue, TextEditingValue myNewValue){
+    final myText = myNewValue.text;
+
+    //Empty values being allowed
+    if(myText.isEmpty){
+      return myNewValue;
+    }
+
+    //This allows users to enter just "-" in the textbox (it assumes that they will enter a number in afterward):
+    if(myText == "-"){
+      return myNewValue;
+    }
+
+    final validDecimalAndMinusFormat = RegExp(r"^-?\d+(\.\d*)?$");
+    return validDecimalAndMinusFormat.hasMatch(myText)? myNewValue: myOldValue;
+
+    /*//Making sure the negative sign is only acceptable if it is the very first character
+    if(validDecimalFormat){
+      return myNewValue;
+    }
+
+    //If it meets none of the if statements, the old value is returned:
+    return myOldValue;*/
+  }
+}
+
+/*class minusExpectedFormat extends TextInputFormatter{
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue myOldValue, TextEditingValue myNewValue){
+    final myText = myNewValue.text;
+
+    //Empty values being allowed
+    if(myText.isEmpty){
+      return myNewValue;
+    }
+
+    final validMinusFormat = RegExp(r"^-?\d+\.?\d*$");
+    return validMinusFormat.hasMatch(myText)? myNewValue: myOldValue;
+
+    /*//Making sure the negative sign is only acceptable if it is the very first character
+    if(validMinusFormat){
+      return myNewValue;
+    }
+
+    //If it meets none of the if statements, the old value is returned:
+    return myOldValue;*/
+  }
+}*/
 
 List<String> temperatureUnits = ["Celsius", "Fahrenheit", "Kelvin"];
 String dropdownTempValue = temperatureUnits[2];
@@ -41,6 +92,58 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
 
   TextEditingController myTemperature = TextEditingController();
   TextEditingController myLength = TextEditingController();
+
+  /*bool decimalUseValid = false;
+
+  bool decimalUseIsValid(String myNum){
+    //bool validDecimalFormat = RegExp(r"^-?\d*\.?\d*$").hasMatch(myNum);
+
+    bool decimalIsValid = false;
+    List<String> myCharacters = myNum.split("");
+
+    for(int i = 0; i < myCharacters.length; i++){
+      if(i < 1 || i > (myCharacters.length - 2)){
+        if(myCharacters[i] == "."){
+          decimalIsValid = false;
+        }
+        else{
+          //continue
+        }
+      }
+      else{
+        //continue unless it is last character
+        if(i == (myCharacters.length - 1)){
+          decimalIsValid = true;
+        }
+      }
+    }
+
+    return decimalIsValid;
+  }
+
+  bool negativeUseIsValid(String myNum){
+    bool negativeIsValid = false;
+    List<String> myCharacters = myNum.split("");
+
+    for(int j = 0; j < myCharacters.length; j++){
+      if(j > 0){
+        if(myCharacters[j] == "-"){
+          negativeIsValid = false;
+        }
+        else{
+          //continue
+        }
+      }
+      else{
+        //continue until last character
+        if(j == (myCharacters.length - 1)){
+          negativeIsValid = true;
+        }
+      }
+    }
+
+    return negativeIsValid;
+  }*/
 
   Widget build(BuildContext context){
     return Scaffold(
@@ -98,6 +201,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp("[0-9.-]")),
+                decimalAndMinusExpectedFormat(),
               ],
               /*inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly
@@ -256,6 +360,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp("[0-9.]")),
+                decimalAndMinusExpectedFormat(),
               ],
               onChanged: (theLength){
                 setState((){
