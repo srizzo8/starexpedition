@@ -142,7 +142,7 @@ class technologiesPageState extends State<technologiesPage>{
                               ),
                             ),
                             height: 30,
-                            width: 360,
+                            width: 320,
                             color: Colors.grey[300],
                           ),
                         ),
@@ -224,7 +224,7 @@ class technologiesPageState extends State<technologiesPage>{
                   padding: EdgeInsets.all(5.0),
                   color: Colors.black,
                   height: 30,
-                  width: 120,
+                  width: 150,
                 ),
               ),
               onPressed: (){

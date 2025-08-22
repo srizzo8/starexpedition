@@ -164,7 +164,7 @@ class projectsPageState extends State<projectsPage>{
                               ),
                             ),
                             height: 30,
-                            width: 360,
+                            width: 320,
                             color: Colors.grey[300],
                           ),
                         ),
@@ -248,7 +248,7 @@ class projectsPageState extends State<projectsPage>{
                   padding: EdgeInsets.all(5.0),
                   color: Colors.black,
                   height: 30,
-                  width: 120,
+                  width: 150,
                 ),
               ),
               onPressed: (){

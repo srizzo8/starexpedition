@@ -142,7 +142,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                                 ),
                               ),
                               height: 30,
-                              width: 360,
+                              width: 320,
                               color: Colors.grey[300],
                             ),
                           ),
@@ -213,9 +213,9 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
           Container(
             child: Text("Questions and Answers Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
-          Container(
-              margin: EdgeInsets.only(left: 250.0),
-              alignment: Alignment.center,
+          Center(
+              //margin: EdgeInsets.only(left: 250.0),
+              //alignment: Alignment.center,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Colors.black,
@@ -223,10 +223,10 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                 child: InkWell(
                   child: Ink(
                     color: Colors.black,
-                    padding: EdgeInsets.all(5.0),
-                    child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                    height: 30,
-                    width: 120,
+                    padding: EdgeInsets.all(10.0),
+                    child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                    height: 40,
+                    width: 150,
                   ),
                 ),
                 onPressed: (){

@@ -137,7 +137,7 @@ class editingMyUserProfile extends StatelessWidget{
                             padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: 400,
+                                maxWidth: 320,
                               ),
                               child: Scrollbar(
                                 child: SingleChildScrollView(
@@ -175,7 +175,7 @@ class editingMyUserProfile extends StatelessWidget{
                             padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: 400,
+                                maxWidth: 320,
                               ),
                               child: Scrollbar(
                                 child: SingleChildScrollView(
@@ -212,7 +212,7 @@ class editingMyUserProfile extends StatelessWidget{
                             padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: 400,
+                                maxWidth: 320,
                               ),
                               child: Scrollbar(
                                 child: SingleChildScrollView(

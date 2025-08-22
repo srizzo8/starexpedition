@@ -99,7 +99,7 @@ class loginPageState extends State<loginPage>{
                         padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 400,
+                            maxWidth: 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -129,7 +129,7 @@ class loginPageState extends State<loginPage>{
                         padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 400,
+                            maxWidth: 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -366,7 +366,7 @@ class loginPageState extends State<loginPage>{
           ),
           Center(
             child: Container(
-              child: Text("If you have forgotten your password, click the button below:"),
+              child: Text("If you have forgotten your password, click the button below:", textAlign: TextAlign.center),
             ),
           ),
           Center(
@@ -397,7 +397,7 @@ class loginPageState extends State<loginPage>{
           ),
           Center(
             child: Container(
-              child: Text("If you do not have an account, you can create an account:", style: TextStyle(fontSize: 14.0)),
+              child: Text("If you do not have an account, you can create an account:", style: TextStyle(fontSize: 14.0), textAlign: TextAlign.center),
             ),
           ),
           Center(

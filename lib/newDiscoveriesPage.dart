@@ -142,7 +142,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                                 ),
                               ),
                               height: 30,
-                              width: 360,
+                              width: 320,
                               color: Colors.grey[300],
                             ),
                         ),
@@ -224,7 +224,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                   padding: EdgeInsets.all(5.0),
                   child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                   height: 30,
-                  width: 120,
+                  width: 150,
                 ),
               ),
               onPressed: (){

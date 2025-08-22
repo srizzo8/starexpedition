@@ -271,7 +271,7 @@ class registerPageState extends State<registerPage>{
                         padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 400,
+                            maxWidth: 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -301,7 +301,7 @@ class registerPageState extends State<registerPage>{
                         padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 400,
+                            maxWidth: 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -331,7 +331,7 @@ class registerPageState extends State<registerPage>{
                         padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 400,
+                            maxWidth: 320,
                           ),
                           child: SizedBox(
                             child: TextField(
