@@ -170,16 +170,21 @@ class createThreadState extends State<createThread>{
             Padding(
                 padding: EdgeInsets.all(20.0),
                 child: theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""?
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: "Username",
+                SizedBox(
+                  width: 320,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: "Username",
+                    ),
+                    maxLines: 1,
+                    maxLength: null,
+                    enabled: false,
+                    controller: TextEditingController()..text = theLoginPage.myUsername,
                   ),
-                  maxLines: 1,
-                  maxLength: null,
-                  enabled: false,
-                  controller: TextEditingController()..text = theLoginPage.myUsername,
                 ): (theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != "")?
-                  TextField(
+                SizedBox(
+                  width: 320,
+                  child: TextField(
                     decoration: InputDecoration(
                       labelText: "Username",
                     ),
@@ -187,7 +192,11 @@ class createThreadState extends State<createThread>{
                     maxLength: null,
                     enabled: false,
                     controller: TextEditingController()..text = theRegisterPage.myNewUsername,
-                  ): TextField(),
+                  ),
+                ): SizedBox(
+                    width: 320,
+                    child: TextField(),
+                ),
               ),
             /*Container(
             child: ConstrainedBox(

@@ -235,19 +235,19 @@ class projectsPageState extends State<projectsPage>{
           Container(
             child: Text("Projects Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
-          Container(
-            margin: EdgeInsets.only(left: 250.0),
-            alignment: Alignment.center,
+          Center(
+            //margin: EdgeInsets.only(left: 250.0),
+            //alignment: Alignment.center,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
               ),
               child: InkWell(
                 child: Ink(
-                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                  child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                   padding: EdgeInsets.all(5.0),
                   color: Colors.black,
-                  height: 30,
+                  height: 40,
                   width: 150,
                 ),
               ),

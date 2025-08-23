@@ -139,24 +139,33 @@ class replyThreadPageState extends State<replyThreadPage>{
             Padding(
               padding: EdgeInsets.all(20.0),
               child: (theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == "")?
-                TextField(
+                SizedBox(
+                  width: 320,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: "Username",
+                    ),
+                  maxLines: 1,
+                  maxLength: 30,
+                  enabled: false,
+                  controller: TextEditingController()..text = theLoginPage.myUsername,
+                ),
+              ): (theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != "")?
+              SizedBox(
+                width: 320,
+                child: TextField(
                   decoration: InputDecoration(
                     labelText: "Username",
                   ),
                   maxLines: 1,
                   maxLength: 30,
                   enabled: false,
-                  controller: TextEditingController()..text = theLoginPage.myUsername,
-                ): (theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != "")?
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: "Username",
-                    ),
-                    maxLines: 1,
-                    maxLength: 30,
-                    enabled: false,
-                    controller: TextEditingController()..text = theRegisterPage.myNewUsername,
-                  ): TextField(),
+                  controller: TextEditingController()..text = theRegisterPage.myNewUsername,
+                ),
+              ): SizedBox(
+                  width: 320,
+                  child: TextField(),
+                ),
             ),
             IntrinsicHeight(
               child: Row(

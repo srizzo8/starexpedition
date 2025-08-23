@@ -211,9 +211,9 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
           Container(
             child: Text("New Discoveries Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
-          Container(
-            margin: EdgeInsets.only(left: 250.0),
-            alignment: Alignment.center,
+          Center(
+            //margin: EdgeInsets.only(left: 250.0),
+            //alignment: Alignment.center,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: Colors.black,
@@ -222,8 +222,8 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                 child: Ink(
                   color: Colors.black,
                   padding: EdgeInsets.all(5.0),
-                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                  height: 30,
+                  child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                  height: 40,
                   width: 150,
                 ),
               ),

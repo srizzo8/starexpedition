@@ -209,7 +209,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
                           padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 400,
+                              maxWidth: 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -267,7 +267,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
                           padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 400,
+                              maxWidth: 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -441,7 +441,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
           ),
           Container(
             alignment: Alignment.center,
-            child: Text("Enter in the 6-digit code that was emailed to you", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            child: Text("Enter in the 6-digit code that was emailed to you", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
           ),
           Container(
             height: 5,
@@ -456,7 +456,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
                           padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 400,
+                              maxWidth: 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -660,7 +660,7 @@ class resetPasswordState extends State<resetPassword>{
           ),
           Container(
             alignment: Alignment.center,
-            child: Text("Reset your password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            child: Text("Reset Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
           ),
           Container(
             height: 5,
@@ -694,7 +694,7 @@ class resetPasswordState extends State<resetPassword>{
                           padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 400,
+                              maxWidth: 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -754,7 +754,7 @@ class resetPasswordState extends State<resetPassword>{
                           padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 400,
+                              maxWidth: 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
