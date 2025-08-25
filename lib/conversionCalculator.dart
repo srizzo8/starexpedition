@@ -166,7 +166,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
             child: Container(
               padding: const EdgeInsets.all(10.0),
               child: Text("The left side is the unit of measurement you want to convert from. The right side " +
-                "is the unit of measurement you want to convert to.")
+                "is the unit of measurement you want to convert to.", textAlign: TextAlign.center)
             ),
           ),
           Container(
@@ -190,7 +190,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
           Container(
             padding: const EdgeInsets.all(10.0),
             height: 50,
-            width: 175,
+            width: 135,
             alignment: Alignment.centerLeft,
             child: TextField(
               controller: myTemperature,
@@ -349,7 +349,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
           Container(
             padding: const EdgeInsets.all(10.0),
             height: 50,
-            width: 175,
+            width: 135,
             alignment: Alignment.centerLeft,
             child: TextField(
               controller: myLength,
