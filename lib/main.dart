@@ -2058,6 +2058,7 @@ class articlePage extends StatelessWidget{
                       Column(
                         children: <Widget>[
                           ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
                               itemCount: myData.length,
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
@@ -2623,8 +2624,8 @@ class articlePage extends StatelessWidget{
                                             ),
                                           );
                                         }
+                                      }
                                     }
-                                  }
                                 ),
                               ),
                             ),
