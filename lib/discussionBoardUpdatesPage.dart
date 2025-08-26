@@ -282,7 +282,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(10.0),
                   child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                   height: 40,
                   width: 150,
