@@ -190,18 +190,24 @@ class spectralClassPageState extends State<spectralClassPage>{
               columns: [
                 DataColumn(label: Expanded(
                   child: Center(
+                    child: FittedBox(
                       child: Text('Spectral Class', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-                ),
+                    ),
+                  ),
                 ),
                 DataColumn(label: Expanded(
                   child: Center(
+                    child: FittedBox(
                       child: Text('Temperature', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-                ),
+                    ),
+                  ),
                 ),
                 DataColumn(label: Expanded(
                   child: Center(
+                    child: FittedBox(
                       child: Text('Stars with Articles', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-                ),
+                    ),
+                  ),
                 ),
               ],
               rows: [
@@ -211,10 +217,14 @@ class spectralClassPageState extends State<spectralClassPage>{
                     child: Text('M'),
                   ),
                   ),
-                  DataCell(Align(
-                    //alignment: Alignment.center,
-                    child: Text('2500-3800 K'),
-                  ),
+                  DataCell(
+                    SizedBox(
+                      width: 125,
+                      child: Align(
+                      //alignment: Alignment.center,
+                        child: Text('2500-3800 K'),
+                      ),
+                    ),
                   ),
                   //DataCell(Text('Proxima Centauri')),
                   DataCell(Align(
@@ -236,10 +246,14 @@ class spectralClassPageState extends State<spectralClassPage>{
                     child: Text('K'),
                   ),
                   ),
-                  DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('3800-5300 K'),
-                  ),
+                  DataCell(
+                    SizedBox(
+                      width: 125,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text('3800-5300 K'),
+                      ),
+                    ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -260,10 +274,14 @@ class spectralClassPageState extends State<spectralClassPage>{
                     child: Text('G'),
                   ),
                   ),
-                  DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('5300-6000 K'),
-                  ),
+                  DataCell(
+                    SizedBox(
+                      width: 125,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text('5300-6000 K'),
+                      ),
+                    ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -283,10 +301,14 @@ class spectralClassPageState extends State<spectralClassPage>{
                     child: Text('F'),
                   ),
                   ),
-                  DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('6000-7300 K'),
-                  ),
+                  DataCell(
+                    SizedBox(
+                      width: 125,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text('6000-7300 K'),
+                      ),
+                    ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -306,10 +328,14 @@ class spectralClassPageState extends State<spectralClassPage>{
                     child: Text('A'),
                   ),
                   ),
-                  DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('7300-10000 K'),
-                  ),
+                  DataCell(
+                    SizedBox(
+                      width: 125,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text('7300-10000 K'),
+                      ),
+                    ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -329,10 +355,14 @@ class spectralClassPageState extends State<spectralClassPage>{
                     child: Text('B'),
                   ),
                   ),
-                  DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('10000-30000 K'),
-                  ),
+                  DataCell(
+                    SizedBox(
+                      width: 125,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text('10000-30000 K'),
+                      ),
+                    ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -352,10 +382,13 @@ class spectralClassPageState extends State<spectralClassPage>{
                     child: Text('O'),
                   ),
                   ),
-                  DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('30000+ K'),
-                  ),
+                  DataCell(
+                    SizedBox(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text('30000+ K'),
+                      ),
+                    ),
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
