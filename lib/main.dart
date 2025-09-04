@@ -2058,6 +2058,7 @@ class articlePage extends StatelessWidget{
                       Column(
                         children: <Widget>[
                           ListView.builder(
+                              padding: EdgeInsets.zero,
                               physics: NeverScrollableScrollPhysics(),
                               itemCount: myData.length,
                               shrinkWrap: true,
