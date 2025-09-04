@@ -220,11 +220,13 @@ class technologiesPageState extends State<technologiesPage>{
               ),
               child: InkWell(
                 child: Ink(
-                  child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                   padding: EdgeInsets.all(10.0),
                   color: Colors.black,
                   height: 40,
                   width: 150,
+                  child: Center(
+                    child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                  ),
                 ),
               ),
               onPressed: (){

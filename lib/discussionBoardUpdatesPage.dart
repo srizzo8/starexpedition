@@ -283,9 +283,11 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                 child: Ink(
                   color: Colors.black,
                   padding: EdgeInsets.all(10.0),
-                  child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                   height: 40,
                   width: 150,
+                  child: Center(
+                    child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                  ),
                   //margin: EdgeInsets.only(left: 250.0),
                   //alignment: Alignment.center,
                 ),
