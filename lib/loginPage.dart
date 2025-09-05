@@ -365,8 +365,9 @@ class loginPageState extends State<loginPage>{
             )
           ),
           Center(
-            child: Container(
-              child: Text("If you have forgotten your password, click the button below:", textAlign: TextAlign.center),
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+              child: Text("If you have forgotten your password, click the button below:", style: TextStyle(fontSize: 14.0), textAlign: TextAlign.center),
             ),
           ),
           Center(
@@ -396,7 +397,8 @@ class loginPageState extends State<loginPage>{
             ),
           ),
           Center(
-            child: Container(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
               child: Text("If you do not have an account, you can create an account:", style: TextStyle(fontSize: 14.0), textAlign: TextAlign.center),
             ),
           ),
