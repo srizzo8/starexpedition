@@ -263,7 +263,7 @@ class projectsPageState extends State<projectsPage>{
             ),
           ),
           Expanded(
-            child: listOfProjectsThreads.length != 0? myPages[theCurrentPage] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),//myPages[theCurrentPage],
+            child: listOfProjectsThreads.length != 0? myPages[theCurrentPage] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPages[theCurrentPage],
           ),
           //IMPORTANT CONTENT STARTS
           /*Expanded(

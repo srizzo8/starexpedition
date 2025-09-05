@@ -241,7 +241,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
               ),
           ),
           Expanded(
-            child: listOfQaaThreads.length != 0? myPagesQaa[theCurrentPageQaa] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),//myPagesQaa[theCurrentPageQaa],
+            child: listOfQaaThreads.length != 0? myPagesQaa[theCurrentPageQaa] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child:Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPagesQaa[theCurrentPageQaa],
           ),
           NumberPaginator(
             height: 50,

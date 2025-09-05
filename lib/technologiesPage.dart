@@ -239,7 +239,7 @@ class technologiesPageState extends State<technologiesPage>{
             ),
           ),
           Expanded(
-            child: listOfTechnologiesThreads.length != 0? myPagesTechnologies[theCurrentPageTechnologies] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),
+            child: listOfTechnologiesThreads.length != 0? myPagesTechnologies[theCurrentPageTechnologies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
             height: 50,

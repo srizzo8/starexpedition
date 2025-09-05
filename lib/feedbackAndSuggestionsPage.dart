@@ -244,7 +244,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
             ),
           ),
           Expanded(
-            child: listOfFasThreads.length != 0? myPagesFas[theCurrentPageFas] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),
+            child: listOfFasThreads.length != 0? myPagesFas[theCurrentPageFas] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
             height: 50,

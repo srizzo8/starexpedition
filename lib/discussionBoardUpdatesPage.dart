@@ -302,7 +302,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
             ),
           ),
           Expanded(
-            child: listOfDbuThreads.length != 0? myPagesDbu[theCurrentPageDbu] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),//myPagesDbu[theCurrentPageDbu],
+            child: listOfDbuThreads.length != 0? myPagesDbu[theCurrentPageDbu] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPagesDbu[theCurrentPageDbu],
           ),
           NumberPaginator(
             height: 50,

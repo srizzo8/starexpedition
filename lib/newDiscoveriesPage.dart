@@ -239,7 +239,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
             ),
           ),
           Expanded(
-            child: listOfNdThreads.length != 0? myPagesNd[theCurrentPageNd] : Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),
+            child: listOfNdThreads.length != 0? myPagesNd[theCurrentPageNd] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
             height: 50,
