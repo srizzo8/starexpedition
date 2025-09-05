@@ -241,7 +241,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
               ),
           ),
           Expanded(
-            child: listOfQaaThreads.length != 0? myPagesQaa[theCurrentPageQaa] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child:Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPagesQaa[theCurrentPageQaa],
+            child: listOfQaaThreads.length != 0? myPagesQaa[theCurrentPageQaa] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPagesQaa[theCurrentPageQaa],
           ),
           NumberPaginator(
             height: 50,
@@ -645,7 +645,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
               }
             ),
             Center(
-              child: listOfQaaThreadReplies.length != 0? myPagesQaaThreadReplies[theCurrentPageQaaThreadReplies] : Text("There are no replies to this thread yet. Be the first to reply!"),
+              child: listOfQaaThreadReplies.length != 0? myPagesQaaThreadReplies[theCurrentPageQaaThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!"),),
             ),
             NumberPaginator(
               height: 50,
