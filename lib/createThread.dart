@@ -315,6 +315,8 @@ class createThreadState extends State<createThread>{
               height: 5,
             ),
             Center(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Colors.black,
@@ -858,6 +860,7 @@ class createThreadState extends State<createThread>{
                     );
                   }
                 }
+                ),
               ),
             ),
           ],

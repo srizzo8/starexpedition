@@ -828,7 +828,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
               height: 10,
             ),
             Center(
-              child: listOfDbuThreadReplies.length != 0? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!"),),
+              child: listOfDbuThreadReplies.length != 0? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
                 height: 50,

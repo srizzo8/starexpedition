@@ -641,7 +641,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
               }
             ),
             Center(
-              child: listOfFasThreadReplies.length != 0? myPagesFasThreadReplies[theCurrentPageFasThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!"),),
+              child: listOfFasThreadReplies.length != 0? myPagesFasThreadReplies[theCurrentPageFasThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
                 height: 50,

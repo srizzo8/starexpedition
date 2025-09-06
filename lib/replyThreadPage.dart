@@ -208,6 +208,8 @@ class replyThreadPageState extends State<replyThreadPage>{
               height: 5,
             ),
             Center(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Colors.black,
@@ -1201,6 +1203,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                     );
                   }
                 }
+              ),
               ),
             ),
           ],

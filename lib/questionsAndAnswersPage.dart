@@ -645,7 +645,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
               }
             ),
             Center(
-              child: listOfQaaThreadReplies.length != 0? myPagesQaaThreadReplies[theCurrentPageQaaThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!"),),
+              child: listOfQaaThreadReplies.length != 0? myPagesQaaThreadReplies[theCurrentPageQaaThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
               height: 50,

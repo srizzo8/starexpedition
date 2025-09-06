@@ -757,7 +757,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
             }
           ),
           Center(
-            child: listOfProjectsThreadReplies.length != 0? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!"),),
+            child: listOfProjectsThreadReplies.length != 0? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
           ),//Column(
             /*children: <Widget>[
               ListView.builder(
