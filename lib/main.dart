@@ -48,8 +48,6 @@ import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 
 import 'package:http/http.dart' as http;
 
-import 'package:device_preview/device_preview.dart';
-
 //import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 
 /* String correctString = "";
@@ -556,10 +554,7 @@ Future<void> main() async {
 
       options.profilesSampleRate = 1.0;
     },
-    appRunner: () => runApp(DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => const MyApp(),
-    )),
+    appRunner: () => runApp(const MyApp()),
   );
   /*else{
     //If you are in development mode, you can run your app without sentry.io:
@@ -610,9 +605,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        useInheritedMediaQuery: true,
-        builder: DevicePreview.appBuilder,
-        locale: DevicePreview.locale(context),
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.red,//Colors.red,
