@@ -556,7 +556,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
             alignment: Alignment.center,
             child: Text("Change Your Email Address", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
-          Center(
+          /*Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),
               alignment: Alignment.centerLeft,
@@ -573,8 +573,38 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                 border: OutlineInputBorder(),
               ),
             ),
+          ),*/
+          IntrinsicHeight(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 320,
+                          ),
+                          child: SizedBox(
+                            child: TextField(
+                              minLines: 1,
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Current Email Address",
+                              ),
+                              controller: currentEmailAddressController,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
+            ),
           ),
-          Center(
+          /*Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),
               alignment: Alignment.centerLeft,
@@ -591,8 +621,38 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                 border: OutlineInputBorder(),
               ),
             ),
+          ),*/
+          IntrinsicHeight(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 320,
+                          ),
+                          child: SizedBox(
+                            child: TextField(
+                              minLines: 1,
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "New Email Address",
+                              ),
+                              controller: newEmailAddressController,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
+            ),
           ),
-          Center(
+          /*Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),
               alignment: Alignment.centerLeft,
@@ -609,6 +669,37 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),
+            ),
+          ),*/
+          IntrinsicHeight(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 320,
+                          ),
+                          child: SizedBox(
+                            child: TextField(
+                              minLines: 1,
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Password",
+                              ),
+                              controller: myPasswordController,
+                              obscureText: true,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
             ),
           ),
           Center(
