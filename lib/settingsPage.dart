@@ -206,61 +206,97 @@ class changePasswordPageState extends State<changePasswordPage>{
             alignment: Alignment.center,
             child: Text("Change Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
-          Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("Current Password", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
+          IntrinsicHeight(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 320,
+                          ),
+                          child: SizedBox(
+                            child: TextField(
+                              minLines: 1,
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Current Password",
+                              ),
+                              controller: currentPasswordController,
+                              obscureText: true,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
             ),
           ),
-          Container(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              controller: currentPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-              ),
+          IntrinsicHeight(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 320,
+                          ),
+                          child: SizedBox(
+                            child: TextField(
+                              minLines: 1,
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "New Password",
+                              ),
+                              controller: newPasswordController,
+                              obscureText: true,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
             ),
           ),
-          Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("New Password", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              controller: newPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("Confirm New Password", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              controller: secondNewPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-              ),
+          IntrinsicHeight(
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 320,
+                          ),
+                          child: SizedBox(
+                            child: TextField(
+                              minLines: 1,
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Confirm New Password",
+                              ),
+                              controller: secondNewPasswordController,
+                              obscureText: true,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
             ),
           ),
           Center(
