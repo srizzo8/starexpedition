@@ -34,8 +34,6 @@ import 'package:starexpedition4/userSearchBar.dart';
 
 import 'loginPage.dart';
 
-import 'package:sentry_flutter/sentry_flutter.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:starexpedition4/main.dart' as myMain;

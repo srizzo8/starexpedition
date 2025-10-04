@@ -36,7 +36,7 @@ import 'package:starexpedition4/pdfViewer.dart';
 
 import 'loginPage.dart';
 
-import 'package:sentry_flutter/sentry_flutter.dart';
+//import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -380,7 +380,22 @@ Future<String> readPlanetFile(String planetPath) async{
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  //Loading the .env file:
+  await dotenv.load(fileName: "dotenv.env");
+
+  if(kIsWeb){
+    await Firebase.initializeApp(options: FirebaseOptions(
+      apiKey: dotenv.env["FIREBASE_API_KEY"]!,
+      appId: dotenv.env["FIREBASE_APP_ID"]!,
+      databaseURL: dotenv.env["FIREBASE_DATABASE_URL"]!,
+      messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"]!,
+      projectId: dotenv.env["FIREBASE_PROJECT_ID"]!
+    ));
+  }
+  else{
+    await Firebase.initializeApp();
+  }
   //runApp(MyApp());
   List usersOnStarExpeditionDocs = [];
   await FirebaseFirestore.instance.collection("User").get().then((snapshot){
@@ -543,22 +558,25 @@ Future<void> main() async {
   //theAccountsDatabase = FirebaseDatabase.instance.ref().child("Users");
 
   //Sentry:
-  await dotenv.load(fileName: "dotenv.env");
+  //await dotenv.load(fileName: "dotenv.env");
 
   //if(kReleaseMode == true){ //This checks to see if you are in release mode (which means you are in production)
-  await SentryFlutter.init(
-        (options) {
-      options.dsn = dotenv.env["OPTIONS_DSN"];
+  runApp(const MyApp());
+  /*if(!kIsWeb && (Platform.isAndroid || Platform.isIOS)){
+    await SentryFlutter.init(
+          (options) {
+        options.dsn = dotenv.env["OPTIONS_DSN"];
 
-      options.tracesSampleRate = 1.0;
+        options.tracesSampleRate = 1.0;
 
-      options.profilesSampleRate = 1.0;
-    },
-    appRunner: () => runApp(const MyApp()),
-  );
-  /*else{
+        options.profilesSampleRate = 1.0;
+      },
+      appRunner: () => runApp(const MyApp()),
+    );
+  }
+  else{
     //If you are in development mode, you can run your app without sentry.io:
-    runApp(MyApp());
+    runApp(const MyApp());
   }*/
 }
 

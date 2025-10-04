@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 //import 'package:feedback_sentry/feedback_sentry.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+//import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:starexpedition4/projects_firestore_database_information/projectsDatabaseFirestoreInfo.dart';
 import 'package:starexpedition4/projects_firestore_database_information/projectsInformation.dart';
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersDatabaseFirestoreInfo.dart';
@@ -37,14 +39,14 @@ import 'feedback_and_suggestions_firestore_database_information/feedbackAndSugge
 import 'feedbackAndSuggestionsPage.dart' as feedbackAndSuggestionsPage;
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
-import 'package:sentry/sentry.dart';
+//import 'package:sentry/sentry.dart';
 //import 'package:feedback/feedback.dart';
 
 var myInfo;
 var userData;
 var docName;
 
-SentryOptions so = "" as SentryOptions;
+//SentryOptions so = "" as SentryOptions;
 
 class createThread extends StatefulWidget{
   const createThread ({Key? key}) : super(key: key);
@@ -749,23 +751,29 @@ class createThreadState extends State<createThread>{
                                 createFeedbackAndSuggestionsThread(theNewFeedbackAndSuggestionsThread);
 
                                 //Sentry feedback:
-                                SentryId mySentryId = SentryId.empty();//Sentry.captureMessage(threadNameController.text);
+                                /*if(!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+                                  SentryId mySentryId = SentryId
+                                      .empty(); //Sentry.captureMessage(threadNameController.text);
 
-                                await Sentry.init((myOptions){
-                                  myOptions.dsn = dotenv.env["OPTIONS_DSN"];
-                                  myOptions.beforeSend = (event, hint) async{
-                                    mySentryId = event.eventId;
-                                    return event;
-                                  };
-                                });
+                                  await Sentry.init((myOptions) {
+                                    myOptions.dsn = dotenv.env["OPTIONS_DSN"];
+                                    myOptions.beforeSend = (event, hint) async {
+                                      mySentryId = event.eventId;
+                                      return event;
+                                    };
+                                  });
 
-                                var theUsersFeedback = SentryFeedback(
-                                  associatedEventId: mySentryId,
-                                  name: usernameController.text,
-                                  message: "${threadNameController.text}\n${threadContentController.text}",
-                                );
+                                  var theUsersFeedback = SentryFeedback(
+                                    associatedEventId: mySentryId,
+                                    name: usernameController.text,
+                                    message: "${threadNameController
+                                        .text}\n${threadContentController
+                                        .text}",
+                                  );
 
-                                Sentry.captureFeedback(theUsersFeedback);
+                                  Sentry.captureFeedback(theUsersFeedback);
+                                }*/
+
                                 /*BetterFeedback.of(context).showAndUploadToSentry(
                                       name: usernameController.text,
                                     );*/
