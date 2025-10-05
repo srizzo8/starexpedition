@@ -33,6 +33,7 @@ import 'package:starexpedition4/settingsPage.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
 import 'package:starexpedition4/pdfViewer.dart';
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 import 'loginPage.dart';
 
@@ -384,6 +385,13 @@ Future<void> main() async {
   //Loading the .env file:
   await dotenv.load(fileName: "dotenv.env");
 
+  //Initializing firebaseDesktopHelper:
+  firebaseDesktopHelper.myDatabaseUrl = dotenv.env["FIREBASE_DATABASE_URL"]!;
+  firebaseDesktopHelper.myApiKey = dotenv.env["FIREBASE_API_KEY"]!;
+  firebaseDesktopHelper.myProjectId = dotenv.env["FIREBASE_PROJECT_ID"]!;
+
+  List usersOnStarExpeditionDocs = [];
+
   if(kIsWeb){
     await Firebase.initializeApp(options: FirebaseOptions(
       apiKey: dotenv.env["FIREBASE_API_KEY"]!,
@@ -392,21 +400,137 @@ Future<void> main() async {
       messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"]!,
       projectId: dotenv.env["FIREBASE_PROJECT_ID"]!
     ));
+
+    await FirebaseFirestore.instance.collection("User").get().then((snapshot){
+      snapshot.docs.forEach((item){
+        usersOnStarExpeditionDocs.add(item.data());
+      });
+    });
+    print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
+
+    starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+
+    for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
+      Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
+      theUsers!.add(u);
+    }
+
+    //List of stars in Star Expedition
+    for(var s in starsForSearchBar){
+      var star = s.starName!;
+      allStars.add(star);
+    }
+
+    allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+
+    print("All stars: ${allStars}");
+
+    //List of planets each star has
+    for(var v in starsForSearchBar){
+      var ref = FirebaseDatabase.instance.ref(v.starName!);
+      var mySnapshot = await ref.child("Planets").get();
+      var info = mySnapshot.value as Map;
+      for(var i in info.keys){
+        allPlanets.add(i);
+      }
+
+      //All stars and their planets
+      starsAndTheirPlanets[v.starName!] = info.keys;
+    }
+
+    allPlanets.sort((p1, p2) => p1.toLowerCase().compareTo(p2.toLowerCase()));
+
+    print("stars and their planets: ${starsAndTheirPlanets}");
+
+    print("starsForSearchBar: ${starsForSearchBar}");
+    print("The snapshot: ${allPlanets}");
+  }
+  else if(Platform.isWindows || Platform.isMacOS || Platform.isLinux){
+    print("This is the desktop version of Star Expedition");
+
+    usersOnStarExpeditionDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+    for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
+      Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
+      theUsers!.add(u);
+    }
+
+    for(var s in starsForSearchBar){
+      var star = s.starName!;
+      allStars.add(star);
+    }
+
+    allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+
+    print("All stars: ${allStars}");
+
+    for(var v in starsForSearchBar){
+      final myData = await firebaseDesktopHelper.getFirebaseData("${v.starName}/Planets");
+      var info = myData as Map;
+      for(var i in info.keys){
+        allPlanets.add(i);
+      }
+      starsAndTheirPlanets[v.starName!] = info.keys;
+    }
   }
   else{
     await Firebase.initializeApp();
+
+    await FirebaseFirestore.instance.collection("User").get().then((snapshot){
+      snapshot.docs.forEach((item){
+        usersOnStarExpeditionDocs.add(item.data());
+      });
+    });
+    print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
+
+    starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+
+    for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
+      Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
+      theUsers!.add(u);
+    }
+
+    //List of stars in Star Expedition
+    for(var s in starsForSearchBar){
+      var star = s.starName!;
+      allStars.add(star);
+    }
+
+    allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+
+    print("All stars: ${allStars}");
+
+    //List of planets each star has
+    for(var v in starsForSearchBar){
+      var ref = FirebaseDatabase.instance.ref(v.starName!);
+      var mySnapshot = await ref.child("Planets").get();
+      var info = mySnapshot.value as Map;
+      for(var i in info.keys){
+        allPlanets.add(i);
+      }
+
+      //All stars and their planets
+      starsAndTheirPlanets[v.starName!] = info.keys;
+    }
+
+    allPlanets.sort((p1, p2) => p1.toLowerCase().compareTo(p2.toLowerCase()));
+
+    print("stars and their planets: ${starsAndTheirPlanets}");
+
+    print("starsForSearchBar: ${starsForSearchBar}");
+    print("The snapshot: ${allPlanets}");
   }
   //runApp(MyApp());
-  List usersOnStarExpeditionDocs = [];
-  await FirebaseFirestore.instance.collection("User").get().then((snapshot){
+  //List usersOnStarExpeditionDocs = [];
+  /*await FirebaseFirestore.instance.collection("User").get().then((snapshot){
     snapshot.docs.forEach((item){
       usersOnStarExpeditionDocs.add(item.data());
     });
   });
-  print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
+  print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");*/
 
   //Sorting starsForSearchBar
-  starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+  /*starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
 
   for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
     Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
@@ -441,7 +565,7 @@ Future<void> main() async {
   print("stars and their planets: ${starsAndTheirPlanets}");
 
   print("starsForSearchBar: ${starsForSearchBar}");
-  print("The snapshot: ${allPlanets}");
+  print("The snapshot: ${allPlanets}");*/
 
   /*QuerySnapshot qs = await FirebaseFirestore.instance.collection("Users").get();
   var thePeople = qs.docs.map((info) => info.data());
@@ -679,18 +803,50 @@ class StarExpedition extends StatefulWidget {
 }
 
 Future<List<String>> getStarInformation() async{
-  final starReference = FirebaseDatabase.instance.ref(correctStar);
-  final starConstellation = await starReference.child("constellation").get();
-  final starDistance = await starReference.child("distance").get();
-  final starOtherNames = await starReference.child("other_names").get();
-  final starSpectralClass = await starReference.child("spectral_class").get();
-  final starAbsoluteMagnitude = await starReference.child("star_absolute_magnitude").get();
-  final starAge = await starReference.child("star_age").get();
-  final starApparentMagnitude = await starReference.child("star_apparent_magnitude").get();
-  final starDiscoverer = await starReference.child("star_discoverer").get();
-  final starDiscoveryDate = await starReference.child("star_discovery_date").get();
-  final starTemperature = await starReference.child("star_temperature").get();
-  final starImageSource = await starReference.child("image_source").get();
+  final starReference;
+
+  final starConstellation;
+  final starDistance;
+  final starOtherNames;
+  final starSpectralClass;
+  final starAbsoluteMagnitude;
+  final starAge;
+  final starApparentMagnitude;
+  final starDiscoverer;
+  final starDiscoveryDate;
+  final starTemperature;
+  final starImageSource;
+
+  if(firebaseDesktopHelper.onDesktop){
+    starReference = await firebaseDesktopHelper.getFirebaseData(correctStar);
+
+    starConstellation = starReference["constellation"];
+    starDistance = starReference["distance"];
+    starOtherNames = starReference["other_names"];
+    starSpectralClass = starReference["spectral_class"];
+    starAbsoluteMagnitude = starReference["star_absolute_magnitude"];
+    starAge = starReference["star_age"];
+    starApparentMagnitude = starReference["star_apparent_magnitude"];
+    starDiscoverer = starReference["star_discoverer"];
+    starDiscoveryDate = starReference["star_discovery_date"];
+    starTemperature = starReference["star_temperature"];
+    starImageSource = starReference["image_source"];
+  }
+  else{
+    starReference = FirebaseDatabase.instance.ref(correctStar);
+
+    starConstellation = await starReference.child("constellation").get();
+    starDistance = await starReference.child("distance").get();
+    starOtherNames = await starReference.child("other_names").get();
+    starSpectralClass = await starReference.child("spectral_class").get();
+    starAbsoluteMagnitude = await starReference.child("star_absolute_magnitude").get();
+    starAge = await starReference.child("star_age").get();
+    starApparentMagnitude = await starReference.child("star_apparent_magnitude").get();
+    starDiscoverer = await starReference.child("star_discoverer").get();
+    starDiscoveryDate = await starReference.child("star_discovery_date").get();
+    starTemperature = await starReference.child("star_temperature").get();
+    starImageSource = await starReference.child("image_source").get();
+  }
 
   return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString(), starImageSource.value.toString()];
 }
