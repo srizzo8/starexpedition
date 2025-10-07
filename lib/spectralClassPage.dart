@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:starexpedition4/registerPage.dart';
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 import 'loginPage.dart';
 import 'main.dart' as myMain;
@@ -34,12 +35,22 @@ class spectralClassPageState extends State<spectralClassPage>{
   Future <List<String>> getSpectralClassData() async{
     List<String> spectralClasses = [];
     for(int i = 0; i < scpNumberOfStars; i++) {
-      final spectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
-      //print('This is spectralClassRef: ' + spectralClassRef.toString());
-      var spectralClassSnapshot = await spectralClassRef.child("spectral_class").get();
-      //print('This is spectralClassSnapshot: ' + spectralClassSnapshot.toString());
-      //print(spectralClassSnapshot.value.toString());
-      spectralClasses.add(spectralClassSnapshot.value.toString());
+      if(firebaseDesktopHelper.onDesktop){
+        final spectralClassRef = await firebaseDesktopHelper.getFirebaseData(myMain.starsForSearchBar[i].starName!);
+        //print('This is spectralClassRef: ' + spectralClassRef.toString());
+        var spectralClassSnapshot = spectralClassRef["spectral_class"];
+        //print('This is spectralClassSnapshot: ' + spectralClassSnapshot.toString());
+        //print(spectralClassSnapshot.value.toString());
+        spectralClasses.add(spectralClassSnapshot.toString());
+      }
+      else{
+        final spectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
+        //print('This is spectralClassRef: ' + spectralClassRef.toString());
+        var spectralClassSnapshot = await spectralClassRef.child("spectral_class").get();
+        //print('This is spectralClassSnapshot: ' + spectralClassSnapshot.toString());
+        //print(spectralClassSnapshot.value.toString());
+        spectralClasses.add(spectralClassSnapshot.value.toString());
+      }
     }
     //print(spectralClasses);
 
@@ -472,11 +483,23 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
 
     for(int i = 0; i < myMain.starsForSearchBar.length; i++) {
       print('Current star: ' + myMain.starsForSearchBar[i].starName!.toString());
-      final starsWithSpectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
-      //print(starsWithSpectralClassRef.toString());
-      var starSnapshot = await starsWithSpectralClassRef.child("spectral_class").get();
-      //print('This is starSnapshot: ' + starSnapshot.toString());
-      String starSnapshotString = starSnapshot.value.toString();
+
+      String starSnapshotString = "";
+
+      if(firebaseDesktopHelper.onDesktop){
+        final starsWithSpectralClassRef = await firebaseDesktopHelper.getFirebaseData(myMain.starsForSearchBar[i].starName!);
+        //print(starsWithSpectralClassRef.toString());
+        var starSnapshot = starsWithSpectralClassRef["spectral_class"];
+        //print('This is starSnapshot: ' + starSnapshot.toString());
+        starSnapshotString = starSnapshot.toString();
+      }
+      else{
+        final starsWithSpectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
+        //print(starsWithSpectralClassRef.toString());
+        var starSnapshot = await starsWithSpectralClassRef.child("spectral_class").get();
+        //print('This is starSnapshot: ' + starSnapshot.toString());
+        starSnapshotString = starSnapshot.value.toString();
+      }
       String starSnapshotSpectralClass = starSnapshotString[0];
       //print('This is starSnapshotSpectralClass: ' + starSnapshotSpectralClass);
       switch(starSnapshotSpectralClass){

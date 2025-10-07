@@ -47,6 +47,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 
+import 'package:pdfx/pdfx.dart';
+
 import 'package:http/http.dart' as http;
 
 //import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
@@ -831,6 +833,8 @@ Future<List<String>> getStarInformation() async{
     starDiscoveryDate = starReference["star_discovery_date"];
     starTemperature = starReference["star_temperature"];
     starImageSource = starReference["image_source"];
+
+    return [starConstellation.toString(), starDistance.toString(), starOtherNames.toString(), starSpectralClass.toString(), starAbsoluteMagnitude.toString(), starAge.toString(), starApparentMagnitude.toString(), starDiscoverer.toString(), starDiscoveryDate.toString(), starTemperature.toString(), starImageSource.toString()];
   }
   else{
     starReference = FirebaseDatabase.instance.ref(correctStar);
@@ -846,19 +850,33 @@ Future<List<String>> getStarInformation() async{
     starDiscoveryDate = await starReference.child("star_discovery_date").get();
     starTemperature = await starReference.child("star_temperature").get();
     starImageSource = await starReference.child("image_source").get();
-  }
 
-  return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString(), starImageSource.value.toString()];
+    return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString(), starImageSource.value.toString()];
+  }
 }
 
 Future<Map<String, List>> getOtherNames() async{
   /*Finding if other star name leads user to star
       name on the search suggestions*/
   Map<String, List> otherNames = HashMap();
+
   for(var star in starsForSearchBar){
-    var myStarReference = FirebaseDatabase.instance.ref(star.starName!);
-    var otherNamesForStar = await myStarReference.child("other_names").get();
-    var otherNamesSplit = otherNamesForStar.value.toString().split(",");
+    var myStarReference;
+    var otherNamesForStar;
+    var otherNamesSplit;
+
+    if(firebaseDesktopHelper.onDesktop){
+      myStarReference = await firebaseDesktopHelper.getFirebaseData(star.starName!);
+      otherNamesForStar = myStarReference["other_names"];
+
+      otherNamesSplit = otherNamesForStar.toString().split(",");
+    }
+    else{
+      myStarReference = FirebaseDatabase.instance.ref(star.starName!);
+      otherNamesForStar = await myStarReference.child("other_names").get();
+
+      otherNamesSplit = otherNamesForStar.value.toString().split(",");
+    }
     List<String> otherNamesList = [];
     for(int i = 0; i < otherNamesSplit.length; i++){
       otherNamesList.add(otherNamesSplit[i]);
@@ -1946,19 +1964,35 @@ class articlePage extends StatelessWidget{
   }
 
   Future<List<String>> getStarData() async{
-    final ref = FirebaseDatabase.instance.ref(correctStar);
+    final ref;
+
+    if(firebaseDesktopHelper.onDesktop){
+      ref = await firebaseDesktopHelper.getFirebaseData(correctStar);
+
+      final snapshot = ref["Planets"];
+      if (snapshot != null) {
+        getKeys(snapshot as Map); // Calling getKeys so that I can get the planets' names
+        print(snapshot);
+      } else {
+        print('No data available.');
+      }
+    }
+    else{
+      ref = FirebaseDatabase.instance.ref(correctStar);
+
+      final snapshot = await ref.child('Planets').get();
+      if (snapshot.exists) {
+        getKeys(snapshot.value as Map); // Calling getKeys so that I can get the planets' names
+        print(snapshot.value);
+      } else {
+        print('No data available.');
+      }
+    }
     print('This is the correct star: ' + correctStar);
     /*DatabaseEvent de = await ref.once();
     return Future.delayed(Duration(seconds: 1), () {
       return de.snapshot.value as String; // Data should be returned from the snapshot.
     });*/
-    final snapshot = await ref.child('Planets').get();
-    if (snapshot.exists) {
-      getKeys(snapshot.value as Map); // Calling getKeys so that I can get the planets' names
-      print(snapshot.value);
-    } else {
-      print('No data available.');
-    }
     return Future.delayed(Duration(seconds: 1), () {
       return myPlanet; // Data should be returned from the snapshot.
     });
@@ -1975,18 +2009,43 @@ class articlePage extends StatelessWidget{
     return planetSnapshot.value.toString();*/
 
     //PLANET INFORMATION:
-    final getPlanetAttribute = FirebaseDatabase.instance.ref("${correctStar}/Planets/${correctPlanet}");
-    final discoveryDate = await getPlanetAttribute.child("discovery_date").get();
-    final distanceFromStar = await getPlanetAttribute.child("distance_from_star").get();
-    final earthMasses = await getPlanetAttribute.child("earth_masses").get();
-    final knownGases = await getPlanetAttribute.child("known_gases").get();
-    final orbitalPeriod = await getPlanetAttribute.child("orbital_period").get();
-    final planetTemperature = await getPlanetAttribute.child("planet_temperature").get();
-    final planetTextFilePath = await getPlanetAttribute.child("planet_text_file_path").get();
+    final getPlanetAttribute;
+    final discoveryDate;
+    final distanceFromStar;
+    final earthMasses;
+    final knownGases;
+    final orbitalPeriod;
+    final planetTemperature;
+    final planetTextFilePath;
 
-    return Future.delayed(Duration(seconds: 1), () {
-      return [discoveryDate.value.toString(), distanceFromStar.value.toString(), earthMasses.value.toString(), knownGases.value.toString(), orbitalPeriod.value.toString(), planetTemperature.value.toString(), planetTextFilePath.value.toString()];
-    });
+    if(firebaseDesktopHelper.onDesktop){
+      getPlanetAttribute = await firebaseDesktopHelper.getFirebaseData("${correctStar}/Planets/${correctPlanet}");
+      discoveryDate = getPlanetAttribute["discovery_date"];
+      distanceFromStar = getPlanetAttribute["distance_from_star"];
+      earthMasses = getPlanetAttribute["earth_masses"];
+      knownGases = getPlanetAttribute["known_gases"];
+      orbitalPeriod = getPlanetAttribute["orbital_period"];
+      planetTemperature = getPlanetAttribute["planet_temperature"];
+      planetTextFilePath = getPlanetAttribute["planet_text_file_path"];
+
+      return Future.delayed(Duration(seconds: 1), () {
+        return [discoveryDate.toString(), distanceFromStar.toString(), earthMasses.toString(), knownGases.toString(), orbitalPeriod.toString(), planetTemperature.toString(), planetTextFilePath.toString()];
+      });
+    }
+    else{
+      getPlanetAttribute = FirebaseDatabase.instance.ref("${correctStar}/Planets/${correctPlanet}");
+      discoveryDate = await getPlanetAttribute.child("discovery_date").get();
+      distanceFromStar = await getPlanetAttribute.child("distance_from_star").get();
+      earthMasses = await getPlanetAttribute.child("earth_masses").get();
+      knownGases = await getPlanetAttribute.child("known_gases").get();
+      orbitalPeriod = await getPlanetAttribute.child("orbital_period").get();
+      planetTemperature = await getPlanetAttribute.child("planet_temperature").get();
+      planetTextFilePath = await getPlanetAttribute.child("planet_text_file_path").get();
+
+      return Future.delayed(Duration(seconds: 1), () {
+        return [discoveryDate.value.toString(), distanceFromStar.value.toString(), earthMasses.value.toString(), knownGases.value.toString(), orbitalPeriod.value.toString(), planetTemperature.value.toString(), planetTextFilePath.value.toString()];
+      });
+    }
   }
 
   List<Text> starPdfDialogMessage(http.Response response){
@@ -2048,6 +2107,8 @@ class articlePage extends StatelessWidget{
         builder: (bc, mySnapshot){
           if(mySnapshot.connectionState == ConnectionState.done){
             if(mySnapshot.hasError){
+              print("Error detected: ${mySnapshot.hasError}");
+              print("Error stack trace: ${mySnapshot.stackTrace}");
               return Text("Sorry, an error has occurred. Please try again.");
             }
             else{
@@ -2745,7 +2806,12 @@ class articlePage extends StatelessWidget{
                                           await temporaryFile.writeAsBytes(myResponse.bodyBytes);
 
                                           //Giving myStarPdfFile the temporary file
-                                          myStarPdfFile = PDFDocument.fromFile(temporaryFile);
+                                          if(firebaseDesktopHelper.onDesktop){
+                                            myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
+                                          }
+                                          else{
+                                            myStarPdfFile = PDFDocument.fromFile(temporaryFile);
+                                          }
 
                                           //Going to the page that has the PDF
                                           Navigator.push(bc, MaterialPageRoute(builder: (theContext) => pdfViewer()));
@@ -3420,7 +3486,12 @@ class planetArticle extends StatelessWidget{
                                           await temporaryFile.writeAsBytes(myResponse.bodyBytes);
 
                                           //Giving myPlanetPdfFile the temporary file
-                                          myPlanetPdfFile = PDFDocument.fromFile(temporaryFile);
+                                          if(firebaseDesktopHelper.onDesktop){
+                                            myPlanetPdfFile = PdfDocument.openFile(temporaryFile.path);
+                                          }
+                                          else{
+                                            myPlanetPdfFile = PDFDocument.fromFile(temporaryFile);
+                                          }
 
                                           //Going to the page that has the PDF
                                           Navigator.push(theContext, MaterialPageRoute(builder: (theContext) => pdfViewer()));
