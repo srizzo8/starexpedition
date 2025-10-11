@@ -1401,17 +1401,36 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                   title: Text("User Search"),
                   onTap: () async{
                     //List<dynamic> myUserList = [];
-                    await FirebaseFirestore.instance.collection("User").get().then((qSnapshot){
-                      for(var documentSnapshot in qSnapshot.docs){
-                        print("documentSnapshot: ${documentSnapshot.data()}");
-                        if(!(theListOfUsers.contains(documentSnapshot.data()["username"]))) {
-                          theListOfUsers.add(documentSnapshot.data()["username"]);
-                        }
-                        else{
-                          //continue
-                        }
+                    if(firebaseDesktopHelper.onDesktop){
+                      var myUsersDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        /*for(var documentSnapshot in qSnapshot.docs){
+                          print("documentSnapshot: ${documentSnapshot.data()}");
+                          if(!(theListOfUsers.contains(documentSnapshot.data()["username"]))) {
+                            theListOfUsers.add(documentSnapshot.data()["username"]);
+                          }
+                          else{
+                            //continue
+                          }
+                        }*/
+                      //});
+                      for(int u = 0; u < myUsersDocs.length; u++){
+                        theListOfUsers.add(myUsersDocs[u]["username"]);
                       }
-                    });
+                      print("this is my users: $myUsersDocs");
+                    }
+                    else{
+                      await FirebaseFirestore.instance.collection("User").get().then((qSnapshot){
+                        for(var documentSnapshot in qSnapshot.docs){
+                          print("documentSnapshot: ${documentSnapshot.data()}");
+                          if(!(theListOfUsers.contains(documentSnapshot.data()["username"]))) {
+                            theListOfUsers.add(documentSnapshot.data()["username"]);
+                          }
+                          else{
+                            //continue
+                          }
+                        }
+                      });
+                    }
                     print("theListOfUsers: ${theListOfUsers}");
                     Navigator.pushReplacementNamed(context, routesToOtherPages.userSearchBarPage);
                   }
