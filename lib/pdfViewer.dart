@@ -76,7 +76,7 @@ class pdfViewerState extends State<pdfViewer>{
 
   void goToStarPdfPage({int? myPage}){
     if(firebaseDesktopHelper.onDesktop){
-      myStarPdfxController.jumpToPage(myPage != null ? myPage : myStarPageNumber - 1);
+      myStarPdfxController.jumpToPage(myPage != null ? myPage : myStarPageNumber);
     }
     else{
       starPageController.jumpToPage(myPage != null ? myPage : myStarPageNumber - 1);
@@ -85,7 +85,7 @@ class pdfViewerState extends State<pdfViewer>{
 
   void animateToStarPdfPage({int? myPage}){
     if(firebaseDesktopHelper.onDesktop){
-      myStarPdfxController.animateToPage(myPage != null ? myPage : myStarPageNumber - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
+      myStarPdfxController.animateToPage(myPage != null ? myPage : myStarPageNumber, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
     }
     else{
       starPageController.animateToPage(myPage != null ? myPage : myStarPageNumber - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
@@ -94,7 +94,7 @@ class pdfViewerState extends State<pdfViewer>{
 
   void goToPlanetPdfPage({int? myPage}){
     if(firebaseDesktopHelper.onDesktop){
-      myPlanetPdfxController.jumpToPage(myPage != null ? myPage : myPlanetPageNumber - 1);
+      myPlanetPdfxController.jumpToPage(myPage != null ? myPage : myPlanetPageNumber);
     }
     else{
       planetPageController.jumpToPage(myPage != null ? myPage : myPlanetPageNumber - 1);
@@ -103,7 +103,7 @@ class pdfViewerState extends State<pdfViewer>{
 
   void animateToPlanetPdfPage({int? myPage}){
     if(firebaseDesktopHelper.onDesktop){
-      myPlanetPdfxController.animateToPage(myPage != null ? myPage : myPlanetPageNumber - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
+      myPlanetPdfxController.animateToPage(myPage != null ? myPage : myPlanetPageNumber, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
     }
     else{
       planetPageController.animateToPage(myPage != null ? myPage : myPlanetPageNumber - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
@@ -179,26 +179,11 @@ class pdfViewerState extends State<pdfViewer>{
                         myStarPdfxController = PdfController(document: Future.value(docForPdfx));
 
                         myStarPageNumber = myStarPdfxController.initialPage;
-                        print("This is myStarPageNumber: ${myStarPageNumber}");
-
-                        /*starPdfPages = List.filled((snapshot.data as PDFDocument).count, null);
-                        final docForPdfx = snapshot.data as PdfDocument;
-                        totalStarPdfPages = docForPdfx.pagesCount;
-                        //starPdfPagesDesktop = docForPdfx.pagesCount;
-                        /*starPageController = PageController();
-                        myStarPageNumber = starPageController.initialPage + 1;
-                        print(starPdfPages.length);
-                        print(myStarPageNumber);
-                        totalStarPdfPages = (snapshot.data as PDFDocument).count;*/
-
-                        myStarPdfxController = PdfController(document: Future.value(docForPdfx));
-
-                        myStarPageNumber = myStarPdfxController.initialPage + 1;*/
 
                         return PdfView(
                           onPageChanged: (int myCurrentPage){
                             myStarPdfPage = myCurrentPage;
-                            //myStarPageNumber = myCurrentPage + 1;
+                            myStarPageNumber = myCurrentPage;
                             print("myStarPdfPage: ${myStarPdfPage}");
                           },
                           controller: myStarPdfxController,
@@ -395,7 +380,7 @@ class pdfViewerState extends State<pdfViewer>{
                       return PdfView(
                         onPageChanged: (int myCurrentPage){
                           myPlanetPdfPage = myCurrentPage;
-                          //myPlanetPageNumber = myCurrentPage + 1;
+                          myPlanetPageNumber = myCurrentPage;
                           print("myPlanetPdfPage: ${myPlanetPdfPage}");
                         },
                         controller: myPlanetPdfxController,

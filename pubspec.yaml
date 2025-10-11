@@ -73,6 +73,10 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+#Dependency overrides
+dependency_overrides:
+  photo_view: ^0.15.0
+
 # The following section is specific to Flutter packages.
 flutter:
 

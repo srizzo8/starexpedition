@@ -484,7 +484,7 @@ packages:
       name: mailer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.4.1"
+    version: "6.5.0"
   matcher:
     dependency: transitive
     description:
@@ -584,12 +584,12 @@ packages:
     source: hosted
     version: "2.0.1+2"
   photo_view:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: photo_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.0"
+    version: "0.15.0"
   platform:
     dependency: transitive
     description:
