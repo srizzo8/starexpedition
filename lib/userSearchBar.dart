@@ -96,13 +96,6 @@ class mySearch extends SearchDelegate{
           title: Text(myResult),
           onTap: () async{
             if(firebaseDesktopHelper.onDesktop){
-              /*nameClickedData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myResult.toLowerCase()).get();
-              nameClickedData.docs.forEach((person){
-                theUsersData = person.data();
-              });
-              print("You clicked on someone's name: ${myResult}");
-              print("The user's data: ${theUsersData}");
-              print("Stars tracked: ${theUsersData["usernameProfileInformation"]["starsTracked"]}");*/
               nameClickedData = await firebaseDesktopHelper.getFirestoreCollection("User");
               theUsersData = nameClickedData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
               print("nameclickeddata: ${nameClickedData}");

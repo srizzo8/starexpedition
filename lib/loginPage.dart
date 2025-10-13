@@ -22,6 +22,7 @@ import 'database_information/usersDatabaseInfo.dart';
 import 'users_firestore_database_information/theUserInformation.dart';
 import 'users_firestore_database_information/userDatabaseFirestoreInfo.dart';
 import 'forgottenPassword.dart' as forgottenPassword;
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 import 'main.dart' as myMain;
 
@@ -170,12 +171,24 @@ class loginPageState extends State<loginPage>{
 
                     //userResult
                     if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
-                      var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
-                      userResult.docs.forEach((outcome){
-                        userDocument = outcome.data();
-                        //userLowercased = outcome.data()["username"].toLowerCase();
-                        print("This is the outcome: ${outcome.data()}");
-                      });
+                      if(firebaseDesktopHelper.onDesktop){
+                        //var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
+                        /*userResult.docs.forEach((outcome){
+                          userDocument = outcome.data();
+                          //userLowercased = outcome.data()["username"].toLowerCase();
+                          print("This is the outcome: ${outcome.data()}");
+                        });*/
+                        var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        userDocument = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                      }
+                      else{
+                        var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
+                        userResult.docs.forEach((outcome){
+                          userDocument = outcome.data();
+                          //userLowercased = outcome.data()["username"].toLowerCase();
+                          print("This is the outcome: ${outcome.data()}");
+                        });
+                      }
 
                       print("keys: ${userDocument["password"]}");
                       print("userDocument: $userDocument");
@@ -201,9 +214,16 @@ class loginPageState extends State<loginPage>{
                     if(userDocument != null && userDocument["usernameLowercased"] == usernameController.text.toLowerCase() && passwordController.text == theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"]) && usernameController.text != "" && passwordController.text != ""){ //myMain.theUsers!.contains(usernameController.text)
                       print("userDocument is NOT null");
                       if(myMain.discussionBoardLogin == true){
-                        await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
-                          myUsername = theUn.docs.first.data()["username"];
-                        });
+                        if(firebaseDesktopHelper.onDesktop){
+                          var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                          var usernameFound = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                          myUsername = usernameFound["username"];
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
+                            myUsername = theUn.docs.first.data()["username"];
+                          });
+                        }
                         print("Logging in as: " + myUsername);
                         print("myNewUsername: " + theRegisterPage.myNewUsername);
                         Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
@@ -212,9 +232,16 @@ class loginPageState extends State<loginPage>{
                       }
                       else{
                         print("Logging in 123");
-                        await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
-                          myUsername = theUn.docs.first.data()["username"];
-                        });
+                        if(firebaseDesktopHelper.onDesktop){
+                          var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                          var usernameFound = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                          myUsername = usernameFound["username"];
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
+                            myUsername = theUn.docs.first.data()["username"];
+                          });
+                        }
 
                         print("Logging in as " + myUsername);
                         Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
