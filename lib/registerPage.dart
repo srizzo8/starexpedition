@@ -28,6 +28,7 @@ import 'users_firestore_database_information/theUserInformation.dart';
 import 'users_firestore_database_information/userDatabaseFirestoreInfo.dart';
 //import 'database_information/usersDatabaseInfo.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 String myNewUsername = "";
 String myNewEmail = "";
@@ -432,9 +433,17 @@ class registerPageState extends State<registerPage>{
                   else if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && checkUsernameValidity(theUsername.text) == true && email.text != "" && checkEmailValidity(email.text) == true && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
                     if(myMain.discussionBoardLogin == true){
                       //userId = userId + 1;
-                      await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
-                        userId = myNumber.docs.first.data()["id"] + 1;
-                      });
+                      if(firebaseDesktopHelper.onDesktop){
+                        var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        var userIdFound = userIdResult.firstWhere((myUser) => int.parse(myUser["id"]) == (userIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                        userId = int.parse(userIdFound["id"]) + 1;
+                        print("This is the userId: $userId");
+                      }
+                      else{
+                        await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
+                          userId = myNumber.docs.first.data()["id"] + 1;
+                        });
+                      }
 
                       myNewUsername = theUsername.text;
                       myNewEmail = email.text;
@@ -461,10 +470,18 @@ class registerPageState extends State<registerPage>{
                       emailNotifications.registrationConfirmationEmail();
                     }
                     else{
-                      //userId = userId + 1;
-                      await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
-                        userId = myNumber.docs.first.data()["id"] + 1;
-                      });
+                      if(firebaseDesktopHelper.onDesktop){
+                        var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        var userIdFound = userIdResult.firstWhere((myUser) => int.parse(myUser["id"])  == (userIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                        userId = int.parse(userIdFound["id"]) + 1;
+                        print("This is the userId: $userId");
+                      }
+                      else{
+                        await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
+                          userId = myNumber.docs.first.data()["id"] + 1;
+                        });
+                      }
+
                       myNewUsername = theUsername.text;
                       myNewEmail = email.text;
                       myNewPassword = eBaseSixtyFour;
