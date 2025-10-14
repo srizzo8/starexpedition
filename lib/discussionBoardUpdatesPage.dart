@@ -16,6 +16,7 @@ import 'discussionBoardPage.dart' as discussionBoardPage;
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesDatabaseFirestoreInfo.dart';
 import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 bool discussionBoardUpdatesBool = false;
 bool discussionBoardUpdatesReplyBool = false;
@@ -153,10 +154,18 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                                   style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                   recognizer: TapGestureRecognizer()..onTap = () async =>{
                                   dbuClickedOnUser = true,
-                                  nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase()).get(),
-                                  nameData.docs.forEach((person){
-                                    theUsersData = person.data();
-                                  }),
+
+                                  if(firebaseDesktopHelper.onDesktop){
+                                    nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                    theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                  }
+                                  else{
+                                    nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase()).get(),
+                                    nameData.docs.forEach((person){
+                                      theUsersData = person.data();
+                                    }),
+                                  },
+
                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                 }
                                 ),
