@@ -43,6 +43,37 @@ class firebaseDesktopHelper{
     return [];
   }
 
+  //Getting a Firestore subcollection from a Firestore database:
+  static Future<List<Map<String, dynamic>>> getFirestoreSubcollection(String myCollectionPath, var myDocId, String mySubCollectionPath) async{
+    final myUrl = "$myFirestoreUrl/$myCollectionPath/$myDocId/$mySubCollectionPath";
+    final myResponse = await http.get(Uri.parse(myUrl));
+
+    if(myResponse.statusCode == 200){
+      final myData = json.decode(myResponse.body);
+      final myDocuments = myData["documents"] as List? ?? [];
+      return myDocuments.map((theDoc) => parseMyFirestoreDoc(theDoc)).toList();
+    }
+
+    return [];
+  }
+
+  //Getting a Firestore document snapshot from a Firestore subcollection:
+  static Future<Map<String, dynamic>?> getFirestoreSubcollectionDocument(String myCollectionPath, String myDocId, String mySubCollectionPath, String mySubDocId) async{
+    final myUrl = "$myFirestoreUrl/$myCollectionPath/$myDocId/$mySubCollectionPath/$mySubDocId";
+    final myResponse = await http.get(Uri.parse(myUrl));
+
+    if(myResponse.statusCode == 200){
+      final myData = json.decode(myResponse.body);
+      //final myDoc = myData["documents"] as List? ?? [];
+      return parseMyFirestoreDoc(myData);
+    }
+    else if(myResponse.statusCode == 404){
+      return null;
+    }
+
+    return null;
+  }
+
   //Parsing a Firestore document:
   static Map<String, dynamic> parseMyFirestoreDoc(Map<String, dynamic> myDoc){
     final myFields = myDoc["fields"] as Map<String, dynamic>? ?? {};

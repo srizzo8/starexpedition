@@ -157,7 +157,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
 
                                   if(firebaseDesktopHelper.onDesktop){
                                     nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                    theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                    theUsersData = nameData.where((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
                                   }
                                   else{
                                     nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase()).get(),
@@ -194,26 +194,58 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                         threadID = mySublistsDbu[theCurrentPageDbu][index]["threadId"].toString();//reversedDiscussionBoardUpdatesThreadsIterable.toList()[index][3];
                         print("${threadAuthorDbu} + ${threadTitleDbu} + ${threadContentDbu} + ${threadID}");
                         print("context: ${context}");
-                        await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                          myDocDbu = d.docs.first.id;
-                          print(myDocDbu);
-                        });
+
+                        if(firebaseDesktopHelper.onDesktop){
+                          var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
+                          myDocDbu = theDbuThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                            myDocDbu = d.docs.first.id;
+                            print(myDocDbu);
+                          });
+                        }
                         //var oneReply = {"animal": "dog", "breed": "belgian tervuren"};
 
                         //Getting the replies of a thread
-                        await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies");//.add(oneReply);
+                        if(firebaseDesktopHelper.onDesktop){
+                          /*await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies");//.add(oneReply);
 
-                        QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
-                        theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                          QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                          theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
 
-                        print(theDbuThreadReplies.runtimeType);
-                        //print(theDbuThreadReplies[0]["time"].toDate().runtimeType);
-                        //print(theDbuThreadReplies[0]["time"].runtimeType);
-                        //print(theDbuThreadReplies((a, b) => a[0]["time"].compareTo(b[0]["time"])));
+                          print(theDbuThreadReplies.runtimeType);
 
-                        print(DateTime.now().runtimeType);
+                          print(DateTime.now().runtimeType);
 
-                        (theDbuThreadReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+                          (theDbuThreadReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));*/
+                          theDbuThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
+
+                          print(theDbuThreadReplies.runtimeType);
+
+                          print(DateTime.now().runtimeType);
+
+                          theDbuThreadReplies.sort((b, a){
+                            DateTime dta = DateTime.parse(a["time"]);
+                            DateTime dtb = DateTime.parse(b["time"]);
+                            return dta.compareTo(dtb);
+                          });
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies");//.add(oneReply);
+
+                          QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                          theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                          print(theDbuThreadReplies.runtimeType);
+                          //print(theDbuThreadReplies[0]["time"].toDate().runtimeType);
+                          //print(theDbuThreadReplies[0]["time"].runtimeType);
+                          //print(theDbuThreadReplies((a, b) => a[0]["time"].compareTo(b[0]["time"])));
+
+                          print(DateTime.now().runtimeType);
+
+                          (theDbuThreadReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+                        }
                         //print("theDbuThreadRepliesSorted: ${sortedList}");
 
                         /*
@@ -436,10 +468,17 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                       text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         dbuClickedOnUser = true,
-                                        nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
-                                        nameData.docs.forEach((person){
-                                          theUsersData = person.data();
-                                        }),
+
+                                        if(firebaseDesktopHelper.onDesktop){
+                                          nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                          theUsersData = nameData.where((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                        }
+                                        else{
+                                          nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                          nameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                        },
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
                                     ),
@@ -480,10 +519,16 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                       text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         dbuClickedOnUser = true,
-                                        nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                        nameData.docs.forEach((person){
-                                          theUsersData = person.data();
-                                        }),
+                                        if(firebaseDesktopHelper.onDesktop){
+                                          nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                          theUsersData = nameData.where((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                        }
+                                        else{
+                                          nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                          nameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                        },
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
                                     ),
@@ -525,17 +570,26 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               //print("This is replyToReplyOriginalInfoDbu: ${replyToReplyOriginalInfoDbu["replyContent"]}");
                               print("This is replyToReplyTime: $replyToReplyTimeDbu");
 
-                              await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                myDocDbu = d.docs.first.id;
-                                print(myDocDbu);
-                              });
-                              await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
-                                replyToReplyDocDbu = rd.docs.first.id;
-                                //replyToReplyTime = rd.docs.first["time"];
-                                //print("This is t: $replyToReplyTime");
-                                //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-                                print(replyToReplyDocDbu);
-                              });
+                              if(firebaseDesktopHelper.onDesktop){
+                                var theDocDbu = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
+                                myDocDbu = theDocDbu.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+
+                                var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
+                                replyToReplyDocDbu = tempReplyToReplyVar.firstWhere((myTime) => myTime["time"] == replyToReplyTimeDbu, orElse: () => {} as Map<String, dynamic>);
+                              }
+                              else{
+                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                  myDocDbu = d.docs.first.id;
+                                  print(myDocDbu);
+                                });
+                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
+                                  replyToReplyDocDbu = rd.docs.first.id;
+                                  //replyToReplyTime = rd.docs.first["time"];
+                                  //print("This is t: $replyToReplyTime");
+                                  //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                                  print(replyToReplyDocDbu);
+                                });
+                              }
 
                               //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
 
@@ -548,9 +602,30 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               print(replyToReplyDocDbu);
                               //print(replyToReplyDoc.snapshot);
                               //print(replyContent);
-                              DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
-                              print(ds.data());
-                              print(ds.data().runtimeType);
+
+                              if(firebaseDesktopHelper.onDesktop){
+                                DocumentSnapshot ds = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu) as DocumentSnapshot;
+                                print(ds.data());
+                                print(ds.data().runtimeType);
+                                /*List<Map<String, dynamic>> docsList = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
+                                for (var d in docsList){
+                                  if(d == replyToReplyDocDbu){
+                                    print("This is d: $d");
+                                    break;
+                                  }
+                                  else{
+                                    //continue
+                                  }
+                                }
+                                print(ds.data());
+                                print(ds.data().runtimeType);*/
+
+                              }
+                              else{
+                                DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
+                                print(ds.data());
+                                print(ds.data().runtimeType);
+                              }
                               print(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu));
                               myIndex = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu); //where replyToReplyDoc is in theDbuThreadReplies.
                               myReplyToReplyDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][myIndex];
@@ -602,10 +677,17 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                       text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         dbuClickedOnUser = true,
-                                        nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                        nameData.docs.forEach((person){
-                                          theUsersData = person.data();
-                                        }),
+
+                                        if(firebaseDesktopHelper.onDesktop){
+                                          nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                          theUsersData = nameData.where((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                        }
+                                        else{
+                                          nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                          nameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                        },
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
                                     ),
@@ -647,17 +729,34 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               //print("This is replyToReplyOriginalInfoDbu: $replyToReplyOriginalInfoDbu");
                               print("This is replyToReplyTime: $replyToReplyTimeDbu");
 
-                              await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                myDocDbu = d.docs.first.id;
-                                print(myDocDbu);
-                              });
-                              await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
-                                replyToReplyDocDbu = rd.docs.first.id;
-                                //replyToReplyTime = rd.docs.first["time"];
-                                //print("This is t: $replyToReplyTime");
-                                //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-                                print(replyToReplyDocDbu);
-                              });
+                              if(firebaseDesktopHelper.onDesktop){
+                                /*await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                  myDocDbu = d.docs.first.id;
+                                  print(myDocDbu);
+                                });
+                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
+                                  replyToReplyDocDbu = rd.docs.first.id;
+                                  print(replyToReplyDocDbu);
+                                });*/
+                                var theDocDbu = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
+                                myDocDbu = theDocDbu.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+
+                                var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
+                                replyToReplyDocDbu = tempReplyToReplyVar.firstWhere((myTime) => myTime["time"] == replyToReplyTimeDbu, orElse: () => {} as Map<String, dynamic>);
+                              }
+                              else{
+                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                  myDocDbu = d.docs.first.id;
+                                  print(myDocDbu);
+                                });
+                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
+                                  replyToReplyDocDbu = rd.docs.first.id;
+                                  //replyToReplyTime = rd.docs.first["time"];
+                                  //print("This is t: $replyToReplyTime");
+                                  //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                                  print(replyToReplyDocDbu);
+                                });
+                              }
 
                               //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
 
@@ -670,9 +769,19 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               print(replyToReplyDocDbu);
                               //print(replyToReplyDoc.snapshot);
                               //print(replyContent);
-                              DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
-                              print(ds.data());
-                              print(ds.data().runtimeType);
+
+                              if(firebaseDesktopHelper.onDesktop){
+                                DocumentSnapshot ds = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu) as DocumentSnapshot;
+                                print(ds.data());
+                                print(ds.data().runtimeType);
+                              }
+                              else{
+                                DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
+                                print(ds.data());
+                                print(ds.data().runtimeType);
+                              }
+
+
                               //print(theDbuThreadReplies[1].runtimeType);
                               myIndex = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu);
                               //where replyToReplyDoc is in theDbuThreadReplies.
@@ -780,10 +889,18 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                             text: "${threadAuthorDbu}",
                             recognizer: TapGestureRecognizer()..onTap = () async =>{
                               dbuClickedOnUser = true,
-                              nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorDbu.toLowerCase()).get(),
-                              nameData.docs.forEach((person){
-                                theUsersData = person.data();
-                              }),
+
+                              if(firebaseDesktopHelper.onDesktop){
+                                nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                theUsersData = nameData.where((myUser) => myUser["usernameLowercased"].toString() == threadAuthorDbu.toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                              }
+                              else{
+                                nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorDbu.toLowerCase()).get(),
+                                nameData.docs.forEach((person){
+                                  theUsersData = person.data();
+                                }),
+                              },
+
                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                             }
                           ),
