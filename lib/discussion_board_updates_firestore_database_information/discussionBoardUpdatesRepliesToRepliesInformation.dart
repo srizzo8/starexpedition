@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,19 +17,40 @@ import 'package:get/get.dart';
 import 'discussionBoardUpdatesDatabaseFirestoreInfo.dart';
 import 'discussionBoardUpdatesRepliesDatabaseFirestoreInfo.dart';
 import 'discussionBoardUpdatesRepliesToRepliesDatabaseFirestoreInfo.dart';
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 class discussionBoardUpdatesRepliesToRepliesInformation extends GetxController{
   discussionBoardUpdatesRepliesToRepliesInformation get instance => Get.find();
 
-  final myDb = FirebaseFirestore.instance;
+  //final myDb = FirebaseFirestore.instance;
+
+  FirebaseFirestore? get myDb{
+    if(!kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux)){
+      return null;
+    }
+    return FirebaseFirestore.instance;
+  }
+
+  bool get onDesktop => !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
 
   createMyDiscussionBoardUpdatesReplyToReply(DiscussionBoardUpdatesReplies dbur, var docName) async{
-    await myDb.collection("Discussion_Board_Updates").doc(docName).collection("Replies").add(dbur.toJson()).whenComplete(
-          () => print("Reply to reply added!"),
-    )
-        .catchError((error, stackTrace){
-      print("This is your error: ${error.toString()}");
-    });
+    if(onDesktop){
+      try{
+        await firebaseDesktopHelper.createFirestoreDocumentForSubcollection("Discussion_Board_Updates", dbur.toJson(), docName, "Replies");
+        print("Reply to reply added!");
+      }
+      catch (error){
+        print("This is your error: $error");
+      }
+    }
+    else{
+      await myDb?.collection("Discussion_Board_Updates").doc(docName).collection("Replies").add(dbur.toJson()).whenComplete(
+            () => print("Reply to reply added!"),
+      )
+          .catchError((error, stackTrace){
+        print("This is your error: ${error.toString()}");
+      });
+    }
   }
 
 }

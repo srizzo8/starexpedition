@@ -157,7 +157,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
 
                                   if(firebaseDesktopHelper.onDesktop){
                                     nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                    theUsersData = nameData.where((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                    theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
                                   }
                                   else{
                                     nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase()).get(),
@@ -197,12 +197,21 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
 
                         if(firebaseDesktopHelper.onDesktop){
                           var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
-                          myDocDbu = theDbuThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                          var matchingThread = theDbuThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+
+                          if(matchingThread.isNotEmpty){
+                            //Getting the document ID:
+                            myDocDbu = matchingThread["docId"];
+                            print("This is myDocDbu: ${myDocDbu}");
+                          }
+                          else{
+                            print("Sorry; the thread was not found");
+                          }
                         }
                         else{
                           await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
                             myDocDbu = d.docs.first.id;
-                            print(myDocDbu);
+                            print("This is myDocDbu: ${myDocDbu}");
                           });
                         }
                         //var oneReply = {"animal": "dog", "breed": "belgian tervuren"};
@@ -471,7 +480,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
 
                                         if(firebaseDesktopHelper.onDesktop){
                                           nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = nameData.where((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                          theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
                                         }
                                         else{
                                           nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
@@ -508,7 +517,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               child: Text.rich(
                                 TextSpan(
                                   style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                  text: "Posted on: ${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toDate().toString()}",
+                                  text: "Posted on: ${firebaseDesktopHelper.onDesktop? DateTime.parse(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString()) : mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toDate().toString()}",
                                   children: <TextSpan>[
                                     TextSpan(
                                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -521,7 +530,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                         dbuClickedOnUser = true,
                                         if(firebaseDesktopHelper.onDesktop){
                                           nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = nameData.where((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                          theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
                                         }
                                         else{
                                           nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get(),
@@ -604,9 +613,9 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               //print(replyContent);
 
                               if(firebaseDesktopHelper.onDesktop){
-                                DocumentSnapshot ds = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu) as DocumentSnapshot;
+                                /*DocumentSnapshot ds = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu) as DocumentSnapshot;
                                 print(ds.data());
-                                print(ds.data().runtimeType);
+                                print(ds.data().runtimeType);*/
                                 /*List<Map<String, dynamic>> docsList = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
                                 for (var d in docsList){
                                   if(d == replyToReplyDocDbu){
@@ -619,7 +628,26 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 }
                                 print(ds.data());
                                 print(ds.data().runtimeType);*/
+                                print("The doc: $myDocDbu");
+                                print("The subdoc: $replyToReplyDocDbu");
 
+                                try{
+                                  Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu);
+
+                                  print("This is dsData: ${dsData}");
+                                  print("This is dsData's runtime type: ${dsData.runtimeType}");
+
+                                  if(dsData != null){
+                                    print("This is dsData: ${dsData}");
+                                    print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                  }
+                                  else{
+                                    print("The document is not found on Desktop");
+                                  }
+                                }
+                                catch (error){
+                                  print("There is an error on Desktop: ${error}");
+                                }
                               }
                               else{
                                 DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
@@ -666,7 +694,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               child: Text.rich(
                                 TextSpan(
                                   style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                  text: "Posted on: ${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toDate().toString()}",
+                                  text: "Posted on: ${firebaseDesktopHelper.onDesktop? DateTime.parse(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString()) : mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toDate().toString()}",
                                   children: <TextSpan>[
                                     TextSpan(
                                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -680,7 +708,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
 
                                         if(firebaseDesktopHelper.onDesktop){
                                           nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = nameData.where((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                          theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                          print("theUsersData is this on Desktop: ${theUsersData}"),
                                         }
                                         else{
                                           nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get(),
@@ -738,11 +767,35 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                   replyToReplyDocDbu = rd.docs.first.id;
                                   print(replyToReplyDocDbu);
                                 });*/
-                                var theDocDbu = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
+
+                                /*var theDocDbu = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
                                 myDocDbu = theDocDbu.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
 
                                 var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
-                                replyToReplyDocDbu = tempReplyToReplyVar.firstWhere((myTime) => myTime["time"] == replyToReplyTimeDbu, orElse: () => {} as Map<String, dynamic>);
+                                replyToReplyDocDbu = tempReplyToReplyVar.firstWhere((myTime) => myTime["time"] == replyToReplyTimeDbu, orElse: () => {} as Map<String, dynamic>);*/
+                                var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
+                                var matchingThread = theDbuThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+
+                                if(matchingThread.isNotEmpty){
+                                  //Getting the document ID:
+                                  myDocDbu = matchingThread["docId"];
+                                  print("This is myDocDbu: ${myDocDbu}");
+                                }
+                                else{
+                                  print("Sorry; the thread was not found");
+                                }
+
+                                var theDbuThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
+                                var matchingReply = theDbuThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeDbu, orElse: () => {} as Map<String, dynamic>);
+
+                                if(matchingReply.isNotEmpty){
+                                  //Getting the document ID:
+                                  replyToReplyDocDbu = matchingReply["docId"];
+                                  print("This is replyToReplyDocDbu: ${replyToReplyDocDbu}");
+                                }
+                                else{
+                                  print("Sorry; the thread was not found");
+                                }
                               }
                               else{
                                 await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
@@ -771,9 +824,29 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               //print(replyContent);
 
                               if(firebaseDesktopHelper.onDesktop){
-                                DocumentSnapshot ds = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu) as DocumentSnapshot;
+                                /*DocumentSnapshot ds = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu) as DocumentSnapshot;
                                 print(ds.data());
-                                print(ds.data().runtimeType);
+                                print(ds.data().runtimeType);*/
+                                print("The doc: $myDocDbu");
+                                print("The subdoc: $replyToReplyDocDbu");
+
+                                try{
+                                  Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu);
+
+                                  print("This is dsData: ${dsData}");
+                                  print("This is dsData's runtime type: ${dsData.runtimeType}");
+
+                                  if(dsData != null){
+                                    print("This is dsData: ${dsData}");
+                                    print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                  }
+                                  else{
+                                    print("The document is not found on Desktop");
+                                  }
+                                }
+                                catch (error){
+                                  print("There is an error on Desktop: ${error}");
+                                }
                               }
                               else{
                                 DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
@@ -892,7 +965,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
 
                               if(firebaseDesktopHelper.onDesktop){
                                 nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                theUsersData = nameData.where((myUser) => myUser["usernameLowercased"].toString() == threadAuthorDbu.toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorDbu.toLowerCase(), orElse: () => {} as Map<String, dynamic>),
                               }
                               else{
                                 nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorDbu.toLowerCase()).get(),

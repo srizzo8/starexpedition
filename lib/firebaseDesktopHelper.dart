@@ -37,7 +37,19 @@ class firebaseDesktopHelper{
     if(myResponse.statusCode == 200){
       final myData = json.decode(myResponse.body);
       final myDocuments = myData["documents"] as List? ?? [];
-      return myDocuments.map((theDoc) => parseMyFirestoreDoc(theDoc)).toList();
+      return myDocuments.map((theDoc){
+        final myParsedDoc = parseMyFirestoreDoc(theDoc);
+
+        //Extracting the document name from the "name" field of theDoc:
+        //Its format is like this: "projects/project_id/databases/(default)/documents/collection/document_id"
+        final theName = theDoc["name"] as String? ?? "";
+        final myDocId = theName.split("/").last;
+
+        //Adding the document ID to the returned data:
+        myParsedDoc["docId"] = myDocId;
+
+        return myParsedDoc;
+      }).toList();
     }
 
     return [];
@@ -58,7 +70,7 @@ class firebaseDesktopHelper{
   }
 
   //Getting a Firestore document snapshot from a Firestore subcollection:
-  static Future<Map<String, dynamic>?> getFirestoreSubcollectionDocument(String myCollectionPath, String myDocId, String mySubCollectionPath, String mySubDocId) async{
+  static Future<Map<String, dynamic>?> getFirestoreSubcollectionDocument(String myCollectionPath, var myDocId, String mySubCollectionPath, var mySubDocId) async{
     final myUrl = "$myFirestoreUrl/$myCollectionPath/$myDocId/$mySubCollectionPath/$mySubDocId";
     final myResponse = await http.get(Uri.parse(myUrl));
 
@@ -84,6 +96,110 @@ class firebaseDesktopHelper{
     });
 
     return myResult;
+  }
+
+  //Creating a document in a Firestore collection:
+  static Future<String> createFirestoreDocument(String myCollectionPath, Map<String, dynamic> myData) async{
+    final myUrl = "$myFirestoreUrl/$myCollectionPath";
+    final myBody = json.encode({'fields': convertToFirestoreFields(myData)});
+
+    final myResponse = await http.post(Uri.parse(myUrl), headers: {"Content-Type": "application/json"}, body: myBody);
+
+    if(myResponse.statusCode == 200){
+      final myResponseData = json.decode(myResponse.body);
+      final myName = myResponseData["name"].toString();
+      return myName.split("/").last;
+    }
+    else{
+      throw Exception("Document unable to be created: ${myResponse.body}");
+    }
+  }
+
+  //Creating a document for a Firestore subcollection:
+  static Future<String> createFirestoreDocumentForSubcollection(String myCollectionPath, Map<String, dynamic> myData, var myDocId, String mySubcollectionPath) async{
+    final myUrl = "$myFirestoreUrl/$myCollectionPath/$myDocId/$mySubcollectionPath";
+    final myBody = json.encode({'fields': convertToFirestoreFields(myData)});
+
+    final myResponse = await http.post(Uri.parse(myUrl), headers: {"Content-Type": "application/json"}, body: myBody);
+
+    print("myUrl: ${myUrl}");
+    print("myBody: ${myBody}");
+    print("myResponse: ${myResponse}");
+
+    if(myResponse.statusCode == 200){
+      final myResponseData = json.decode(myResponse.body);
+      final myName = myResponseData["name"].toString();
+      //print("Success!");
+      return myName.split("/").last;
+    }
+    else{
+      throw Exception("Document in subcollection unable to be created: ${myResponse.body}");
+    }
+  }
+
+  //Updating a Firestore document:
+  static Future<void> updateFirestoreDocument(String myDocumentPath, Map<String, dynamic> myData) async{
+    final myUrl = "$myFirestoreUrl/$myDocumentPath";
+    final myBody = json.encode({"fields": convertToFirestoreFields(myData)});
+
+    final myResponse = await http.patch(
+      Uri.parse(myUrl),
+      headers: {"Content-Type": "application/json"},
+      body: myBody,
+    );
+
+    if(myResponse.statusCode != 200){
+      throw Exception("Failed to update the document: ${myResponse.body}");
+    }
+  }
+
+  //Method for converting a map to having a Firestore fields format
+  static Map<String, dynamic> convertToFirestoreFields(Map<String, dynamic> myData){
+    final myFields = <String, dynamic>{};
+    myData.forEach((k, v){
+      myFields[k] = convertToFirestoreValues(v);
+    });
+
+    return myFields;
+  }
+
+  //Method for converting values to Firestore format
+  static Map<String, dynamic> convertToFirestoreValues(dynamic myValue){
+    if(myValue is String){
+      return {"stringValue": myValue};
+    }
+    else if(myValue is int){
+      return {"integerValue": myValue.toString()};
+    }
+    else if(myValue is double){
+      return {"doubleValue": myValue};
+    }
+    else if(myValue is bool){
+      return {"booleanValue": myValue};
+    }
+    else if(myValue is DateTime){
+      String myIsoString = myValue.toUtc().toIso8601String();
+      if(!myIsoString.endsWith("Z")){
+        myIsoString = myIsoString + "Z";
+      }
+      return {"timestampValue": myIsoString};
+    }
+    else if(myValue is List){
+      return {
+        "arrayValue": {"values": myValue.map((v) => convertToFirestoreValues(v)).toList()},
+      };
+    }
+    else if(myValue is Map){
+      final myFields = <String, dynamic>{};
+      myValue.forEach((k, v){
+        myFields[k.toString()] = convertToFirestoreValues(v);
+      });
+      return {"mapValue": {"fields": myFields}};
+    }
+    else if(myValue == null){
+      return {"nullValue": null};
+    }
+    throw Exception("The value type is unsupported: ${myValue.runtimeType}");
   }
 
   //Parsing the Firestore value types:
