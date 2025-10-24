@@ -517,7 +517,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               child: Text.rich(
                                 TextSpan(
                                   style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                  text: "Posted on: ${firebaseDesktopHelper.onDesktop? mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"] : mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toDate().toString()}",
+                                  text: "Posted on: ${firebaseDesktopHelper.onDesktop? firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"]) : firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toDate().toString())}",
                                   children: <TextSpan>[
                                     TextSpan(
                                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -700,7 +700,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               child: Text.rich(
                                 TextSpan(
                                   style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                  text: "Posted on: ${firebaseDesktopHelper.onDesktop? mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString() : mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toDate().toString()}",
+                                  text: "Posted on: ${firebaseDesktopHelper.onDesktop? firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString()) : firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toDate().toString())}",
                                   children: <TextSpan>[
                                     TextSpan(
                                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),

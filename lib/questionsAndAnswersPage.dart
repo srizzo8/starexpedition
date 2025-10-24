@@ -393,7 +393,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.onDesktop? DateTime.parse(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toString()) : mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                    text: "Posted on: ${firebaseDesktopHelper.onDesktop? firebaseDesktopHelper.formatMyTimestamp(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toString()) : firebaseDesktopHelper.formatMyTimestamp(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toDate().toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -545,7 +545,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.onDesktop? DateTime.parse(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toString()) : mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                    text: "Posted on: ${firebaseDesktopHelper.onDesktop? firebaseDesktopHelper.formatMyTimestamp(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toString()) : firebaseDesktopHelper.formatMyTimestamp(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toDate().toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
