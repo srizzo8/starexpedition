@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
 class firebaseDesktopHelper{
   static String myDatabaseUrl = "";
@@ -182,7 +184,9 @@ class firebaseDesktopHelper{
       if(!myIsoString.endsWith("Z")){
         myIsoString = myIsoString + "Z";
       }
-      return {"timestampValue": myIsoString};
+      //return {"timestampValue": myIsoString};
+      String myDate = formatMyTimestamp(myIsoString);
+      return {"stringValue": myDate};
     }
     else if(myValue is List){
       return {
@@ -200,6 +204,74 @@ class firebaseDesktopHelper{
       return {"nullValue": null};
     }
     throw Exception("The value type is unsupported: ${myValue.runtimeType}");
+  }
+
+  //Formatting the timestamp for Firestore databases
+  static String formatMyTimestamp(var myTimeValue){
+    DateTime dt;
+
+    if(onDesktop){ //For Desktop
+      if(myTimeValue is String){
+        dt = convertStringToDateTime(myTimeValue);
+      }
+      else{
+        return myTimeValue.toString();
+      }
+    }
+    else{ //For Mobile and Web
+      if(myTimeValue is Timestamp){
+        dt = myTimeValue.toDate();
+      }
+      else{
+        return myTimeValue.toString();
+      }
+    }
+
+    //Converting to local time
+    dt =  dt.toLocal();
+
+    //Formatting the date so it can be like: January 1, 2025 at 12:00:00 AM UTC-4
+    final myMonths = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    //The day
+    String theMonth = myMonths[dt.month];
+    String theDay = dt.day.toString();
+    String theYear = dt.year.toString();
+
+    //The time of the day
+    String theHour = dt.hour > 12 ? (dt.hour - 12).toString() : (dt.hour == 0 ? "12" : dt.hour.toString());
+    String theMinute = dt.minute.toString().padLeft(2, "0");
+    String theSecond = dt.second.toString().padLeft(2, "0");
+    String amOrPm = dt.hour >= 12 ? "PM" : "AM";
+
+    //Getting the timezone offset
+    int theOffsetHours = dt.timeZoneOffset.inHours;
+    String theTimezone = theOffsetHours >= 0 ? "UTC+${theOffsetHours}" : "UTC${theOffsetHours}";
+
+    return "${theMonth} ${theDay}, ${theYear} at ${theHour}:${theMinute}:${theSecond} ${amOrPm} ${theTimezone}";
+  }
+
+  //Converting String version of a date/time to DateTime for subforums:
+  static DateTime convertStringToDateTime(String theDateTimeString){
+    /*String cleanedString = theDateTimeString.replaceAll(" at ", " ").split(" UTC")[0];
+
+    DateFormat myFormat = DateFormat("MMMM d, yyyy h:mm:ss a");
+    DateTime dt = myFormat.parse(cleanedString);
+
+    return dt;*/
+    /*final myOffsetRegex = RegExp(r'UTC([+-]\d+)');
+    final myMatch = myOffsetRegex.firstMatch(theDateTimeString);
+    final offsetHours = myMatch != null ? int.parse(myMatch.group(1)!) : 0;
+
+    String cleanedString = theDateTimeString.replaceAll(" at ", " ").split(" UTC")[0];
+
+    DateFormat myFormat = DateFormat("MMMM d, yyyy h:mm:ss a");
+    DateTime dt = myFormat.parse(cleanedString);
+
+    final theUTCTime = dt.subtract(Duration(hours: offsetHours));
+
+    return theUTCTime;*/
+    return DateTime.parse(theDateTimeString);
   }
 
   //Parsing the Firestore value types:

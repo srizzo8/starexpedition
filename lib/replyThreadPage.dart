@@ -256,7 +256,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               print(threadNum.runtimeType);
                               var myReply = DiscussionBoardUpdatesReplies(
                                   threadNumber: threadNum,
-                                  time: DateTime.now(),
+                                  time: DateTime.now().toIso8601String(),
                                   replier: usernameReplyController.text,
                                   replyContent: replyContentController.text,
                                   theOriginalReplyInfo: {}
@@ -368,7 +368,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               replyNum = discussionBoardUpdatesPage.myIndex;
                               var myReply = DiscussionBoardUpdatesReplies(
                                   threadNumber: threadNum,
-                                  time: DateTime.now(),
+                                  time: DateTime.now().toIso8601String(),
                                   replier: usernameReplyController.text,
                                   replyContent: replyContentController.text,
                                   theOriginalReplyInfo: discussionBoardUpdatesPage.myReplyToReplyDbuMap
@@ -528,8 +528,8 @@ class replyThreadPageState extends State<replyThreadPage>{
                               print("dbuReplies: ${dbuReplies}");
 
                               dbuReplies.sort((b, a){
-                                DateTime aTime = DateTime.parse(a["time"]);
-                                DateTime bTime = DateTime.parse(b["time"]);
+                                DateTime aTime = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                                DateTime bTime = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
                                 return aTime.compareTo(bTime);
                               });
                             }
@@ -593,7 +593,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               print(threadNum.runtimeType);
                               var myReplyQuestionsAndAnswers = QuestionsAndAnswersReplies(
                                   threadNumber: threadNum,
-                                  time: DateTime.now(),
+                                  time: DateTime.now().toIso8601String(),
                                   replier: usernameReplyController.text,
                                   replyContent: replyContentController.text,
                                   theOriginalReplyInfo: {}
@@ -703,7 +703,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               replyNum = questionsAndAnswersPage.myIndex;
                               var myReplyQuestionsAndAnswers = QuestionsAndAnswersReplies(
                                   threadNumber: threadNum,
-                                  time: DateTime.now(),
+                                  time: DateTime.now().toIso8601String(),
                                   replier: usernameReplyController.text,
                                   replyContent: replyContentController.text,
                                   theOriginalReplyInfo: questionsAndAnswersPage.myReplyToReplyQaaMap
@@ -846,8 +846,8 @@ class replyThreadPageState extends State<replyThreadPage>{
                               print("qaaReplies: ${qaaReplies}");
 
                               qaaReplies.sort((b, a){
-                                DateTime aTime = DateTime.parse(a["time"]);
-                                DateTime bTime = DateTime.parse(b["time"]);
+                                DateTime aTime = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                                DateTime bTime = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
                                 return aTime.compareTo(bTime);
                               });
                             }

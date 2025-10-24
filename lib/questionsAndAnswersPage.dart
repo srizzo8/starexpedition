@@ -200,8 +200,8 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                               print(DateTime.now().runtimeType);
 
                               theQaaThreadReplies.sort((b, a){
-                                DateTime dta = DateTime.parse(a["time"]);
-                                DateTime dtb = DateTime.parse(b["time"]);
+                                DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                                DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
                                 return dta.compareTo(dtb);
                               });
                             }
@@ -452,10 +452,16 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
 
                                   if(firebaseDesktopHelper.onDesktop){
                                     var theDocQaa = await firebaseDesktopHelper.getFirestoreCollection("Questions_And_Answers");
-                                    myDocQaa = theDocQaa.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                                    print("Hello. This is theDocQaa: $theDocQaa");
+                                    myDocQaa = theDocQaa.firstWhere((myThreadId) => int.parse(myThreadId["threadId"]) == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
+                                    print("Hello. This is myDocQaa: $myDocQaa");
+                                    print("Hello. This is the runtime type of myDocQaa: ${myDocQaa.runtimeType}");
 
                                     var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Questions_And_Answers", myDocQaa, "Replies");
-                                    replyToReplyDocQaa = tempReplyToReplyVar.firstWhere((myTime) => myTime["time"] == replyToReplyTimeQaa, orElse: () => {} as Map<String, dynamic>);
+                                    print("Hello. This is tempReplyToReplyVar: ${tempReplyToReplyVar}");
+                                    print("Hello. This is the replyToReplyTimeQaa variable: ${replyToReplyTimeQaa}");
+                                    replyToReplyDocQaa = tempReplyToReplyVar.firstWhere((myTime) => firebaseDesktopHelper.formatMyTimestamp(myTime["time"]) == replyToReplyTimeQaa.toString(), orElse: () => <String, dynamic>{});
+                                    print("Hello. This is replyToReplyDocQaa: ${replyToReplyDocQaa}");
                                   }
                                   else{
                                     await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {

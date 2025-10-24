@@ -1,6 +1,6 @@
 class DiscussionBoardUpdatesReplies{
   final int threadNumber;
-  final DateTime time;
+  final String time;
   final String replier;
   final String replyContent;
   final Map<String, dynamic> theOriginalReplyInfo;
