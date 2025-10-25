@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,19 +16,40 @@ import 'package:sqflite/sqflite.dart';
 import 'package:get/get.dart';
 import 'newDiscoveriesDatabaseFirestoreInfo.dart';
 import 'newDiscoveriesRepliesDatabaseFirestoreInfo.dart';
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 class newDiscoveriesRepliesInformation extends GetxController{
   newDiscoveriesRepliesInformation get instance => Get.find();
 
-  final myDb = FirebaseFirestore.instance;
+  //final myDb = FirebaseFirestore.instance;
+  FirebaseFirestore? get myDb{
+    if(!kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux)){
+      return null;
+    }
+    return FirebaseFirestore.instance;
+  }
+
+  bool get onDesktop => !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
 
   createMyNewDiscoveriesReply(NewDiscoveriesReplies ndr, var docName) async{
-    await myDb.collection("New_Discoveries").doc(docName).collection("Replies").add(ndr.toJson()).whenComplete(
-          () => print("Reply added!"),
-    )
-        .catchError((error, stackTrace){
-      print("This is your error: ${error.toString()}");
-    });
+    if(onDesktop){
+      try{
+        print("Type of docName: ${docName.runtimeType}");
+        await firebaseDesktopHelper.createFirestoreDocumentForSubcollection("New_Discoveries", ndr.toJson(), docName, "Replies");
+        print("Reply added!");
+      }
+      catch (error){
+        print("This is your error: $error");
+      }
+    }
+    else{
+      await myDb!.collection("New_Discoveries").doc(docName).collection("Replies").add(ndr.toJson()).whenComplete(
+            () => print("Reply added!"),
+      )
+          .catchError((error, stackTrace){
+        print("This is your error: ${error.toString()}");
+      });
+    }
   }
 
 }

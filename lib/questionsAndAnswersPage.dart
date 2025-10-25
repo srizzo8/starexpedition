@@ -179,7 +179,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                               if(matchingThread.isNotEmpty){
                                 //Getting the document ID:
                                 myDocQaa = matchingThread["docId"];
-                                print("This is myDocDbu: ${myDocQaa}");
+                                print("This is myDocQaa: ${myDocQaa}");
                               }
                               else{
                                 print("Sorry; the thread was not found");
@@ -622,7 +622,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                     if(matchingReply.isNotEmpty){
                                       //Getting the document ID:
                                       replyToReplyDocQaa = matchingReply["docId"];
-                                      print("This is replyToReplyDocDbu: ${replyToReplyDocQaa}");
+                                      print("This is replyToReplyDocQaa: ${replyToReplyDocQaa}");
                                     }
                                     else{
                                       print("Sorry; the thread was not found");

@@ -806,9 +806,16 @@ class createThreadState extends State<createThread>{
                               }
 
                               if(newDiscoveriesThreads.length > 0){
-                                await FirebaseFirestore.instance.collection("New_Discoveries").orderBy("threadId", descending: true).limit(1).get().then((myId){
-                                  newDiscoveriesThreadId = myId.docs.first.data()["threadId"] + 1;
-                                });
+                                if(firebaseDesktopHelper.onDesktop){
+                                  var threadIdResult = await firebaseDesktopHelper.getFirestoreCollection("New_Discoveries");
+                                  var threadIdFound = threadIdResult.firstWhere((myThread) => int.parse(myThread["threadId"]) == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                                  newDiscoveriesThreadId = int.parse(threadIdFound["threadId"]) + 1;
+                                }
+                                else{
+                                  await FirebaseFirestore.instance.collection("New_Discoveries").orderBy("threadId", descending: true).limit(1).get().then((myId){
+                                    newDiscoveriesThreadId = myId.docs.first.data()["threadId"] + 1;
+                                  });
+                                }
                               }
 
                               var theNewNewDiscoveriesThread = NewDiscoveriesThreads(
@@ -821,36 +828,94 @@ class createThreadState extends State<createThread>{
                               createNewDiscoveriesThread(theNewNewDiscoveriesThread);
 
                               if(myUsername != "" && myNewUsername == ""){
-                                myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                                myInfo.docs.forEach((resultExistingUsername){
-                                  userData = resultExistingUsername.data();
-                                  docName = resultExistingUsername.id;
-                                });
+                                if(firebaseDesktopHelper.onDesktop){
+                                  List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                print("userData: ${userData}");
-                                print("docName: ${docName}");
+                                  var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                FirebaseFirestore.instance.collection("User").doc(docName).update({
-                                  "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
-                                }).then((a){
-                                  print("You have updated the post number for the existing user!");
-                                });
+                                  if(theCorrectUser.isNotEmpty){
+                                    userData = theCorrectUser;
+                                    docName = theCorrectUser["id"] ?? "N/A";
+
+                                    print("userData: ${userData}");
+                                    print("docName: ${docName}");
+
+                                    //Updating the document:
+                                    try{
+                                      await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
+                                        "usernameProfileInformation.numberOfPosts": (theCorrectUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                      });
+                                      print("You have updated the number of posts for the user!");
+                                    }
+                                    catch (error){
+                                      print("Error updating information of user: ${error}");
+                                    }
+                                  }
+                                  else{
+                                    print("User not found");
+                                  }
+                                }
+                                else{
+                                  myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                  myInfo.docs.forEach((resultExistingUsername){
+                                    userData = resultExistingUsername.data();
+                                    docName = resultExistingUsername.id;
+                                  });
+
+                                  print("userData: ${userData}");
+                                  print("docName: ${docName}");
+
+                                  FirebaseFirestore.instance.collection("User").doc(docName).update({
+                                    "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                                  }).then((a){
+                                    print("You have updated the post number for the existing user!");
+                                  });
+                                }
                               }
                               else if(myUsername == "" && myNewUsername != ""){
-                                myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                                myInfo.docs.forEach((resultNewUsername){
-                                  userData = resultNewUsername.data();
-                                  docName = resultNewUsername.id;
-                                });
+                                if(firebaseDesktopHelper.onDesktop){
+                                  List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                print("userData: ${userData}");
-                                print("docName: ${docName}");
+                                  var theCorrectNewUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                FirebaseFirestore.instance.collection("User").doc(docName).update({
-                                  "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
-                                }).then((a){
-                                  print("You have updated the post number for the new user!");
-                                });
+                                  if(theCorrectNewUser.isNotEmpty){
+                                    userData = theCorrectNewUser;
+                                    docName = theCorrectNewUser["id"] ?? "N/A";
+
+                                    print("userData: ${userData}");
+                                    print("docName: ${docName}");
+
+                                    //Updating the document:
+                                    try{
+                                      await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
+                                        "usernameProfileInformation.numberOfPosts": (theCorrectNewUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                      });
+                                      print("You have updated the number of posts for the user!");
+                                    }
+                                    catch (error){
+                                      print("Error updating information of user: ${error}");
+                                    }
+                                  }
+                                  else{
+                                    print("User not found");
+                                  }
+                                }
+                                else{
+                                  myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                  myInfo.docs.forEach((resultNewUsername){
+                                    userData = resultNewUsername.data();
+                                    docName = resultNewUsername.id;
+                                  });
+
+                                  print("userData: ${userData}");
+                                  print("docName: ${docName}");
+
+                                  FirebaseFirestore.instance.collection("User").doc(docName).update({
+                                    "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
+                                  }).then((a){
+                                    print("You have updated the post number for the new user!");
+                                  });
+                                }
                               }
 
                               newDiscoveriesPendingThreads.add(usernameController.text);
@@ -861,10 +926,18 @@ class createThreadState extends State<createThread>{
                               print(newDiscoveriesPendingThreads);
                               newDiscoveriesPage.newDiscoveriesThreads.add(newDiscoveriesPendingThreads);
 
-                              newDiscoveriesThreadCount = await FirebaseFirestore.instance.collection("New_Discoveries").count().get();
-                              QuerySnapshot ndQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").get();
-                              newDiscoveriesThreads = ndQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
-                              (newDiscoveriesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
+                              //Making sure new thread gets added to the New Discoveries subforum
+                              if(firebaseDesktopHelper.onDesktop){
+                                newDiscoveriesThreads = await firebaseDesktopHelper.getFirestoreCollection("New_Discoveries");
+                                newDiscoveriesThreadCount = newDiscoveriesThreads.length;
+                                (newDiscoveriesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
+                              }
+                              else{
+                                newDiscoveriesThreadCount = await FirebaseFirestore.instance.collection("New_Discoveries").count().get();
+                                QuerySnapshot ndQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").get();
+                                newDiscoveriesThreads = ndQuerySnapshot.docs.map((myDoc) => myDoc.data()).toList();
+                                (newDiscoveriesThreads as List<dynamic>).sort((b, a) => (a["threadId"]).compareTo(b["threadId"]));
+                              }
 
                               print("Threads in new discoveries subforum: " + newDiscoveriesPage.newDiscoveriesThreads.toString());
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesPage()));
