@@ -16,6 +16,7 @@ import 'discussionBoardPage.dart' as discussionBoardPage;
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesRepliesDatabaseFirestoreInfo.dart';
 import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 bool fasBool = false;
 bool fasReplyBool = false;
@@ -132,10 +133,17 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                     recognizer: TapGestureRecognizer()..onTap = () async =>{
                                       fasClickedOnUser = true,
-                                      fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFas[theCurrentPageFas][index]["poster"].toString().toLowerCase()).get(),
-                                      fasNameData.docs.forEach((person){
-                                        theUsersData = person.data();
-                                      }),
+
+                                      if(firebaseDesktopHelper.onDesktop){
+                                        fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                        theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFas[theCurrentPageFas][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                      }
+                                      else{
+                                        fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFas[theCurrentPageFas][index]["poster"].toString().toLowerCase()).get(),
+                                        fasNameData.docs.forEach((person){
+                                          theUsersData = person.data();
+                                        }),
+                                      },
                                       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                     }
                                 ),
@@ -166,21 +174,52 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
                         print(discussionBoardPage.feedbackAndSuggestionsThreads![index]);
                         print("${threadAuthorFas} + ${threadTitleFas} + ${threadContentFas} + ${threadID}");
                         print("context: ${context}");
-                        await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                          myDocFas = d.docs.first.id;
-                          print(myDocFas);
-                        });
 
-                        await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies");
+                        if(firebaseDesktopHelper.onDesktop){
+                          var theFasThreads = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
+                          var matchingThread = theFasThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
 
-                        QuerySnapshot fasRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").get();
-                        theFasThreadReplies = fasRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+                          if(matchingThread.isNotEmpty){
+                            //Getting the document ID:
+                            myDocFas = matchingThread["docId"];
+                            print("This is myDocFas: ${myDocFas}");
+                          }
+                          else{
+                            print("Sorry; the thread was not found");
+                          }
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                            myDocFas = d.docs.first.id;
+                            print(myDocFas);
+                          });
+                        }
 
-                        print(theFasThreadReplies.runtimeType);
+                        if(firebaseDesktopHelper.onDesktop){
+                          theFasThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Feedback_And_Suggestions", myDocFas, "Replies");
 
-                        print(DateTime.now().runtimeType);
+                          print(theFasThreadReplies.runtimeType);
 
-                        (theFasThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
+                          print(DateTime.now().runtimeType);
+
+                          theFasThreadReplies.sort((b, a){
+                            DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                            DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                            return dta.compareTo(dtb);
+                          });
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies");
+
+                          QuerySnapshot fasRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").get();
+                          theFasThreadReplies = fasRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                          print(theFasThreadReplies.runtimeType);
+
+                          print(DateTime.now().runtimeType);
+
+                          (theFasThreadReplies as List<dynamic>).sort((b2, a2) => (a2["time"].toDate()).compareTo(b2["time"].toDate()));
+                        }
 
                         print("Number of theFasThreadReplies: ${theFasThreadReplies.length}");
 
@@ -317,10 +356,18 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                       text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         fasClickedOnUser = true,
-                                        fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
-                                        fasNameData.docs.forEach((person){
-                                          theUsersData = person.data();
-                                        }),
+
+                                        if(firebaseDesktopHelper.onDesktop){
+                                          fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                        }
+                                        else{
+                                          fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                          fasNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                        },
+
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
                                     ),
@@ -347,17 +394,25 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                               child: Text.rich(
                                 TextSpan(
                                   style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                  text: "Posted on: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                  text: "Posted on: ${firebaseDesktopHelper.onDesktop? firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString()) : firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toDate().toString())}\nPosted by: ",
                                   children: <TextSpan>[
                                     TextSpan(
                                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                       text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         fasClickedOnUser = true,
-                                        fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                        fasNameData.docs.forEach((person){
-                                          theUsersData = person.data();
-                                        }),
+
+                                        if(firebaseDesktopHelper.onDesktop){
+                                          fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                        }
+                                        else{
+                                          fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                          fasNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                        },
+
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
                                     ),
@@ -397,22 +452,61 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
 
                                 print("This is replyToReplyTime: $replyToReplyTimeFas");
 
-                                await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                  myDocFas = d.docs.first.id;
-                                  print(myDocFas);
-                                });
+                                if(firebaseDesktopHelper.onDesktop){
+                                  var theDocFas = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
+                                  print("Hello. This is theDocFas: $theDocFas");
+                                  myDocFas = theDocFas.firstWhere((myThreadId) => int.parse(myThreadId["threadId"]) == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
+                                  print("Hello. This is myDocFas: $myDocFas");
+                                  print("Hello. This is the runtime type of myDocFas: ${myDocFas.runtimeType}");
 
-                                await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").where("time", isEqualTo: replyToReplyTimeFas).get().then((rd) {
-                                  replyToReplyDocFas = rd.docs.first.id;
-                                  print(replyToReplyDocFas);
-                                });
+                                  var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Feedback_And_Suggestions", myDocFas, "Replies");
+                                  print("Hello. This is tempReplyToReplyVar: ${tempReplyToReplyVar}");
+                                  print("Hello. This is the replyToReplyTimeFas variable: ${replyToReplyTimeFas}");
+                                  replyToReplyDocFas = tempReplyToReplyVar.firstWhere((myTime) => firebaseDesktopHelper.formatMyTimestamp(myTime["time"]) == replyToReplyTimeFas.toString(), orElse: () => <String, dynamic>{});
+                                  print("Hello. This is replyToReplyDocFas: ${replyToReplyDocFas}");
+                                }
+                                else{
+                                  await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                    myDocFas = d.docs.first.id;
+                                    print(myDocFas);
+                                  });
+
+                                  await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").where("time", isEqualTo: replyToReplyTimeFas).get().then((rd) {
+                                    replyToReplyDocFas = rd.docs.first.id;
+                                    print(replyToReplyDocFas);
+                                  });
+                                }
 
                                 print(theFasThreadReplies);
                                 print(replyToReplyDocFas);
 
-                                DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").doc(replyToReplyDocFas).get();
-                                print(ds.data());
-                                print(ds.data().runtimeType);
+                                if(firebaseDesktopHelper.onDesktop){
+                                  print("The doc: $myDocFas");
+                                  print("The subdoc: $replyToReplyDocFas");
+
+                                  try{
+                                    Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Feedback_And_Suggestions", myDocFas, "Replies", replyToReplyDocFas);
+
+                                    print("This is dsData: ${dsData}");
+                                    print("This is dsData's runtime type: ${dsData.runtimeType}");
+
+                                    if(dsData != null){
+                                      print("This is dsData: ${dsData}");
+                                      print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                    }
+                                    else{
+                                      print("The document is not found on Desktop");
+                                    }
+                                  }
+                                  catch (error){
+                                    print("There is an error on Desktop: ${error}");
+                                  }
+                                }
+                                else{
+                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").doc(replyToReplyDocFas).get();
+                                  print(ds.data());
+                                  print(ds.data().runtimeType);
+                                }
                                 print(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas));
 
                                 myIndex = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas);
@@ -450,17 +544,26 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                               child: Text.rich(
                                 TextSpan(
                                   style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                  text: "Posted on: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toDate().toString()}\nPosted by: ",
+                                  text: "Posted on: ${firebaseDesktopHelper.onDesktop? firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString()) : firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toDate().toString())}\nPosted by: ",
                                   children: <TextSpan>[
                                     TextSpan(
                                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                       text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         fasClickedOnUser = true,
-                                        fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                        fasNameData.docs.forEach((person){
-                                          theUsersData = person.data();
-                                        }),
+
+                                        if(firebaseDesktopHelper.onDesktop){
+                                          fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                          print("theUsersData is this on Desktop: ${theUsersData}"),
+                                        }
+                                        else{
+                                          fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                          fasNameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          }),
+                                        },
+
                                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                       }
                                     ),
@@ -500,22 +603,73 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
 
                                 print("This is replyToReplyTime: $replyToReplyTimeFas");
 
-                                await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                  myDocFas = d.docs.first.id;
-                                  print(myDocFas);
-                                });
+                                if(firebaseDesktopHelper.onDesktop){
+                                  var theFasThreads = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
+                                  var matchingThread = theFasThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
 
-                                await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").where("time", isEqualTo: replyToReplyTimeFas).get().then((rd) {
-                                  replyToReplyDocFas = rd.docs.first.id;
-                                  print(replyToReplyDocFas);
-                                });
+                                  if(matchingThread.isNotEmpty){
+                                    //Getting the document ID:
+                                    myDocFas = matchingThread["docId"];
+                                    print("This is myDocFas: ${myDocFas}");
+                                  }
+                                  else{
+                                    print("Sorry; the thread was not found");
+                                  }
+
+                                  var theFasThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Feedback_And_Suggestions", myDocFas, "Replies");
+                                  var matchingReply = theFasThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeFas, orElse: () => {} as Map<String, dynamic>);
+
+                                  if(matchingReply.isNotEmpty){
+                                    //Getting the document ID:
+                                    replyToReplyDocFas = matchingReply["docId"];
+                                    print("This is replyToReplyDocFas: ${replyToReplyDocFas}");
+                                  }
+                                  else{
+                                    print("Sorry; the thread was not found");
+                                  }
+                                }
+                                else{
+                                  await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                    myDocFas = d.docs.first.id;
+                                    print(myDocFas);
+                                  });
+
+                                  await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").where("time", isEqualTo: replyToReplyTimeFas).get().then((rd) {
+                                    replyToReplyDocFas = rd.docs.first.id;
+                                    print(replyToReplyDocFas);
+                                  });
+                                }
 
                                 print(theFasThreadReplies);
                                 print(replyToReplyDocFas);
 
-                                DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").doc(replyToReplyDocFas).get();
-                                print(ds.data());
-                                print(ds.data().runtimeType);
+                                if(firebaseDesktopHelper.onDesktop){
+                                  print("The doc: $myDocFas");
+                                  print("The subdoc: $replyToReplyDocFas");
+
+                                  try{
+                                    Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Feedback_And_Suggestions", myDocFas, "Replies", replyToReplyDocFas);
+
+                                    print("This is dsData: ${dsData}");
+                                    print("This is dsData's runtime type: ${dsData.runtimeType}");
+
+                                    if(dsData != null){
+                                      print("This is dsData: ${dsData}");
+                                      print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                    }
+                                    else{
+                                      print("The document is not found on Desktop");
+                                    }
+                                  }
+                                  catch (error){
+                                    print("There is an error on Desktop: ${error}");
+                                  }
+                                }
+                                else{
+                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").doc(replyToReplyDocFas).get();
+                                  print(ds.data());
+                                  print(ds.data().runtimeType);
+                                }
 
                                 myIndex = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas);
 
@@ -586,10 +740,17 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                             text: "${threadAuthorFas}",
                             recognizer: TapGestureRecognizer()..onTap = () async =>{
                               fasClickedOnUser = true,
-                              fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorFas.toLowerCase()).get(),
-                              fasNameData.docs.forEach((person){
-                                theUsersData = person.data();
-                              }),
+
+                              if(firebaseDesktopHelper.onDesktop){
+                                fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorFas.toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                              }
+                              else{
+                                fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorFas.toLowerCase()).get(),
+                                fasNameData.docs.forEach((person){
+                                  theUsersData = person.data();
+                                }),
+                              },
                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                             }
                           ),
