@@ -512,7 +512,7 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                               print("allDbuThreads: ${allDbuThreads}");
 
-                              var matchingThread = allDbuThreads.firstWhere((myDbuThread) => myDbuThread["threadId"] == discussionBoardUpdatesPage.threadID, orElse: () => <String, dynamic>{},);
+                              var matchingThread = allDbuThreads.firstWhere((myDbuThread) => myDbuThread["threadId"] == int.parse(discussionBoardUpdatesPage.threadID), orElse: () => <String, dynamic>{},);
 
                               print("matchingThread: ${matchingThread}");
 
@@ -830,7 +830,7 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                               print("allQaaThreads: ${allQaaThreads}");
 
-                              var matchingThread = allQaaThreads.firstWhere((myQaaThread) => myQaaThread["threadId"] == questionsAndAnswersPage.threadID, orElse: () => <String, dynamic>{},);
+                              var matchingThread = allQaaThreads.firstWhere((myQaaThread) => myQaaThread["threadId"] == int.parse(questionsAndAnswersPage.threadID), orElse: () => <String, dynamic>{},);
 
                               print("matchingThread: ${matchingThread}");
 
@@ -1126,7 +1126,7 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                               print("allTThreads: ${allTThreads}");
 
-                              var matchingThread = allTThreads.firstWhere((myTThread) => myTThread["threadId"] == technologiesPage.threadID, orElse: () => <String, dynamic>{},);
+                              var matchingThread = allTThreads.firstWhere((myTThread) => myTThread["threadId"] == int.parse(technologiesPage.threadID), orElse: () => <String, dynamic>{},);
 
                               print("matchingThread: ${matchingThread}");
 
@@ -1420,7 +1420,7 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                               print("allProjectsThreads: ${allProjectsThreads}");
 
-                              var matchingThread = allProjectsThreads.firstWhere((myProjectsThread) => myProjectsThread["threadId"] == projectsPage.threadID, orElse: () => <String, dynamic>{},);
+                              var matchingThread = allProjectsThreads.firstWhere((myProjectsThread) => myProjectsThread["threadId"] == int.parse(projectsPage.threadID), orElse: () => <String, dynamic>{},);
 
                               print("matchingThread: ${matchingThread}");
 
@@ -1702,7 +1702,7 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                               print("allNdThreads: ${allNdThreads}");
 
-                              var matchingThread = allNdThreads.firstWhere((myNdThread) => myNdThread["threadId"] == newDiscoveriesPage.threadID, orElse: () => <String, dynamic>{},);
+                              var matchingThread = allNdThreads.firstWhere((myNdThread) => myNdThread["threadId"] == int.parse(newDiscoveriesPage.threadID), orElse: () => <String, dynamic>{},);
 
                               print("matchingThread: ${matchingThread}");
 
@@ -1993,7 +1993,7 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                               print("allFasThreads: ${allFasThreads}");
 
-                              var matchingThread = allFasThreads.firstWhere((myFasThread) => myFasThread["threadId"] == feedbackAndSuggestionsPage.threadID, orElse: () => <String, dynamic>{},);
+                              var matchingThread = allFasThreads.firstWhere((myFasThread) => myFasThread["threadId"] == int.parse(feedbackAndSuggestionsPage.threadID), orElse: () => <String, dynamic>{},);
 
                               print("matchingThread: ${matchingThread}");
 

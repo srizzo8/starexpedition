@@ -197,7 +197,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
 
                         if(firebaseDesktopHelper.onDesktop){
                           var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
-                          var matchingThread = theDbuThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => <String, dynamic>{});
+                          var matchingThread = theDbuThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
                           if(matchingThread.isNotEmpty){
                             //Getting the document ID:
@@ -582,7 +582,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               if(firebaseDesktopHelper.onDesktop){
                                 var theDocDbu = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
                                 print("Hello. This is theDocDbu: $theDocDbu");
-                                myDocDbu = theDocDbu.firstWhere((myThreadId) => int.parse(myThreadId["threadId"]) == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
+                                myDocDbu = theDocDbu.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
                                 print("Hello. This is myDocDbu: $myDocDbu");
                                 print("Hello. This is the runtime type of myDocDbu: ${myDocDbu.runtimeType}");
 
@@ -780,7 +780,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
                                 replyToReplyDocDbu = tempReplyToReplyVar.firstWhere((myTime) => myTime["time"] == replyToReplyTimeDbu, orElse: () => {} as Map<String, dynamic>);*/
                                 var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
-                                var matchingThread = theDbuThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => <String, dynamic>{});
+                                var matchingThread = theDbuThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
                                 if(matchingThread.isNotEmpty){
                                   //Getting the document ID:

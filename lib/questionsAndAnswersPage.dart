@@ -174,7 +174,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
 
                             if(firebaseDesktopHelper.onDesktop){
                               var theQaaThreads = await firebaseDesktopHelper.getFirestoreCollection("Questions_And_Answers");
-                              var matchingThread = theQaaThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                              var matchingThread = theQaaThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
 
                               if(matchingThread.isNotEmpty){
                                 //Getting the document ID:
@@ -453,7 +453,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                   if(firebaseDesktopHelper.onDesktop){
                                     var theDocQaa = await firebaseDesktopHelper.getFirestoreCollection("Questions_And_Answers");
                                     print("Hello. This is theDocQaa: $theDocQaa");
-                                    myDocQaa = theDocQaa.firstWhere((myThreadId) => int.parse(myThreadId["threadId"]) == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
+                                    myDocQaa = theDocQaa.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
                                     print("Hello. This is myDocQaa: $myDocQaa");
                                     print("Hello. This is the runtime type of myDocQaa: ${myDocQaa.runtimeType}");
 
@@ -605,7 +605,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
 
                                   if(firebaseDesktopHelper.onDesktop){
                                     var theQaaThreads = await firebaseDesktopHelper.getFirestoreCollection("Questions_And_Answers");
-                                    var matchingThread = theQaaThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                                    var matchingThread = theQaaThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
 
                                     if(matchingThread.isNotEmpty){
                                       //Getting the document ID:

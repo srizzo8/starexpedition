@@ -173,7 +173,7 @@ class technologiesPageState extends State<technologiesPage>{
 
                           if(firebaseDesktopHelper.onDesktop){
                             var theTThreads = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
-                            var matchingThread = theTThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                            var matchingThread = theTThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
 
                             if(matchingThread.isNotEmpty){
                               //Getting the document ID:
@@ -450,7 +450,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                 if(firebaseDesktopHelper.onDesktop){
                                   var theDocT = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
                                   print("Hello. This is theDocT: $theDocT");
-                                  myDocT = theDocT.firstWhere((myThreadId) => int.parse(myThreadId["threadId"]) == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
+                                  myDocT = theDocT.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
                                   print("Hello. This is myDocT: $myDocT");
                                   print("Hello. This is the runtime type of myDocT: ${myDocT.runtimeType}");
 
@@ -601,7 +601,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
 
                                   if(firebaseDesktopHelper.onDesktop){
                                     var theTThreads = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
-                                    var matchingThread = theTThreads.firstWhere((myDoc) => int.parse(myDoc["threadId"]) == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                                    var matchingThread = theTThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
 
                                     if(matchingThread.isNotEmpty){
                                       //Getting the document ID:
