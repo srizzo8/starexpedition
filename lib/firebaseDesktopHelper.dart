@@ -141,14 +141,27 @@ class firebaseDesktopHelper{
 
   //Updating a Firestore document:
   static Future<void> updateFirestoreDocument(String myDocumentPath, Map<String, dynamic> myData) async{
-    final myUrl = "$myFirestoreUrl/$myDocumentPath";
+    //Building field paths for the updateMyMask String:
+    List<String> myFieldPaths = myData.keys.toList();
+    String updateMask = myFieldPaths.map((myPath) => "updateMask.fieldPaths=${myPath}").join("&");
+
+    final myUrl = "$myFirestoreUrl/$myDocumentPath?$updateMask";
+
+    print("Update URL: ${myUrl}");
+    print("Update data: ${myData}");
+
     final myBody = json.encode({"fields": convertToFirestoreFields(myData)});
+
+    print("Update body: ${myBody}");
 
     final myResponse = await http.patch(
       Uri.parse(myUrl),
       headers: {"Content-Type": "application/json"},
       body: myBody,
     );
+
+    print("Update response status: ${myResponse.statusCode}");
+    print("Update response body: ${myResponse.body}");
 
     if(myResponse.statusCode != 200){
       throw Exception("Failed to update the document: ${myResponse.body}");
@@ -280,7 +293,7 @@ class firebaseDesktopHelper{
       return myValue["stringValue"];
     }
     if(myValue["integerValue"] != null){
-      return myValue["integerValue"];
+      return int.parse(myValue["integerValue"]);
     }
     if(myValue["doubleValue"] != null){
       return myValue["doubleValue"];

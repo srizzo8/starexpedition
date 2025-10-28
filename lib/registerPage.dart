@@ -435,7 +435,9 @@ class registerPageState extends State<registerPage>{
                       //userId = userId + 1;
                       if(firebaseDesktopHelper.onDesktop){
                         var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                        var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"] == (userIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                        print("userIdResult: ${userIdResult}");
+                        var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"] == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
+                        print("userIdFound: ${userIdFound}");
                         userId = userIdFound["id"] + 1;
                         print("This is the userId: $userId");
                       }
@@ -472,7 +474,9 @@ class registerPageState extends State<registerPage>{
                     else{
                       if(firebaseDesktopHelper.onDesktop){
                         var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                        var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                        print("userIdResult: ${userIdResult}");
+                        var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
+                        print("userIdFound: ${userIdFound}");
                         userId = userIdFound["id"] + 1;
                         print("This is the userId: $userId");
                       }

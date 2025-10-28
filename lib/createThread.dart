@@ -359,8 +359,8 @@ class createThreadState extends State<createThread>{
                       if(discussionBoardUpdatesThreads.length > 0){
                         if(firebaseDesktopHelper.onDesktop){
                           var threadIdResult = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
-                          var threadIdFound = threadIdResult.firstWhere((myThread) => int.parse(myThread["threadId"]) == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
-                          discussionBoardUpdatesThreadId = int.parse(threadIdFound["threadId"]) + 1;
+                          var threadIdFound = threadIdResult.firstWhere((myThread) => myThread["threadId"] == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                          discussionBoardUpdatesThreadId = threadIdFound["threadId"] + 1;
                         }
                         else{
                           await FirebaseFirestore.instance.collection("Discussion_Board_Updates").orderBy("threadId", descending: true).limit(1).get().then((myId){
@@ -387,20 +387,41 @@ class createThreadState extends State<createThread>{
 
                           if(theCorrectUser.isNotEmpty){
                             userData = theCorrectUser;
-                            docName = theCorrectUser["id"] ?? "N/A";
+                            docName = theCorrectUser["docId"] ?? "N/A";
 
                             print("userData: ${userData}");
-                            print("docName: ${docName}");
+                            print("docName for your username: ${docName}");
 
                             //Updating the document:
                             try{
+                              //Getting the current information about a user:
+                              Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                              print("theCorrectUser: ${theCorrectUser}");
+                              print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                              print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                              print("Full user info: ${currentInfoOfUser}");
+                              print("Full user keys: ${currentInfoOfUser.keys}");
+
+                              //Incrementing the number of posts a user has:
+                              int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                              currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                              //Updating the information about a user:
                               await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                "usernameProfileInformation.numberOfPosts": (theCorrectUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                "usernameProfileInformation": currentInfoOfUser,
                               });
+
                               print("You have updated the number of posts for the user!");
+
+                              //Determining if the full document still has all of the fields
+                              List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                              var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                              print("The full document after the update: $theVerifiedUser");
                             }
                             catch (error){
                               print("Error updating information of user: ${error}");
+                              print("Stack trace: ${StackTrace.current}");
                             }
                           }
                           else{
@@ -428,24 +449,45 @@ class createThreadState extends State<createThread>{
                         if(firebaseDesktopHelper.onDesktop){
                           List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                          var theCorrectNewUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                          var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                          if(theCorrectNewUser.isNotEmpty){
-                            userData = theCorrectNewUser;
-                            docName = theCorrectNewUser["id"] ?? "N/A";
+                          if(theCorrectUser.isNotEmpty){
+                            userData = theCorrectUser;
+                            docName = theCorrectUser["docId"] ?? "N/A";
 
                             print("userData: ${userData}");
-                            print("docName: ${docName}");
+                            print("docName for your username: ${docName}");
 
                             //Updating the document:
                             try{
+                              //Getting the current information about a user:
+                              Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                              print("theCorrectUser: ${theCorrectUser}");
+                              print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                              print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                              print("Full user info: ${currentInfoOfUser}");
+                              print("Full user keys: ${currentInfoOfUser.keys}");
+
+                              //Incrementing the number of posts a user has:
+                              int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                              currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                              //Updating the information about a user:
                               await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                "usernameProfileInformation.numberOfPosts": (theCorrectNewUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                "usernameProfileInformation": currentInfoOfUser,
                               });
+
                               print("You have updated the number of posts for the user!");
+
+                              //Determining if the full document still has all of the fields
+                              List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                              var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                              print("The full document after the update: $theVerifiedUser");
                             }
                             catch (error){
                               print("Error updating information of user: ${error}");
+                              print("Stack trace: ${StackTrace.current}");
                             }
                           }
                           else{
@@ -511,8 +553,8 @@ class createThreadState extends State<createThread>{
                         if(questionsAndAnswersThreads.length > 0){
                           if(firebaseDesktopHelper.onDesktop){
                             var threadIdResult = await firebaseDesktopHelper.getFirestoreCollection("Questions_And_Answers");
-                            var threadIdFound = threadIdResult.firstWhere((myThread) => int.parse(myThread["threadId"]) == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
-                            questionsAndAnswersThreadId = int.parse(threadIdFound["threadId"]) + 1;
+                            var threadIdFound = threadIdResult.firstWhere((myThread) => myThread["threadId"] == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                            questionsAndAnswersThreadId = threadIdFound["threadId"] + 1;
                           }
                           else{
                             await FirebaseFirestore.instance.collection("Questions_And_Answers").orderBy("threadId", descending: true).limit(1).get().then((myId){
@@ -538,20 +580,41 @@ class createThreadState extends State<createThread>{
 
                             if(theCorrectUser.isNotEmpty){
                               userData = theCorrectUser;
-                              docName = theCorrectUser["id"] ?? "N/A";
+                              docName = theCorrectUser["docId"] ?? "N/A";
 
                               print("userData: ${userData}");
-                              print("docName: ${docName}");
+                              print("docName for your username: ${docName}");
 
                               //Updating the document:
                               try{
+                                //Getting the current information about a user:
+                                Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                                print("theCorrectUser: ${theCorrectUser}");
+                                print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                                print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                                print("Full user info: ${currentInfoOfUser}");
+                                print("Full user keys: ${currentInfoOfUser.keys}");
+
+                                //Incrementing the number of posts a user has:
+                                int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                                currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                                //Updating the information about a user:
                                 await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                  "usernameProfileInformation.numberOfPosts": (theCorrectUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                  "usernameProfileInformation": currentInfoOfUser,
                                 });
+
                                 print("You have updated the number of posts for the user!");
+
+                                //Determining if the full document still has all of the fields
+                                List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                                print("The full document after the update: $theVerifiedUser");
                               }
                               catch (error){
                                 print("Error updating information of user: ${error}");
+                                print("Stack trace: ${StackTrace.current}");
                               }
                             }
                             else{
@@ -579,24 +642,45 @@ class createThreadState extends State<createThread>{
                           if(firebaseDesktopHelper.onDesktop){
                             List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                            var theCorrectNewUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                            var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                            if(theCorrectNewUser.isNotEmpty){
-                              userData = theCorrectNewUser;
-                              docName = theCorrectNewUser["id"] ?? "N/A";
+                            if(theCorrectUser.isNotEmpty){
+                              userData = theCorrectUser;
+                              docName = theCorrectUser["docId"] ?? "N/A";
 
                               print("userData: ${userData}");
-                              print("docName: ${docName}");
+                              print("docName for your username: ${docName}");
 
                               //Updating the document:
                               try{
+                                //Getting the current information about a user:
+                                Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                                print("theCorrectUser: ${theCorrectUser}");
+                                print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                                print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                                print("Full user info: ${currentInfoOfUser}");
+                                print("Full user keys: ${currentInfoOfUser.keys}");
+
+                                //Incrementing the number of posts a user has:
+                                int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                                currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                                //Updating the information about a user:
                                 await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                  "usernameProfileInformation.numberOfPosts": (theCorrectNewUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                  "usernameProfileInformation": currentInfoOfUser,
                                 });
+
                                 print("You have updated the number of posts for the user!");
+
+                                //Determining if the full document still has all of the fields
+                                List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                                print("The full document after the update: $theVerifiedUser");
                               }
                               catch (error){
                                 print("Error updating information of user: ${error}");
+                                print("Stack trace: ${StackTrace.current}");
                               }
                             }
                             else{
@@ -658,8 +742,8 @@ class createThreadState extends State<createThread>{
                           if(technologiesThreads.length > 0){
                             if(firebaseDesktopHelper.onDesktop){
                               var threadIdResult = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
-                              var threadIdFound = threadIdResult.firstWhere((myThread) => int.parse(myThread["threadId"]) == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
-                              technologiesThreadId = int.parse(threadIdFound["threadId"]) + 1;
+                              var threadIdFound = threadIdResult.firstWhere((myThread) => myThread["threadId"] == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                              technologiesThreadId = threadIdFound["threadId"] + 1;
                             }
                             else{
                               await FirebaseFirestore.instance.collection("Technologies").orderBy("threadId", descending: true).limit(1).get().then((myId){
@@ -685,20 +769,41 @@ class createThreadState extends State<createThread>{
 
                               if(theCorrectUser.isNotEmpty){
                                 userData = theCorrectUser;
-                                docName = theCorrectUser["id"] ?? "N/A";
+                                docName = theCorrectUser["docId"] ?? "N/A";
 
                                 print("userData: ${userData}");
-                                print("docName: ${docName}");
+                                print("docName for your username: ${docName}");
 
                                 //Updating the document:
                                 try{
+                                  //Getting the current information about a user:
+                                  Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                                  print("theCorrectUser: ${theCorrectUser}");
+                                  print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                                  print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                                  print("Full user info: ${currentInfoOfUser}");
+                                  print("Full user keys: ${currentInfoOfUser.keys}");
+
+                                  //Incrementing the number of posts a user has:
+                                  int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                                  currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                                  //Updating the information about a user:
                                   await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                    "usernameProfileInformation.numberOfPosts": (theCorrectUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                    "usernameProfileInformation": currentInfoOfUser,
                                   });
+
                                   print("You have updated the number of posts for the user!");
+
+                                  //Determining if the full document still has all of the fields
+                                  List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                  var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                                  print("The full document after the update: $theVerifiedUser");
                                 }
                                 catch (error){
                                   print("Error updating information of user: ${error}");
+                                  print("Stack trace: ${StackTrace.current}");
                                 }
                               }
                               else{
@@ -726,24 +831,45 @@ class createThreadState extends State<createThread>{
                             if(firebaseDesktopHelper.onDesktop){
                               List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                              var theCorrectNewUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                              var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                              if(theCorrectNewUser.isNotEmpty){
-                                userData = theCorrectNewUser;
-                                docName = theCorrectNewUser["id"] ?? "N/A";
+                              if(theCorrectUser.isNotEmpty){
+                                userData = theCorrectUser;
+                                docName = theCorrectUser["docId"] ?? "N/A";
 
                                 print("userData: ${userData}");
-                                print("docName: ${docName}");
+                                print("docName for your username: ${docName}");
 
                                 //Updating the document:
                                 try{
+                                  //Getting the current information about a user:
+                                  Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                                  print("theCorrectUser: ${theCorrectUser}");
+                                  print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                                  print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                                  print("Full user info: ${currentInfoOfUser}");
+                                  print("Full user keys: ${currentInfoOfUser.keys}");
+
+                                  //Incrementing the number of posts a user has:
+                                  int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                                  currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                                  //Updating the information about a user:
                                   await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                    "usernameProfileInformation.numberOfPosts": (theCorrectNewUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                    "usernameProfileInformation": currentInfoOfUser,
                                   });
+
                                   print("You have updated the number of posts for the user!");
+
+                                  //Determining if the full document still has all of the fields
+                                  List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                  var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                                  print("The full document after the update: $theVerifiedUser");
                                 }
                                 catch (error){
                                   print("Error updating information of user: ${error}");
+                                  print("Stack trace: ${StackTrace.current}");
                                 }
                               }
                               else{
@@ -805,8 +931,8 @@ class createThreadState extends State<createThread>{
                             if(projectsThreads.length > 0){
                               if(firebaseDesktopHelper.onDesktop){
                                 var threadIdResult = await firebaseDesktopHelper.getFirestoreCollection("Projects");
-                                var threadIdFound = threadIdResult.firstWhere((myThread) => int.parse(myThread["threadId"]) == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
-                                projectsThreadId = int.parse(threadIdFound["threadId"]) + 1;
+                                var threadIdFound = threadIdResult.firstWhere((myThread) => myThread["threadId"] == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                                projectsThreadId = threadIdFound["threadId"] + 1;
                               }
                               else{
                                 await FirebaseFirestore.instance.collection("Projects").orderBy("threadId", descending: true).limit(1).get().then((myId){
@@ -832,20 +958,41 @@ class createThreadState extends State<createThread>{
 
                                 if(theCorrectUser.isNotEmpty){
                                   userData = theCorrectUser;
-                                  docName = theCorrectUser["id"] ?? "N/A";
+                                  docName = theCorrectUser["docId"] ?? "N/A";
 
                                   print("userData: ${userData}");
-                                  print("docName: ${docName}");
+                                  print("docName for your username: ${docName}");
 
                                   //Updating the document:
                                   try{
+                                    //Getting the current information about a user:
+                                    Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                                    print("theCorrectUser: ${theCorrectUser}");
+                                    print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                                    print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                                    print("Full user info: ${currentInfoOfUser}");
+                                    print("Full user keys: ${currentInfoOfUser.keys}");
+
+                                    //Incrementing the number of posts a user has:
+                                    int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                                    currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                                    //Updating the information about a user:
                                     await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                      "usernameProfileInformation.numberOfPosts": (theCorrectUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                      "usernameProfileInformation": currentInfoOfUser,
                                     });
+
                                     print("You have updated the number of posts for the user!");
+
+                                    //Determining if the full document still has all of the fields
+                                    List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                    var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                                    print("The full document after the update: $theVerifiedUser");
                                   }
                                   catch (error){
                                     print("Error updating information of user: ${error}");
+                                    print("Stack trace: ${StackTrace.current}");
                                   }
                                 }
                                 else{
@@ -873,24 +1020,45 @@ class createThreadState extends State<createThread>{
                               if(firebaseDesktopHelper.onDesktop){
                                 List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                var theCorrectNewUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                                var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                if(theCorrectNewUser.isNotEmpty){
-                                  userData = theCorrectNewUser;
-                                  docName = theCorrectNewUser["id"] ?? "N/A";
+                                if(theCorrectUser.isNotEmpty){
+                                  userData = theCorrectUser;
+                                  docName = theCorrectUser["docId"] ?? "N/A";
 
                                   print("userData: ${userData}");
-                                  print("docName: ${docName}");
+                                  print("docName for your username: ${docName}");
 
                                   //Updating the document:
                                   try{
+                                    //Getting the current information about a user:
+                                    Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                                    print("theCorrectUser: ${theCorrectUser}");
+                                    print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                                    print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                                    print("Full user info: ${currentInfoOfUser}");
+                                    print("Full user keys: ${currentInfoOfUser.keys}");
+
+                                    //Incrementing the number of posts a user has:
+                                    int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                                    currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                                    //Updating the information about a user:
                                     await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                      "usernameProfileInformation.numberOfPosts": (theCorrectNewUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                      "usernameProfileInformation": currentInfoOfUser,
                                     });
+
                                     print("You have updated the number of posts for the user!");
+
+                                    //Determining if the full document still has all of the fields
+                                    List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                    var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                                    print("The full document after the update: $theVerifiedUser");
                                   }
                                   catch (error){
                                     print("Error updating information of user: ${error}");
+                                    print("Stack trace: ${StackTrace.current}");
                                   }
                                 }
                                 else{
@@ -952,8 +1120,8 @@ class createThreadState extends State<createThread>{
                               if(newDiscoveriesThreads.length > 0){
                                 if(firebaseDesktopHelper.onDesktop){
                                   var threadIdResult = await firebaseDesktopHelper.getFirestoreCollection("New_Discoveries");
-                                  var threadIdFound = threadIdResult.firstWhere((myThread) => int.parse(myThread["threadId"]) == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
-                                  newDiscoveriesThreadId = int.parse(threadIdFound["threadId"]) + 1;
+                                  var threadIdFound = threadIdResult.firstWhere((myThread) => myThread["threadId"] == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                                  newDiscoveriesThreadId = threadIdFound["threadId"] + 1;
                                 }
                                 else{
                                   await FirebaseFirestore.instance.collection("New_Discoveries").orderBy("threadId", descending: true).limit(1).get().then((myId){
@@ -979,20 +1147,41 @@ class createThreadState extends State<createThread>{
 
                                   if(theCorrectUser.isNotEmpty){
                                     userData = theCorrectUser;
-                                    docName = theCorrectUser["id"] ?? "N/A";
+                                    docName = theCorrectUser["docId"] ?? "N/A";
 
                                     print("userData: ${userData}");
-                                    print("docName: ${docName}");
+                                    print("docName for your username: ${docName}");
 
                                     //Updating the document:
                                     try{
+                                      //Getting the current information about a user:
+                                      Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                                      print("theCorrectUser: ${theCorrectUser}");
+                                      print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                                      print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                                      print("Full user info: ${currentInfoOfUser}");
+                                      print("Full user keys: ${currentInfoOfUser.keys}");
+
+                                      //Incrementing the number of posts a user has:
+                                      int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                                      currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                                      //Updating the information about a user:
                                       await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                        "usernameProfileInformation.numberOfPosts": (theCorrectUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                        "usernameProfileInformation": currentInfoOfUser,
                                       });
+
                                       print("You have updated the number of posts for the user!");
+
+                                      //Determining if the full document still has all of the fields
+                                      List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                      var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                                      print("The full document after the update: $theVerifiedUser");
                                     }
                                     catch (error){
                                       print("Error updating information of user: ${error}");
+                                      print("Stack trace: ${StackTrace.current}");
                                     }
                                   }
                                   else{
@@ -1020,24 +1209,45 @@ class createThreadState extends State<createThread>{
                                 if(firebaseDesktopHelper.onDesktop){
                                   List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                  var theCorrectNewUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                                  var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                  if(theCorrectNewUser.isNotEmpty){
-                                    userData = theCorrectNewUser;
-                                    docName = theCorrectNewUser["id"] ?? "N/A";
+                                  if(theCorrectUser.isNotEmpty){
+                                    userData = theCorrectUser;
+                                    docName = theCorrectUser["docId"] ?? "N/A";
 
                                     print("userData: ${userData}");
-                                    print("docName: ${docName}");
+                                    print("docName for your username: ${docName}");
 
                                     //Updating the document:
                                     try{
+                                      //Getting the current information about a user:
+                                      Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                                      print("theCorrectUser: ${theCorrectUser}");
+                                      print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                                      print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                                      print("Full user info: ${currentInfoOfUser}");
+                                      print("Full user keys: ${currentInfoOfUser.keys}");
+
+                                      //Incrementing the number of posts a user has:
+                                      int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                                      currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                                      //Updating the information about a user:
                                       await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                        "usernameProfileInformation.numberOfPosts": (theCorrectNewUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                        "usernameProfileInformation": currentInfoOfUser,
                                       });
+
                                       print("You have updated the number of posts for the user!");
+
+                                      //Determining if the full document still has all of the fields
+                                      List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                      var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                                      print("The full document after the update: $theVerifiedUser");
                                     }
                                     catch (error){
                                       print("Error updating information of user: ${error}");
+                                      print("Stack trace: ${StackTrace.current}");
                                     }
                                   }
                                   else{
@@ -1100,8 +1310,8 @@ class createThreadState extends State<createThread>{
                                 if(feedbackAndSuggestionsThreads.length > 0){
                                   if(firebaseDesktopHelper.onDesktop){
                                     var threadIdResult = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
-                                    var threadIdFound = threadIdResult.firstWhere((myThread) => int.parse(myThread["threadId"]) == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
-                                    feedbackAndSuggestionsThreadId = int.parse(threadIdFound["threadId"]) + 1;
+                                    var threadIdFound = threadIdResult.firstWhere((myThread) => myThread["threadId"] == (threadIdResult.length - 1), orElse: () => {} as Map<String, dynamic>);
+                                    feedbackAndSuggestionsThreadId = threadIdFound["threadId"] + 1;
                                   }
                                   else{
                                     await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").orderBy("threadId", descending: true).limit(1).get().then((myId){
@@ -1155,20 +1365,41 @@ class createThreadState extends State<createThread>{
 
                                     if(theCorrectUser.isNotEmpty){
                                       userData = theCorrectUser;
-                                      docName = theCorrectUser["id"] ?? "N/A";
+                                      docName = theCorrectUser["docId"] ?? "N/A";
 
                                       print("userData: ${userData}");
-                                      print("docName: ${docName}");
+                                      print("docName for your username: ${docName}");
 
                                       //Updating the document:
                                       try{
+                                        //Getting the current information about a user:
+                                        Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                                        print("theCorrectUser: ${theCorrectUser}");
+                                        print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                                        print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                                        print("Full user info: ${currentInfoOfUser}");
+                                        print("Full user keys: ${currentInfoOfUser.keys}");
+
+                                        //Incrementing the number of posts a user has:
+                                        int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                                        currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                                        //Updating the information about a user:
                                         await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                          "usernameProfileInformation.numberOfPosts": (theCorrectUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                          "usernameProfileInformation": currentInfoOfUser,
                                         });
+
                                         print("You have updated the number of posts for the user!");
+
+                                        //Determining if the full document still has all of the fields
+                                        List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                        var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                                        print("The full document after the update: $theVerifiedUser");
                                       }
                                       catch (error){
                                         print("Error updating information of user: ${error}");
+                                        print("Stack trace: ${StackTrace.current}");
                                       }
                                     }
                                     else{
@@ -1196,24 +1427,45 @@ class createThreadState extends State<createThread>{
                                   if(firebaseDesktopHelper.onDesktop){
                                     List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                    var theCorrectNewUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                                    var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                    if(theCorrectNewUser.isNotEmpty){
-                                      userData = theCorrectNewUser;
-                                      docName = theCorrectNewUser["id"] ?? "N/A";
+                                    if(theCorrectUser.isNotEmpty){
+                                      userData = theCorrectUser;
+                                      docName = theCorrectUser["docId"] ?? "N/A";
 
                                       print("userData: ${userData}");
-                                      print("docName: ${docName}");
+                                      print("docName for your username: ${docName}");
 
                                       //Updating the document:
                                       try{
+                                        //Getting the current information about a user:
+                                        Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                                        print("theCorrectUser: ${theCorrectUser}");
+                                        print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
+                                        print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
+                                        print("Full user info: ${currentInfoOfUser}");
+                                        print("Full user keys: ${currentInfoOfUser.keys}");
+
+                                        //Incrementing the number of posts a user has:
+                                        int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
+                                        currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
+
+                                        //Updating the information about a user:
                                         await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                          "usernameProfileInformation.numberOfPosts": (theCorrectNewUser["usernameProfileInformation"]["numberOfPosts"] ?? 0 ) + 1,
+                                          "usernameProfileInformation": currentInfoOfUser,
                                         });
+
                                         print("You have updated the number of posts for the user!");
+
+                                        //Determining if the full document still has all of the fields
+                                        List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                        var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
+                                        print("The full document after the update: $theVerifiedUser");
                                       }
                                       catch (error){
                                         print("Error updating information of user: ${error}");
+                                        print("Stack trace: ${StackTrace.current}");
                                       }
                                     }
                                     else{
