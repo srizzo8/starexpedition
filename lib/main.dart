@@ -1317,14 +1317,36 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                     title: Text("My Profile"),
                     onTap: () async{
                       if(myUsername != "" && myNewUsername == ""){
-                        await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
-                          usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
-                          usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
-                          usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
-                          numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
-                          starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
-                          planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
-                        });
+                        if(firebaseDesktopHelper.onDesktop){
+                          List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                          var myCorrectUser = everyUser.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                          var getExistingUserProfileInformationAttribute = myCorrectUser["usernameProfileInformation"];
+
+                          usersBlurb = getExistingUserProfileInformationAttribute["userInformation"];
+                          usersInterests = getExistingUserProfileInformationAttribute["userInterests"];
+                          usersLocation = getExistingUserProfileInformationAttribute["userLocation"];
+                          numberOfPostsUserHasMade = getExistingUserProfileInformationAttribute["numberOfPosts"];
+                          starsUserTracked = getExistingUserProfileInformationAttribute["starsTracked"];
+                          planetsUserTracked = getExistingUserProfileInformationAttribute["planetsTracked"];
+
+                          print("Desktop usersBlurb: ${usersBlurb}");
+                          print("Desktop usersInterests: ${usersInterests}");
+                          print("Desktop usersLocation: ${usersLocation}");
+                          print("Desktop numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                          print("Desktop starsUserTracked: ${starsUserTracked}");
+                          print("Desktop planetsUserTracked: ${planetsUserTracked}");
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
+                            usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                            usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
+                            usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
+                            numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                            starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
+                            planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
+                          });
+                        }
                         print("usersBlurb: ${usersBlurb}");
                         print("usersInterests: ${usersInterests}");
                         print("usersLocation: ${usersLocation}");
@@ -1334,14 +1356,36 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                         Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
                       }
                       else if(myUsername == "" && myNewUsername != ""){
-                        await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
-                          usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
-                          usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
-                          usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
-                          numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
-                          starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
-                          planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
-                        });
+                        if(firebaseDesktopHelper.onDesktop){
+                          List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                          var myCorrectNewUser = everyUser.firstWhere((myNewUser) => myNewUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                          var getNewUserProfileInformationAttribute = myCorrectNewUser["usernameProfileInformation"];
+
+                          usersBlurb = getNewUserProfileInformationAttribute["userInformation"];
+                          usersInterests = getNewUserProfileInformationAttribute["userInterests"];
+                          usersLocation = getNewUserProfileInformationAttribute["userLocation"];
+                          numberOfPostsUserHasMade = getNewUserProfileInformationAttribute["numberOfPosts"];
+                          starsUserTracked = getNewUserProfileInformationAttribute["starsTracked"];
+                          planetsUserTracked = getNewUserProfileInformationAttribute["planetsTracked"];
+
+                          print("Desktop usersBlurb: ${usersBlurb}");
+                          print("Desktop usersInterests: ${usersInterests}");
+                          print("Desktop usersLocation: ${usersLocation}");
+                          print("Desktop numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                          print("Desktop starsUserTracked: ${starsUserTracked}");
+                          print("Desktop planetsUserTracked: ${planetsUserTracked}");
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
+                            usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                            usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
+                            usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
+                            numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                            starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
+                            planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
+                          });
+                        }
                         print("usersBlurb: ${usersBlurb}");
                         print("usersInterests: ${usersInterests}");
                         print("usersLocation: ${usersLocation}");
