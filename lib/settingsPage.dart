@@ -366,7 +366,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                       print("gettingDocName: ${gettingDocName.toString()}");
 
                       if(firebaseDesktopHelper.onDesktop){
-                        List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        //List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
 
                         //Updating a user's password:
                         await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
@@ -461,7 +461,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                       print("gettingDocName: ${gettingDocName.toString()}");
 
                       if(firebaseDesktopHelper.onDesktop){
-                        List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        //List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
                         //Map<String, dynamic> currentInfoOfUser = everyUser.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});//Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
 
                         //Updating a user's password:
@@ -776,12 +776,19 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                 onPressed: () async{
                   //if(currentEmailAddressController.text != "" && newEmailAddressController.text != "" && myPasswordController.text != ""){
                   if(myUsername != "" && myNewUsername == ""){
-                    myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                    myEmailResult.docs.forEach((myResult){
-                      docForUsername = myResult.data();
-                      print("This is the result: ${myResult.data()}");
-                      gettingDocName = myResult.id;
-                    });
+                    if(firebaseDesktopHelper.onDesktop){
+                      myEmailResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                      docForUsername = myEmailResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                      gettingDocName = docForUsername["docId"];
+                    }
+                    else{
+                      myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                      myEmailResult.docs.forEach((myResult){
+                        docForUsername = myResult.data();
+                        print("This is the result: ${myResult.data()}");
+                        gettingDocName = myResult.id;
+                      });
+                    }
                     print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
                     usersEmailForEmailChangeMessage = docForUsername["emailAddress"];
                     userForEmailChange = myUsername;
@@ -792,16 +799,35 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                       //email address successfully changed
                       print("Your email will change");
 
-                      FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
-                        print("Updated the email address");
-                      }).catchError((e) => print("This is your error: ${e}"));
+                      if(firebaseDesktopHelper.onDesktop){
+                        //Updating a user's email address:
+                        await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
+                          "emailAddress": newEmailAddressController.text,
+                        });
 
-                      var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                      newEmailResult.docs.forEach((theResult){
-                        du = theResult.data();
-                        print("This is the result: ${theResult.data()}");
-                        //var gettingDn = theResult.id;
-                      });
+                        List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        var theMatchingUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                        if(theMatchingUser.isNotEmpty){
+                          du = theMatchingUser;
+                          print("This is du: ${du}");
+                        }
+                        else{
+                          print("User is not found");
+                        }
+                      }
+                      else{
+                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
+                          print("Updated the email address");
+                        }).catchError((e) => print("This is your error: ${e}"));
+
+                        var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                        newEmailResult.docs.forEach((theResult){
+                          du = theResult.data();
+                          print("This is the result: ${theResult.data()}");
+                          //var gettingDn = theResult.id;
+                        });
+                      }
 
                       print("This is new user email address: ${docForUsername["emailAddress"]}");
 
@@ -860,12 +886,19 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                     }
                   }
                   else if(myUsername == "" && myNewUsername != ""){
-                    myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                    myEmailResult.docs.forEach((myResult){
-                      docForUsername = myResult.data();
-                      print("This is the result: ${myResult.data()}");
-                      gettingDocName = myResult.id;
-                    });
+                    if(firebaseDesktopHelper.onDesktop){
+                      myEmailResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                      docForUsername = myEmailResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                      gettingDocName = docForUsername["docId"];
+                    }
+                    else{
+                      myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                      myEmailResult.docs.forEach((myResult){
+                        docForUsername = myResult.data();
+                        print("This is the result: ${myResult.data()}");
+                        gettingDocName = myResult.id;
+                      });
+                    }
                     print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
                     usersEmailForEmailChangeMessage = docForUsername["emailAddress"];
                     userForEmailChange = myNewUsername;
@@ -876,16 +909,35 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                       //email address successfully changed
                       print("Your email will change");
 
-                      FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
-                        print("Updated the email address");
-                      }).catchError((e) => print("This is your error: ${e}"));
+                      if(firebaseDesktopHelper.onDesktop){
+                        //Updating a user's email address:
+                        await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
+                          "emailAddress": newEmailAddressController.text,
+                        });
 
-                      var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                      newEmailResult.docs.forEach((theResult){
-                        du = theResult.data();
-                        print("This is the result: ${theResult.data()}");
-                        //var gettingDn = theResult.id;
-                      });
+                        List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        var theMatchingUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                        if(theMatchingUser.isNotEmpty){
+                          du = theMatchingUser;
+                          print("This is du: ${du}");
+                        }
+                        else{
+                          print("User is not found");
+                        }
+                      }
+                      else{
+                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
+                          print("Updated the email address");
+                        }).catchError((e) => print("This is your error: ${e}"));
+
+                        var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                        newEmailResult.docs.forEach((theResult){
+                          du = theResult.data();
+                          print("This is the result: ${theResult.data()}");
+                          //var gettingDn = theResult.id;
+                        });
+                      }
 
                       print("This is new user email address: ${docForUsername["emailAddress"]}");
 
