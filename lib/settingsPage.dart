@@ -21,6 +21,7 @@ import 'package:starexpedition4/userProfile.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 var theUser;
 var theNewUser;
@@ -104,24 +105,46 @@ class settingsPageState extends State<settingsPage>{
             onPressed: () async{
               //Adding info about user blurb, interests, and location
               if(myUsername != "" && myNewUsername == ""){
-                await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
-                  myMain.usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
-                  myMain.usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
-                  myMain.usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
-                  //myMain.numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
-                  //myMain.starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
-                  //myMain.planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
-                });
+                if(firebaseDesktopHelper.onDesktop){
+                  List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                  var theUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                  var getUsersInfo = theUser["usernameProfileInformation"];
+
+                  myMain.usersBlurb = getUsersInfo["userInformation"];
+                  myMain.usersInterests = getUsersInfo["userInterests"];
+                  myMain.usersLocation = getUsersInfo["userLocation"];
+                }
+                else{
+                  await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
+                    myMain.usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                    myMain.usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
+                    myMain.usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
+                    //myMain.numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                    //myMain.starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
+                    //myMain.planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
+                  });
+                }
               }
               else if(myUsername == "" && myNewUsername != ""){
-                await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
-                  myMain.usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
-                  myMain.usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
-                  myMain.usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
-                  //myMain.numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
-                  //myMain.starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
-                  //myMain.planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
-                });
+                if(firebaseDesktopHelper.onDesktop){
+                  List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                  var theNewUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                  var getNewUsersInfo = theNewUser["usernameProfileInformation"];
+
+                  myMain.usersBlurb = getNewUsersInfo["userInformation"];
+                  myMain.usersInterests = getNewUsersInfo["userInterests"];
+                  myMain.usersLocation = getNewUsersInfo["userLocation"];
+                }
+                else{
+                  await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
+                    myMain.usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                    myMain.usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
+                    myMain.usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
+                    //myMain.numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                    //myMain.starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
+                    //myMain.planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
+                  });
+                }
               }
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => editingMyUserProfile()));
             }
@@ -316,13 +339,21 @@ class changePasswordPageState extends State<changePasswordPage>{
                   print("newPasswordController.text: ${newPasswordController.text}");
                   print("secondNewPasswordController.text: ${secondNewPasswordController.text}");
                   print("myUsername = ${myUsername}, myNewUsername = ${myNewUsername}");
+
                   if(myUsername != "" && myNewUsername == ""){
-                    myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                    myUserResult.docs.forEach((result){
-                      userDoc = result.data();
-                      print("This is the result: ${result.data()}");
-                      gettingDocName = result.id;
-                    });
+                    if(firebaseDesktopHelper.onDesktop){
+                      myUserResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                      userDoc = myUserResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                      gettingDocName = userDoc["docId"];
+                    }
+                    else{
+                      myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                      myUserResult.docs.forEach((result){
+                        userDoc = result.data();
+                        print("This is the result: ${result.data()}");
+                        gettingDocName = result.id;
+                      });
+                    }
                     print("userDoc[password]: ${userDoc["password"].toString()}");
 
                     usersPass = decryptMyPassword(myKey, userDoc["password"]);
@@ -334,9 +365,19 @@ class changePasswordPageState extends State<changePasswordPage>{
                       //Password successfully changed
                       print("gettingDocName: ${gettingDocName.toString()}");
 
-                      FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
-                        print("Updated");
-                      }).catchError((e) => print("This is your error: ${e}"));
+                      if(firebaseDesktopHelper.onDesktop){
+                        List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                        //Updating a user's password:
+                        await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
+                          "password": encryptMyPassword(myKey, newPasswordController.text).base64,
+                        });
+                      }
+                      else{
+                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
+                          print("Updated");
+                        }).catchError((e) => print("This is your error: ${e}"));
+                      }
 
                       print("This is new user password: ${userDoc["password"]}");
 
@@ -395,12 +436,19 @@ class changePasswordPageState extends State<changePasswordPage>{
                     }
                   }
                   else if(myUsername == "" && myNewUsername != ""){
-                    myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                    myUserResult.docs.forEach((result){
-                      userDoc = result.data();
-                      print("This is the result: ${result.data()}");
-                      gettingDocName = result.id;
-                    });
+                    if(firebaseDesktopHelper.onDesktop){
+                      myUserResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                      userDoc = myUserResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                      gettingDocName = userDoc["docId"];
+                    }
+                    else{
+                      myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                      myUserResult.docs.forEach((result){
+                        userDoc = result.data();
+                        print("This is the result: ${result.data()}");
+                        gettingDocName = result.id;
+                      });
+                    }
                     print("userDoc[password]: ${userDoc["password"].toString()}");
 
                     usersPass = decryptMyPassword(myKey, userDoc["password"]);
@@ -412,9 +460,20 @@ class changePasswordPageState extends State<changePasswordPage>{
                       //Password successfully changed
                       print("gettingDocName: ${gettingDocName.toString()}");
 
-                      FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
-                        print("Updated");
-                      }).catchError((e) => print("This is your error: ${e}"));
+                      if(firebaseDesktopHelper.onDesktop){
+                        List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        //Map<String, dynamic> currentInfoOfUser = everyUser.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});//Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                        //Updating a user's password:
+                        await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
+                          "password": encryptMyPassword(myKey, newPasswordController.text).base64,
+                        });
+                      }
+                      else{
+                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
+                          print("Updated");
+                        }).catchError((e) => print("This is your error: ${e}"));
+                      }
 
                       print("This is new user password: ${userDoc["password"]}");
 
