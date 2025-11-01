@@ -1447,18 +1447,10 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                     //List<dynamic> myUserList = [];
                     if(firebaseDesktopHelper.onDesktop){
                       var myUsersDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
-                        /*for(var documentSnapshot in qSnapshot.docs){
-                          print("documentSnapshot: ${documentSnapshot.data()}");
-                          if(!(theListOfUsers.contains(documentSnapshot.data()["username"]))) {
-                            theListOfUsers.add(documentSnapshot.data()["username"]);
-                          }
-                          else{
-                            //continue
-                          }
-                        }*/
-                      //});
                       for(int u = 0; u < myUsersDocs.length; u++){
-                        theListOfUsers.add(myUsersDocs[u]["username"]);
+                        if(!(theListOfUsers.contains(myUsersDocs[u]["username"]))){
+                          theListOfUsers.add(myUsersDocs[u]["username"]);
+                        }
                       }
                       print("this is my users: $myUsersDocs");
                     }
