@@ -2600,8 +2600,17 @@ class articlePage extends StatelessWidget{
                                                             starsTracked.addEntries({theStar.starName!: reasonForStarTrackNewUsers.text}.entries);
 
                                                             if(firebaseDesktopHelper.onDesktop){
-                                                              await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForStarsTrackedNewUser/usernameProfileInformation", {
-                                                                "starsTracked": starsTracked,
+                                                              List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                                              var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForStarsTrackedNewUser, orElse: () => <String, dynamic>{});
+
+                                                              Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
+
+                                                              //Updating starsTracked:
+                                                              currentInfoOfUser["starsTracked"] = starsTracked;
+
+                                                              await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForStarsTrackedNewUser", {
+                                                                "usernameProfileInformation": currentInfoOfUser,
                                                               });
                                                             }
                                                             else{
@@ -3503,8 +3512,17 @@ class planetArticle extends StatelessWidget{
                                                           planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackNewUsers.text}.entries);
 
                                                           if(firebaseDesktopHelper.onDesktop){
-                                                            await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForPlanetsTrackedNewUser/usernameProfileInformation", {
-                                                              "planetsTracked": planetsTracked,
+                                                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                                            var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForPlanetsTrackedNewUser, orElse: () => <String, dynamic>{});
+
+                                                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
+
+                                                            //Updating planetsTracked:
+                                                            currentInfoOfUser["planetsTracked"] = planetsTracked;
+
+                                                            await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForPlanetsTrackedNewUser", {
+                                                              "usernameProfileInformation": currentInfoOfUser,
                                                             });
                                                           }
                                                           else{
@@ -3610,8 +3628,8 @@ class planetArticle extends StatelessWidget{
 
                                         var user = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                        docNameForPlanetsTrackedNewUser = user["docId"];
-                                        print("docNameForPlanetsTrackedNewUser: ${docNameForPlanetsTrackedNewUser}");
+                                        docNameForPlanetsTrackedExistingUser = user["docId"];
+                                        print("docNameForPlanetsTrackedExistingUser: ${docNameForPlanetsTrackedExistingUser}");
 
                                         Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(user["usernameProfileInformation"] ?? {});
 
@@ -3660,8 +3678,18 @@ class planetArticle extends StatelessWidget{
                                                           planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackExistingUsers.text}.entries);
 
                                                           if(firebaseDesktopHelper.onDesktop){
-                                                            await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForPlanetsTrackedExistingUser/usernameProfileInformation", {
-                                                              "planetsTracked": planetsTracked,
+                                                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                                            var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForPlanetsTrackedExistingUser, orElse: () => <String, dynamic>{});
+                                                            print("This is currentuser: ${currentUser}");
+
+                                                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
+
+                                                            //Updating planetsTracked:
+                                                            currentInfoOfUser["planetsTracked"] = planetsTracked;
+
+                                                            await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForPlanetsTrackedExistingUser", {
+                                                              "usernameProfileInformation": currentInfoOfUser,
                                                             });
                                                           }
                                                           else{
@@ -3791,20 +3819,22 @@ class planetArticle extends StatelessWidget{
                                                       if(firebaseDesktopHelper.onDesktop){
                                                         List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                                        var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                                                        var theNewUser = allUsers.firstWhere((user) => user["usernameLowercased"] == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                                        var docForTheNewUser = usersProfileInfo["docId"];
+                                                        var docForTheNewUser = theNewUser["docId"];
 
-                                                        Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
-                                                        var planetsTracked = currentInfoOfNewUser["planetsTracked"];
+                                                        Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(theNewUser["usernameProfileInformation"] ?? {});
 
+                                                        //Getting and modifying starsTracked:
+                                                        Map<String, dynamic> planetsTracked = Map<String, dynamic>.from(currentInfoOfNewUser["planetsTracked"] ?? {});
                                                         planetsTracked.remove(correctPlanet);
 
-                                                        await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheNewUser/usernameProfileInformation", {
-                                                          "planetsTracked": planetsTracked,
-                                                        });
+                                                        //Gets an updated list of the stars a user has tracked:
+                                                        currentInfoOfNewUser["planetsTracked"] = planetsTracked;
 
-                                                        print("planetTracked: ${planetTracked}");
+                                                        await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheNewUser", {
+                                                          "usernameProfileInformation": currentInfoOfNewUser,
+                                                        });
                                                       }
                                                       else{
                                                         var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -3888,20 +3918,22 @@ class planetArticle extends StatelessWidget{
                                                       if(firebaseDesktopHelper.onDesktop){
                                                         List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                                        var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                                                        var theExistingUser = allUsers.firstWhere((user) => user["usernameLowercased"] == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                                        var docForTheExistingUser = usersProfileInfo["docId"];
+                                                        var docForTheExistingUser = theExistingUser["docId"];
 
-                                                        Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
-                                                        var planetsTracked = currentInfoOfExistingUser["planetsTracked"];
+                                                        Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(theExistingUser["usernameProfileInformation"] ?? {});
 
+                                                        //Getting and modifying starsTracked:
+                                                        Map<String, dynamic> planetsTracked = Map<String, dynamic>.from(currentInfoOfExistingUser["planetsTracked"] ?? {});
                                                         planetsTracked.remove(correctPlanet);
 
-                                                        await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheExistingUser/usernameProfileInformation", {
-                                                          "planetsTracked": planetsTracked,
-                                                        });
+                                                        //Gets an updated list of the stars a user has tracked:
+                                                        currentInfoOfExistingUser["planetsTracked"] = planetsTracked;
 
-                                                        print("planetTracked: ${planetTracked}");
+                                                        await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheExistingUser", {
+                                                          "usernameProfileInformation": currentInfoOfExistingUser,
+                                                        });
                                                       }
                                                       else{
                                                         var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
