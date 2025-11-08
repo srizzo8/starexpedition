@@ -447,10 +447,12 @@ Future<void> main() async {
     print("starsForSearchBar: ${starsForSearchBar}");
     print("The snapshot: ${allPlanets}");
   }
-  else if(Platform.isWindows || Platform.isMacOS || Platform.isLinux){
+  else if(firebaseDesktopHelper.onDesktop){
     print("This is the desktop version of Star Expedition");
 
     usersOnStarExpeditionDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+    starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
 
     for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
       Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
