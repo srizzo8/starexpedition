@@ -3164,18 +3164,30 @@ class articlePage extends StatelessWidget{
                                         var myResponse = await http.get(Uri.parse(listOfStarUrls[indexPlace]));
 
                                         if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
-                                          //Creating a temporary file
-                                          var temporaryDirectory = await getTemporaryDirectory();
-                                          var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
-                                          await temporaryFile.writeAsBytes(myResponse.bodyBytes);
-
-                                          //Giving myStarPdfFile the temporary file
                                           if(firebaseDesktopHelper.onDesktop){
+                                            //Creating a temporary file
+                                            var temporaryDirectory = await getTemporaryDirectory();
+                                            var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
+                                            await temporaryFile.writeAsBytes(myResponse.bodyBytes);
                                             myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
                                           }
-                                          else{
-                                            myStarPdfFile = PDFDocument.fromFile(temporaryFile);
+                                          else if(kIsWeb){
+                                            myStarPdfFile = Future.value(PdfDocument.openData(myResponse.bodyBytes));
                                           }
+                                          else{
+                                            var temporaryDirectory = await getTemporaryDirectory();
+                                            var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
+                                            await temporaryFile.writeAsBytes(myResponse.bodyBytes);
+                                            myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
+                                          }
+                                          /*else{
+                                            if(kIsWeb){
+                                              myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
+                                            }
+                                            else{
+                                              myStarPdfFile = PDFDocument.fromFile(temporaryFile);
+                                            }
+                                          }*/
 
                                           //Going to the page that has the PDF
                                           Navigator.push(bc, MaterialPageRoute(builder: (theContext) => pdfViewer()));
@@ -4060,19 +4072,33 @@ class planetArticle extends StatelessWidget{
                                       else{
                                         planetPdfBool = true;
 
-                                        var myResponse = await http.get(Uri.parse(listOfPlanetUrls[indexPlace]));
+                                        var myResponse;
+
+                                        if(!kIsWeb){
+                                          myResponse = await http.get(Uri.parse(listOfPlanetUrls[indexPlace]));
+                                        }
+                                        else{
+                                          String myCorsProxy = "https://corsproxy.io/?";
+                                          String myProxiedUrl = myCorsProxy + Uri.encodeComponent(listOfPlanetUrls[indexPlace]);
+                                          print("Fetching with proxy: ${myProxiedUrl}");
+
+                                          myResponse = await http.get(Uri.parse(myProxiedUrl));
+                                        }
 
                                         if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
-                                          //Creating a temporary file
-                                          var temporaryDirectory = await getTemporaryDirectory();
-                                          var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
-                                          await temporaryFile.writeAsBytes(myResponse.bodyBytes);
-
-                                          //Giving myPlanetPdfFile the temporary file
                                           if(firebaseDesktopHelper.onDesktop){
+                                            var temporaryDirectory = await getTemporaryDirectory();
+                                            var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
+                                            await temporaryFile.writeAsBytes(myResponse.bodyBytes);
                                             myPlanetPdfFile = PdfDocument.openFile(temporaryFile.path);
                                           }
+                                          else if(kIsWeb){
+                                            myPlanetPdfFile = Future.value(PdfDocument.openData(myResponse.bodyBytes));
+                                          }
                                           else{
+                                            var temporaryDirectory = await getTemporaryDirectory();
+                                            var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
+                                            await temporaryFile.writeAsBytes(myResponse.bodyBytes);
                                             myPlanetPdfFile = PDFDocument.fromFile(temporaryFile);
                                           }
 

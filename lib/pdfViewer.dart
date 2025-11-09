@@ -75,7 +75,7 @@ class pdfViewerState extends State<pdfViewer>{
   List<Text> myPlanetPdfMessage = [];
 
   void goToStarPdfPage({int? myPage}){
-    if(firebaseDesktopHelper.onDesktop){
+    if(firebaseDesktopHelper.onDesktop || kIsWeb){
       myStarPdfxController.jumpToPage(myPage != null ? myPage : myStarPageNumber);
     }
     else{
@@ -84,7 +84,7 @@ class pdfViewerState extends State<pdfViewer>{
   }
 
   void animateToStarPdfPage({int? myPage}){
-    if(firebaseDesktopHelper.onDesktop){
+    if(firebaseDesktopHelper.onDesktop || kIsWeb){
       myStarPdfxController.animateToPage(myPage != null ? myPage : myStarPageNumber, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
     }
     else{
@@ -93,7 +93,7 @@ class pdfViewerState extends State<pdfViewer>{
   }
 
   void goToPlanetPdfPage({int? myPage}){
-    if(firebaseDesktopHelper.onDesktop){
+    if(firebaseDesktopHelper.onDesktop || kIsWeb){
       myPlanetPdfxController.jumpToPage(myPage != null ? myPage : myPlanetPageNumber);
     }
     else{
@@ -102,7 +102,7 @@ class pdfViewerState extends State<pdfViewer>{
   }
 
   void animateToPlanetPdfPage({int? myPage}){
-    if(firebaseDesktopHelper.onDesktop){
+    if(firebaseDesktopHelper.onDesktop || kIsWeb){
       myPlanetPdfxController.animateToPage(myPage != null ? myPage : myPlanetPageNumber, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
     }
     else{
@@ -171,7 +171,7 @@ class pdfViewerState extends State<pdfViewer>{
               child: FutureBuilder(
                   future: myMain.myStarPdfFile,
                   builder: (bc, snapshot){
-                    if(firebaseDesktopHelper.onDesktop){
+                    if(firebaseDesktopHelper.onDesktop || kIsWeb){
                       if(snapshot.hasData){
                         final docForPdfx = snapshot.data as PdfDocument;
                         totalStarPdfPages = docForPdfx.pagesCount;
@@ -368,7 +368,7 @@ class pdfViewerState extends State<pdfViewer>{
             child: FutureBuilder(
                 future: myMain.myPlanetPdfFile,
                 builder: (bc, snapshot){
-                  if(firebaseDesktopHelper.onDesktop){
+                  if(firebaseDesktopHelper.onDesktop || kIsWeb){
                     if(snapshot.hasData){
                       final docForPdfx = snapshot.data as PdfDocument;
                       totalPlanetPdfPages = docForPdfx.pagesCount;
