@@ -40,7 +40,7 @@ import 'package:starexpedition4/main.dart' as myMain;
 
 import 'package:http/http.dart' as http;
 
-import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
+//import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 
 import 'package:pdfx/pdfx.dart';
 
@@ -57,7 +57,7 @@ class pdfViewerState extends State<pdfViewer>{
   TextEditingController starPdfPageController = TextEditingController();
   int myStarPdfPage = 0;
   int totalStarPdfPages = 0;
-  List<PDFPage?> starPdfPages = [];
+  //List<PDFPage?> starPdfPages = [];
   //List<PdfPage?> starPdfPagesDesktop = [];
   late PageController starPageController;
   late PdfController myStarPdfxController;
@@ -67,7 +67,7 @@ class pdfViewerState extends State<pdfViewer>{
   TextEditingController planetPdfPageController = TextEditingController();
   int myPlanetPdfPage = 0;
   int totalPlanetPdfPages = 0;
-  List<PDFPage?> planetPdfPages = [];
+  //List<PDFPage?> planetPdfPages = [];
   //List<PdfPage?> planetPdfPagesDesktop = [];
   late PageController planetPageController;
   late PdfController myPlanetPdfxController;
@@ -75,39 +75,19 @@ class pdfViewerState extends State<pdfViewer>{
   List<Text> myPlanetPdfMessage = [];
 
   void goToStarPdfPage({int? myPage}){
-    if(firebaseDesktopHelper.onDesktop || kIsWeb){
-      myStarPdfxController.jumpToPage(myPage != null ? myPage : myStarPageNumber);
-    }
-    else{
-      starPageController.jumpToPage(myPage != null ? myPage : myStarPageNumber - 1);
-    }
+    myStarPdfxController.jumpToPage(myPage != null ? myPage : myStarPageNumber);
   }
 
   void animateToStarPdfPage({int? myPage}){
-    if(firebaseDesktopHelper.onDesktop || kIsWeb){
-      myStarPdfxController.animateToPage(myPage != null ? myPage : myStarPageNumber, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
-    }
-    else{
-      starPageController.animateToPage(myPage != null ? myPage : myStarPageNumber - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
-    }
+    myStarPdfxController.animateToPage(myPage != null ? myPage : myStarPageNumber, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
   }
 
   void goToPlanetPdfPage({int? myPage}){
-    if(firebaseDesktopHelper.onDesktop || kIsWeb){
-      myPlanetPdfxController.jumpToPage(myPage != null ? myPage : myPlanetPageNumber);
-    }
-    else{
-      planetPageController.jumpToPage(myPage != null ? myPage : myPlanetPageNumber - 1);
-    }
+    myPlanetPdfxController.jumpToPage(myPage != null ? myPage : myPlanetPageNumber);
   }
 
   void animateToPlanetPdfPage({int? myPage}){
-    if(firebaseDesktopHelper.onDesktop || kIsWeb){
-      myPlanetPdfxController.animateToPage(myPage != null ? myPage : myPlanetPageNumber, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
-    }
-    else{
-      planetPageController.animateToPage(myPage != null ? myPage : myPlanetPageNumber - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
-    }
+    myPlanetPdfxController.animateToPage(myPage != null ? myPage : myPlanetPageNumber, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
   }
 
   bool checkNumbersOnly(String num){
@@ -171,50 +151,25 @@ class pdfViewerState extends State<pdfViewer>{
               child: FutureBuilder(
                   future: myMain.myStarPdfFile,
                   builder: (bc, snapshot){
-                    if(firebaseDesktopHelper.onDesktop || kIsWeb){
-                      if(snapshot.hasData){
-                        final docForPdfx = snapshot.data as PdfDocument;
-                        totalStarPdfPages = docForPdfx.pagesCount;
+                    if(snapshot.hasData){
+                      final docForPdfx = snapshot.data as PdfDocument;
+                      totalStarPdfPages = docForPdfx.pagesCount;
 
-                        myStarPdfxController = PdfController(document: Future.value(docForPdfx));
+                      myStarPdfxController = PdfController(document: Future.value(docForPdfx));
 
-                        myStarPageNumber = myStarPdfxController.initialPage;
+                      myStarPageNumber = myStarPdfxController.initialPage;
 
-                        return PdfView(
-                          onPageChanged: (int myCurrentPage){
-                            myStarPdfPage = myCurrentPage;
-                            myStarPageNumber = myCurrentPage;
-                            print("myStarPdfPage: ${myStarPdfPage}");
-                          },
-                          controller: myStarPdfxController,
-                        );
-                      }
-                      else{
-                        return Center(child: CircularProgressIndicator());
-                      }
+                      return PdfView(
+                        onPageChanged: (int myCurrentPage){
+                          myStarPdfPage = myCurrentPage;
+                          myStarPageNumber = myCurrentPage;
+                          print("myStarPdfPage: ${myStarPdfPage}");
+                        },
+                        controller: myStarPdfxController,
+                      );
                     }
                     else{
-                      if(snapshot.hasData){
-                        starPdfPages = List.filled((snapshot.data as PDFDocument).count, null);
-                        starPageController = PageController();
-                        myStarPageNumber = starPageController.initialPage + 1;
-                        print(starPdfPages.length);
-                        print(myStarPageNumber);
-                        totalStarPdfPages = (snapshot.data as PDFDocument).count;
-                        return PDFViewer(
-                          document: snapshot.data as PDFDocument,
-                          showPicker: false,
-                          showNavigation: false,
-                          onPageChanged: (int myCurrentPage){
-                            myStarPdfPage = myCurrentPage;
-                            print("myStarPdfPage: ${myStarPdfPage}");
-                          },
-                          controller: starPageController,
-                        );
-                      }
-                      else{
-                        return Center(child: CircularProgressIndicator());
-                      }
+                      return Center(child: CircularProgressIndicator());
                     }
                   }
               ),
@@ -368,50 +323,25 @@ class pdfViewerState extends State<pdfViewer>{
             child: FutureBuilder(
                 future: myMain.myPlanetPdfFile,
                 builder: (bc, snapshot){
-                  if(firebaseDesktopHelper.onDesktop || kIsWeb){
-                    if(snapshot.hasData){
-                      final docForPdfx = snapshot.data as PdfDocument;
-                      totalPlanetPdfPages = docForPdfx.pagesCount;
+                  if(snapshot.hasData){
+                    final docForPdfx = snapshot.data as PdfDocument;
+                    totalPlanetPdfPages = docForPdfx.pagesCount;
 
-                      myPlanetPdfxController = PdfController(document: Future.value(docForPdfx));
+                    myPlanetPdfxController = PdfController(document: Future.value(docForPdfx));
 
-                      myPlanetPageNumber = myPlanetPdfxController.initialPage;
+                    myPlanetPageNumber = myPlanetPdfxController.initialPage;
 
-                      return PdfView(
-                        onPageChanged: (int myCurrentPage){
-                          myPlanetPdfPage = myCurrentPage;
-                          myPlanetPageNumber = myCurrentPage;
-                          print("myPlanetPdfPage: ${myPlanetPdfPage}");
-                        },
-                        controller: myPlanetPdfxController,
-                      );
-                    }
-                    else{
-                      return Center(child: CircularProgressIndicator());
-                    }
+                    return PdfView(
+                      onPageChanged: (int myCurrentPage){
+                        myPlanetPdfPage = myCurrentPage;
+                        myPlanetPageNumber = myCurrentPage;
+                        print("myPlanetPdfPage: ${myPlanetPdfPage}");
+                      },
+                      controller: myPlanetPdfxController,
+                    );
                   }
                   else{
-                    if(snapshot.hasData){
-                      planetPdfPages = List.filled((snapshot.data as PDFDocument).count, null);
-                      planetPageController = PageController();
-                      myPlanetPageNumber = planetPageController.initialPage + 1;
-                      print(planetPdfPages.length);
-                      print(myPlanetPageNumber);
-                      totalPlanetPdfPages = (snapshot.data as PDFDocument).count;
-                      return PDFViewer(
-                        document: snapshot.data as PDFDocument,
-                        showPicker: false,
-                        showNavigation: false,
-                        onPageChanged: (int myCurrentPage){
-                          myPlanetPdfPage = myCurrentPage;
-                          print("myPlanetPdfPage: ${myPlanetPdfPage}");
-                        },
-                        controller: planetPageController,
-                      );
-                    }
-                    else{
-                      return Center(child: CircularProgressIndicator());
-                    }
+                    return Center(child: CircularProgressIndicator());
                   }
                 }
             ),
