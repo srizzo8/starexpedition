@@ -630,7 +630,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               print("dbuReplies: ${dbuReplies.length}");
                               dbuReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
                               print("dbuReplies: ${dbuReplies.length}");
-                              (dbuReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+                              (dbuReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
                             }
 
                             discussionBoardUpdatesPage.theDbuThreadReplies = dbuReplies;
@@ -1032,7 +1032,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               print("qaaReplies: ${qaaReplies.length}");
                               qaaReplies = qaaRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
                               print("qaaReplies: ${qaaReplies.length}");
-                              (qaaReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+                              (qaaReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
                             }
 
                             questionsAndAnswersPage.theQaaThreadReplies = qaaReplies;
@@ -1412,7 +1412,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               print("technologiesReplies: ${technologiesReplies.length}");
                               technologiesReplies = technologiesRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
                               print("technologiesReplies: ${technologiesReplies.length}");
-                              (technologiesReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+                              (technologiesReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
                             }
 
                             technologiesPage.theTThreadReplies = technologiesReplies;
@@ -1791,7 +1791,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               print("projectsReplies: ${projectsReplies.length}");
                               projectsReplies = projectsRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
                               print("projectsReplies: ${projectsReplies.length}");
-                              (projectsReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+                              (projectsReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
                             }
 
                             projectsPage.thePThreadReplies = projectsReplies;
@@ -2166,7 +2166,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               print("newDiscoveriesReplies: ${newDiscoveriesReplies.length}");
                               newDiscoveriesReplies = newDiscoveriesRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
                               print("newDiscoveriesReplies: ${newDiscoveriesReplies.length}");
-                              (newDiscoveriesReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+                              (newDiscoveriesReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
                             }
 
                             newDiscoveriesPage.theNdThreadReplies = newDiscoveriesReplies;
@@ -2544,7 +2544,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               print("feedbackAndSuggestionsReplies: ${feedbackAndSuggestionsReplies.length}");
                               feedbackAndSuggestionsReplies = feedbackAndSuggestionsRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
                               print("feedbackAndSuggestionsReplies: ${feedbackAndSuggestionsReplies.length}");
-                              (feedbackAndSuggestionsReplies as List<dynamic>).sort((b, a) => (a["time"].toDate()).compareTo(b["time"].toDate()));
+                              (feedbackAndSuggestionsReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
                             }
 
                             feedbackAndSuggestionsPage.theFasThreadReplies = feedbackAndSuggestionsReplies;

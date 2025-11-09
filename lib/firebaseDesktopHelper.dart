@@ -221,47 +221,27 @@ class firebaseDesktopHelper{
 
   //Formatting the timestamp for Firestore databases
   static String formatMyTimestamp(var myTimeValue){
-    DateTime dt;
+    DateTime? dt;
 
-    if(onDesktop){ //For Desktop
-      if(myTimeValue is String){
-        dt = convertStringToDateTime(myTimeValue);
-      }
-      else{
-        return myTimeValue.toString();
-      }
+    if(myTimeValue == null){
+      return "Time not known";
     }
-    else{ //For Mobile and Web
-      if(myTimeValue is Timestamp){
-        dt = myTimeValue.toDate();
-      }
-      else{
-        return myTimeValue.toString();
-      }
+    else if(myTimeValue is Timestamp){
+      dt = myTimeValue.toDate();
+    }
+    else if(myTimeValue is String){
+      dt = DateTime.tryParse(myTimeValue);
+    }
+    else if(myTimeValue is DateTime){
+      dt = myTimeValue;
     }
 
-    //Converting to local time
-    dt =  dt.toLocal();
+    if(dt == null){
+      return "The date/time is invalid";
+    }
 
-    //Formatting the date so it can be like: January 1, 2025 at 12:00:00 AM UTC-4
-    final myMonths = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-    //The day
-    String theMonth = myMonths[dt.month];
-    String theDay = dt.day.toString();
-    String theYear = dt.year.toString();
-
-    //The time of the day
-    String theHour = dt.hour > 12 ? (dt.hour - 12).toString() : (dt.hour == 0 ? "12" : dt.hour.toString());
-    String theMinute = dt.minute.toString().padLeft(2, "0");
-    String theSecond = dt.second.toString().padLeft(2, "0");
-    String amOrPm = dt.hour >= 12 ? "PM" : "AM";
-
-    //Getting the timezone offset
-    int theOffsetHours = dt.timeZoneOffset.inHours;
-    String theTimezone = theOffsetHours >= 0 ? "UTC+${theOffsetHours}" : "UTC${theOffsetHours}";
-
-    return "${theMonth} ${theDay}, ${theYear} at ${theHour}:${theMinute}:${theSecond} ${amOrPm} ${theTimezone}";
+    var myDateTimeFormatter = DateFormat("MMMM d, yyyy 'at' h:mm:ss a");
+    return myDateTimeFormatter.format(dt.toLocal());
   }
 
   //Converting String version of a date/time to DateTime for subforums:
