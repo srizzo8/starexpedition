@@ -1345,6 +1345,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                   title: myNewUsername == "" && myUsername == ""? Text("Login") : Text("Logout"),
                   onTap: (){
                     if(myNewUsername == "" && myUsername == "") {
+                      discussionBoardLogin = false;
                       Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
                     }
                     else if((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != "")){
@@ -1459,12 +1460,14 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
               ListTile(
                   title: Text("Why Star Expedition Was Made"),
                   onTap: () {
+                    discussionBoardLogin = false;
                     Navigator.pushReplacementNamed(context, routesToOtherPages.whyMade);
                   }
               ),
               ListTile(
                   title: Text("Information about the Spectral Classes of Stars"),
                   onTap: () {
+                    discussionBoardLogin = false;
                     // Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage()));
                     Navigator.pushReplacementNamed(context, routesToOtherPages.spectralClass);
                   }
@@ -1484,6 +1487,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
               ListTile(
                   title: Text("Conversion Calculator"),
                   onTap: (){
+                    discussionBoardLogin = false;
                     Navigator.pushReplacementNamed(context, routesToOtherPages.conversionCalculator);
                   }
               ),
@@ -1491,6 +1495,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                   title: Text("User Search"),
                   onTap: () async{
                     //List<dynamic> myUserList = [];
+                    discussionBoardLogin = false;
                     if(firebaseDesktopHelper.onDesktop){
                       var myUsersDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
                       for(int u = 0; u < myUsersDocs.length; u++){
