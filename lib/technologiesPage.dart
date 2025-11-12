@@ -112,115 +112,125 @@ class technologiesPageState extends State<technologiesPage>{
                       height: 10,
                     ),
                     Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.grey[300],
-                        ),
-                        child: InkWell(
-                          child: Ink(
-                            //child: Text(discussionBoardPage.technologiesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.technologiesThreads[index]["poster"].toString()),
-                            child: Text.rich(
-                              TextSpan(
-                                text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["threadTitle"].toString()}\nBy: ",
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString()}",
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                        technologiesClickedOnUser = true,
-
-                                        if(firebaseDesktopHelper.onDesktop){
-                                          technologiesNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
-                                        }
-                                        else{
-                                          technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString().toLowerCase()).get(),
-                                          technologiesNameData.docs.forEach((person){
-                                            theUsersData = person.data();
-                                          }),
-                                        },
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                      }
-                                  ),
-                                  TextSpan(
-                                    text: " ",
-                                  ),
-                                ],
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey[300],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
+                              padding: EdgeInsets.zero,
                             ),
-                            height: 30,
-                            width: 320,
-                            color: Colors.grey[300],
-                          ),
+                            child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                      child: Text.rich(
+                                        TextSpan(
+                                          text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["threadTitle"].toString()}\nBy: ",
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                          children: [
+                                            TextSpan(
+                                                text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString()}",
+                                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                                recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                                  technologiesClickedOnUser = true,
+
+                                                  if(firebaseDesktopHelper.onDesktop){
+                                                    technologiesNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                                    theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                                  }
+                                                  else{
+                                                    technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString().toLowerCase()).get(),
+                                                    technologiesNameData.docs.forEach((person){
+                                                      theUsersData = person.data();
+                                                    }),
+                                                  },
+                                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                }
+                                            ),
+                                            TextSpan(
+                                              text: " ",
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ]
+                            ),
+                            onPressed: () async{
+                              print("This is index: $index");
+                              print("listOfTechnologiesThreads is null? ${listOfTechnologiesThreads == null}");
+                              print("I clicked on a thread");
+
+                              myIndexPlaceTechnologies = index;
+                              myLocation = theCurrentPageTechnologies;
+
+                              threadAuthorT = mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString();
+                              threadTitleT = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadTitle"].toString();
+                              threadContentT = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadContent"].toString();
+                              threadID = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadId"].toString();
+
+                              print(discussionBoardPage.technologiesThreads![index]);
+                              print("${threadAuthorT} + ${threadTitleT} + ${threadContentT} + ${threadID}");
+                              print("context: ${context}");
+
+                              if(firebaseDesktopHelper.onDesktop){
+                                var theTThreads = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
+                                var matchingThread = theTThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+
+                                if(matchingThread.isNotEmpty){
+                                  //Getting the document ID:
+                                  myDocT = matchingThread["docId"];
+                                  print("This is myDocT: ${myDocT}");
+                                }
+                                else{
+                                  print("Sorry; the thread was not found");
+                                }
+                              }
+                              else{
+                                await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                  myDocT = d.docs.first.id;
+                                  print(myDocT);
+                                });
+                              }
+
+                              if(firebaseDesktopHelper.onDesktop){
+                                theTThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Technologies", myDocT, "Replies");
+
+                                print(theTThreadReplies.runtimeType);
+
+                                print(DateTime.now().runtimeType);
+
+                                theTThreadReplies.sort((b, a){
+                                  DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                                  DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                                  return dta.compareTo(dtb);
+                                });
+                              }
+                              else{
+                                await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies");
+
+                                QuerySnapshot tRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").get();
+                                theTThreadReplies = tRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                                print(theTThreadReplies.runtimeType);
+
+                                print(DateTime.now().runtimeType);
+
+                                (theTThreadReplies as List<dynamic>).sort((b2, a2) => (DateTime.parse(a2["time"])).compareTo(DateTime.parse(b2["time"])));
+                              }
+
+                              print("Number of theTThreadReplies: ${theTThreadReplies.length}");
+
+                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => technologiesThreadsPage()));
+                            }
                         ),
-                        onPressed: () async{
-                          print("This is index: $index");
-                          print("listOfTechnologiesThreads is null? ${listOfTechnologiesThreads == null}");
-                          print("I clicked on a thread");
-
-                          myIndexPlaceTechnologies = index;
-                          myLocation = theCurrentPageTechnologies;
-
-                          threadAuthorT = mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString();
-                          threadTitleT = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadTitle"].toString();
-                          threadContentT = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadContent"].toString();
-                          threadID = mySublistsTechnologies[theCurrentPageTechnologies][index]["threadId"].toString();
-
-                          print(discussionBoardPage.technologiesThreads![index]);
-                          print("${threadAuthorT} + ${threadTitleT} + ${threadContentT} + ${threadID}");
-                          print("context: ${context}");
-
-                          if(firebaseDesktopHelper.onDesktop){
-                            var theTThreads = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
-                            var matchingThread = theTThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
-
-                            if(matchingThread.isNotEmpty){
-                              //Getting the document ID:
-                              myDocT = matchingThread["docId"];
-                              print("This is myDocT: ${myDocT}");
-                            }
-                            else{
-                              print("Sorry; the thread was not found");
-                            }
-                          }
-                          else{
-                            await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                              myDocT = d.docs.first.id;
-                              print(myDocT);
-                            });
-                          }
-
-                          if(firebaseDesktopHelper.onDesktop){
-                            theTThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Technologies", myDocT, "Replies");
-
-                            print(theTThreadReplies.runtimeType);
-
-                            print(DateTime.now().runtimeType);
-
-                            theTThreadReplies.sort((b, a){
-                              DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
-                              DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
-                              return dta.compareTo(dtb);
-                            });
-                          }
-                          else{
-                            await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies");
-
-                            QuerySnapshot tRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").get();
-                            theTThreadReplies = tRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
-                            print(theTThreadReplies.runtimeType);
-
-                            print(DateTime.now().runtimeType);
-
-                            (theTThreadReplies as List<dynamic>).sort((b2, a2) => (DateTime.parse(a2["time"])).compareTo(DateTime.parse(b2["time"])));
-                          }
-
-                          print("Number of theTThreadReplies: ${theTThreadReplies.length}");
-
-                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => technologiesThreadsPage()));
-                        }
                       ),
                     ),
                   ],
@@ -374,7 +384,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                 )
                               ),
                               color: Colors.blueGrey[300],
-                              width: 320,
+                              width: MediaQuery.of(context).size.width * 0.5,
                             ),
                             onPressed: (){
                               //Does nothing
@@ -423,7 +433,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                 ),
                               ),
                               color: Colors.grey[300],
-                              width: 320,
+                              width: MediaQuery.of(context).size.width * 0.5,
                             ),
                             onPressed: (){
                               //Does nothing
@@ -438,7 +448,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                               child: Ink(
                                 child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                                 color: Colors.grey[500],
-                                width: 320,
+                                width: MediaQuery.of(context).size.width * 0.5,
                               ),
                               onTap: () async{
                                 replyToReplyTimeT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["time"];
@@ -575,7 +585,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                   ),
                                 ),
                                 color: Colors.grey[300],
-                                width: 320,
+                                width: MediaQuery.of(context).size.width * 0.5,
                               ),
                               onPressed: (){
                                 //Does nothing
@@ -590,7 +600,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                 child: Ink(
                                   child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                                   color: Colors.grey[500],
-                                  width: 320,
+                                  width: MediaQuery.of(context).size.width * 0.5,
                                 ),
                                 onTap: () async{
                                   replyToReplyTimeT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["time"];

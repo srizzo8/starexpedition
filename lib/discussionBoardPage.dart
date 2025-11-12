@@ -84,6 +84,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
           ),
           Expanded(
             child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
               itemCount: subforumList.length,
               itemBuilder: (context, index){
                 return Column(
@@ -98,8 +99,8 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                         ),
                         child: InkWell(
                           child: Ink(
-                            height: 70,
-                            width: 210,
+                            height: MediaQuery.of(context).size.height * 0.08,
+                            width: MediaQuery.of(context).size.width * 0.40,
                             color: Colors.grey[300],
                             child: Container(
                               alignment: Alignment.center,
@@ -207,15 +208,6 @@ class discussionBoardPageState extends State<discussionBoardPage>{
                           }
                         }
                     ),
-                /*Ink(
-                        height: 70,
-                        width: 210,
-                        color: Colors.grey[300],
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Text(subforumList[index], textAlign: TextAlign.center),
-                        ),
-                      ),*/
                     ),
                   ],
                 );
@@ -230,7 +222,7 @@ class discussionBoardPageState extends State<discussionBoardPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
+                  //padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
                   child: Text("Rules for each subforum", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                 ),
               ),
@@ -255,34 +247,8 @@ class discussionBoardPageState extends State<discussionBoardPage>{
               }
             ),
           ),
-          /*InkWell(
-            child: Ink(
-              color: Colors.black,
-              padding: EdgeInsets.all(5.0),
-              child: Text("Rules for each subforum", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
-            ),
-            onTap: (){
-              showDialog(
-                context: context,
-                builder: (BuildContext bc){
-                  return AlertDialog(
-                    title: Text("Rules for all subforums"),
-                    content: Text("1. Please stay on topic.\n2. Provide constructive advice if it is needed, but do not insult others.\n3. Please do not post anything nefarious."),
-                    actions: [
-                      TextButton(
-                        onPressed: () =>{
-                          Navigator.pop(bc),
-                        },
-                        child: Text("Ok"),
-                      ),
-                    ],
-                  );
-                }
-              );
-            }
-          ),*/
           Container(
-            height: 100,
+            height: MediaQuery.of(context).size.height * 0.15,
           ),
         ],
       ),

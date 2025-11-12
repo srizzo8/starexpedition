@@ -112,115 +112,125 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                       height: 10,
                     ),
                     Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.grey[300],
-                        ),
-                        child: InkWell(
-                            child: Ink(
-                              //child: Text(discussionBoardPage.newDiscoveriesThreads[index]["threadTitle"].toString() + "\n" + "By: " + discussionBoardPage.newDiscoveriesThreads[index]["poster"].toString()),
-                              child: Text.rich(
-                                TextSpan(
-                                  text: "${mySublistsNd[theCurrentPageNd][index]["threadTitle"].toString()}\nBy: ",
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: "${mySublistsNd[theCurrentPageNd][index]["poster"].toString()}",
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                          ndClickedOnUser = true,
-
-                                          if(firebaseDesktopHelper.onDesktop){
-                                            ndNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                            theUsersData = ndNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsNd[theCurrentPageNd][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
-                                          }
-                                          else{
-                                            ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsNd[theCurrentPageNd][index]["poster"].toString().toLowerCase()).get(),
-                                            ndNameData.docs.forEach((person){
-                                              theUsersData = person.data();
-                                            }),
-                                          },
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        }
-                                    ),
-                                    TextSpan(
-                                      text: " ",
-                                    ),
-                                  ],
-                                ),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey[300],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
-                              height: 30,
-                              width: 320,
-                              color: Colors.grey[300],
+                              padding: EdgeInsets.zero,
                             ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Text.rich(
+                                      TextSpan(
+                                        text: "${mySublistsNd[theCurrentPageNd][index]["threadTitle"].toString()}\nBy: ",
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                        children: [
+                                          TextSpan(
+                                              text: "${mySublistsNd[theCurrentPageNd][index]["poster"].toString()}",
+                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                              recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                                ndClickedOnUser = true,
+
+                                                if(firebaseDesktopHelper.onDesktop){
+                                                  ndNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                                  theUsersData = ndNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsNd[theCurrentPageNd][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                                }
+                                                else{
+                                                  ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsNd[theCurrentPageNd][index]["poster"].toString().toLowerCase()).get(),
+                                                  ndNameData.docs.forEach((person){
+                                                    theUsersData = person.data();
+                                                  }),
+                                                },
+                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                              }
+                                          ),
+                                          TextSpan(
+                                            text: " ",
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ]
+                            ),
+                            onPressed: () async{
+                              print("This is index: $index");
+                              print("listOfNdThreads is null? ${listOfNdThreads == null}");
+                              print("I clicked on a thread");
+
+                              myIndexPlaceNewDiscoveries = index;
+                              myLocation = theCurrentPageNd;
+
+                              threadAuthorNd = mySublistsNd[theCurrentPageNd][index]["poster"].toString();
+                              threadTitleNd = mySublistsNd[theCurrentPageNd][index]["threadTitle"].toString();
+                              threadContentNd = mySublistsNd[theCurrentPageNd][index]["threadContent"].toString();
+                              threadID = mySublistsNd[theCurrentPageNd][index]["threadId"].toString();
+
+                              print(discussionBoardPage.newDiscoveriesThreads![index]);
+                              print("${threadAuthorNd} + ${threadTitleNd} + ${threadContentNd} + ${threadID}");
+                              print("context: ${context}");
+
+                              if(firebaseDesktopHelper.onDesktop){
+                                var theNdThreads = await firebaseDesktopHelper.getFirestoreCollection("New_Discoveries");
+                                var matchingThread = theNdThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+
+                                if(matchingThread.isNotEmpty){
+                                  //Getting the document ID:
+                                  myDocNd = matchingThread["docId"];
+                                  print("This is myDocNd: ${myDocNd}");
+                                }
+                                else{
+                                  print("Sorry; the thread was not found");
+                                }
+                              }
+                              else{
+                                await FirebaseFirestore.instance.collection("New_Discoveries").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                  myDocNd = d.docs.first.id;
+                                  print(myDocNd);
+                                });
+                              }
+
+                              if(firebaseDesktopHelper.onDesktop){
+                                theNdThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("New_Discoveries", myDocNd, "Replies");
+
+                                print(theNdThreadReplies.runtimeType);
+
+                                print(DateTime.now().runtimeType);
+
+                                theNdThreadReplies.sort((b, a){
+                                  DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                                  DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                                  return dta.compareTo(dtb);
+                                });
+                              }
+                              else{
+                                await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies");
+
+                                QuerySnapshot ndRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies").get();
+                                theNdThreadReplies = ndRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                                print(theNdThreadReplies.runtimeType);
+
+                                print(DateTime.now().runtimeType);
+
+                                (theNdThreadReplies as List<dynamic>).sort((b2, a2) => (DateTime.parse(a2["time"])).compareTo(DateTime.parse(b2["time"])));
+                              }
+
+                              print("Number of theNdThreadReplies: ${theNdThreadReplies.length}");
+
+                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => newDiscoveriesThreadsPage()));
+                            }
                         ),
-                        onPressed: () async{
-                          print("This is index: $index");
-                          print("listOfNdThreads is null? ${listOfNdThreads == null}");
-                          print("I clicked on a thread");
-
-                          myIndexPlaceNewDiscoveries = index;
-                          myLocation = theCurrentPageNd;
-
-                          threadAuthorNd = mySublistsNd[theCurrentPageNd][index]["poster"].toString();
-                          threadTitleNd = mySublistsNd[theCurrentPageNd][index]["threadTitle"].toString();
-                          threadContentNd = mySublistsNd[theCurrentPageNd][index]["threadContent"].toString();
-                          threadID = mySublistsNd[theCurrentPageNd][index]["threadId"].toString();
-
-                          print(discussionBoardPage.newDiscoveriesThreads![index]);
-                          print("${threadAuthorNd} + ${threadTitleNd} + ${threadContentNd} + ${threadID}");
-                          print("context: ${context}");
-
-                          if(firebaseDesktopHelper.onDesktop){
-                            var theNdThreads = await firebaseDesktopHelper.getFirestoreCollection("New_Discoveries");
-                            var matchingThread = theNdThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
-
-                            if(matchingThread.isNotEmpty){
-                              //Getting the document ID:
-                              myDocNd = matchingThread["docId"];
-                              print("This is myDocNd: ${myDocNd}");
-                            }
-                            else{
-                              print("Sorry; the thread was not found");
-                            }
-                          }
-                          else{
-                            await FirebaseFirestore.instance.collection("New_Discoveries").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                              myDocNd = d.docs.first.id;
-                              print(myDocNd);
-                            });
-                          }
-
-                          if(firebaseDesktopHelper.onDesktop){
-                            theNdThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("New_Discoveries", myDocNd, "Replies");
-
-                            print(theNdThreadReplies.runtimeType);
-
-                            print(DateTime.now().runtimeType);
-
-                            theNdThreadReplies.sort((b, a){
-                              DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
-                              DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
-                              return dta.compareTo(dtb);
-                            });
-                          }
-                          else{
-                            await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies");
-
-                            QuerySnapshot ndRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies").get();
-                            theNdThreadReplies = ndRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
-                            print(theNdThreadReplies.runtimeType);
-
-                            print(DateTime.now().runtimeType);
-
-                            (theNdThreadReplies as List<dynamic>).sort((b2, a2) => (DateTime.parse(a2["time"])).compareTo(DateTime.parse(b2["time"])));
-                          }
-
-                          print("Number of theNdThreadReplies: ${theNdThreadReplies.length}");
-
-                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => newDiscoveriesThreadsPage()));
-                        }
                       ),
                     ),
                   ],
@@ -374,7 +384,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                   ),
                                 ),
                                 color: Colors.blueGrey[300],
-                                width: 320,
+                                width: MediaQuery.of(context).size.width * 0.5,
                               ),
                               onPressed: (){
                                 //Does nothing
@@ -423,7 +433,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                   ),
                                 ),
                                 color: Colors.grey[300],
-                                width: 320,
+                                width: MediaQuery.of(context).size.width * 0.5,
                               ),
                               onPressed: (){
                                 //Does nothing
@@ -438,7 +448,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                 child: Ink(
                                   child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                                   color: Colors.grey[500],
-                                  width: 320,
+                                  width: MediaQuery.of(context).size.width * 0.5,
                                 ),
                                 onTap: () async{
                                   replyToReplyTimeNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies]![index]["time"];
@@ -575,7 +585,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                   ),
                                 ),
                                 color: Colors.grey[300],
-                                width: 320,
+                                width: MediaQuery.of(context).size.width * 0.5,
                               ),
                               onPressed: (){
                                 //Does nothing
@@ -590,7 +600,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                 child: Ink(
                                   child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                                   color: Colors.grey[500],
-                                  width: 320,
+                                  width: MediaQuery.of(context).size.width * 0.5,
                                 ),
                                 onTap: () async{
                                   replyToReplyTimeNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies]![index]["time"];
