@@ -134,11 +134,10 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
             scrollDirection: Axis.vertical,
             itemCount: mySublistsDbu[theCurrentPageDbu].length,//mySublistsDbu[theCurrentPageDbu].length,//discussionBoardPage.discussionBoardUpdatesThreads.length,//discussionBoardUpdatesThreads.reversed.toList().length,
             itemBuilder: (context, index){
-              double threadContainerHeight = 45.0;
               return Column(
                 children: <Widget>[
                   Container(
-                    height: 10,
+                    height: MediaQuery.of(context).size.height * 0.015625,
                   ),
                   Center(
                     child: SizedBox(
@@ -157,7 +156,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                             Expanded(
                               child: Container(
                                 alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.050000),
                                 child: Text.rich(
                                   TextSpan(
                                     text: "${mySublistsDbu[theCurrentPageDbu][index]["threadTitle"].toString()}\nBy: ",
@@ -281,10 +280,13 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
       body: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
             //margin: EdgeInsets.only(left: 250.0),
@@ -296,7 +298,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(10.0),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.0031250),
                   height: 40,
                   width: 150,
                   child: Center(
@@ -316,10 +318,10 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
             ),
           ),
           Expanded(
-            child: listOfDbuThreads.length != 0? myPagesDbu[theCurrentPageDbu] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPagesDbu[theCurrentPageDbu],
+            child: listOfDbuThreads.length != 0? myPagesDbu[theCurrentPageDbu] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPagesDbu[theCurrentPageDbu],
           ),
           NumberPaginator(
-            height: 50,
+            height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfDbuThreads.length != 0? numberOfPagesDbu : 1,//numberOfPagesDbu,
             onPageChange: (myIndexDbu){
               setState((){
@@ -417,7 +419,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                     Column(
                         children: <Widget>[
                           Container(
-                            height: 10,
+                            height: MediaQuery.of(context).size.height * 0.015625,
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -650,7 +652,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                     ): Column(
                         children: <Widget>[
                           Container(
-                            height: 10,
+                            height: MediaQuery.of(context).size.height * 0.015625,
                           ),
                           //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
                           ElevatedButton(
@@ -917,7 +919,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                 alignment: Alignment.topCenter,
                 child: Container(
                   child: Padding(
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                     child: Text.rich(
                       TextSpan(
                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -975,7 +977,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
               child: InkWell(
                 child: Ink(
                   color: Colors.grey[500],
-                  height: 20,
+                  height: MediaQuery.of(context).size.height * 0.02734375,
                   child: Container(
                     alignment: Alignment.topCenter,
                     child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
@@ -993,14 +995,14 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                 print('Replying to the thread');
               }
             ),
-            Container(
-              height: 10,
-            ),
+            /*Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),*/
             Center(
-              child: listOfDbuThreadReplies.length != 0? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+              child: listOfDbuThreadReplies.length != 0? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-                height: 50,
+                height: MediaQuery.of(context).size.height * 0.0782125,
                 numberPages: listOfDbuThreadReplies.length != 0? numberOfPagesDbuThreadReplies : 1,
                 onPageChange: (myIndexDbuThreadReplies){
                   setState((){

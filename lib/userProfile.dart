@@ -64,13 +64,13 @@ class userProfilePageState extends State<userProfilePage>{
       body: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             child: Text("User Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
               child: Text("User")
@@ -87,7 +87,7 @@ class userProfilePageState extends State<userProfilePage>{
               }
           ),
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             child: Text("Information about me", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
@@ -124,10 +124,13 @@ class editingMyUserProfile extends StatelessWidget{
           child: Column(
             children: <Widget>[
               Container(
-                height: 5,
+                height: MediaQuery.of(context).size.height * 0.015625,
               ),
               Container(
                 child: Text("Editing Your Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
               ),
               IntrinsicHeight(
                 child: Row(
@@ -136,10 +139,10 @@ class editingMyUserProfile extends StatelessWidget{
                       Flexible(
                         child: Center(
                           child: Container(
-                            padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: 320,
+                                maxWidth: MediaQuery.of(context).size.width * 0.375000,
                               ),
                               child: Scrollbar(
                                 child: SingleChildScrollView(
@@ -174,10 +177,10 @@ class editingMyUserProfile extends StatelessWidget{
                       Flexible(
                         child: Center(
                           child: Container(
-                            padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: 320,
+                                maxWidth: MediaQuery.of(context).size.width * 0.375000,
                               ),
                               child: Scrollbar(
                                 child: SingleChildScrollView(
@@ -211,10 +214,10 @@ class editingMyUserProfile extends StatelessWidget{
                       Flexible(
                         child: Center(
                           child: Container(
-                            padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: 320,
+                                maxWidth: MediaQuery.of(context).size.width * 0.375000,
                               ),
                               child: Scrollbar(
                                 child: SingleChildScrollView(
@@ -242,7 +245,7 @@ class editingMyUserProfile extends StatelessWidget{
                 ),
               ),
               Container(
-                height: 5,
+                height: MediaQuery.of(context).size.height * 0.015625,
               ),
               Center(
                 child: ElevatedButton(
@@ -252,7 +255,7 @@ class editingMyUserProfile extends StatelessWidget{
                     child: InkWell(
                       child: Ink(
                         color: Colors.black,
-                        padding: EdgeInsets.all(5.0),
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                         child: Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                       ),
                     ),
@@ -391,7 +394,7 @@ class editingMyUserProfile extends StatelessWidget{
                 ),
               ),
               Container(
-                height: 5,
+                height: MediaQuery.of(context).size.height * 0.015625,
               ),
             ],
           ),
@@ -420,74 +423,74 @@ class userProfileInUserPerspective extends StatelessWidget{
         child: Column(
           children: <Widget>[
             Container(
-              height: 5,
+              height: MediaQuery.of(bc).size.height * 0.015625,
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: myUsername != "" && myNewUsername == ""?
               Text("${myUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)):
               Text("${myNewUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nInformation About You:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: myUsername != "" && myNewUsername == ""?
                 (myMain.usersBlurb != ""? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
                 (myMain.usersBlurb != ""? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nYour Interests:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: myUsername != "" && myNewUsername == ""?
                 (myMain.usersInterests != ""? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
                 (myMain.usersInterests != ""? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nYour Location:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: myUsername != "" && myNewUsername == ""?
                 (myMain.usersLocation != ""? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
                 (myMain.usersLocation != ""? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("${myMain.numberOfPostsUserHasMade}", textAlign: TextAlign.center),
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nStars Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            Container(
-              height: 5,
-            ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             /*SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: ListView.builder(
@@ -514,16 +517,16 @@ class userProfileInUserPerspective extends StatelessWidget{
               }*/
               ],
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nPlanets Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            Container(
-              height: 5,
-            ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Column(
               children: <Widget>[
                 //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
@@ -588,71 +591,72 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
         child: Column(
           children: <Widget>[
             Container(
-              height: 5,
+              height: MediaQuery.of(bc).size.height * 0.015625,
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("${theUsersData["username"]}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nInformation About ${theUsersData["username"]}:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: !(theUsersData["usernameProfileInformation"]["userInformation"].isEmpty)?
                 Text("${theUsersData["usernameProfileInformation"]["userInformation"]}", textAlign: TextAlign.center):
                 Text("N/A", textAlign: TextAlign.center),
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\n${theUsersData["username"]}'s Interests:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: !(theUsersData["usernameProfileInformation"]["userInterests"].isEmpty)?
               Text("${theUsersData["usernameProfileInformation"]["userInterests"]}", textAlign: TextAlign.center):
               Text("N/A", textAlign: TextAlign.center),
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\n${theUsersData["username"]}'s Location:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: !(theUsersData["usernameProfileInformation"]["userLocation"].isEmpty)?
                 Text("${theUsersData["usernameProfileInformation"]["userLocation"]}", textAlign: TextAlign.center):
                 Text("N/A", textAlign: TextAlign.center),
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nTotal Posts on the Discussion Board:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("${theUsersData["usernameProfileInformation"]["numberOfPosts"]}"),
             ),
+            /*Container(
+              height : MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height : 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nStars Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            Container(
-              height: 5,
-            ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Column(
               children: <Widget>[
                 if(!(theUsersData["usernameProfileInformation"]["starsTracked"].isEmpty))
@@ -663,11 +667,11 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
                   Text("N/A", textAlign: TextAlign.center),
               ],
             ),
+            /*Container(
+              height: MediaQuery.of(bc).size.height * 0.015625,
+            ),*/
             Container(
-              height: 5,
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nPlanets Tracked:", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Column(

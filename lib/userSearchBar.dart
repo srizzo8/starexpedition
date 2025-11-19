@@ -141,16 +141,16 @@ class userSearchBarPageState extends State<userSearchBarPage>{
       body: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             child: Text("User Search", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
-            padding: EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
             child: TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),

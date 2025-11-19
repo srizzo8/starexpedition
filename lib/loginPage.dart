@@ -84,12 +84,15 @@ class loginPageState extends State<loginPage>{
       body: Wrap(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             alignment: Alignment.center,
             child: Text("Login", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
+          /*Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),*/
           IntrinsicHeight(
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -97,10 +100,10 @@ class loginPageState extends State<loginPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -127,10 +130,10 @@ class loginPageState extends State<loginPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -152,7 +155,7 @@ class loginPageState extends State<loginPage>{
             ),
           ),
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
             child: ElevatedButton(
@@ -161,7 +164,7 @@ class loginPageState extends State<loginPage>{
                 ),
                 child: InkWell(
                   child: Ink(
-                    padding: EdgeInsets.all(5.0),
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                     child: Text("Log in", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),// style: TextStyle(fontSize: 12.0)), //style: TextStyle(fontSize: 14.0, color: Colors.white)),
                   ),
                 ),
@@ -388,18 +391,18 @@ class loginPageState extends State<loginPage>{
           ),
           Center(
             child: Container(
-              height: 20,
+              height: MediaQuery.of(context).size.height * 0.031250,
             )
           ),
           Center(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0),
               child: Text("If you have forgotten your password, click the button below:", style: TextStyle(fontSize: 14.0), textAlign: TextAlign.center),
             ),
           ),
           Center(
             child: Container(
-              height: 5,
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
           ),
           Center(
@@ -410,7 +413,7 @@ class loginPageState extends State<loginPage>{
               child: InkWell(
                 child: Ink(
                   //color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   //height: 20,
                   child: Text("Forgotten Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                 ),
@@ -425,13 +428,13 @@ class loginPageState extends State<loginPage>{
           ),
           Center(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0),
               child: Text("If you do not have an account, you can create an account:", style: TextStyle(fontSize: 14.0), textAlign: TextAlign.center),
             ),
           ),
           Center(
             child: Container(
-              height: 5,
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
           ),
           Center(
@@ -442,7 +445,7 @@ class loginPageState extends State<loginPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   //height: 20,
                   child: Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                 ),

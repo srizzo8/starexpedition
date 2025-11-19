@@ -109,7 +109,7 @@ class technologiesPageState extends State<technologiesPage>{
                 return Column(
                   children: <Widget>[
                     Container(
-                      height: 10,
+                      height: MediaQuery.of(context).size.height * 0.015625,
                     ),
                     Center(
                       child: SizedBox(
@@ -128,7 +128,7 @@ class technologiesPageState extends State<technologiesPage>{
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.centerLeft,
-                                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.050000),
                                       child: Text.rich(
                                         TextSpan(
                                           text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["threadTitle"].toString()}\nBy: ",
@@ -255,10 +255,13 @@ class technologiesPageState extends State<technologiesPage>{
       body: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             child: Text("Technologies Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
             //margin: EdgeInsets.only(left: 250.0),
@@ -269,7 +272,7 @@ class technologiesPageState extends State<technologiesPage>{
               ),
               child: InkWell(
                 child: Ink(
-                  padding: EdgeInsets.all(10.0),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                   color: Colors.black,
                   height: 40,
                   width: 150,
@@ -288,10 +291,10 @@ class technologiesPageState extends State<technologiesPage>{
             ),
           ),
           Expanded(
-            child: listOfTechnologiesThreads.length != 0? myPagesTechnologies[theCurrentPageTechnologies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
+            child: listOfTechnologiesThreads.length != 0? myPagesTechnologies[theCurrentPageTechnologies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
-            height: 50,
+            height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfTechnologiesThreads.length != 0? numberOfPagesTechnologies : 1,
             onPageChange: (myIndexTechnologies){
               setState((){
@@ -343,7 +346,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                       Column(
                         children: <Widget>[
                           Container(
-                            height: 10,
+                            height: MediaQuery.of(context).size.height * 0.015625,
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -539,7 +542,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                       ): Column(
                           children: <Widget>[
                             Container(
-                              height: 10,
+                              height: MediaQuery.of(context).size.height * 0.015625,
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -735,7 +738,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
               alignment: Alignment.topCenter,
               child: Container(
                 child: Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                   //child: Text("Thread title: " + threadTitleT + "\n" + "Posted by: " + threadAuthorT + "\n" + threadContentT),
                   child: Text.rich(
                     TextSpan(
@@ -789,7 +792,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
             child: InkWell(
               child: Ink(
                 color: Colors.grey[500],
-                height: 20,
+                height: MediaQuery.of(context).size.height * 0.02734375,
                 child: Container(
                   alignment: Alignment.topCenter,
                   child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
@@ -810,10 +813,10 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
             }
           ),
           Center(
-            child: listOfTechnologiesThreadReplies.length != 0? myPagesTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+            child: listOfTechnologiesThreadReplies.length != 0? myPagesTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
-            height: 50,
+            height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfTechnologiesThreadReplies.length != 0? numberOfPagesTechnologiesThreadReplies : 1,
             onPageChange: (myIndexTechnologiesThreadReplies){
               setState((){

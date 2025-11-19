@@ -130,18 +130,18 @@ class replyThreadPageState extends State<replyThreadPage>{
           child: Column(
             children: <Widget>[
               Container(
-                height: 5,
+                height: MediaQuery.of(context).size.height * 0.015625,
               ),
               Container(
                 child: Text("Making a reply", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
-                width: 480,
+                //width: 480,
                 alignment: Alignment.center,
               ),
               Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                 child: (theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == "")?
                 SizedBox(
-                  width: 320,
+                  width: MediaQuery.of(context).size.width * 0.375000,
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: "Username",
@@ -153,7 +153,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                   ),
                 ): (theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != "")?
                 SizedBox(
-                  width: 320,
+                  width: MediaQuery.of(context).size.width * 0.375000,
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: "Username",
@@ -164,7 +164,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                     controller: TextEditingController()..text = theRegisterPage.myNewUsername,
                   ),
                 ): SizedBox(
-                  width: 320,
+                  width: MediaQuery.of(context).size.width * 0.375000,
                   child: TextField(),
                 ),
               ),
@@ -175,10 +175,10 @@ class replyThreadPageState extends State<replyThreadPage>{
                     Flexible(
                         child: Center(
                             child: Container(
-                              padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.0078125, MediaQuery.of(context).size.width * 0.015625, 0.0),
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
-                                  maxWidth: 320,
+                                  maxWidth: MediaQuery.of(context).size.width * 0.375000,
                                 ),
                                 child: Scrollbar(
                                   child: SingleChildScrollView(
@@ -206,11 +206,11 @@ class replyThreadPageState extends State<replyThreadPage>{
                 ),
               ),
               Container(
-                height: 5,
+                height: MediaQuery.of(context).size.height * 0.015625,
               ),
               Center(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                //child: Padding(
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: Colors.black,
@@ -218,16 +218,17 @@ class replyThreadPageState extends State<replyThreadPage>{
                       child: InkWell(
                         child: Ink(
                           color: Colors.black,
-                          height: 30,
-                          width: 140,
-                          child: Container(
-                            alignment: Alignment.center,
+                          //height: 30,
+                          //width: 140,
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                          //child: Container(
+                            //alignment: Alignment.center,
                             //margin: EdgeInsets.only(left: 200.0),
-                            padding: EdgeInsets.all(5.0),
+                            //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.0078125),
                             child: Text("Reply to Thread", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                           ),
                         ),
-                      ),
+                      //),
                       onPressed: () async{
                         if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
                           usernameReplyController.text = theLoginPage.myUsername;
@@ -2585,7 +2586,6 @@ class replyThreadPageState extends State<replyThreadPage>{
                           );
                         }
                       }
-                  ),
                 ),
               ),
             ],

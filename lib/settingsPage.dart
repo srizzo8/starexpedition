@@ -56,15 +56,18 @@ class settingsPageState extends State<settingsPage>{
       body: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             child: Text("Settings", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              minimumSize: Size(175, 36),
-              maximumSize: Size(175, 36),
+              minimumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
+              maximumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
               primary: Colors.black,
             ),
             child: InkWell(
@@ -76,10 +79,13 @@ class settingsPageState extends State<settingsPage>{
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changePasswordPage()));
             }
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.0625,
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              minimumSize: Size(175, 36),
-              maximumSize: Size(175, 36),
+              minimumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
+              maximumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
               primary: Colors.black,
             ),
             child: InkWell(
@@ -91,10 +97,13 @@ class settingsPageState extends State<settingsPage>{
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changeEmailAddressPage()));
             }
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.0625,
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              minimumSize: Size(175, 36),
-              maximumSize: Size(175, 36),
+              minimumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
+              maximumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
               primary: Colors.black,
             ),
             child: InkWell(
@@ -210,6 +219,7 @@ class changePasswordPageState extends State<changePasswordPage>{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -223,7 +233,7 @@ class changePasswordPageState extends State<changePasswordPage>{
         child: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             alignment: Alignment.center,
@@ -236,10 +246,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -267,10 +277,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -298,10 +308,10 @@ class changePasswordPageState extends State<changePasswordPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -322,6 +332,9 @@ class changePasswordPageState extends State<changePasswordPage>{
                 ]
             ),
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
           Center(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -330,7 +343,7 @@ class changePasswordPageState extends State<changePasswordPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
@@ -609,7 +622,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
         child: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             alignment: Alignment.center,
@@ -640,10 +653,10 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -688,10 +701,10 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -737,10 +750,10 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -761,6 +774,9 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                 ]
             ),
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
           Center(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -769,7 +785,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),

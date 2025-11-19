@@ -1091,16 +1091,19 @@ class theStarExpeditionState extends State<StarExpedition> {
                   ],
                 ):*/
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             alignment: Alignment.topCenter,
             child: const Text('Welcome to Star Expedition!', style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold)), //fontFamily: 'Raleway'
-            height: 30,
+            //height: 30,
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
             child: Text('Star Expedition is an app that allows its users to view and research stars and planets that are potentially capable of supporting life outside our Solar System. Star Expedition will include stars whose spectral classes range from M8 to A5, are within 100 light-years from Earth, and have confirmed terrestrial planets in their habitable zones and planets that are terrestrial and in the habitable zones of their respective stars. Currently, Star Expedition features ${allStars.length} stars and ${allPlanets.length} planets.\n', style: TextStyle(color: Colors.black, fontFamily: 'Raleway'), textAlign: TextAlign.center),
             //height: 200,
           ),
@@ -1134,17 +1137,19 @@ class theStarExpeditionState extends State<StarExpedition> {
           Container(
             alignment: Alignment.topCenter,
             child: const Text('Featured Star of the Day', style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold)), //fontFamily: 'Railway'
-            height: 25,
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(2.0, 4.0, 2.0, 2.0),
+              //child: Padding(
+                //padding: const EdgeInsets.fromLTRB(2.0, 4.0, 2.0, 2.0),
                 child: InkWell(
                     child: Ink.image(
                       image: AssetImage(starsForSearchBar[randomNumber].imagePath!),//, height: 150, width: 150),
                       fit: BoxFit.cover,
-                      height: 150,
-                      width: 150,
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      width: MediaQuery.of(context).size.height * 0.25,
                     ),
                     onTap: () async{
                       correctStar = starsForSearchBar[randomNumber].starName!;
@@ -1219,8 +1224,8 @@ class theStarExpeditionState extends State<StarExpedition> {
                       }
                     }
                 ),
-              )
-          ),
+            ),
+          //),
 
           Center(
             child: InkWell(
@@ -2278,42 +2283,48 @@ class articlePage extends StatelessWidget{
                   child: Column(
                     children: [
                       Container(
-                        height: 5,
+                        height: MediaQuery.of(bc).size.height * 0.015625,
                       ),
                       Center(
-                        child: Text("Image of Star\n", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                        child: Text("Image of Star", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+                      ),
+                      Container(
+                        height: MediaQuery.of(bc).size.height * 0.015625,
                       ),
                       Center(
                         child: Image(
                           image: AssetImage(starsForSearchBar[myStarIndex].imagePath!),
-                          height: 200,
-                          width: 200,
+                          height: MediaQuery.of(bc).size.height * 0.25,
+                          width: MediaQuery.of(bc).size.height * 0.25,
                           fit: BoxFit.cover,
                         ),
                       ),
                       Container(
-                        height: 5,
+                        height: MediaQuery.of(bc).size.height * 0.015625,
                       ),
                       Center(
-                        child: Text("Image Source\n", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                        child: Text("\nImage Source", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+                      ),
+                      Container(
+                        height: MediaQuery.of(bc).size.height * 0.015625,
                       ),
                       Center(
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                          padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
                           child: Text(starInfo[10].toString(), textAlign: TextAlign.center),
                         ),
                       ),
-                      Container(
-                        height: 5,
-                      ),
                       Center(
-                        child: Text("\nStar Information", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                        child: Text("\nStar Information", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+                      ),
+                      Container(
+                        height: MediaQuery.of(bc).size.height * 0.015625,
                       ),
                       Column(
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: "\nConstellation: ",
+                              text: "Constellation: ",
                               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                               children: <TextSpan>[
                                 TextSpan(text: starInfo[0].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
@@ -2412,25 +2423,9 @@ class articlePage extends StatelessWidget{
                           ),
                         ],
                       ),
-                      /*
-                    Container(
-                      child: Text("Constellation: " + starInfo[0].toString() + '\n' +
-                      "Distance (in light-years): " + starInfo[1].toString() + '\n' +
-                      "Other names: " + starInfo[2].toString() + '\n' +
-                      "Spectral class: " + starInfo[3].toString() + '\n' +
-                      "Absolute magnitude: " + starInfo[4].toString() + '\n' +
-                      "Age of star: " + starInfo[5].toString() + '\n' +
-                      "Apparent magnitude: " + starInfo[6].toString() + '\n' +
-                      "Discoverer of star: " + starInfo[7].toString() + '\n' +
-                      "Discovery date of star: " + starInfo[8].toString() + '\n' +
-                      "Temperature (in Kelvin): " + starInfo[9].toString()),
-                      height: 180,
-                      width: 360,
-                      alignment: Alignment.center,
-                    ),*/
                       Center(
                         child: Text("\nConfirmed Terrestrial Planets",
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
                       ),
                       Column(
                         children: <Widget>[
@@ -2443,7 +2438,7 @@ class articlePage extends StatelessWidget{
                                 return Column(
                                   children: <Widget>[
                                     Container(
-                                      height: 10,
+                                      height: MediaQuery.of(context).size.height * 0.015625,
                                     ),
                                     Align(
                                       alignment: Alignment.center,
@@ -2534,9 +2529,112 @@ class articlePage extends StatelessWidget{
                                   ],
                                 );
                               }),
+                          Center(
+                            child: Text("\nOnline Articles about ${correctStar}",
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+                          ),
+                          Container(
+                            height: MediaQuery.of(bc).size.height * 0.015625,
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(listOfStarUrls.length, (int indexPlace) =>
+                                Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.height * 0.015625, 0.0, MediaQuery.of(bc).size.height * 0.015625, 0.0),
+                                    child: InkWell(
+                                        child: Text("${listOfStarUrls[indexPlace]}\n", textAlign: TextAlign.center),
+                                        onTap: () async{
+                                          starListUrlIndex = indexPlace;
+                                          if(!(listOfStarUrls[indexPlace].contains("pdf"))){
+                                            launchUrl(Uri.parse("${listOfStarUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
+                                            print("Not a pdf file");
+                                          }
+                                          else{
+                                            starPdfBool = true;
+
+                                            var myResponse = await http.get(Uri.parse(listOfStarUrls[indexPlace]));
+
+                                            if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
+                                              if(firebaseDesktopHelper.onDesktop){
+                                                //Creating a temporary file
+                                                var temporaryDirectory = await getTemporaryDirectory();
+                                                var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
+                                                await temporaryFile.writeAsBytes(myResponse.bodyBytes);
+                                                myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
+                                              }
+                                              else if(kIsWeb){
+                                                myStarPdfFile = Future.value(PdfDocument.openData(myResponse.bodyBytes));
+                                              }
+                                              else{
+                                                var temporaryDirectory = await getTemporaryDirectory();
+                                                var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
+                                                await temporaryFile.writeAsBytes(myResponse.bodyBytes);
+                                                myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
+                                              }
+                                              /*else{
+                                            if(kIsWeb){
+                                              myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
+                                            }
+                                            else{
+                                              myStarPdfFile = PDFDocument.fromFile(temporaryFile);
+                                            }
+                                          }*/
+
+                                              //Going to the page that has the PDF
+                                              Navigator.push(bc, MaterialPageRoute(builder: (theContext) => pdfViewer()));
+                                              print("A pdf file. starListUrlIndex is: ${starListUrlIndex.toString()}");
+                                            }
+                                            else{
+                                              print("Unfortunately, the PDF file failed to load. This is the status code: ${myResponse.statusCode}");
+                                              print("myResponse.headers[content-type]?: ${myResponse.headers["content-type"]}");
+                                              /*if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
+                                            //Did not load in the correct Star Expedition format and failed to load as a PDF
+                                          }
+                                          else if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
+                                            //Did not load in the correct Star Expedition format
+                                          }
+                                          else if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
+                                            //Failed to load as a PDF
+                                          }*/
+
+                                              starPdfMessageForUser = starPdfDialogMessage(myResponse);
+
+                                              showDialog(
+                                                context: bc,
+                                                builder: (myContent) => AlertDialog(
+                                                  title: const Text("Error"),
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: List.generate(starPdfMessageForUser.length, (i){
+                                                      return starPdfMessageForUser[i];
+                                                    }),
+                                                  ),
+
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      onPressed: (){
+                                                        Navigator.of(myContent).pop();
+                                                      },
+                                                      child: Container(
+                                                        child: const Text("Ok"),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        }
+                                    ),
+                                  ),
+                                ),
+                            ),
+                          ),
                           if(((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != "")) && starTracked == false)
                             Padding(
-                              padding: EdgeInsets.all(10.0),
+                              padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
                               child: Center(
                                 child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
@@ -2544,7 +2642,7 @@ class articlePage extends StatelessWidget{
                                     ),
                                     child: Ink(
                                       color: Colors.black,
-                                      padding: EdgeInsets.all(5.0),
+                                      padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
                                       child: Text("Track this Star", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                                     ),
                                     onPressed: () async{
@@ -2900,7 +2998,7 @@ class articlePage extends StatelessWidget{
                             ),
                           if(((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != "")) && starTracked == true)
                             Padding(
-                              padding: EdgeInsets.all(10.0),
+                              padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   primary: Colors.black,
@@ -2908,7 +3006,7 @@ class articlePage extends StatelessWidget{
                                 child: InkWell(
                                   child: Ink(
                                     color: Colors.black,
-                                    padding: EdgeInsets.all(5.0),
+                                    padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
                                     child: Text("Untrack this Star", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                                   ),
                                 ),
@@ -3140,113 +3238,7 @@ class articlePage extends StatelessWidget{
                         ],
                       ),
                       Container(
-                        height: 5,
-                      ),
-                      Center(
-                        child: Text("\nOnline Articles about ${correctStar}",
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
-                      ),
-                      Container(
-                        height: 5,
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(listOfStarUrls.length, (int indexPlace) =>
-                            Center(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0),
-                                child: InkWell(
-                                    child: Text("${listOfStarUrls[indexPlace]}\n", textAlign: TextAlign.center),
-                                    onTap: () async{
-                                      starListUrlIndex = indexPlace;
-                                      if(!(listOfStarUrls[indexPlace].contains("pdf"))){
-                                        launchUrl(Uri.parse("${listOfStarUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
-                                        print("Not a pdf file");
-                                      }
-                                      else{
-                                        starPdfBool = true;
-
-                                        var myResponse = await http.get(Uri.parse(listOfStarUrls[indexPlace]));
-
-                                        if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
-                                          if(firebaseDesktopHelper.onDesktop){
-                                            //Creating a temporary file
-                                            var temporaryDirectory = await getTemporaryDirectory();
-                                            var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
-                                            await temporaryFile.writeAsBytes(myResponse.bodyBytes);
-                                            myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
-                                          }
-                                          else if(kIsWeb){
-                                            myStarPdfFile = Future.value(PdfDocument.openData(myResponse.bodyBytes));
-                                          }
-                                          else{
-                                            var temporaryDirectory = await getTemporaryDirectory();
-                                            var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
-                                            await temporaryFile.writeAsBytes(myResponse.bodyBytes);
-                                            myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
-                                          }
-                                          /*else{
-                                            if(kIsWeb){
-                                              myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
-                                            }
-                                            else{
-                                              myStarPdfFile = PDFDocument.fromFile(temporaryFile);
-                                            }
-                                          }*/
-
-                                          //Going to the page that has the PDF
-                                          Navigator.push(bc, MaterialPageRoute(builder: (theContext) => pdfViewer()));
-                                          print("A pdf file. starListUrlIndex is: ${starListUrlIndex.toString()}");
-                                        }
-                                        else{
-                                          print("Unfortunately, the PDF file failed to load. This is the status code: ${myResponse.statusCode}");
-                                          print("myResponse.headers[content-type]?: ${myResponse.headers["content-type"]}");
-                                          /*if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
-                                            //Did not load in the correct Star Expedition format and failed to load as a PDF
-                                          }
-                                          else if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
-                                            //Did not load in the correct Star Expedition format
-                                          }
-                                          else if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
-                                            //Failed to load as a PDF
-                                          }*/
-
-                                          starPdfMessageForUser = starPdfDialogMessage(myResponse);
-
-                                          showDialog(
-                                            context: bc,
-                                            builder: (myContent) => AlertDialog(
-                                              title: const Text("Error"),
-                                              content: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: List.generate(starPdfMessageForUser.length, (i){
-                                                  return starPdfMessageForUser[i];
-                                                }),
-                                              ),
-
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: (){
-                                                    Navigator.of(myContent).pop();
-                                                  },
-                                                  child: Container(
-                                                    child: const Text("Ok"),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                      }
-                                    }
-                                ),
-                              ),
-                            ),
-                        ),
-                      ),
-                      Container(
-                        height: 5,
+                        height: MediaQuery.of(bc).size.height * 0.015625,
                       ),
                     ],
                   ),
@@ -3392,20 +3384,19 @@ class planetArticle extends StatelessWidget{
                   child: Column(
                     children: <Widget>[
                       Container(
-                        height: 5,
+                        height: MediaQuery.of(theContext).size.height * 0.015625,
                       ),
                       Center(
-                          child: Text("Planet Information",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0))
+                        child: Text("Planet Information", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+                      ),
+                      Container(
+                        height: MediaQuery.of(theContext).size.height * 0.015625,
                       ),
                       Column(
-                        //alignment: Alignment.center,
-                        //height: 80,
-                        //width: 360,
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: "\nDiscovery date of planet: ",
+                              text: "Discovery date of planet: ",
                               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                               children: <TextSpan>[
                                 TextSpan(text: informationAboutPlanet[0].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
@@ -3457,9 +3448,113 @@ class planetArticle extends StatelessWidget{
                               ],
                             ),
                           ),
+                          Center(
+                            child: Text("\nOnline Articles about ${correctPlanet}",
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+                          ),
+                          Container(
+                            height: MediaQuery.of(theContext).size.height * 0.015625,
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(listOfPlanetUrls.length, (int indexPlace) =>
+                                Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(MediaQuery.of(theContext).size.height * 0.015625, 0.0, MediaQuery.of(theContext).size.height * 0.015625, 0.0),
+                                    child: InkWell(
+                                        child: Text("${listOfPlanetUrls[indexPlace]}\n", textAlign: TextAlign.center),
+                                        onTap: () async{
+                                          planetListUrlIndex = indexPlace;
+                                          if(!(listOfPlanetUrls[indexPlace].contains("pdf"))){
+                                            launchUrl(Uri.parse("${listOfPlanetUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
+                                            print("Not a pdf file");
+                                          }
+                                          else{
+                                            planetPdfBool = true;
+
+                                            var myResponse;
+
+                                            if(!kIsWeb){
+                                              myResponse = await http.get(Uri.parse(listOfPlanetUrls[indexPlace]));
+                                            }
+                                            else{
+                                              String myCorsProxy = "https://corsproxy.io/?";
+                                              String myProxiedUrl = myCorsProxy + Uri.encodeComponent(listOfPlanetUrls[indexPlace]);
+                                              print("Fetching with proxy: ${myProxiedUrl}");
+
+                                              myResponse = await http.get(Uri.parse(myProxiedUrl));
+                                            }
+
+                                            if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
+                                              if(firebaseDesktopHelper.onDesktop){
+                                                var temporaryDirectory = await getTemporaryDirectory();
+                                                var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
+                                                await temporaryFile.writeAsBytes(myResponse.bodyBytes);
+                                                myPlanetPdfFile = PdfDocument.openFile(temporaryFile.path);
+                                              }
+                                              else if(kIsWeb){
+                                                myPlanetPdfFile = Future.value(PdfDocument.openData(myResponse.bodyBytes));
+                                              }
+                                              else{
+                                                var temporaryDirectory = await getTemporaryDirectory();
+                                                var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
+                                                await temporaryFile.writeAsBytes(myResponse.bodyBytes);
+                                                myPlanetPdfFile = PDFDocument.fromFile(temporaryFile);
+                                              }
+
+                                              //Going to the page that has the PDF
+                                              Navigator.push(theContext, MaterialPageRoute(builder: (theContext) => pdfViewer()));
+                                              print("A pdf file. planetListUrlIndex is: ${planetListUrlIndex.toString()}");
+                                            }
+                                            else{
+                                              print("Unfortunately, the PDF file failed to load. This is the status code: ${myResponse.statusCode}");
+                                              print("myResponse.headers[content-type]?: ${myResponse.headers["content-type"]}");
+                                              /*if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
+                                            //Did not load in the correct Star Expedition format and failed to load as a PDF
+                                          }
+                                          else if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
+                                            //Did not load in the correct Star Expedition format
+                                          }
+                                          else if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
+                                            //Failed to load as a PDF
+                                          }*/
+                                              planetPdfMessageForUser = planetPdfDialogMessage(myResponse);
+
+                                              showDialog(
+                                                context: theContext,
+                                                builder: (myContent) => AlertDialog(
+                                                  title: const Text("Error"),
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: List.generate(planetPdfMessageForUser.length, (i){
+                                                      return planetPdfMessageForUser[i];
+                                                    }),
+                                                  ),
+
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      onPressed: (){
+                                                        Navigator.of(myContent).pop();
+                                                      },
+                                                      child: Container(
+                                                        child: const Text("Ok"),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        }
+                                    ),
+                                  ),
+                                ),
+                            ),
+                          ),
                           if(((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != "")) && planetTracked == false)
                             Padding(
-                              padding: EdgeInsets.all(10.0),
+                              padding: EdgeInsets.all(MediaQuery.of(theContext).size.height * 0.015625),
                               child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     primary: Colors.black,
@@ -3467,7 +3562,7 @@ class planetArticle extends StatelessWidget{
                                   child: InkWell(
                                     child: Ink(
                                       color: Colors.black,
-                                      padding: EdgeInsets.all(5.0),
+                                      padding: EdgeInsets.all(MediaQuery.of(theContext).size.height * 0.015625),
                                       child: Text("Track this Planet", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                                     ),
                                   ),
@@ -3810,7 +3905,7 @@ class planetArticle extends StatelessWidget{
                             ),
                           if(((myNewUsername != "" && myUsername == "") || (myNewUsername == "" && myUsername != "")) && planetTracked == true)
                             Padding(
-                              padding: EdgeInsets.all(10.0),
+                              padding: EdgeInsets.all(MediaQuery.of(theContext).size.height * 0.015625),
                               child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     primary: Colors.black,
@@ -3818,7 +3913,7 @@ class planetArticle extends StatelessWidget{
                                   child: InkWell(
                                     child: Ink(
                                       color: Colors.black,
-                                      padding: EdgeInsets.all(5.0),
+                                      padding: EdgeInsets.all(MediaQuery.of(theContext).size.height * 0.015625),
                                       child: Text("Untrack this Planet", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                                     ),
                                   ),
@@ -4049,113 +4144,6 @@ class planetArticle extends StatelessWidget{
                               ),
                             ),
                         ],
-                      ),
-                      Container(
-                        height: 5,
-                      ),
-                      Center(
-                        child: Text("\nOnline Articles about ${correctPlanet}",
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
-                      ),
-                      Container(
-                        height: 5,
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(listOfPlanetUrls.length, (int indexPlace) =>
-                            Center(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0),
-                                child: InkWell(
-                                    child: Text("${listOfPlanetUrls[indexPlace]}\n", textAlign: TextAlign.center),
-                                    onTap: () async{
-                                      planetListUrlIndex = indexPlace;
-                                      if(!(listOfPlanetUrls[indexPlace].contains("pdf"))){
-                                        launchUrl(Uri.parse("${listOfPlanetUrls[indexPlace]}"), mode: LaunchMode.externalApplication);
-                                        print("Not a pdf file");
-                                      }
-                                      else{
-                                        planetPdfBool = true;
-
-                                        var myResponse;
-
-                                        if(!kIsWeb){
-                                          myResponse = await http.get(Uri.parse(listOfPlanetUrls[indexPlace]));
-                                        }
-                                        else{
-                                          String myCorsProxy = "https://corsproxy.io/?";
-                                          String myProxiedUrl = myCorsProxy + Uri.encodeComponent(listOfPlanetUrls[indexPlace]);
-                                          print("Fetching with proxy: ${myProxiedUrl}");
-
-                                          myResponse = await http.get(Uri.parse(myProxiedUrl));
-                                        }
-
-                                        if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
-                                          if(firebaseDesktopHelper.onDesktop){
-                                            var temporaryDirectory = await getTemporaryDirectory();
-                                            var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
-                                            await temporaryFile.writeAsBytes(myResponse.bodyBytes);
-                                            myPlanetPdfFile = PdfDocument.openFile(temporaryFile.path);
-                                          }
-                                          else if(kIsWeb){
-                                            myPlanetPdfFile = Future.value(PdfDocument.openData(myResponse.bodyBytes));
-                                          }
-                                          else{
-                                            var temporaryDirectory = await getTemporaryDirectory();
-                                            var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
-                                            await temporaryFile.writeAsBytes(myResponse.bodyBytes);
-                                            myPlanetPdfFile = PDFDocument.fromFile(temporaryFile);
-                                          }
-
-                                          //Going to the page that has the PDF
-                                          Navigator.push(theContext, MaterialPageRoute(builder: (theContext) => pdfViewer()));
-                                          print("A pdf file. planetListUrlIndex is: ${planetListUrlIndex.toString()}");
-                                        }
-                                        else{
-                                          print("Unfortunately, the PDF file failed to load. This is the status code: ${myResponse.statusCode}");
-                                          print("myResponse.headers[content-type]?: ${myResponse.headers["content-type"]}");
-                                          /*if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
-                                            //Did not load in the correct Star Expedition format and failed to load as a PDF
-                                          }
-                                          else if(myResponse.statusCode != 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
-                                            //Did not load in the correct Star Expedition format
-                                          }
-                                          else if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == false){
-                                            //Failed to load as a PDF
-                                          }*/
-                                          planetPdfMessageForUser = planetPdfDialogMessage(myResponse);
-
-                                          showDialog(
-                                            context: theContext,
-                                            builder: (myContent) => AlertDialog(
-                                              title: const Text("Error"),
-                                              content: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: List.generate(planetPdfMessageForUser.length, (i){
-                                                  return planetPdfMessageForUser[i];
-                                                }),
-                                              ),
-
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: (){
-                                                    Navigator.of(myContent).pop();
-                                                  },
-                                                  child: Container(
-                                                    child: const Text("Ok"),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                      }
-                                    }
-                                ),
-                              ),
-                            ),
-                        ),
                       ),
                     ],
                   ),

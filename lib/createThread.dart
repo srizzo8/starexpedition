@@ -163,30 +163,32 @@ class createThreadState extends State<createThread>{
         child: Column(
           children: <Widget>[
             Container(
-              height: 5,
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
             Container(
               child: Text("Making a thread", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
-              width: 480,
               alignment: Alignment.center,
             ),
+            /*Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),*/
             Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                 child: theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""?
                 SizedBox(
-                  width: 320,
+                  width: MediaQuery.of(context).size.width * 0.375000,
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: "Username",
                     ),
                     maxLines: 1,
-                    maxLength: null,
+                    maxLength: 30,
                     enabled: false,
                     controller: TextEditingController()..text = theLoginPage.myUsername,
                   ),
                 ): (theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != "")?
                 SizedBox(
-                  width: 320,
+                  width: MediaQuery.of(context).size.width * 0.375000,
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: "Username",
@@ -197,48 +199,10 @@ class createThreadState extends State<createThread>{
                     controller: TextEditingController()..text = theRegisterPage.myNewUsername,
                   ),
                 ): SizedBox(
-                    width: 320,
+                    width: MediaQuery.of(context).size.width * 0.375000,
                     child: TextField(),
                 ),
               ),
-            /*Container(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: 400,
-              ),
-            child: Scrollbar(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                reverse: true,
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Thread Name",
-                    ),
-                    maxLines: 1,
-                    maxLength: 250,
-                    controller: threadNameController,
-                  ),
-                ),
-              ),
-            ),
-            ),
-            ),*/
-            /*Padding(
-              padding: EdgeInsets.all(20.0),
-                child: TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                  decoration: InputDecoration(
-                    labelText: "Thread Content",
-                    contentPadding: EdgeInsets.symmetric(vertical: 80),
-                  ),
-                  controller: threadContentController,
-                ),
-            ),*/
             IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -246,10 +210,10 @@ class createThreadState extends State<createThread>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.0078125, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
                           ),
                           child: Scrollbar(
                             child: SingleChildScrollView(
@@ -284,10 +248,10 @@ class createThreadState extends State<createThread>{
                     Flexible(
                       child: Center(
                         child: Container(
-                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.0078125, MediaQuery.of(context).size.width * 0.015625, 0.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 320,
+                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -315,11 +279,11 @@ class createThreadState extends State<createThread>{
               ),
             ),
             Container(
-              height: 5,
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
             Center(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+              //child: Padding(
+                //padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Colors.black,
@@ -327,13 +291,8 @@ class createThreadState extends State<createThread>{
                 child: InkWell(
                   child: Ink(
                     color: Colors.black,
-                    height: 30,
-                    width: 140,
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.all(5.0),
-                      child: Text("Post to Subforum", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
-                    ),
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                    child: Text("Post to Subforum", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                   ),
                 ),
                 onPressed: () async{
@@ -1555,7 +1514,7 @@ class createThreadState extends State<createThread>{
                   }
                 }
                 ),
-              ),
+              //),
             ),
           ],
         ),

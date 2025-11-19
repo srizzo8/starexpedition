@@ -38,14 +38,16 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
       body: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
-            child: Text("Why Star Expedition Was Made",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            child: Text("Why Star Expedition Was Made", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-            padding: EdgeInsets.all(10.0),
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
+          Container(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
             child: Text("As a young child, I always had an interest in the Universe and all of its celestial bodies." +
             "However, one thing that interested me the most was how stars and planets can be capable of supporting " +
             "life for flora and fauna. This can take millions and even billions of years to accomplish, depending on " +
@@ -62,7 +64,7 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-            padding: EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
             child: Text("I do not own any of the star and planet information (like the constellation that a star belongs to) and photos used in Star Expediiton." +
             "The information about stars and planets and photos that I collected were based on the information about stars and planets and photos from various websites, " +
                 "such as The Worlds of David Darling, Sol Station, and Universe Today.", textAlign: TextAlign.center),

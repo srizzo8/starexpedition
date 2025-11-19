@@ -109,7 +109,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                 return Column(
                   children: <Widget>[
                     Container(
-                      height: 10,
+                      height: MediaQuery.of(context).size.height * 0.015625,
                     ),
                     Center(
                       child: SizedBox(
@@ -128,7 +128,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                                 Expanded(
                                   child: Container(
                                     alignment: Alignment.centerLeft,
-                                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.050000),
                                     child: Text.rich(
                                       TextSpan(
                                         text: "${mySublistsNd[theCurrentPageNd][index]["threadTitle"].toString()}\nBy: ",
@@ -255,10 +255,13 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
       body: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             child: Text("New Discoveries Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
             //margin: EdgeInsets.only(left: 250.0),
@@ -270,7 +273,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(10.0),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                   height: 40,
                   width: 150,
                   child: Center(
@@ -288,10 +291,10 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
             ),
           ),
           Expanded(
-            child: listOfNdThreads.length != 0? myPagesNd[theCurrentPageNd] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
+            child: listOfNdThreads.length != 0? myPagesNd[theCurrentPageNd] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
-            height: 50,
+            height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfNdThreads.length != 0? numberOfPagesNd : 1,
             onPageChange: (myIndexNd){
               setState((){
@@ -343,7 +346,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                       Column(
                         children: <Widget>[
                           Container(
-                            height: 10,
+                            height: MediaQuery.of(context).size.height * 0.015625,
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -735,7 +738,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
               alignment: Alignment.topCenter,
               child: Container(
                 child: Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                   child: Text.rich(
                     TextSpan(
                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -788,7 +791,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
             child: InkWell(
               child: Ink(
                 color: Colors.grey[500],
-                height: 20,
+                height: MediaQuery.of(context).size.height * 0.02734375,
                 child: Container(
                   alignment: Alignment.topCenter,
                   child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
@@ -808,10 +811,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
             }
           ),
           Center(
-            child: listOfNdThreadReplies.length != 0? myPagesNdThreadReplies[theCurrentPageNdThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+            child: listOfNdThreadReplies.length != 0? myPagesNdThreadReplies[theCurrentPageNdThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
-            height: 50,
+            height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfNdThreadReplies.length != 0? numberOfPagesNdThreadReplies : 1,
             onPageChange: (myIndexNdThreadReplies){
               setState((){

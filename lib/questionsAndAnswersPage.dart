@@ -109,7 +109,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                 return Column(
                   children: <Widget>[
                     Container(
-                      height: 10,
+                      height: MediaQuery.of(context).size.height * 0.015625,
                     ),
                     Center(
                       child: SizedBox(
@@ -128,7 +128,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.centerLeft,
-                                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.050000),
                                       child: Text.rich(
                                         TextSpan(
                                           text: "${mySublistsQaa[theCurrentPageQaa][index]["threadTitle"].toString()}\nBy: ",
@@ -256,10 +256,13 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
       body: Column(
         children: <Widget>[
           Container(
-            height: 10,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             child: Text("Questions and Answers Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
               //margin: EdgeInsets.only(left: 250.0),
@@ -271,7 +274,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                 child: InkWell(
                   child: Ink(
                     color: Colors.black,
-                    padding: EdgeInsets.all(10.0),
+                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                     height: 40,
                     width: 150,
                     child: Center(
@@ -289,10 +292,10 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
               ),
           ),
           Expanded(
-            child: listOfQaaThreads.length != 0? myPagesQaa[theCurrentPageQaa] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPagesQaa[theCurrentPageQaa],
+            child: listOfQaaThreads.length != 0? myPagesQaa[theCurrentPageQaa] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPagesQaa[theCurrentPageQaa],
           ),
           NumberPaginator(
-            height: 50,
+            height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfQaaThreads.length != 0? numberOfPagesQaa : 1,
             onPageChange: (myIndexQaa){
               setState((){
@@ -344,7 +347,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                       Column(
                           children: <Widget>[
                             Container(
-                              height: 10,
+                              height: MediaQuery.of(context).size.height * 0.015625,
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -541,7 +544,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                       ): Column(
                           children: <Widget>[
                             Container(
-                              height: 10,
+                              height: MediaQuery.of(context).size.height * 0.015625,
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -737,7 +740,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                 alignment: Alignment.topCenter,
                 child: Container(
                   child: Padding(
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                     //child: Text("Thread title: " + threadTitleQaa + "\n" + "Posted by: " + threadAuthorQaa + "\n" + threadContentQaa),
                     child: Text.rich(
                       TextSpan(
@@ -791,7 +794,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
               child: InkWell(
                 child: Ink(
                   color: Colors.grey[500],
-                  height: 20,
+                  height: MediaQuery.of(context).size.height * 0.02734375,
                   child: Container(
                     alignment: Alignment.topCenter,
                     child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
@@ -812,10 +815,10 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
               }
             ),
             Center(
-              child: listOfQaaThreadReplies.length != 0? myPagesQaaThreadReplies[theCurrentPageQaaThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+              child: listOfQaaThreadReplies.length != 0? myPagesQaaThreadReplies[theCurrentPageQaaThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-              height: 50,
+              height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfQaaThreadReplies.length != 0? numberOfPagesQaaThreadReplies : 1,
               onPageChange: (myIndexQaaThreadReplies){
                 setState((){

@@ -112,7 +112,7 @@ class projectsPageState extends State<projectsPage>{
                 return Column(
                   children: <Widget>[
                     Container(
-                      height: 10,
+                      height: MediaQuery.of(context).size.height * 0.015625,
                     ),
                     Center(
                       child: SizedBox(
@@ -131,7 +131,7 @@ class projectsPageState extends State<projectsPage>{
                                   Expanded(
                                     child: Container(
                                       alignment: Alignment.centerLeft,
-                                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.050000),
                                       child: Text.rich(
                                         TextSpan(
                                           text: "${mySublistsProjects[theCurrentPage][index]["threadTitle"].toString()}\nBy: ",
@@ -259,10 +259,13 @@ class projectsPageState extends State<projectsPage>{
       body: Column(
         children: <Widget>[
           Container(
-            height: 10,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             child: Text("Projects Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
             //margin: EdgeInsets.only(left: 250.0),
@@ -273,7 +276,7 @@ class projectsPageState extends State<projectsPage>{
               ),
               child: InkWell(
                 child: Ink(
-                  padding: EdgeInsets.all(10.0),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                   color: Colors.black,
                   height: 40,
                   width: 150,
@@ -292,10 +295,10 @@ class projectsPageState extends State<projectsPage>{
             ),
           ),
           Expanded(
-            child: listOfProjectsThreads.length != 0? myPages[theCurrentPage] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPages[theCurrentPage],
+            child: listOfProjectsThreads.length != 0? myPages[theCurrentPage] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPages[theCurrentPage],
           ),
           NumberPaginator(
-              height: 50,
+              height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfProjectsThreads.length != 0? numberOfPages : 1,
               onPageChange: (myIndex){
                 setState((){
@@ -351,7 +354,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                       Column(
                           children: <Widget>[
                             Container(
-                              height: 10,
+                              height: MediaQuery.of(context).size.height * 0.015625,
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -546,7 +549,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                       ): Column(
                           children: <Widget>[
                             Container(
-                              height: 10,
+                              height: MediaQuery.of(context).size.height * 0.015625,
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -741,7 +744,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
               alignment: Alignment.topCenter,
               child: Container(
                 child: Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                   //child: Text("Thread title: " + threadTitleP + "\n" + "Posted by: " + threadAuthorP + "\n" + threadContentP),
                   child: Text.rich(
                     TextSpan(
@@ -795,7 +798,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
             child: InkWell(
               child: Ink(
                 color: Colors.grey[500],
-                height: 20,
+                height: MediaQuery.of(context).size.height * 0.02734375,
                 child: Container(
                   alignment: Alignment.topCenter,
                   child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
@@ -815,10 +818,10 @@ class projectsThreadContent extends State<projectsThreadsPage>{
             }
           ),
           Center(
-            child: listOfProjectsThreadReplies.length != 0? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+            child: listOfProjectsThreadReplies.length != 0? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
           ),
             NumberPaginator(
-              height: 50,
+              height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfProjectsThreadReplies.length != 0? numberOfPagesProjectsThreadReplies : 1,
               onPageChange: (myIndexProjectsThreadReplies){
                 setState((){

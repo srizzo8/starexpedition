@@ -114,7 +114,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
               return Column(
                 children: <Widget>[
                   Container(
-                    height: 10,
+                    height: MediaQuery.of(context).size.height * 0.015625,
                   ),
                   Center(
                     child: SizedBox(
@@ -133,7 +133,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
                                 Expanded(
                                   child: Container(
                                     alignment: Alignment.centerLeft,
-                                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.050000),
                                     child: Text.rich(
                                       TextSpan(
                                         text: "${mySublistsFas[theCurrentPageFas][index]["threadTitle"].toString()}\nBy: ",
@@ -260,10 +260,13 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
       body: Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             child: Text("Feedback and Suggestions Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           //InkWell(
           Center(
@@ -276,7 +279,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(10.0),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                   height: 40,
                   width: 150,
                   child: Center(
@@ -294,10 +297,10 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
             ),
           ),
           Expanded(
-            child: listOfFasThreads.length != 0? myPagesFas[theCurrentPageFas] : Padding(padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
+            child: listOfFasThreads.length != 0? myPagesFas[theCurrentPageFas] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
-            height: 50,
+            height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfFasThreads.length != 0? numberOfPagesFas : 1,
             onPageChange: (myIndexFas){
               setState((){
@@ -349,7 +352,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                     Column(
                         children: <Widget>[
                           Container(
-                            height: 10,
+                            height: MediaQuery.of(context).size.height * 0.015625,
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -544,7 +547,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                     ): Column(
                         children: <Widget>[
                           Container(
-                            height: 10,
+                            height: MediaQuery.of(context).size.height * 0.015625,
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -740,7 +743,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                 alignment: Alignment.topCenter,
                 child: Container(
                   child: Padding(
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                     child: Text.rich(
                       TextSpan(
                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -793,7 +796,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
               child: InkWell(
                 child: Ink(
                   color: Colors.grey[500],
-                  height: 20,
+                  height: MediaQuery.of(context).size.height * 0.02734375,
                   child: Container(
                     alignment: Alignment.topCenter,
                     child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
@@ -813,10 +816,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
               }
             ),
             Center(
-              child: listOfFasThreadReplies.length != 0? myPagesFasThreadReplies[theCurrentPageFasThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+              child: listOfFasThreadReplies.length != 0? myPagesFasThreadReplies[theCurrentPageFasThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-                height: 50,
+                height: MediaQuery.of(context).size.height * 0.0782125,
                 numberPages: listOfFasThreadReplies.length != 0? numberOfPagesFasThreadReplies : 1,
                 onPageChange: (myIndexFasThreadReplies){
                   setState((){

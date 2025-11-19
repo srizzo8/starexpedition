@@ -179,10 +179,11 @@ class spectralClassPageState extends State<spectralClassPage>{
         ),*/
       ),
       body: spectralClassOfStars.isEmpty || spectralClassCount.isEmpty? Center(child: CircularProgressIndicator()):
-      Wrap(
+      SingleChildScrollView(
+        child: Wrap(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
             child: Container(
@@ -191,7 +192,10 @@ class spectralClassPageState extends State<spectralClassPage>{
             ),
           ),
           Container(
-            padding: EdgeInsets.all(10.0),
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
+          Container(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
             child: Text("This page has information regarding each star spectral class. "
                 "To see a list of stars that have articles on Star Expedition that belong to a certain spectral class, click the number in the \"Stars with Articles\" column.", textAlign: TextAlign.center),
           ),
@@ -230,7 +234,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: 125,
+                      width: MediaQuery.of(context).size.height * 0.33333,
                       child: Align(
                       //alignment: Alignment.center,
                         child: Text('2500-3800 K'),
@@ -259,7 +263,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: 125,
+                      width: MediaQuery.of(context).size.height * 0.33333,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('3800-5300 K'),
@@ -287,7 +291,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: 125,
+                      width: MediaQuery.of(context).size.height * 0.33333,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('5300-6000 K'),
@@ -314,7 +318,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: 125,
+                      width: MediaQuery.of(context).size.height * 0.33333,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('6000-7300 K'),
@@ -341,7 +345,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: 125,
+                      width: MediaQuery.of(context).size.height * 0.33333,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('7300-10000 K'),
@@ -368,7 +372,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: 125,
+                      width: MediaQuery.of(context).size.height * 0.33333,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('10000-30000 K'),
@@ -395,6 +399,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
+                      width: MediaQuery.of(context).size.height * 0.33333,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('30000+ K'),
@@ -418,19 +423,24 @@ class spectralClassPageState extends State<spectralClassPage>{
           ),
           Center(
             child: Container(
-              child: Text("Sources", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-              height: 20,
-              width: 360,
+              child: Text("\nSources", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+              //height: 20,
+              //width: 360,
             ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
             child: Container(
               child: Text("https://www.handprint.com/ASTRO/specclass.html", textAlign: TextAlign.center),
-              height: 20,
-              width: 360,
             ),
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
         ],
+      ),
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
     );
@@ -590,7 +600,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
       Column(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             alignment: Alignment.topCenter,
@@ -598,7 +608,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
             child: Text("List of stars with articles that belong to the " + mySpectralClass + " spectral class", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           /*Container(
             height: 300,

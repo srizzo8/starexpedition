@@ -172,14 +172,14 @@ class forgottenPasswordState extends State<forgottenPassword>{
       body: Wrap(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             alignment: Alignment.center,
             child: Text("Forgot Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           /*Center(
             child: Container(
@@ -206,10 +206,10 @@ class forgottenPasswordState extends State<forgottenPassword>{
                 Flexible(
                     child: Center(
                         child: Container(
-                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 320,
+                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -237,7 +237,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
             ),
           ),
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           /*Center(
             child: Container(
@@ -264,10 +264,10 @@ class forgottenPasswordState extends State<forgottenPassword>{
                 Flexible(
                     child: Center(
                         child: Container(
-                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 320,
+                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -294,6 +294,9 @@ class forgottenPasswordState extends State<forgottenPassword>{
               ],
             ),
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
           Center(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -302,7 +305,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
@@ -437,15 +440,15 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
       body: Wrap(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             alignment: Alignment.center,
             child: Text("Enter in the 6-digit code that was emailed to you", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
           ),
-          Container(
-            height: 5,
-          ),
+          /*Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),*/
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -453,10 +456,10 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
                 Flexible(
                     child: Center(
                         child: Container(
-                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 320,
+                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -504,7 +507,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
@@ -656,14 +659,11 @@ class resetPasswordState extends State<resetPassword>{
       body: Wrap(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Container(
             alignment: Alignment.center,
             child: Text("Reset Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
-          ),
-          Container(
-            height: 5,
           ),
           /*Center(
             child: Container(
@@ -691,10 +691,10 @@ class resetPasswordState extends State<resetPassword>{
                 Flexible(
                     child: Center(
                         child: Container(
-                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 320,
+                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -722,9 +722,9 @@ class resetPasswordState extends State<resetPassword>{
               ],
             ),
           ),
-          Container(
+          /*Container(
             height: 5,
-          ),
+          ),*/
           /*Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),
@@ -751,10 +751,10 @@ class resetPasswordState extends State<resetPassword>{
                 Flexible(
                     child: Center(
                         child: Container(
-                          padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: 320,
+                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -783,7 +783,7 @@ class resetPasswordState extends State<resetPassword>{
             ),
           ),
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
             child: ElevatedButton(
@@ -793,7 +793,7 @@ class resetPasswordState extends State<resetPassword>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: Text("Reset Your Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),

@@ -238,12 +238,15 @@ class registerPageState extends State<registerPage>{
       body: Wrap(
         children: <Widget>[
           Container(
-            height: 5,
+            height: MediaQuery.of(buildContext).size.height * 0.015625,
           ),
           Container(
             alignment: Alignment.center,
             child: Text("Register", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
+          /*Container(
+            height: MediaQuery.of(buildContext).size.height * 0.015625,
+          ),*/
           /*Center(
             child: Container(
               padding: const EdgeInsets.all(0.0),
@@ -269,10 +272,10 @@ class registerPageState extends State<registerPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.015625, right: MediaQuery.of(buildContext).size.width * 0.031250),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(buildContext).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -299,10 +302,10 @@ class registerPageState extends State<registerPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(buildContext).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -329,10 +332,10 @@ class registerPageState extends State<registerPage>{
                   Flexible(
                     child: Center(
                       child: Container(
-                        padding: EdgeInsets.only(left: 10.0, top: 20.0, right: 10.0),
+                        padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: 320,
+                            maxWidth: MediaQuery.of(buildContext).size.width * 0.375000,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -354,7 +357,7 @@ class registerPageState extends State<registerPage>{
             ),
           ),
           Container(
-            height: 5,
+            height: MediaQuery.of(buildContext).size.height * 0.015625,
           ),
           Center(
             child: ElevatedButton(
@@ -363,7 +366,7 @@ class registerPageState extends State<registerPage>{
               ),
               child: InkWell(
                 child: Ink(
-                  padding: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(MediaQuery.of(buildContext).size.height * 0.015625),
                   child: Text("Sign Up for Star Expedition", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),
                   ),
                 ),
