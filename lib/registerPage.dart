@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -275,7 +276,7 @@ class registerPageState extends State<registerPage>{
                         padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.015625, right: MediaQuery.of(buildContext).size.width * 0.031250),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(buildContext).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(buildContext).size.width * 0.375000: 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -305,7 +306,7 @@ class registerPageState extends State<registerPage>{
                         padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(buildContext).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(buildContext).size.width * 0.375000 : 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -335,7 +336,7 @@ class registerPageState extends State<registerPage>{
                         padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(buildContext).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(buildContext).size.width * 0.375000: 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -366,7 +367,7 @@ class registerPageState extends State<registerPage>{
               ),
               child: InkWell(
                 child: Ink(
-                  padding: EdgeInsets.all(MediaQuery.of(buildContext).size.height * 0.015625),
+                  //padding: EdgeInsets.all(MediaQuery.of(buildContext).size.height * 0.015625),
                   child: Text("Sign Up for Star Expedition", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),
                   ),
                 ),

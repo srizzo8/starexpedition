@@ -5,6 +5,7 @@ import 'dart:math';
 //import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -66,8 +67,8 @@ class settingsPageState extends State<settingsPage>{
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              minimumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
-              maximumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
+              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
+              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
               primary: Colors.black,
             ),
             child: InkWell(
@@ -80,12 +81,12 @@ class settingsPageState extends State<settingsPage>{
             }
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.0625,
+            height: MediaQuery.of(context).size.height * 0.02,
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              minimumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
-              maximumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
+              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
+              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
               primary: Colors.black,
             ),
             child: InkWell(
@@ -98,12 +99,12 @@ class settingsPageState extends State<settingsPage>{
             }
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.0625,
+            height: MediaQuery.of(context).size.height * 0.02,
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              minimumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
-              maximumSize: Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625),
+              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
+              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
               primary: Colors.black,
             ),
             child: InkWell(
@@ -249,7 +250,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                         padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -280,7 +281,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                         padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -311,7 +312,7 @@ class changePasswordPageState extends State<changePasswordPage>{
                         padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -343,7 +344,7 @@ class changePasswordPageState extends State<changePasswordPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
@@ -656,7 +657,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                         padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -704,7 +705,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                         padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -753,7 +754,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                         padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -785,7 +786,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),

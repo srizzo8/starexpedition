@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -103,7 +104,7 @@ class loginPageState extends State<loginPage>{
                         padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -133,7 +134,7 @@ class loginPageState extends State<loginPage>{
                         padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                           ),
                           child: SizedBox(
                             child: TextField(
@@ -164,7 +165,7 @@ class loginPageState extends State<loginPage>{
                 ),
                 child: InkWell(
                   child: Ink(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                     child: Text("Log in", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),// style: TextStyle(fontSize: 12.0)), //style: TextStyle(fontSize: 14.0, color: Colors.white)),
                   ),
                 ),
@@ -413,7 +414,7 @@ class loginPageState extends State<loginPage>{
               child: InkWell(
                 child: Ink(
                   //color: Colors.black,
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   //height: 20,
                   child: Text("Forgotten Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                 ),
@@ -445,7 +446,7 @@ class loginPageState extends State<loginPage>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   //height: 20,
                   child: Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                 ),

@@ -1148,8 +1148,8 @@ class theStarExpeditionState extends State<StarExpedition> {
                     child: Ink.image(
                       image: AssetImage(starsForSearchBar[randomNumber].imagePath!),//, height: 150, width: 150),
                       fit: BoxFit.cover,
-                      height: MediaQuery.of(context).size.height * 0.25,
-                      width: MediaQuery.of(context).size.height * 0.25,
+                      height: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.25 : 150,
+                      width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.25 : 150,
                     ),
                     onTap: () async{
                       correctStar = starsForSearchBar[randomNumber].starName!;
@@ -2294,8 +2294,8 @@ class articlePage extends StatelessWidget{
                       Center(
                         child: Image(
                           image: AssetImage(starsForSearchBar[myStarIndex].imagePath!),
-                          height: MediaQuery.of(bc).size.height * 0.25,
-                          width: MediaQuery.of(bc).size.height * 0.25,
+                          height: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(bc).size.height * 0.25 : 200,
+                          width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(bc).size.height * 0.25 : 200,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -2642,7 +2642,7 @@ class articlePage extends StatelessWidget{
                                     ),
                                     child: Ink(
                                       color: Colors.black,
-                                      padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
+                                      //padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
                                       child: Text("Track this Star", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                                     ),
                                     onPressed: () async{
@@ -3006,7 +3006,7 @@ class articlePage extends StatelessWidget{
                                 child: InkWell(
                                   child: Ink(
                                     color: Colors.black,
-                                    padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
+                                    //padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
                                     child: Text("Untrack this Star", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                                   ),
                                 ),
@@ -3562,7 +3562,7 @@ class planetArticle extends StatelessWidget{
                                   child: InkWell(
                                     child: Ink(
                                       color: Colors.black,
-                                      padding: EdgeInsets.all(MediaQuery.of(theContext).size.height * 0.015625),
+                                      //padding: EdgeInsets.all(MediaQuery.of(theContext).size.height * 0.015625),
                                       child: Text("Track this Planet", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                                     ),
                                   ),
@@ -3913,7 +3913,7 @@ class planetArticle extends StatelessWidget{
                                   child: InkWell(
                                     child: Ink(
                                       color: Colors.black,
-                                      padding: EdgeInsets.all(MediaQuery.of(theContext).size.height * 0.015625),
+                                      //padding: EdgeInsets.all(MediaQuery.of(theContext).size.height * 0.015625),
                                       child: Text("Untrack this Planet", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                                     ),
                                   ),

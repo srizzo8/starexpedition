@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 //import 'dart:html';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -18,6 +19,7 @@ import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:flutter/services.dart' show FilteringTextInputFormatter, TextInputFormatter, rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 class conversionCalculatorPage extends StatefulWidget{
   const conversionCalculatorPage ({Key? key}) : super(key: key);
@@ -104,12 +106,12 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.15, 0.0, 0.0, 0.0),
+            padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.15, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
             child: Row(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.0281875, 0.0, 0.0, 0.0),
-                  width: MediaQuery.of(context).size.width * 0.33333,
+                  padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.0281875, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.33333 : 180,
                   alignment: Alignment.centerLeft,
                   child: SizedBox(
                     child: TextField(
@@ -232,12 +234,12 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.15, 0.0, 0.0, 0.0),
+            padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.15, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
             child: Row(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.0281875, 0.0, 0.0, 0.0),
-                  width: MediaQuery.of(context).size.width * 0.33333,
+                  padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.0281875, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.33333 : 180,
                   alignment: Alignment.centerLeft,
                   child: SizedBox(
                     child: TextField(

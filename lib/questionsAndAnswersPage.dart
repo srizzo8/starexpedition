@@ -275,11 +275,11 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                   child: Ink(
                     color: Colors.black,
                     //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
-                    height: 40,
-                    width: 150,
-                    child: Center(
-                      child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                    ),
+                    //height: 40,
+                    //width: 150,
+                    //child: Center(
+                    child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                    //),
                   ),
                 ),
                 onPressed: (){

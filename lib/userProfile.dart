@@ -5,6 +5,7 @@ import 'dart:math';
 //import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -142,7 +143,7 @@ class editingMyUserProfile extends StatelessWidget{
                             padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                               ),
                               child: Scrollbar(
                                 child: SingleChildScrollView(
@@ -180,7 +181,7 @@ class editingMyUserProfile extends StatelessWidget{
                             padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                               ),
                               child: Scrollbar(
                                 child: SingleChildScrollView(
@@ -217,7 +218,7 @@ class editingMyUserProfile extends StatelessWidget{
                             padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                               ),
                               child: Scrollbar(
                                 child: SingleChildScrollView(
@@ -255,7 +256,7 @@ class editingMyUserProfile extends StatelessWidget{
                     child: InkWell(
                       child: Ink(
                         color: Colors.black,
-                        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                        //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                         child: Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                       ),
                     ),

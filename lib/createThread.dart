@@ -176,7 +176,7 @@ class createThreadState extends State<createThread>{
                 padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                 child: theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""?
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.375000,
+                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: "Username",
@@ -188,7 +188,7 @@ class createThreadState extends State<createThread>{
                   ),
                 ): (theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != "")?
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.375000,
+                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: "Username",
@@ -199,7 +199,7 @@ class createThreadState extends State<createThread>{
                     controller: TextEditingController()..text = theRegisterPage.myNewUsername,
                   ),
                 ): SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.375000,
+                    width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                     child: TextField(),
                 ),
               ),
@@ -213,7 +213,7 @@ class createThreadState extends State<createThread>{
                         padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.0078125, MediaQuery.of(context).size.width * 0.015625, 0.0),
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                           ),
                           child: Scrollbar(
                             child: SingleChildScrollView(
@@ -251,7 +251,7 @@ class createThreadState extends State<createThread>{
                           padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.0078125, MediaQuery.of(context).size.width * 0.015625, 0.0),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -291,7 +291,7 @@ class createThreadState extends State<createThread>{
                 child: InkWell(
                   child: Ink(
                     color: Colors.black,
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                     child: Text("Post to Subforum", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                   ),
                 ),

@@ -278,11 +278,11 @@ class projectsPageState extends State<projectsPage>{
                 child: Ink(
                   //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                   color: Colors.black,
-                  height: 40,
-                  width: 150,
-                  child: Center(
-                    child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                  ),
+                  //height: 40,
+                  //width: 150,
+                  //child: Center(
+                  child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                  //),
                 ),
               ),
               onPressed: (){

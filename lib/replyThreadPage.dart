@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -141,7 +142,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                 padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                 child: (theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == "")?
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.375000,
+                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: "Username",
@@ -153,7 +154,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                   ),
                 ): (theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != "")?
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.375000,
+                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: "Username",
@@ -164,7 +165,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                     controller: TextEditingController()..text = theRegisterPage.myNewUsername,
                   ),
                 ): SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.375000,
+                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                   child: TextField(),
                 ),
               ),
@@ -178,7 +179,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.0078125, MediaQuery.of(context).size.width * 0.015625, 0.0),
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
-                                  maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                                  maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                                 ),
                                 child: Scrollbar(
                                   child: SingleChildScrollView(
@@ -220,7 +221,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                           color: Colors.black,
                           //height: 30,
                           //width: 140,
-                          padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                          //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                           //child: Container(
                             //alignment: Alignment.center,
                             //margin: EdgeInsets.only(left: 200.0),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -234,7 +235,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: MediaQuery.of(context).size.height * 0.33333,
+                      width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
                       child: Align(
                       //alignment: Alignment.center,
                         child: Text('2500-3800 K'),
@@ -263,7 +264,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: MediaQuery.of(context).size.height * 0.33333,
+                      width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('3800-5300 K'),
@@ -291,7 +292,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: MediaQuery.of(context).size.height * 0.33333,
+                      width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('5300-6000 K'),
@@ -318,7 +319,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: MediaQuery.of(context).size.height * 0.33333,
+                      width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('6000-7300 K'),
@@ -345,7 +346,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: MediaQuery.of(context).size.height * 0.33333,
+                      width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('7300-10000 K'),
@@ -372,7 +373,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: MediaQuery.of(context).size.height * 0.33333,
+                      width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('10000-30000 K'),
@@ -399,7 +400,7 @@ class spectralClassPageState extends State<spectralClassPage>{
                   ),
                   DataCell(
                     SizedBox(
-                      width: MediaQuery.of(context).size.height * 0.33333,
+                      width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
                       child: Align(
                         alignment: Alignment.center,
                         child: Text('30000+ K'),
