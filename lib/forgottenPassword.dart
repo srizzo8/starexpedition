@@ -5,6 +5,7 @@ import 'dart:math';
 //import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -21,6 +22,8 @@ import 'package:starexpedition4/userProfile.dart';
 import 'package:flutter/services.dart' show MaxLengthEnforcement, rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
+
+import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 var theUsersUsername;
 var theUsersEmail;
@@ -62,10 +65,17 @@ class forgottenPasswordState extends State<forgottenPassword>{
     bool match = false;
 
     if((myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == myUsernameController.text.toLowerCase()) != -1)){
-      var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: username.toLowerCase()).get();
-      theUserResult.docs.forEach((uOutcome){
-        docForUser = uOutcome.data();
-      });
+      if(firebaseDesktopHelper.onDesktop){
+        List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+        docForUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == username.toLowerCase(), orElse: () => <String, dynamic>{});
+      }
+      else{
+        var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: username.toLowerCase()).get();
+        theUserResult.docs.forEach((uOutcome){
+          docForUser = uOutcome.data();
+        });
+      }
     }
     else{
       match = false;
@@ -92,24 +102,50 @@ class forgottenPasswordState extends State<forgottenPassword>{
     //Checking if a username is registered on Star Expedition:
     List<String> listOfUsernames = [];
 
-    var usernameResults = await FirebaseFirestore.instance.collection("User").orderBy("usernameLowercased", descending: true).get();
-    usernameResults.docs.forEach((person){
-      var userDoc = person.data();
-      var theUsername = userDoc["usernameLowercased"];
-      listOfUsernames.add(theUsername);
-    });
+    var usernameResults;
+
+    if(firebaseDesktopHelper.onDesktop){
+      List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+      allUsers.sort((b, a) => a["usernameLowercased"].toString().compareTo(b["usernameLowercased"].toString()));
+
+      //Getting all of the usernames:
+      listOfUsernames = allUsers.map((user) => user["usernameLowercased"] as String).toList();
+      print("The list of users: ${listOfUsernames}");
+    }
+    else{
+      usernameResults = await FirebaseFirestore.instance.collection("User").orderBy("usernameLowercased", descending: true).get();
+      usernameResults.docs.forEach((person){
+        var userDoc = person.data();
+        var theUsername = userDoc["usernameLowercased"];
+        listOfUsernames.add(theUsername);
+      });
+    }
 
     print("Username list: ${listOfUsernames}");
 
     //Checking if an email address is registered on Star Expedition:
     List<String> listOfEmailAddresses = [];
 
-    var emailAddressResults = await FirebaseFirestore.instance.collection("User").orderBy("emailAddress", descending: true).get();
-    emailAddressResults.docs.forEach((ea){
-      var emailAddressDoc = ea.data();
-      var theEmailAddress = emailAddressDoc["emailAddress"];
-      listOfEmailAddresses.add(theEmailAddress);
-    });
+    var emailAddressResults;
+
+    if(firebaseDesktopHelper.onDesktop){
+      List<Map<String, dynamic>> allEmailAddresses = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+      allEmailAddresses.sort((b, a) => a["emailAddress"].toString().compareTo(b["emailAddress"].toString()));
+
+      //Getting all of the usernames:
+      listOfEmailAddresses = allEmailAddresses.map((user) => user["emailAddress"] as String).toList();
+      print("The list of email addresses: ${listOfEmailAddresses}");
+    }
+    else{
+      emailAddressResults = await FirebaseFirestore.instance.collection("User").orderBy("emailAddress", descending: true).get();
+      emailAddressResults.docs.forEach((ea){
+        var emailAddressDoc = ea.data();
+        var theEmailAddress = emailAddressDoc["emailAddress"];
+        listOfEmailAddresses.add(theEmailAddress);
+      });
+    }
 
     print("Email Address list: ${listOfEmailAddresses}");
 
@@ -209,7 +245,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
                           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -267,7 +303,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
                           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -305,7 +341,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
@@ -325,11 +361,21 @@ class forgottenPasswordState extends State<forgottenPassword>{
                               onPressed: () async{
                                 //Getting the person's username
                                 var docForUser;
-                                var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myUsernameController.text).toLowerCase()).get();
-                                theUserResult.docs.forEach((outcome){
-                                  docForUser = outcome.data();
-                                  print("docForUser: ${docForUser}");
-                                });
+
+                                if(firebaseDesktopHelper.onDesktop){
+                                  List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                  docForUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myUsernameController.text).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                  print("This is docForUser: ${docForUser}");
+                                }
+                                else{
+                                  var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myUsernameController.text).toLowerCase()).get();
+                                  theUserResult.docs.forEach((outcome){
+                                    docForUser = outcome.data();
+                                    print("docForUser: ${docForUser}");
+                                  });
+                                }
                                 //Leads to a page that has a six-digit code emailed to a user
                                 theUsersUsername = docForUser["username"];
                                 theUsersEmail = myEmailController.text;
@@ -459,7 +505,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
                           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -507,7 +553,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
@@ -577,11 +623,21 @@ class resetPasswordState extends State<resetPassword>{
   Future<String> getUsersPassword(String username) async{
     var theUserDoc;
     String usersDecryptedPass = "";
-    var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: username.toLowerCase()).get();
-    theUserResult.docs.forEach((outcome){
-      theUserDoc = outcome.data();
-      print("This is the outcome: ${theUserDoc}");
-    });
+
+    if(firebaseDesktopHelper.onDesktop){
+      List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+      theUserDoc = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == username.toLowerCase(), orElse: () => <String, dynamic>{});
+
+      print("This is theUserDoc: ${theUserDoc}");
+    }
+    else{
+      var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: username.toLowerCase()).get();
+      theUserResult.docs.forEach((outcome){
+        theUserDoc = outcome.data();
+        print("This is the outcome: ${theUserDoc}");
+      });
+    }
 
     usersDecryptedPass = decryptMyPassword(myKey, theUserDoc["password"]);
 
@@ -694,7 +750,7 @@ class resetPasswordState extends State<resetPassword>{
                           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -754,7 +810,7 @@ class resetPasswordState extends State<resetPassword>{
                           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.375000,
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                             ),
                             child: Scrollbar(
                               child: SingleChildScrollView(
@@ -793,7 +849,7 @@ class resetPasswordState extends State<resetPassword>{
               child: InkWell(
                 child: Ink(
                   color: Colors.black,
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                   child: Text("Reset Your Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                 ),
               ),
@@ -818,17 +874,39 @@ class resetPasswordState extends State<resetPassword>{
                                 });*/
                                 var docForUser;
                                 var gettingTheDocName;
-                                var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersUsername.toLowerCase()).get();
-                                theUserResult.docs.forEach((result){
-                                  docForUser = result.data();
-                                  print("This is the result: ${docForUser}");
-                                  gettingTheDocName = result.id;
-                                  print("gettingTheDocName: ${gettingTheDocName}");
-                                });
 
-                                FirebaseFirestore.instance.collection("User").doc(gettingTheDocName).update({"password" : encryptMyPassword(myKey, newPassController.text).base64}).whenComplete(() async{
-                                  print("Updated");
-                                }).catchError((e) => print("This is your error: ${e}"));
+                                if(firebaseDesktopHelper.onDesktop){
+                                  List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                  docForUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == theUsersUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                  print("This is docForUser: ${docForUser}");
+
+                                  gettingTheDocName = docForUser["docId"];
+
+                                  print("This is gettingTheDocName: ${gettingTheDocName}");
+
+                                  //Getting the current password of the user:
+                                  //Map<String, dynamic> passwordInfoOfUser = Map<String, dynamic>.from(docForUser["password"] ?? {});
+
+                                  //Updating a user's changes to his or her password:
+                                  await firebaseDesktopHelper.updateFirestoreDocument("User/$gettingTheDocName", {
+                                    "password": encryptMyPassword(myKey, newPassController.text).base64,
+                                  });
+                                }
+                                else{
+                                  var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersUsername.toLowerCase()).get();
+                                  theUserResult.docs.forEach((result){
+                                    docForUser = result.data();
+                                    print("This is the result: ${docForUser}");
+                                    gettingTheDocName = result.id;
+                                    print("gettingTheDocName: ${gettingTheDocName}");
+                                  });
+
+                                  FirebaseFirestore.instance.collection("User").doc(gettingTheDocName).update({"password" : encryptMyPassword(myKey, newPassController.text).base64}).whenComplete(() async{
+                                    print("Updated");
+                                  }).catchError((e) => print("This is your error: ${e}"));
+                                }
 
                                 //Leads to the Star Expedition login page:
                                 //myUsername = theUsersUsername;
