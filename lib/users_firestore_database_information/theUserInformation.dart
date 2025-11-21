@@ -33,7 +33,7 @@ class theUserInformation extends GetxController{
   }
 
   Future<void> createMyUser(User user) async{
-    if(Platform.isWindows || Platform.isMacOS || Platform.isLinux){
+    if(firebaseDesktopHelper.onDesktop){
       await createUserDesktop(user);
     }
     else{ //On mobile and web
