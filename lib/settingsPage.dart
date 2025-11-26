@@ -408,7 +408,8 @@ class changePasswordPageState extends State<changePasswordPage>{
                                     theNewUser = "",
                                     usersEmail = userDoc["emailAddress"],
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                    emailNotifications.passwordChangeConfirmationEmail(),
+                                    //emailNotifications.passwordChangeConfirmationEmail(),
+                                    emailNotifications.sendAnEmail(usersEmail, "Password Change Confirmation", "Hi ${theUser},<br><br>We have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
                                     currentPasswordController.text = "",
                                     newPasswordController.text = "",
                                     secondNewPasswordController.text = "",
@@ -504,7 +505,8 @@ class changePasswordPageState extends State<changePasswordPage>{
                                     theNewUser = myNewUsername,
                                     usersEmail = userDoc["emailAddress"],
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                    emailNotifications.passwordChangeConfirmationEmail(),
+                                    //emailNotifications.passwordChangeConfirmationEmail(),
+                                    emailNotifications.sendAnEmail(usersEmail, "Password Change Confirmation", "Hi ${theNewUser},<br><br>We have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
                                     currentPasswordController.text = "",
                                     newPasswordController.text = "",
                                     secondNewPasswordController.text = "",
@@ -861,7 +863,13 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                                     usersNewEmail = du["emailAddress"],
                                     print("usersNewEmail: ${usersNewEmail}"),
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                    emailNotifications.emailAddressChangeConfirmationEmail(),
+
+                                    //For previous email address:
+                                    emailNotifications.sendAnEmail(usersEmailForEmailChangeMessage, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>We have noticed that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
+
+                                    //For new email address:
+                                    emailNotifications.sendAnEmail(usersNewEmail, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>This message is to confirm that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}.<br><br>Best,<br>Star Expedition"),
+
                                     currentEmailAddressController.text = "",
                                     newEmailAddressController.text = "",
                                     myPasswordController.text = "",
@@ -971,7 +979,13 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                                     usersNewEmail = du["emailAddress"],
                                     print("usersNewEmail: ${usersNewEmail}"),
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                    emailNotifications.emailAddressChangeConfirmationEmail(),
+
+                                    //For previous email address:
+                                    emailNotifications.sendAnEmail(usersEmailForEmailChangeMessage, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>We have noticed that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
+
+                                    //For new email address:
+                                    emailNotifications.sendAnEmail(usersNewEmail, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>This message is to confirm that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}.<br><br>Best,<br>Star Expedition"),
+
                                     currentEmailAddressController.text = "",
                                     newEmailAddressController.text = "",
                                     myPasswordController.text = "",

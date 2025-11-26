@@ -238,7 +238,7 @@ class loginPageState extends State<loginPage>{
                       else{
                         print("Logging in 123");
 
-                        sendAnEmail("funkykong2008@gmail.com", "Howdy Doody", "<h1>Hello there!</h1><p>Testing testing 123! Is this Patrick?</p>");
+                        //sendAnEmail("funkykong2008@gmail.com", "Howdy Doody", "<h1>Hello there!</h1><p>Testing testing 123! Is this Patrick?</p>");
 
                         if(firebaseDesktopHelper.onDesktop){
                           var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");

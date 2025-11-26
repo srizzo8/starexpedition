@@ -404,7 +404,8 @@ class registerPageState extends State<registerPage>{
                       myMain.discussionBoardLogin = false;
                       registerBool = true;
                       print("Registering successfully as: " + userEmailPasswordList.toString());
-                      emailNotifications.registrationConfirmationEmail();
+                      //emailNotifications.registrationConfirmationEmail();
+                      emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
                     }
                     else{
                       userId = 0;
@@ -430,7 +431,8 @@ class registerPageState extends State<registerPage>{
                       myMain.discussionBoardLogin = false;
                       registerBool = true;
                       print("Registering successfully as: " + userEmailPasswordList.toString());
-                      emailNotifications.registrationConfirmationEmail();
+                      //emailNotifications.registrationConfirmationEmail();
+                      emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
                     }
                   }
                   //If there is at least one user on Star Expedition:
@@ -473,7 +475,8 @@ class registerPageState extends State<registerPage>{
                       myMain.discussionBoardLogin = false;
                       registerBool = true;
                       print("Registering successfully as: " + userEmailPasswordList.toString());
-                      emailNotifications.registrationConfirmationEmail();
+                      //emailNotifications.registrationConfirmationEmail();
+                      emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
                     }
                     else{
                       if(firebaseDesktopHelper.onDesktop){
@@ -512,7 +515,8 @@ class registerPageState extends State<registerPage>{
                       myMain.discussionBoardLogin = false;
                       registerBool = true;
                       print("Registering successfully as: " + userEmailPasswordList.toString());
-                      emailNotifications.registrationConfirmationEmail();
+                      //emailNotifications.registrationConfirmationEmail();
+                      emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},<br><br>We hope you enjoy your time on here.<br>If you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.<br><br>Best,<br>Star Expedition");
                     }
                   }
                   else{
