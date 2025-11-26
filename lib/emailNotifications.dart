@@ -21,6 +21,7 @@ import 'registerPage.dart' as registerPage;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:starexpedition4/settingsPage.dart' as settingsPage;
 import 'package:starexpedition4/forgottenPassword.dart' as forgottenPassword;
+import 'package:http/http.dart' as http;
 
 var myPort;
 
@@ -33,6 +34,16 @@ class emailNotifications extends StatelessWidget {
       title: "Email Notifications",
     );
   }
+}
+
+Future<void> sendAnEmail(String to, String mySubject, String myHtml) async{
+  final myResponse = await http.post(
+    Uri.parse("https://star-expedition-emails.vercel.app/api/sendEmails"),
+    headers: {"Content-Type": "application/json"},
+    body: jsonEncode({"to": to, "subject": mySubject, "html": myHtml}),
+  );
+
+  print("myResponse.body: ${myResponse.body}");
 }
 
 Future<void> registrationConfirmationEmail() async{

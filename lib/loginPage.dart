@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:starexpedition4/forgottenPassword.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
+import 'emailNotifications.dart';
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
@@ -236,6 +237,9 @@ class loginPageState extends State<loginPage>{
                       }
                       else{
                         print("Logging in 123");
+
+                        sendAnEmail("funkykong2008@gmail.com", "Howdy Doody", "<h1>Hello there!</h1><p>Testing testing 123! Is this Patrick?</p>");
+
                         if(firebaseDesktopHelper.onDesktop){
                           var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
                           var usernameFound = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
