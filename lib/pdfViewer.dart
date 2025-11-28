@@ -74,12 +74,16 @@ class pdfViewerState extends State<pdfViewer>{
   late int myPlanetPageNumber;
   List<Text> myPlanetPdfMessage = [];
 
+  //var pageUserIsOn;
+  bool snapshotExistsStars = false;
+  bool snapshotExistsPlanets = false;
+
   void goToStarPdfPage({int? myPage}){
-    myStarPdfxController.jumpToPage(myPage != null ? myPage : myStarPageNumber);
+    myStarPdfxController.jumpToPage((myPage != null ? myPage : myStarPageNumber) - 1);
   }
 
   void animateToStarPdfPage({int? myPage}){
-    myStarPdfxController.animateToPage(myPage != null ? myPage : myStarPageNumber, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
+    myStarPdfxController.animateToPage((myPage != null ? myPage : myStarPageNumber) - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
   }
 
   void goToPlanetPdfPage({int? myPage}){
@@ -134,11 +138,14 @@ class pdfViewerState extends State<pdfViewer>{
             onPressed: () =>{
               if(myMain.starPdfBool == true){
                 myMain.starPdfBool = false,
+                snapshotExistsStars = false,
+                print("snapshotExistsStars: ${snapshotExistsStars}"),
                 Navigator.pop(bc),
               }
               else if(myMain.planetPdfBool == true){
                 myMain.planetPdfBool = false,
                 myMain.myPlanetPdfFile = null,
+                snapshotExistsPlanets = false,
                 Navigator.pop(bc),
               }
             }
@@ -147,6 +154,9 @@ class pdfViewerState extends State<pdfViewer>{
       body: myMain.starPdfBool == true && myMain.planetPdfBool == false?
       Column(
           children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
             Expanded(
               child: FutureBuilder(
                   future: myMain.myStarPdfFile,
@@ -155,15 +165,28 @@ class pdfViewerState extends State<pdfViewer>{
                       final docForPdfx = snapshot.data as PdfDocument;
                       totalStarPdfPages = docForPdfx.pagesCount;
 
-                      myStarPdfxController = PdfController(document: Future.value(docForPdfx));
+                      if(snapshotExistsStars == false){
+                        snapshotExistsStars = true;
+                        myStarPdfxController = PdfController(document: Future.value(docForPdfx));
 
-                      myStarPageNumber = myStarPdfxController.initialPage;
+                        //Initializing page numbers immediately:
+                        WidgetsBinding.instance.addPostFrameCallback((myVar){
+                          setState((){
+                            myStarPageNumber = 1;
+                            myStarPdfPage = 1;
+                          });
+                        });
+
+                        print("snapshotExistsStars: ${snapshotExistsStars}");
+                      }
 
                       return PdfView(
                         onPageChanged: (int myCurrentPage){
-                          myStarPdfPage = myCurrentPage;
-                          myStarPageNumber = myCurrentPage;
-                          print("myStarPdfPage: ${myStarPdfPage}");
+                          setState((){
+                            myStarPdfPage = myCurrentPage;
+                            myStarPageNumber = myCurrentPage;
+                            print("myStarPdfPage: ${myStarPdfPage}");
+                          });
                         },
                         controller: myStarPdfxController,
                       );
@@ -175,7 +198,7 @@ class pdfViewerState extends State<pdfViewer>{
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),//const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -191,17 +214,14 @@ class pdfViewerState extends State<pdfViewer>{
                     ),
                   ),
                   Container(
-                    height: 5,
+                    height: MediaQuery.of(context).size.height * 0.015625,
                   ),
                   ElevatedButton(
                       child: Text("Go", textAlign: TextAlign.center),
                       onPressed: (){
                         int? pageUserIsOn = int.tryParse(starPdfPageController.text);
                         if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalStarPdfPages && !pageUserIsOn.toString().contains(".")){
-                          myStarPageNumber = pageUserIsOn;
-
-                          animateToStarPdfPage();
-                          goToStarPdfPage();
+                          myStarPdfxController.jumpToPage(pageUserIsOn);
 
                           print("myStarPdfPage: ${myStarPdfPage}");
                         }
@@ -244,10 +264,10 @@ class pdfViewerState extends State<pdfViewer>{
               ),
             ),
             Container(
-              height: 5,
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),//const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -257,9 +277,7 @@ class pdfViewerState extends State<pdfViewer>{
                     ),
                     onPressed: (){
                       if(myStarPageNumber > 1){
-                        myStarPageNumber = 1;
-                        animateToStarPdfPage();
-                        goToStarPdfPage();
+                        myStarPdfxController.jumpToPage(1);
                       }
                       else{
                         print("Nothing needed");
@@ -272,9 +290,7 @@ class pdfViewerState extends State<pdfViewer>{
                       ),
                       onPressed: (){
                         if(myStarPageNumber > 1){
-                          myStarPageNumber = myStarPageNumber - 1;
-                          animateToStarPdfPage();
-                          goToStarPdfPage();
+                          myStarPdfxController.jumpToPage(myStarPageNumber - 1);
                           print("myStarPageNumber: ${myStarPageNumber}");
                         }
                         else{
@@ -288,9 +304,7 @@ class pdfViewerState extends State<pdfViewer>{
                       ),
                       onPressed: (){
                         if(myStarPageNumber < totalStarPdfPages){
-                          myStarPageNumber = myStarPageNumber + 1;
-                          animateToStarPdfPage();
-                          goToStarPdfPage();
+                          myStarPdfxController.jumpToPage(myStarPageNumber + 1);
                         }
                         else{
                           print("Nothing needed");
@@ -303,9 +317,7 @@ class pdfViewerState extends State<pdfViewer>{
                       ),
                       onPressed: (){
                         if(myStarPageNumber < totalStarPdfPages){
-                          myStarPageNumber = totalStarPdfPages;
-                          animateToStarPdfPage();
-                          goToStarPdfPage();
+                          myStarPdfxController.jumpToPage(totalStarPdfPages);
                         }
                         else{
                           print("Nothing needed");
@@ -314,6 +326,16 @@ class pdfViewerState extends State<pdfViewer>{
                   ),
                 ],
               ),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            Container(
+              alignment: Alignment.center,
+              child: snapshotExistsStars == true? Text("Page: ${myStarPdfPage} of ${totalStarPdfPages}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)) : Text(""),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
           ],
       ): myMain.starPdfBool == false && myMain.planetPdfBool == true?
@@ -347,7 +369,7 @@ class pdfViewerState extends State<pdfViewer>{
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),//const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -363,7 +385,7 @@ class pdfViewerState extends State<pdfViewer>{
                   ),
                 ),
                 Container(
-                  height: 5,
+                  height: MediaQuery.of(context).size.height * 0.015625,
                 ),
                 ElevatedButton(
                     child: Text("Go", textAlign: TextAlign.center),
@@ -416,10 +438,10 @@ class pdfViewerState extends State<pdfViewer>{
             ),
           ),
           Container(
-            height: 5,
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),//const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
