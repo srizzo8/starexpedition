@@ -78,22 +78,6 @@ class pdfViewerState extends State<pdfViewer>{
   bool snapshotExistsStars = false;
   bool snapshotExistsPlanets = false;
 
-  void goToStarPdfPage({int? myPage}){
-    myStarPdfxController.jumpToPage((myPage != null ? myPage : myStarPageNumber) - 1);
-  }
-
-  void animateToStarPdfPage({int? myPage}){
-    myStarPdfxController.animateToPage((myPage != null ? myPage : myStarPageNumber) - 1, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
-  }
-
-  void goToPlanetPdfPage({int? myPage}){
-    myPlanetPdfxController.jumpToPage(myPage != null ? myPage : myPlanetPageNumber);
-  }
-
-  void animateToPlanetPdfPage({int? myPage}){
-    myPlanetPdfxController.animateToPage(myPage != null ? myPage : myPlanetPageNumber, duration: Duration(milliseconds: 150), curve: Curves.easeIn);
-  }
-
   bool checkNumbersOnly(String num){
     List<String> validCharacters = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
@@ -341,35 +325,51 @@ class pdfViewerState extends State<pdfViewer>{
       ): myMain.starPdfBool == false && myMain.planetPdfBool == true?
         Column(
           children: <Widget>[
-            Expanded(
-            child: FutureBuilder(
-                future: myMain.myPlanetPdfFile,
-                builder: (bc, snapshot){
-                  if(snapshot.hasData){
-                    final docForPdfx = snapshot.data as PdfDocument;
-                    totalPlanetPdfPages = docForPdfx.pagesCount;
-
-                    myPlanetPdfxController = PdfController(document: Future.value(docForPdfx));
-
-                    myPlanetPageNumber = myPlanetPdfxController.initialPage;
-
-                    return PdfView(
-                      onPageChanged: (int myCurrentPage){
-                        myPlanetPdfPage = myCurrentPage;
-                        myPlanetPageNumber = myCurrentPage;
-                        print("myPlanetPdfPage: ${myPlanetPdfPage}");
-                      },
-                      controller: myPlanetPdfxController,
-                    );
-                  }
-                  else{
-                    return Center(child: CircularProgressIndicator());
-                  }
-                }
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
+            Expanded(
+              child: FutureBuilder(
+                  future: myMain.myPlanetPdfFile,
+                  builder: (bc, snapshot){
+                    if(snapshot.hasData){
+                      final docForPdfx = snapshot.data as PdfDocument;
+                      totalPlanetPdfPages = docForPdfx.pagesCount;
+
+                      if(snapshotExistsPlanets == false){
+                        snapshotExistsPlanets = true;
+                        myPlanetPdfxController = PdfController(document: Future.value(docForPdfx));
+
+                        //Initializing page numbers immediately:
+                        WidgetsBinding.instance.addPostFrameCallback((myVar){
+                          setState((){
+                            myPlanetPageNumber = 1;
+                            myPlanetPdfPage = 1;
+                          });
+                        });
+
+                        print("snapshotExistsPlanets: ${snapshotExistsPlanets}");
+                      }
+
+                      return PdfView(
+                        onPageChanged: (int myCurrentPage){
+                          setState(() {
+                            myPlanetPdfPage = myCurrentPage;
+                            myPlanetPageNumber = myCurrentPage;
+                            print("myPlanetPdfPage: ${myPlanetPdfPage}");
+                          });
+                        },
+                        controller: myPlanetPdfxController,
+                      );
+                    }
+                    else{
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  }
+              ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),//const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -392,10 +392,7 @@ class pdfViewerState extends State<pdfViewer>{
                     onPressed: (){
                       int? pageUserIsOn = int.tryParse(planetPdfPageController.text);
                       if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalPlanetPdfPages && !pageUserIsOn.toString().contains(".")){
-                        myPlanetPageNumber = pageUserIsOn;
-
-                        animateToPlanetPdfPage();
-                        goToPlanetPdfPage();
+                        myPlanetPdfxController.jumpToPage(pageUserIsOn);
 
                         print("myPlanetPdfPage: ${myPlanetPdfPage}");
                       }
@@ -441,7 +438,7 @@ class pdfViewerState extends State<pdfViewer>{
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),//const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -451,9 +448,7 @@ class pdfViewerState extends State<pdfViewer>{
                     ),
                     onPressed: (){
                       if(myPlanetPageNumber > 1){
-                        myPlanetPageNumber = 1;
-                        animateToPlanetPdfPage();
-                        goToPlanetPdfPage();
+                        myPlanetPdfxController.jumpToPage(1);
                       }
                       else{
                         print("Nothing needed");
@@ -466,9 +461,7 @@ class pdfViewerState extends State<pdfViewer>{
                     ),
                     onPressed: (){
                       if(myPlanetPageNumber > 1){
-                        myPlanetPageNumber = myPlanetPageNumber - 1;
-                        animateToPlanetPdfPage();
-                        goToPlanetPdfPage();
+                        myPlanetPdfxController.jumpToPage(myPlanetPageNumber - 1);
                       }
                       else{
                         print("Nothing needed");
@@ -481,9 +474,7 @@ class pdfViewerState extends State<pdfViewer>{
                     ),
                     onPressed: (){
                       if(myPlanetPageNumber < totalPlanetPdfPages){
-                        myPlanetPageNumber = myPlanetPageNumber + 1;
-                        animateToPlanetPdfPage();
-                        goToPlanetPdfPage();
+                        myPlanetPdfxController.jumpToPage(myPlanetPageNumber + 1);
                       }
                       else{
                         print("Nothing needed");
@@ -496,9 +487,7 @@ class pdfViewerState extends State<pdfViewer>{
                     ),
                     onPressed: (){
                       if(myPlanetPageNumber < totalPlanetPdfPages){
-                        myPlanetPageNumber = totalPlanetPdfPages;
-                        animateToPlanetPdfPage();
-                        goToPlanetPdfPage();
+                        myPlanetPdfxController.jumpToPage(totalPlanetPdfPages);
                       }
                       else{
                         print("Nothing needed");
@@ -507,6 +496,16 @@ class pdfViewerState extends State<pdfViewer>{
                 ),
               ],
             ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: snapshotExistsPlanets == true? Text("Page: ${myPlanetPdfPage} of ${totalPlanetPdfPages}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)) : Text(""),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
         ],
       ):
