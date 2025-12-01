@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-//import 'package:feedback_sentry/feedback_sentry.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,7 +41,7 @@ import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
 //import 'package:sentry/sentry.dart';
-//import 'package:feedback/feedback.dart';
+import 'package:http/http.dart' as http;
 
 var myInfo;
 var userData;
@@ -55,20 +55,6 @@ class createThread extends StatefulWidget{
   @override
   createThreadState createState() => createThreadState();
 }
-
-/*void main() async{
-
-  /*await SentryFlutter.init(
-        (options) {
-      options.dsn = dotenv.env["OPTIONS_DSN"];
-
-      options.tracesSampleRate = 1.0;
-
-      options.profilesSampleRate = 1.0;
-    },
-    appRunner: () => runApp(const MyApp()),
-  );*/
-}*/
 
 class createThreadState extends State<createThread>{
   static String threadCreator = '/createThread';
@@ -104,6 +90,26 @@ class createThreadState extends State<createThread>{
     }
 
     return messageForUserCreateThread;
+  }
+
+  Future<void> sendUserFeedback({required String myUsername, required String myThreadName, required String myThreadContent}) async{
+    final myPayload = {
+      "username": myUsername,
+      "users_feedback": "${myThreadName}\n${myThreadContent}",
+    };
+
+    final myResponse = await http.post(
+      Uri.parse("https://star-expedition-feedback.vercel.app/api/sendUserFeedback"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(myPayload),
+    );
+
+    if(myResponse.statusCode == 200){
+      print("The feedback has been saved successfully");
+    }
+    else{
+      print("Unfortunately, there was an error saving the feedback: ${myResponse.body}");
+    }
   }
 
   Widget build(BuildContext createThreadBuildContext){
@@ -1288,33 +1294,8 @@ class createThreadState extends State<createThread>{
 
                                 createFeedbackAndSuggestionsThread(theNewFeedbackAndSuggestionsThread);
 
-                                //Sentry feedback:
-                                /*if(!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-                                  SentryId mySentryId = SentryId
-                                      .empty(); //Sentry.captureMessage(threadNameController.text);
-
-                                  await Sentry.init((myOptions) {
-                                    myOptions.dsn = dotenv.env["OPTIONS_DSN"];
-                                    myOptions.beforeSend = (event, hint) async {
-                                      mySentryId = event.eventId;
-                                      return event;
-                                    };
-                                  });
-
-                                  var theUsersFeedback = SentryFeedback(
-                                    associatedEventId: mySentryId,
-                                    name: usernameController.text,
-                                    message: "${threadNameController
-                                        .text}\n${threadContentController
-                                        .text}",
-                                  );
-
-                                  Sentry.captureFeedback(theUsersFeedback);
-                                }*/
-
-                                /*BetterFeedback.of(context).showAndUploadToSentry(
-                                      name: usernameController.text,
-                                    );*/
+                                //Feedback:
+                                await sendUserFeedback(myUsername: usernameController.text, myThreadName: threadNameController.text, myThreadContent: threadContentController.text);
 
                                 if(myUsername != "" && myNewUsername == ""){
                                   if(firebaseDesktopHelper.onDesktop){

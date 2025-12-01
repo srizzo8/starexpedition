@@ -39,36 +39,6 @@
     <!-- This script adds the flutter initialization JS code -->
     <script src="flutter.js" defer>
     </script>
-    <!--<script src="https://browser.sentry-cdn.com/8.10.0/bundle.tracing.replay.min.js" crossorigin="anonymous">
-    </script>
-    <script>
-    window.OPTIONS_DSN = "https://cdc8c12367c6f0be97bdd3c5ce6b7028@o4508314277576704.ingest.us.sentry.io/4508314315849728";
-  </script>
-    <script>
-    const dartDefines = window.flutterConfiguration?.dartDefines || [];
-    const decodedDefines = dartDefines.map(i => atob(i));
-
-    const optionsDSNEntry = decodedDefines.find(j => j.startsWith("OPTIONS_DSN="));
-    window.OPTIONS_DSN = optionsDSNEntry ? optionsDSNEntry.split("=")[1] : null;
-  </script>
-    <script>
-    if(window.OPTIONS_DSN){
-      Sentry.init({
-        dsn: window.OPTIONS_DSN,
-        integrations: [
-          Sentry.browserTracingIntegration(),
-          Sentry.replayIntegration(),
-        ],
-        tracesSampleRate: 1.0,
-        profilesSampleRate: 1.0,
-        replaysSessionSampleRate: 1.0,
-        replaysOnErrorSampleRate: 1.0,
-      });
-    }
-    else{
-      console.warn("OPTIONS_DSN is not present in this file");
-    }
-  </script> -->
     <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js

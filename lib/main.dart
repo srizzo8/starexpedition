@@ -524,187 +524,20 @@ Future<void> main() async {
     print("starsForSearchBar: ${starsForSearchBar}");
     print("The snapshot: ${allPlanets}");
   }
-  //runApp(MyApp());
-  //List usersOnStarExpeditionDocs = [];
-  /*await FirebaseFirestore.instance.collection("User").get().then((snapshot){
-    snapshot.docs.forEach((item){
-      usersOnStarExpeditionDocs.add(item.data());
-    });
-  });
-  print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");*/
 
-  //Sorting starsForSearchBar
-  /*starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
-
-  for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
-    Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
-    theUsers!.add(u);
-  }
-
-  //List of stars in Star Expedition
-  for(var s in starsForSearchBar){
-    var star = s.starName!;
-    allStars.add(star);
-  }
-
-  allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
-
-  print("All stars: ${allStars}");
-
-  //List of planets each star has
-  for(var v in starsForSearchBar){
-    var ref = FirebaseDatabase.instance.ref(v.starName!);
-    var mySnapshot = await ref.child("Planets").get();
-    var info = mySnapshot.value as Map;
-    for(var i in info.keys){
-      allPlanets.add(i);
-    }
-
-    //All stars and their planets
-    starsAndTheirPlanets[v.starName!] = info.keys;
-  }
-
-  allPlanets.sort((p1, p2) => p1.toLowerCase().compareTo(p2.toLowerCase()));
-
-  print("stars and their planets: ${starsAndTheirPlanets}");
-
-  print("starsForSearchBar: ${starsForSearchBar}");
-  print("The snapshot: ${allPlanets}");*/
-
-  /*QuerySnapshot qs = await FirebaseFirestore.instance.collection("Users").get();
-  var thePeople = qs.docs.map((info) => info.data());
-  print("thePeople: ${thePeople}");*/
-
-  //print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
-
-  //print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
-
-  /*Users u1 = new Users(username: "John", email: "john@testing.com", password: "123");
-  theUsers!.add(u1);
-  print(theUsers);
-  print(theUsers![0].username);*/ //one's username
-
-
-  //Directory d = await getTemporaryDirectory();
-  //String dPath = "d/"
-
-  //json information
-  /*
-  var accountsDataString = await rootBundle.loadString('json/accountsData.json');
-  var data = jsonDecode(accountsDataString);
-  print("Username: " + data[0]["username"].toString());
-  data.length = data.length + 1;
-  data[1]["username"] = "hans";
-  data[1]["email"] = "hans@test.com";
-  data[1]["password"] = "kenworth";
-  print(data[1]["username"]);
-  //data["username"] = "hans";
-  //var data2 = jsonEncode(data);
-  //print(data2);*/
-
-  /*
-  var myDirectory = await getApplicationDocumentsDirectory();
-  var myPath = (myDirectory.path + "/accountsData.json");
-  print(myPath);
-  final accountsFile = File("assets/jsonfiles/accountsData.json");
-  print(accountsFile.existsSync());
-  final accountsData = await accountsFile.readAsString();
-  final fileInstance = jsonDecode(accountsData);
-  print(fileInstance);*/
-
-  //readFilesFromAsset();
-  //readFilesFromDevicePath();
-  //writeFilesToCustomDevicePath();
-  //await findLocalPath;
-  //await findLocalFile;
-  //print(findLocalPath);
-  //print(findLocalFile);
-
-  //final myDir = await getApplicationDocumentsDirectory();
-  //File accountsDataJsonFile = await File("C:/Users/Owner/starexpedition_jsonfiles/accountsData.json");
-  //var accountsData = jsonDecode(accountsDataJsonFile.readAsStringSync());
-  //print(accountsData);
-
-  //final String accountsDataString = await rootBundle.loadString('assets/jsonfiles/accountsData.json');
-  //final myAccountsData = jsonDecode(accountsDataString);
-  //await readUserData(accountsDataString);
-  //print(myAccountsData);
-
-  //var myData = await json.decode(accountsDataString);
-
-
-  /*WidgetsBinding.instance.addPostFrameCallback((_) async{
-    await loadAccountsData();
-  });*/
-  //Firebase
-  //late final accountsApp = Firebase.app();
-  //late final accountsAppRTDB = FirebaseDatabase.instanceFor(app: accountsApp, databaseURL:'https://star-expedition-accounts-default-rtdb.firebaseio.com/');
-  //late FirebaseDatabase accountsDB = FirebaseDatabase(app: accountsApp, );
-  /*
-  await Firebase.initializeApp(
-    name: 'AccountsApp',
-    options: const FirebaseOptions(
-      apiKey: "AIzaSyAExtFxpx52-yW4vnK7Q8xw1wLp1b05Jxk",
-      appId: "1:1004486689657:android:9f606b8da60da237d725a8",
-      messagingSenderId: "1004486689657",
-      projectId: "star-expedition-accounts",
-      databaseURL: "https://star-expedition-accounts-default-rtdb.firebaseio.com/",
-    )
-  );
-  FirebaseApp accountApp = Firebase.app('AccountsApp');
-  FirebaseDatabase accountsDatabase = FirebaseDatabase.instanceFor(app: accountApp);
-
-  print(accountsDatabase.toString());
-
-  final reff = FirebaseDatabase.instance.ref();
-  final mySnapshot = await reff.child('users/username').get();
-  if(mySnapshot.exists){
-    print("It exists");
-  }
-  else{
-    print("It doesn't exist");
-  }
-
-   */
-
-  /*
-  FirebaseDatabase dd = FirebaseDatabase.instanceFor(app: accountsInfo);
-  DatabaseReference dr = FirebaseDatabase.instance.ref("users");
-  DatabaseReference child = dr.child("username");
-  print(child);
-  DatabaseEvent e = await dr.once();
-  print(e);
-  */
-  //FirebaseApp secondDB = Firebase.app('AccountsApp');
-  //print(secondDB);
-  /*
-  List<FirebaseApp> myApps = Firebase.apps;
-  myApps.forEach((i){
-    print("Name of app: " + i.name);
-  });
-   */
-  //theAccountsDatabase = FirebaseDatabase.instance.ref().child("Users");
+  runApp(const MyApp());
 
   //Sentry:
-  //await dotenv.load(fileName: "dotenv.env");
-
-  //if(kReleaseMode == true){ //This checks to see if you are in release mode (which means you are in production)
-  runApp(const MyApp());
-  /*if(!kIsWeb && (Platform.isAndroid || Platform.isIOS)){
-    await SentryFlutter.init(
-          (options) {
+  /*if(kIsWeb){
+    runApp(const MyApp());
+  }
+  else{
+    await SentryFlutter.init((options) {
         options.dsn = dotenv.env["OPTIONS_DSN"];
-
         options.tracesSampleRate = 1.0;
-
-        options.profilesSampleRate = 1.0;
       },
       appRunner: () => runApp(const MyApp()),
     );
-  }
-  else{
-    //If you are in development mode, you can run your app without sentry.io:
-    runApp(const MyApp());
   }*/
 }
 
