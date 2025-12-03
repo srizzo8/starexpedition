@@ -381,11 +381,52 @@ Future<String> readPlanetFile(String planetPath) async{
   }*/
 }*/
 
+Future<void> loggingError(String myMessage, String myStacktrace, String? myUserId) async{
+  final myUrlString = dotenv.env["SUPABASE_FUNCTION_URL"];
+  //final mySupabaseKey = dotenv.env["SUPABASE_SERVICE_ROLE_KEY"];
+
+  if(myUrlString == null){
+    print("Error: The Supabase Functions URL is not set in the .env file");
+    return;
+  }
+
+  final myUrl = Uri.parse(myUrlString);
+
+  final myDeviceInfo = kIsWeb? "Web" : "${Platform.operatingSystem} ${Platform.operatingSystemVersion}";
+
+  try{
+    final myResponse = await http.post(
+      myUrl,
+      headers: {
+        "Content-Type": "application/json",
+        //"Authorization": "Bearer ${mySupabaseKey}",
+      },
+      body: jsonEncode({
+        "message": myMessage,
+        "stacktrace": myStacktrace,
+        "user_id": myUserId,
+        "device_info": myDeviceInfo,
+      }),
+    );
+
+    if(myResponse.statusCode != 200){
+      print("Unable to log the error: ${myResponse.statusCode} - ${myResponse.body}");
+    }
+    else{
+      print("The error was successfully sent to Supabase: ${myResponse.body}");
+    }
+  }
+  catch(myError){
+    //If the error logging fails:
+    print("Unfortunately the error logging has failed: ${myError}");
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   //Loading the .env file:
-  await dotenv.load(fileName: "dotenv.env");
+  await dotenv.load(fileName: "assets/dotenv.env");
 
   //Initializing firebaseDesktopHelper:
   firebaseDesktopHelper.myDatabaseUrl = dotenv.env["FIREBASE_DATABASE_URL"]!;
@@ -525,20 +566,24 @@ Future<void> main() async {
     print("The snapshot: ${allPlanets}");
   }
 
-  runApp(const MyApp());
+  //runApp(const MyApp());
 
-  //Sentry:
-  /*if(kIsWeb){
+  print("The Supabase Function URL: ${dotenv.env["SUPABASE_FUNCTION_URL"]}");
+
+  //Catching Flutter Framebase errors with Supabase:
+  FlutterError.onError = (FlutterErrorDetails myDetails){
+    FlutterError.dumpErrorToConsole(myDetails);
+    loggingError(myDetails.exceptionAsString(), myDetails.stack?.toString() ?? "", null);
+  };
+
+  //Catching uncaught errors with Supabase:
+  runZonedGuarded((){
     runApp(const MyApp());
-  }
-  else{
-    await SentryFlutter.init((options) {
-        options.dsn = dotenv.env["OPTIONS_DSN"];
-        options.tracesSampleRate = 1.0;
-      },
-      appRunner: () => runApp(const MyApp()),
-    );
-  }*/
+  }, (error, stack){
+      //Logging the error to the Supabase Edge function:
+      loggingError(error.toString(), stack.toString(), null);
+    }
+  );
 }
 
 class myStars {
@@ -1300,6 +1345,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                   onTap: () {
                     discussionBoardLogin = false;
                     Navigator.pushReplacementNamed(context, routesToOtherPages.whyMade);
+                    //throw Exception("Testing the error");
                   }
               ),
               ListTile(

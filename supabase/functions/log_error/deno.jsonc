@@ -1,0 +1,12 @@
+{
+  "tasks": {},
+  "importMap": "./import_map.json",
+  "fmt": {},
+  "lint": {},
+  "imports": {},
+  "env": {},
+  "verify_jwt": false,
+  "compilerOptions": {
+    "lib": ["deno.window", "dom"]
+  }
+}

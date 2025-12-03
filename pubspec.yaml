@@ -91,7 +91,7 @@ flutter:
     - assets/text_files/star_files/
     - assets/text_files/planet_files/
     - json/
-    - dotenv.env
+    - assets/dotenv.env
 
   # To add assets to your application, add an assets section, like this:
   # assets:
