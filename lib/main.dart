@@ -381,9 +381,28 @@ Future<String> readPlanetFile(String planetPath) async{
   }*/
 }*/
 
-Future<void> loggingError(String myMessage, String myStacktrace, String? myUserId) async{
+Map<String, dynamic> parseMyStackTrace(String st){
+  final myLines = st.split("\n");
+
+  //Patterns to try for this method:
+  final myPatterns = [RegExp(r'package:[^/]+/(.*\.dart):(\d+):(\d+)'), RegExp(r'packages\/.*\/([^\/]+\.dart)\s+(\d+):(\d+)'), RegExp(r'([^\/\s]+\.dart):(\d+):(\d+)')];
+
+  for(final line in myLines){
+    final trimmedLine = line.trim();
+
+    for(final pattern in myPatterns){
+      final myMatch = pattern.firstMatch(trimmedLine);
+
+      if(myMatch != null){
+        return { "file_name": myMatch.group(1), "line": myMatch.group(2), "column": myMatch.group(3), };
+      }
+    }
+  }
+  return { "file_name": null, "line": null, "column": null, };
+}
+
+Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? myUserId) async{
   final myUrlString = dotenv.env["SUPABASE_FUNCTION_URL"];
-  //final mySupabaseKey = dotenv.env["SUPABASE_SERVICE_ROLE_KEY"];
 
   if(myUrlString == null){
     print("Error: The Supabase Functions URL is not set in the .env file");
@@ -391,6 +410,12 @@ Future<void> loggingError(String myMessage, String myStacktrace, String? myUserI
   }
 
   final myUrl = Uri.parse(myUrlString);
+
+  final myStackString = myStacktrace.toString();
+  final parsedStackString = parseMyStackTrace(myStackString);
+
+  print("Full stack string (first five lines): ${myStackString.split("\\n").take(5).join("\\n")}");
+  print("Parsed stack string: ${parsedStackString}");
 
   final myDeviceInfo = kIsWeb? "Web" : "${Platform.operatingSystem} ${Platform.operatingSystemVersion}";
 
@@ -403,9 +428,12 @@ Future<void> loggingError(String myMessage, String myStacktrace, String? myUserI
       },
       body: jsonEncode({
         "message": myMessage,
-        "stacktrace": myStacktrace,
+        "stacktrace": myStacktrace.toString(),
         "user_id": myUserId,
         "device_info": myDeviceInfo,
+        "file_name": parsedStackString["file_name"],
+        "line": parsedStackString["line"],
+        "column": parsedStackString["column"],
       }),
     );
 
@@ -573,7 +601,7 @@ Future<void> main() async {
   //Catching Flutter Framebase errors with Supabase:
   FlutterError.onError = (FlutterErrorDetails myDetails){
     FlutterError.dumpErrorToConsole(myDetails);
-    loggingError(myDetails.exceptionAsString(), myDetails.stack?.toString() ?? "", null);
+    loggingError(myDetails.exceptionAsString(), myDetails.stack!, null);
   };
 
   //Catching uncaught errors with Supabase:
@@ -581,7 +609,7 @@ Future<void> main() async {
     runApp(const MyApp());
   }, (error, stack){
       //Logging the error to the Supabase Edge function:
-      loggingError(error.toString(), stack.toString(), null);
+      loggingError(error.toString(), stack, null);
     }
   );
 }
