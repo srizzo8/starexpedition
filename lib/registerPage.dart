@@ -442,9 +442,18 @@ class registerPageState extends State<registerPage>{
                       if(firebaseDesktopHelper.onDesktop){
                         var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
                         print("userIdResult: ${userIdResult}");
-                        var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"] == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
+                        var userIdFound;
+
+                        if(userIdResult.isEmpty){
+                          userIdFound = 1;
+                        }
+                        else{
+                          userIdResult.sort((myUserA, myUserB) => (myUserA["id"] as int).compareTo(myUserB["id"] as int));
+                          userIdFound = ((userIdResult.last["id"]) as int) + 1;
+                        }
+                        //var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
                         print("userIdFound: ${userIdFound}");
-                        userId = userIdFound["id"] + 1;
+                        userId = userIdFound;
                         print("This is the userId: $userId");
                       }
                       else{
@@ -482,9 +491,19 @@ class registerPageState extends State<registerPage>{
                       if(firebaseDesktopHelper.onDesktop){
                         var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
                         print("userIdResult: ${userIdResult}");
-                        var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
+                        var userIdFound;
+
+                        if(userIdResult.isEmpty){
+                          userIdFound = 1;
+                        }
+                        else{
+                          userIdResult.sort((myUserA, myUserB) => (myUserA["id"] as int).compareTo(myUserB["id"] as int));
+                          print("This is userIdResult.last: ${userIdResult.last["id"]}");
+                          userIdFound = ((userIdResult.last["id"]) as int) + 1;
+                        }
+                        //var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
                         print("userIdFound: ${userIdFound}");
-                        userId = userIdFound["id"] + 1;
+                        userId = userIdFound;
                         print("This is the userId: $userId");
                       }
                       else{
