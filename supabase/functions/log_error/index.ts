@@ -29,7 +29,7 @@ serve(async (req: Request) => {
         }
 
         const body = await req.json();
-        const { message, stacktrace, user_id, device_info, file_name, line, column } = body;
+        const { message, stacktrace, user, device_info, file_name, line, column } = body;
 
         console.log("Received body: ", body);
 
@@ -37,7 +37,7 @@ serve(async (req: Request) => {
             {
                 message,
                 stacktrace,
-                user_id,
+                user,
                 device_info,
                 file_name,
                 line,

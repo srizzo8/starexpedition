@@ -401,7 +401,7 @@ Map<String, dynamic> parseMyStackTrace(String st){
   return { "file_name": null, "line": null, "column": null, };
 }
 
-Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? myUserId) async{
+Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? theUser) async{
   final myUrlString = dotenv.env["SUPABASE_FUNCTION_URL"];
 
   if(myUrlString == null){
@@ -419,6 +419,18 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? myU
 
   final myDeviceInfo = kIsWeb? "Web" : "${Platform.operatingSystem} ${Platform.operatingSystemVersion}";
 
+  if(myUsername != "" || myNewUsername != ""){
+    if(myUsername != "" && myNewUsername == ""){
+      theUser = myUsername;
+    }
+    else if(myUsername == "" && myNewUsername != ""){
+      theUser = myNewUsername;
+    }
+  }
+  else{
+    theUser = null;
+  }
+
   try{
     final myResponse = await http.post(
       myUrl,
@@ -429,7 +441,7 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? myU
       body: jsonEncode({
         "message": myMessage,
         "stacktrace": myStacktrace.toString(),
-        "user_id": myUserId,
+        "user": theUser,
         "device_info": myDeviceInfo,
         "file_name": parsedStackString["file_name"],
         "line": parsedStackString["line"],
@@ -1371,9 +1383,9 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
               ListTile(
                   title: Text("Why Star Expedition Was Made"),
                   onTap: () {
-                    discussionBoardLogin = false;
-                    Navigator.pushReplacementNamed(context, routesToOtherPages.whyMade);
-                    //throw Exception("Testing the error");
+                    //discussionBoardLogin = false;
+                    //Navigator.pushReplacementNamed(context, routesToOtherPages.whyMade);
+                    throw Exception("Testing the error");
                   }
               ),
               ListTile(
