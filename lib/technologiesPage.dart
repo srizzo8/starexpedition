@@ -142,7 +142,7 @@ class technologiesPageState extends State<technologiesPage>{
 
                                                   if(firebaseDesktopHelper.onDesktop){
                                                     technologiesNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                                    theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                                    theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                                   }
                                                   else{
                                                     technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString().toLowerCase()).get(),
@@ -150,7 +150,13 @@ class technologiesPageState extends State<technologiesPage>{
                                                       theUsersData = person.data();
                                                     }),
                                                   },
-                                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  if(theUsersData.isEmpty){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                                  }
+                                                  else{
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  }
                                                 }
                                             ),
                                             TextSpan(
@@ -182,7 +188,7 @@ class technologiesPageState extends State<technologiesPage>{
 
                               if(firebaseDesktopHelper.onDesktop){
                                 var theTThreads = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
-                                var matchingThread = theTThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                                var matchingThread = theTThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
                                 if(matchingThread.isNotEmpty){
                                   //Getting the document ID:
@@ -368,7 +374,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
 
                                         if(firebaseDesktopHelper.onDesktop){
                                           technologiesNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                          theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                         }
                                         else{
                                           technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
@@ -376,7 +382,13 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                             theUsersData = person.data();
                                           }),
                                         },
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        if(theUsersData.isEmpty){
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                        }
+                                        else{
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
                                       }
                                     ),
                                     TextSpan(
@@ -413,7 +425,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
 
                                         if(firebaseDesktopHelper.onDesktop){
                                           technologiesNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                          theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                         }
                                         else{
                                           technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString().toLowerCase()).get(),
@@ -421,7 +433,13 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                             theUsersData = person.data();
                                           }),
                                         },
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        if(theUsersData.isEmpty){
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                        }
+                                        else{
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
                                       }
                                     ),
                                     TextSpan(
@@ -564,7 +582,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
 
                                           if(firebaseDesktopHelper.onDesktop){
                                             technologiesNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                            theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                            theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                             print("theUsersData is this on Desktop: ${theUsersData}"),
                                           }
                                           else{
@@ -573,7 +591,13 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                               theUsersData = person.data();
                                             }),
                                           },
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          if(theUsersData.isEmpty){
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                          }
+                                          else{
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          }
                                         }
                                       ),
                                       TextSpan(
@@ -614,7 +638,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
 
                                   if(firebaseDesktopHelper.onDesktop){
                                     var theTThreads = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
-                                    var matchingThread = theTThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                                    var matchingThread = theTThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
                                     if(matchingThread.isNotEmpty){
                                       //Getting the document ID:
@@ -626,7 +650,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                     }
 
                                     var theTThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Technologies", myDocT, "Replies");
-                                    var matchingReply = theTThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeT, orElse: () => {} as Map<String, dynamic>);
+                                    var matchingReply = theTThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeT, orElse: () => <String, dynamic>{});
 
                                     if(matchingReply.isNotEmpty){
                                       //Getting the document ID:
@@ -753,7 +777,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
 
                             if(firebaseDesktopHelper.onDesktop){
                               technologiesNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                              theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorT.toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                              theUsersData = technologiesNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorT.toLowerCase(), orElse: () => <String, dynamic>{}),
                             }
                             else{
                               technologiesNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorT.toLowerCase()).get(),
@@ -761,7 +785,13 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                 theUsersData = person.data();
                               }),
                             },
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                            if(theUsersData.isEmpty){
+                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                            }
+                            else{
+                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                            }
                           }
                         ),
                         TextSpan(

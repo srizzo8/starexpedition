@@ -687,6 +687,7 @@ class MyApp extends StatelessWidget {
           routesToOtherPages.settingsPage: (context) => settingsPage(),
           routesToOtherPages.userProfileInUserPerspectivePage: (context) => userProfileInUserPerspective(),
           routesToOtherPages.userSearchBarPage: (context) => userSearchBarPage(),
+          routesToOtherPages.nonexistentUserPage: (context) => nonexistentUser(),
         }
     );
   }
@@ -705,6 +706,7 @@ class routesToOtherPages{
   static String settingsPage = settingsPageState.nameOfRoute;
   static String userProfileInUserPerspectivePage = userProfileInUserPerspective.nameOfRoute;
   static String userSearchBarPage = userSearchBarPageState.nameOfRoute;
+  static String nonexistentUserPage = nonexistentUser.nameOfRoute;
 }
 
 // This is the widget that will be shown

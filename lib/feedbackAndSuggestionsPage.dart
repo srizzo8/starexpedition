@@ -147,7 +147,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
 
                                                 if(firebaseDesktopHelper.onDesktop){
                                                   fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                                  theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFas[theCurrentPageFas][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                                  theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFas[theCurrentPageFas][index]["poster"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                                 }
                                                 else{
                                                   fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFas[theCurrentPageFas][index]["poster"].toString().toLowerCase()).get(),
@@ -155,7 +155,13 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
                                                     theUsersData = person.data();
                                                   }),
                                                 },
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                if(theUsersData.isEmpty){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                                }
+                                                else{
+                                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                }
                                               }
                                           ),
                                           TextSpan(
@@ -187,7 +193,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
 
                             if(firebaseDesktopHelper.onDesktop){
                               var theFasThreads = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
-                              var matchingThread = theFasThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                              var matchingThread = theFasThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
                               if(matchingThread.isNotEmpty){
                                 //Getting the document ID:
@@ -373,7 +379,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
 
                                         if(firebaseDesktopHelper.onDesktop){
                                           fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                         }
                                         else{
                                           fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
@@ -382,7 +388,13 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                           }),
                                         },
 
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        if(theUsersData.isEmpty){
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                        }
+                                        else{
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
                                       }
                                     ),
                                     TextSpan(
@@ -418,7 +430,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
 
                                         if(firebaseDesktopHelper.onDesktop){
                                           fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                         }
                                         else{
                                           fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase()).get(),
@@ -427,7 +439,13 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                           }),
                                         },
 
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        if(theUsersData.isEmpty){
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                        }
+                                        else{
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
                                       }
                                     ),
                                     TextSpan(
@@ -568,7 +586,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
 
                                         if(firebaseDesktopHelper.onDesktop){
                                           fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                           print("theUsersData is this on Desktop: ${theUsersData}"),
                                         }
                                         else{
@@ -578,7 +596,13 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                           }),
                                         },
 
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        if(theUsersData.isEmpty){
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                        }
+                                        else{
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
                                       }
                                     ),
                                     TextSpan(
@@ -619,7 +643,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
 
                                 if(firebaseDesktopHelper.onDesktop){
                                   var theFasThreads = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
-                                  var matchingThread = theFasThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                                  var matchingThread = theFasThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
                                   if(matchingThread.isNotEmpty){
                                     //Getting the document ID:
@@ -631,7 +655,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                   }
 
                                   var theFasThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Feedback_And_Suggestions", myDocFas, "Replies");
-                                  var matchingReply = theFasThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeFas, orElse: () => {} as Map<String, dynamic>);
+                                  var matchingReply = theFasThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeFas, orElse: () => <String, dynamic>{});
 
                                   if(matchingReply.isNotEmpty){
                                     //Getting the document ID:
@@ -757,7 +781,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
 
                               if(firebaseDesktopHelper.onDesktop){
                                 fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorFas.toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorFas.toLowerCase(), orElse: () => <String, dynamic>{}),
                               }
                               else{
                                 fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorFas.toLowerCase()).get(),
@@ -765,7 +789,13 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                   theUsersData = person.data();
                                 }),
                               },
-                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                              //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                              if(theUsersData.isEmpty){
+                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                              }
+                              else{
+                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                              }
                             }
                           ),
                           TextSpan(

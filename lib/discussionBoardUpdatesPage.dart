@@ -179,7 +179,17 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                                             }),
                                           },
 
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          print("This is nameData: ${nameData}"),
+                                          //print("This is the poster: ${mySublistsDbu[theCurrentPageDbu][index]["poster"].toString()}"),
+                                          print("This is theUsersData: ${theUsersData}"),
+
+                                          //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          if(theUsersData.isEmpty){
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                          }
+                                          else{
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          }
                                         }
                                       ),
                                       TextSpan(
@@ -454,7 +464,13 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                             theUsersData = person.data();
                                           }),
                                         },
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        if(theUsersData.isEmpty){
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                        }
+                                        else{
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
                                       }
                                     ),
                                     TextSpan(
@@ -504,7 +520,13 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                             theUsersData = person.data();
                                           }),
                                         },
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        if(theUsersData.isEmpty){
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                        }
+                                        else{
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
                                       }
                                     ),
                                     TextSpan(
@@ -689,7 +711,13 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                             theUsersData = person.data();
                                           }),
                                         },
-                                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        if(theUsersData.isEmpty){
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                        }
+                                        else{
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                        }
                                       }
                                     ),
                                     TextSpan(
@@ -946,7 +974,12 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 }),
                               },
 
-                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                              if(theUsersData.isEmpty){
+                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                              }
+                              else{
+                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                              }
                             }
                           ),
                           TextSpan(

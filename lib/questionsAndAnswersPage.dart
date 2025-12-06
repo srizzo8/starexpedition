@@ -142,7 +142,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
 
                                                   if(firebaseDesktopHelper.onDesktop){
                                                     qaaNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                                    theUsersData = qaaNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsQaa[theCurrentPageQaa][index]["poster"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                                    theUsersData = qaaNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsQaa[theCurrentPageQaa][index]["poster"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                                   }
                                                   else{
                                                     qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsQaa[theCurrentPageQaa][index]["poster"].toString().toLowerCase()).get(),
@@ -151,7 +151,13 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                                                     }),
                                                   },
 
-                                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  if(theUsersData.isEmpty){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                                  }
+                                                  else{
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  }
                                                 }
                                             ),
                                             TextSpan(
@@ -183,7 +189,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
 
                               if(firebaseDesktopHelper.onDesktop){
                                 var theQaaThreads = await firebaseDesktopHelper.getFirestoreCollection("Questions_And_Answers");
-                                var matchingThread = theQaaThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                                var matchingThread = theQaaThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
                                 if(matchingThread.isNotEmpty){
                                   //Getting the document ID:
@@ -369,7 +375,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
 
                                           if(firebaseDesktopHelper.onDesktop){
                                             qaaNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                            theUsersData = qaaNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                            theUsersData = qaaNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                           }
                                           else{
                                             qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
@@ -377,7 +383,13 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                               theUsersData = person.data();
                                             }),
                                           },
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          if(theUsersData.isEmpty){
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                          }
+                                          else{
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          }
                                         }
                                       ),
                                       TextSpan(
@@ -414,7 +426,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
 
                                           if(firebaseDesktopHelper.onDesktop){
                                             qaaNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                            theUsersData = qaaNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                            theUsersData = qaaNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                           }
                                           else{
                                             qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString().toLowerCase()).get(),
@@ -422,7 +434,13 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                               theUsersData = person.data();
                                             }),
                                           },
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          if(theUsersData.isEmpty){
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                          }
+                                          else{
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          }
                                         }
                                       ),
                                       TextSpan(
@@ -566,7 +584,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
 
                                           if(firebaseDesktopHelper.onDesktop){
                                             qaaNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                            theUsersData = qaaNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                            theUsersData = qaaNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                             print("theUsersData is this on Desktop: ${theUsersData}"),
                                           }
                                           else{
@@ -575,7 +593,13 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                               theUsersData = person.data();
                                             }),
                                           },
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          if(theUsersData.isEmpty){
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                          }
+                                          else{
+                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                          }
                                         }
                                       ),
                                       TextSpan(
@@ -616,7 +640,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
 
                                   if(firebaseDesktopHelper.onDesktop){
                                     var theQaaThreads = await firebaseDesktopHelper.getFirestoreCollection("Questions_And_Answers");
-                                    var matchingThread = theQaaThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
+                                    var matchingThread = theQaaThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
                                     if(matchingThread.isNotEmpty){
                                       //Getting the document ID:
@@ -628,7 +652,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                     }
 
                                     var theQaaThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Questions_And_Answers", myDocQaa, "Replies");
-                                    var matchingReply = theQaaThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeQaa, orElse: () => {} as Map<String, dynamic>);
+                                    var matchingReply = theQaaThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeQaa, orElse: () => <String, dynamic>{});
 
                                     if(matchingReply.isNotEmpty){
                                       //Getting the document ID:
@@ -755,7 +779,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
 
                               if(firebaseDesktopHelper.onDesktop){
                                 qaaNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                theUsersData = qaaNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorQaa.toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+                                theUsersData = qaaNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorQaa.toLowerCase(), orElse: () => <String, dynamic>{}),
                               }
                               else{
                                 qaaNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorQaa.toLowerCase()).get(),
@@ -763,7 +787,13 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                   theUsersData = person.data();
                                 }),
                               },
-                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                              //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                              if(theUsersData.isEmpty){
+                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                              }
+                              else{
+                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                              }
                             }
                           ),
                           TextSpan(

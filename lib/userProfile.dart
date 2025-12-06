@@ -692,3 +692,40 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
     );
   }
 }
+
+class nonexistentUser extends StatelessWidget{
+  static String nameOfRoute = '/nonexistentUser';
+
+  Widget build(BuildContext bc){
+    return Scaffold(
+      appBar: AppBar(
+      centerTitle: true,
+      title: Text("Star Expedition"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () =>{
+            Navigator.pop(bc),
+          }
+        ),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: MediaQuery.of(bc).size.height * 0.015625,
+          ),
+          Center(
+            child: Text("Error", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            height: MediaQuery.of(bc).size.height * 0.015625,
+          ),
+          Container(
+            padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
+            child: Text("Unfortunately, this user does not exist.",textAlign: TextAlign.center),
+          ),
+        ],
+      ),
+    );
+  }
+}
