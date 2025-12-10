@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
-//import 'dart:js';
+import 'dart:io' show HttpHeaders;
+//import 'dart:js' as js;
 import 'dart:math';
-//import 'dart:html';
+//import 'dart:html' as html;
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -50,6 +51,9 @@ import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:pdfx/pdfx.dart';
 
 import 'package:http/http.dart' as http;
+
+import 'webErrorStub.dart'
+  if(dart.library.html) 'forWebErrors.dart';
 
 //import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 
@@ -401,24 +405,21 @@ Map<String, dynamic> parseMyStackTrace(String st){
   return { "file_name": null, "line": null, "column": null, };
 }
 
-Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? theUser) async{
-  final myUrlString = dotenv.env["SUPABASE_FUNCTION_URL"];
+Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? theUser, {Map<String, dynamic>? myExtraInfo}) async{
+  final myUrl = Uri.parse("https://hjncbvhtwdenqzacfxab.supabase.co/functions/v1/log_error");
 
-  if(myUrlString == null){
-    print("Error: The Supabase Functions URL is not set in the .env file");
-    return;
-  }
-
-  final myUrl = Uri.parse(myUrlString);
-
-  final myStackString = myStacktrace.toString();
-  final parsedStackString = parseMyStackTrace(myStackString);
-
-  print("Full stack string (first five lines): ${myStackString.split("\\n").take(5).join("\\n")}");
-  print("Parsed stack string: ${parsedStackString}");
+  final parsedStackString = parseMyStackTrace(myStacktrace.toString());
 
   final myDeviceInfo = kIsWeb? "Web" : "${Platform.operatingSystem} ${Platform.operatingSystemVersion}";
 
+  final myPublicToken = "bkg94itlep73igf81qw60";
+
+  //Checking if myPublicToken is empty or not:
+  if(myPublicToken.isEmpty){
+    print("Unfortunately, the value of myPublicToken is missing");
+  }
+
+  //Determining the value of theUser:
   if(myUsername != "" || myNewUsername != ""){
     if(myUsername != "" && myNewUsername == ""){
       theUser = myUsername;
@@ -431,23 +432,47 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? the
     theUser = null;
   }
 
+  /*if(myPublicToken == null || myPublicToken.isEmpty){
+    print("The public token is missing from the .env file");
+  }*/
+
+  //Build headers with an API key only for desktop and mobile devices:
+  final Map<String, String> myHeaders = {
+    HttpHeaders.contentTypeHeader: "application/json",
+
+    //For desktop and mobile (uses a private token):
+    //if(!kIsWeb) "x-api-key": dotenv.env["MY_TOKEN"]!,
+
+    //For web (uses a public token):
+    //if(kIsWeb) "x-api-key": dotenv.env["PUBLIC_TOKEN"]!,
+
+    "x-api-key": myPublicToken,
+    "x-force-header": "true",
+    "x-extra": "1",
+  };
+
+  print("These are the outgoing headers: $myHeaders");
+
+  final body = jsonEncode({
+    "message": myMessage,
+    "stacktrace": myStacktrace.toString(),
+    "device_info": myDeviceInfo,
+    "file_name": parsedStackString["file_name"],
+    "line": parsedStackString["line"],
+    "column_number": parsedStackString["column"],
+    "extra": myExtraInfo ?? {},
+    "username": theUser,
+  });
+
+  print("Length of body: ${utf8.encode(body).length}");
+
+  print("This is the outgoing body: ${body}");
+
   try{
-    final myResponse = await http.post(
-      myUrl,
-      headers: {
-        "Content-Type": "application/json",
-        //"Authorization": "Bearer ${mySupabaseKey}",
-      },
-      body: jsonEncode({
-        "message": myMessage,
-        "stacktrace": myStacktrace.toString(),
-        "user": theUser,
-        "device_info": myDeviceInfo,
-        "file_name": parsedStackString["file_name"],
-        "line": parsedStackString["line"],
-        "column": parsedStackString["column"],
-      }),
-    );
+    final myResponse = await http.post(myUrl, headers: myHeaders, body: body,);
+
+    print("Response status code: ${myResponse.statusCode}");
+    print("Response body: ${myResponse.body}");
 
     if(myResponse.statusCode != 200){
       print("Unable to log the error: ${myResponse.statusCode} - ${myResponse.body}");
@@ -456,10 +481,31 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? the
       print("The error was successfully sent to Supabase: ${myResponse.body}");
     }
   }
-  catch(myError){
+  catch(myError, myStack){
     //If the error logging fails:
     print("Unfortunately the error logging has failed: ${myError}");
+    print("Here is the stack: ${myStack}");
   }
+}
+
+/*void setupWebJSErrors(){
+  if(!kIsWeb) return;
+
+  //Importing html package in a function; it only executes on web (not on desktop or mobile):
+  html.window.onError.listen((event){
+    final ee = event as html.ErrorEvent;
+
+    final myStack = ee.error is Error && (ee.error as Error).stackTrace != null? (ee.error as Error).stackTrace.toString(): '';
+    loggingError(ee.message ?? "Unknown JS-related error", StackTrace.fromString(myStack), null, myExtraInfo: { "origin": "js_window", "filename": ee.filename, "linenumber": ee.lineno, "columnnumber": ee.colno, },);
+  });
+}*/
+
+void setupMyErrorHandlers(){
+  //Catching Flutter Framebase errors with Supabase:
+  FlutterError.onError = (FlutterErrorDetails myDetails){
+    FlutterError.dumpErrorToConsole(myDetails);
+    loggingError(myDetails.exceptionAsString(), myDetails.stack ?? StackTrace.current, null, myExtraInfo: { "origin": "flutter_error" },);
+  };
 }
 
 Future<void> main() async {
@@ -608,20 +654,17 @@ Future<void> main() async {
 
   //runApp(const MyApp());
 
-  print("The Supabase Function URL: ${dotenv.env["SUPABASE_FUNCTION_URL"]}");
+  print("The Supabase Function URL: ${dotenv.env["MY_SUPABASE_URL"]}");
 
-  //Catching Flutter Framebase errors with Supabase:
-  FlutterError.onError = (FlutterErrorDetails myDetails){
-    FlutterError.dumpErrorToConsole(myDetails);
-    loggingError(myDetails.exceptionAsString(), myDetails.stack!, null);
-  };
+  setupMyErrorHandlers();
+  setupWebJSErrors();
 
   //Catching uncaught errors with Supabase:
   runZonedGuarded((){
     runApp(const MyApp());
   }, (error, stack){
       //Logging the error to the Supabase Edge function:
-      loggingError(error.toString(), stack, null);
+      loggingError(error.toString(), stack, null, myExtraInfo: { "origin": "zoned_error" },);
     }
   );
 }
