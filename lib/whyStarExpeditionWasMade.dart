@@ -69,6 +69,15 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
             "The information about stars and planets and photos that I collected were based on the information about stars and planets and photos from various websites, " +
                 "such as The Worlds of David Darling, Sol Station, and Universe Today.", textAlign: TextAlign.center),
           ),
+          /*Container(
+            child: InkWell(
+              child: Text("Hello"),
+              onTap: (){
+                List<String> expressions = [];
+                print("${expressions[1]}");
+              }
+            ),
+          )*/
         ]
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),

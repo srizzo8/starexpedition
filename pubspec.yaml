@@ -59,6 +59,7 @@ dependencies:
   http: ^0.13.5
   easy_pdf_viewer: ^1.0.8
   pdfx: ^2.0.1+2
+  js: ^0.6.4
 
 dev_dependencies:
   flutter_test:

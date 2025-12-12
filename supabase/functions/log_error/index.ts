@@ -72,7 +72,10 @@ serve(async (req: Request) => {
             });
         }
 
-        let myData;
+        //Normalizing fields to ensure that fields are not undefined:
+        const safe = (v: any) => (v === undefined ? null : v);
+
+        /*let myData;
 
         try{
             myData = body;
@@ -83,10 +86,42 @@ serve(async (req: Request) => {
                 status: 400,
                 headers: myCorsHeaders,
             });
+        }*/
+
+        const myData = {
+            message: safe(body.message),
+            stacktrace: safe(body.stacktrace),
+            device_info: safe(body.device_info),
+            file_name: safe(body.file_name),
+            line: safe(body.line),
+            column_number: safe(body.column_number),
+            extra: safe(body.extra),
+            username: safe(body.username),
+        };
+
+        //Handling for web JS-related errors:
+        if(body.extra && typeof body.extra === "object"){
+            if(body.extra.source && !myData.file_name){
+                myData.file_name = body.extra.source;
+            }
+            if(body.extra.line && !myData.line){
+                myData.line = body.extra.line;
+            }
+            if(body.extra.column && !myData.column_number){
+                myData.column_number = body.extra.column;
+            }
         }
+
+        console.log("This is being inserted to the star_expedition_errors database: ", JSON.stringify(myData, null, 2));
 
         //Inserting the error to the star_expedition_errors database:
         const { error } = await supabaseClient.from("star_expedition_errors").insert({
+            ...myData,
+            detected_at: new Date().toISOString(),
+        });
+
+        //Inserting the error to the star_expedition_errors database:
+        /*const { error } = await supabaseClient.from("star_expedition_errors").insert({
             message: myData.message,
             stacktrace: myData.stacktrace,
             device_info: myData.device_info,
@@ -96,9 +131,7 @@ serve(async (req: Request) => {
             extra: myData.extra,
             username: myData.username,
             detected_at: new Date().toISOString(),
-        });
-
-        console.log("This is being inserted to the star_expedition_errors database: ", JSON.stringify(myData, null, 2));
+        });*/
 
         if(error){
             console.error("The insert has failed: ", error);

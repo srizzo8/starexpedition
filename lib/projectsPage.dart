@@ -154,7 +154,8 @@ class projectsPageState extends State<projectsPage>{
                                                     }),
                                                   },
                                                   //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                                  if(theUsersData.isEmpty){
+                                                  if(theUsersData?.isEmpty ?? true){
+                                                    print("The user does not exist"),
                                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                                   }
                                                   else{

@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:io' show HttpHeaders;
-//import 'dart:js' as js;
+import 'dart:io' show HttpHeaders, Platform;
 import 'dart:math';
-//import 'dart:html' as html;
+import 'dart:html' as html;
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -52,8 +51,8 @@ import 'package:pdfx/pdfx.dart';
 
 import 'package:http/http.dart' as http;
 
-import 'webErrorStub.dart'
-  if(dart.library.html) 'forWebErrors.dart';
+/*import 'webErrorStub.dart'
+  if(dart.library.html) 'forWebErrors.dart';*/
 
 //import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 
@@ -384,35 +383,56 @@ Future<String> readPlanetFile(String planetPath) async{
     return [];
   }*/
 }*/
+String? determiningUsername(){
+  //String? myUsername;
+  //String? myNewUsername;
+  print("This is myUsername: ${myUsername}");
+  print("This is myNewUsername: ${myNewUsername}");
+
+  if((myUsername.isNotEmpty) && (myNewUsername.isEmpty)){
+    return myUsername;
+  }
+  else if((myUsername.isEmpty) && (myNewUsername.isNotEmpty)){
+    return myNewUsername;
+  }
+  else{
+    return null;
+  }
+}
 
 Map<String, dynamic> parseMyStackTrace(String st){
-  final myLines = st.split("\n");
+  final myRegex = RegExp(r'(packages\/starexpedition4\/.+\.dart)\s+(\d+):(\d+)');
+  final myMatch = myRegex.firstMatch(st);
 
-  //Patterns to try for this method:
-  final myPatterns = [RegExp(r'package:[^/]+/(.*\.dart):(\d+):(\d+)'), RegExp(r'packages\/.*\/([^\/]+\.dart)\s+(\d+):(\d+)'), RegExp(r'([^\/\s]+\.dart):(\d+):(\d+)')];
-
-  for(final line in myLines){
-    final trimmedLine = line.trim();
-
-    for(final pattern in myPatterns){
-      final myMatch = pattern.firstMatch(trimmedLine);
-
-      if(myMatch != null){
-        return { "file_name": myMatch.group(1), "line": myMatch.group(2), "column": myMatch.group(3), };
-      }
-    }
+  //If the app file is found:
+  if(myMatch != null){
+    return { "file_name": myMatch.group(1), "line": myMatch.group(2) ?? "", "column": myMatch.group(3) ?? "", };
   }
+
+  //If the app file is not found, it should fall back to any .dart file:
+  final myFallback = RegExp(r'(.+\.dart)\s+(\d+):(\d+)').firstMatch(st);
+
+  //If the fallback is not null:
+  if(myFallback != null){
+    return { "file_name": myFallback.group(1), "line": myFallback.group(2) ?? "", "column": myFallback.group(3) ?? "", };
+  }
+
   return { "file_name": null, "line": null, "column": null, };
 }
 
 Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? theUser, {Map<String, dynamic>? myExtraInfo}) async{
   final myUrl = Uri.parse("https://hjncbvhtwdenqzacfxab.supabase.co/functions/v1/log_error");
 
-  final parsedStackString = parseMyStackTrace(myStacktrace.toString());
-
   final myDeviceInfo = kIsWeb? "Web" : "${Platform.operatingSystem} ${Platform.operatingSystemVersion}";
 
   final myPublicToken = "bkg94itlep73igf81qw60";
+
+  //Stack trace handling:
+  //final myParsedStack = kIsWeb? { "file_name": null, "line": null, "column": null } : parseMyStackTrace(myStacktrace.toString());
+  final myParsedStack = parseMyStackTrace(myStacktrace.toString());
+
+  //Converting from web to raw JS stacktrace and from mobile and desktop to raw Dart stacktrace:
+  final myFullStackString = myStacktrace.toString();
 
   //Checking if myPublicToken is empty or not:
   if(myPublicToken.isEmpty){
@@ -420,32 +440,15 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? the
   }
 
   //Determining the value of theUser:
-  if(myUsername != "" || myNewUsername != ""){
-    if(myUsername != "" && myNewUsername == ""){
-      theUser = myUsername;
-    }
-    else if(myUsername == "" && myNewUsername != ""){
-      theUser = myNewUsername;
-    }
-  }
-  else{
-    theUser = null;
-  }
-
-  /*if(myPublicToken == null || myPublicToken.isEmpty){
-    print("The public token is missing from the .env file");
-  }*/
+  theUser = determiningUsername();
 
   //Build headers with an API key only for desktop and mobile devices:
-  final Map<String, String> myHeaders = {
+  final Map<String, String> myHeaders = kIsWeb? {
     HttpHeaders.contentTypeHeader: "application/json",
-
-    //For desktop and mobile (uses a private token):
-    //if(!kIsWeb) "x-api-key": dotenv.env["MY_TOKEN"]!,
-
-    //For web (uses a public token):
-    //if(kIsWeb) "x-api-key": dotenv.env["PUBLIC_TOKEN"]!,
-
+    "x-api-key": myPublicToken,
+  } :
+  {
+    HttpHeaders.contentTypeHeader: "application/json",
     "x-api-key": myPublicToken,
     "x-force-header": "true",
     "x-extra": "1",
@@ -455,14 +458,16 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? the
 
   final body = jsonEncode({
     "message": myMessage,
-    "stacktrace": myStacktrace.toString(),
+    "stacktrace": myFullStackString,
     "device_info": myDeviceInfo,
-    "file_name": parsedStackString["file_name"],
-    "line": parsedStackString["line"],
-    "column_number": parsedStackString["column"],
+    "file_name": myParsedStack["file_name"],
+    "line": myParsedStack["line"],
+    "column_number": myParsedStack["column"],
     "extra": myExtraInfo ?? {},
     "username": theUser,
   });
+
+  print("Your stacktrace: ${myStacktrace}");
 
   print("Length of body: ${utf8.encode(body).length}");
 
@@ -488,25 +493,55 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? the
   }
 }
 
-/*void setupWebJSErrors(){
-  if(!kIsWeb) return;
-
-  //Importing html package in a function; it only executes on web (not on desktop or mobile):
-  html.window.onError.listen((event){
-    final ee = event as html.ErrorEvent;
-
-    final myStack = ee.error is Error && (ee.error as Error).stackTrace != null? (ee.error as Error).stackTrace.toString(): '';
-    loggingError(ee.message ?? "Unknown JS-related error", StackTrace.fromString(myStack), null, myExtraInfo: { "origin": "js_window", "filename": ee.filename, "linenumber": ee.lineno, "columnnumber": ee.colno, },);
-  });
-}*/
-
 void setupMyErrorHandlers(){
-  //Catching Flutter Framebase errors with Supabase:
+  //Catching Flutter Framework/UI errors with Supabase:
   FlutterError.onError = (FlutterErrorDetails myDetails){
     FlutterError.dumpErrorToConsole(myDetails);
     loggingError(myDetails.exceptionAsString(), myDetails.stack ?? StackTrace.current, null, myExtraInfo: { "origin": "flutter_error" },);
   };
+
+  //For web errors:
+  if(kIsWeb){
+    html.window.addEventListener("error", (myEvent){
+      final myErrorEvent = myEvent as html.ErrorEvent;
+      loggingError(myErrorEvent.message ?? "Unknown JS-related error", StackTrace.current, determiningUsername(), myExtraInfo: {"origin": "js_error", "source": myErrorEvent.filename, "line": myErrorEvent.lineno, "column": myErrorEvent.colno},);
+    });
+
+    html.window.addEventListener("unhandledrejection", (myEvent){
+      final myPromiseEvent = myEvent as html.PromiseRejectionEvent;
+      loggingError(myPromiseEvent.reason?.toString() ?? "There is a promise rejection without a valid reason", StackTrace.current, determiningUsername(), myExtraInfo: {"origin": "js_promise"},);
+    });
+  }
 }
+
+/*void setupWebJSErrors(){
+  if(!kIsWeb){
+    return;
+  }
+  else{
+    html.window.onError.listen((myEvent){
+      final ee = myEvent as html.ErrorEvent;
+
+      final mySafeStack = ee.error is Error ? (ee.error as Error).stackTrace?.toString() ?? "No JS stack trace" : ee.message ?? "Unknown JS-related error";
+
+      final myStack = StackTrace.fromString(mySafeStack);
+
+      loggingError(ee.message ?? "Unknown JS-related error", myStack, determiningUsername(), myExtraInfo: { "origin": "js_window", "filename": ee.filename, "linenumber": ee.lineno, "columnnumber": ee.colno, },);
+    });
+  }
+}*/
+
+/*void setupDartWebErrorCatcher(){
+  if(kIsWeb){
+    //Catches asynchronous web errors that Flutter typically ignores:
+    ErrorWidget.builder = (FlutterErrorDetails myDetails){
+      loggingError(myDetails.exceptionAsString(), myDetails.stack ?? StackTrace.current, determiningUsername(), myExtraInfo: {"origin": "dart_web_async"});
+
+      //Returning the error as text so Star Expedition does not crash:
+      return Text("We apologize for the error that has occurred");
+    };
+  }
+}*/
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -652,20 +687,18 @@ Future<void> main() async {
     print("The snapshot: ${allPlanets}");
   }
 
-  //runApp(const MyApp());
-
   print("The Supabase Function URL: ${dotenv.env["MY_SUPABASE_URL"]}");
 
+  //Registering every error before runApp is run:
   setupMyErrorHandlers();
-  setupWebJSErrors();
 
-  //Catching uncaught errors with Supabase:
+  //runZonedGuarded, which catches desktop and mobile asynchronous errors:
   runZonedGuarded((){
     runApp(const MyApp());
   }, (error, stack){
-      //Logging the error to the Supabase Edge function:
-      loggingError(error.toString(), stack, null, myExtraInfo: { "origin": "zoned_error" },);
-    }
+    //Logging the error to the Supabase Edge function:
+    loggingError(error.toString(), stack, determiningUsername(), myExtraInfo: { "origin": "zoned_guarded" },);
+  }
   );
 }
 
@@ -1428,9 +1461,9 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
               ListTile(
                   title: Text("Why Star Expedition Was Made"),
                   onTap: () {
-                    //discussionBoardLogin = false;
-                    //Navigator.pushReplacementNamed(context, routesToOtherPages.whyMade);
-                    throw Exception("Testing the error");
+                    discussionBoardLogin = false;
+                    Navigator.pushReplacementNamed(context, routesToOtherPages.whyMade);
+                    //throw Exception("Testing the error");
                   }
               ),
               ListTile(
