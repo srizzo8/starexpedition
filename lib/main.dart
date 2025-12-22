@@ -6,6 +6,7 @@ import 'dart:io' show HttpHeaders, Platform;
 import 'dart:math';
 import 'dart:html' as html;
 import 'dart:typed_data';
+import 'package:js/js_util.dart' as jsUtil;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:starexpedition4/pdfViewer.dart';
+import 'package:starexpedition4/sourceMapDecoder.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
 
 import 'package:starexpedition4/discussionBoardPage.dart';
@@ -400,23 +402,24 @@ String? determiningUsername(){
   }
 }
 
-Map<String, dynamic> parseMyStackTrace(String st){
-  final myRegex = RegExp(r'(packages\/starexpedition4\/.+\.dart)\s+(\d+):(\d+)');
-  final myMatch = myRegex.firstMatch(st);
+Future<Map<String, dynamic>> parseMyStackTrace(String st) async{
+  final myJsRegex = RegExp(r'(packages\/starexpedition4\/.+\.js):(\d+):(\d+)');
+  final myMatch = myJsRegex.firstMatch(st);
 
-  //If the app file is found:
   if(myMatch != null){
-    return { "file_name": myMatch.group(1), "line": myMatch.group(2) ?? "", "column": myMatch.group(3) ?? "", };
+    final myJsFile = myMatch.group(1)!;
+    final myJsLine = myMatch.group(2)!;
+    final myJsColumn = myMatch.group(3)!;
+
+    final myDecoder = sourceMapDecoder(myJsFile);
+    final decoded = await myDecoder.decodeTheLocation(int.parse(myJsLine), int.parse(myJsColumn));
+
+    if(decoded != null){
+      return { "file_name": decoded["file_name"], "line": decoded["line"], "column": decoded["column"], };
+    }
   }
 
-  //If the app file is not found, it should fall back to any .dart file:
-  final myFallback = RegExp(r'(.+\.dart)\s+(\d+):(\d+)').firstMatch(st);
-
-  //If the fallback is not null:
-  if(myFallback != null){
-    return { "file_name": myFallback.group(1), "line": myFallback.group(2) ?? "", "column": myFallback.group(3) ?? "", };
-  }
-
+  //Falling back to the original regex:
   return { "file_name": null, "line": null, "column": null, };
 }
 
@@ -428,8 +431,8 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? the
   final myPublicToken = "bkg94itlep73igf81qw60";
 
   //Stack trace handling:
-  //final myParsedStack = kIsWeb? { "file_name": null, "line": null, "column": null } : parseMyStackTrace(myStacktrace.toString());
-  final myParsedStack = parseMyStackTrace(myStacktrace.toString());
+  final Map<String, dynamic> myParsedStack = kIsWeb? <String, dynamic>{ "file_name": null, "line": null, "column": null } : parseMyStackTrace(myStacktrace.toString()) as Map<String, dynamic>;
+  //final myParsedStack = parseMyStackTrace(myStacktrace.toString());
 
   //Converting from web to raw JS stacktrace and from mobile and desktop to raw Dart stacktrace:
   final myFullStackString = myStacktrace.toString();
@@ -502,14 +505,27 @@ void setupMyErrorHandlers(){
 
   //For web errors:
   if(kIsWeb){
+    //For JS runtime errors:
     html.window.addEventListener("error", (myEvent){
+      final myJsError = myEvent as html.ErrorEvent;
+
+      final myStack = jsUtil.getProperty(myJsError.error ?? {}, "stack") as String?;
+
+      loggingError(myJsError.message ?? "Unknown JS-related error", StackTrace.fromString(myStack ?? ""), determiningUsername(), myExtraInfo: {"origin": "js_error", "source": myJsError.filename, "line": myJsError.lineno, "column": myJsError.colno},);
+    });
+    /*html.window.addEventListener("error", (myEvent){
       final myErrorEvent = myEvent as html.ErrorEvent;
       loggingError(myErrorEvent.message ?? "Unknown JS-related error", StackTrace.current, determiningUsername(), myExtraInfo: {"origin": "js_error", "source": myErrorEvent.filename, "line": myErrorEvent.lineno, "column": myErrorEvent.colno},);
-    });
+    });*/
 
+    //Promise errors:
     html.window.addEventListener("unhandledrejection", (myEvent){
-      final myPromiseEvent = myEvent as html.PromiseRejectionEvent;
-      loggingError(myPromiseEvent.reason?.toString() ?? "There is a promise rejection without a valid reason", StackTrace.current, determiningUsername(), myExtraInfo: {"origin": "js_promise"},);
+      final myJsEvent = myEvent as html.PromiseRejectionEvent;
+      final myReason = myJsEvent.reason;
+
+      final myStack = jsUtil.getProperty(myReason ?? {}, "stack") as String?;
+
+      loggingError(myReason.toString(), StackTrace.fromString(myStack ?? ""), determiningUsername(), myExtraInfo: {"origin": "js_promise"},);
     });
   }
 }

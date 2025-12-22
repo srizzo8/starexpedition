@@ -152,7 +152,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                                                   },
 
                                                   //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                                  if(theUsersData.isEmpty){
+                                                  if(theUsersData?.isEmpty ?? true){
                                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                                   }
                                                   else{
@@ -384,7 +384,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                             }),
                                           },
                                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData.isEmpty){
+                                          if(theUsersData?.isEmpty ?? true){
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
@@ -435,7 +435,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                             }),
                                           },
                                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData.isEmpty){
+                                          if(theUsersData?.isEmpty ?? true){
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
@@ -594,7 +594,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                             }),
                                           },
                                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData.isEmpty){
+                                          if(theUsersData?.isEmpty ?? true){
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
@@ -788,7 +788,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                 }),
                               },
                               //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                              if(theUsersData.isEmpty){
+                              if(theUsersData?.isEmpty ?? true){
                                 Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                               }
                               else{

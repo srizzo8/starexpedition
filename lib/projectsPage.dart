@@ -392,7 +392,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                             }),
                                           },
                                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData.isEmpty){
+                                          if(theUsersData?.isEmpty ?? true){
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
@@ -443,7 +443,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                             }),
                                           },
                                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData.isEmpty){
+                                          if(theUsersData?.isEmpty ?? true){
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
@@ -600,7 +600,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                             }),
                                           },
                                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData.isEmpty){
+                                          if(theUsersData?.isEmpty ?? true){
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
@@ -793,7 +793,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                               }),
                             },
                             //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                            if(theUsersData.isEmpty){
+                            if(theUsersData?.isEmpty ?? true){
                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                             }
                             else{

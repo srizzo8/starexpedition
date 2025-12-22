@@ -151,7 +151,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                                                   }),
                                                 },
                                                 //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                                if(theUsersData.isEmpty){
+                                                if(theUsersData?.isEmpty ?? true){
                                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                                 }
                                                 else{
@@ -383,7 +383,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                             }),
                                           },
                                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData.isEmpty){
+                                          if(theUsersData?.isEmpty ?? true){
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
@@ -434,7 +434,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                             }),
                                           },
                                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData.isEmpty){
+                                          if(theUsersData?.isEmpty ?? true){
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
@@ -592,7 +592,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                             }),
                                           },
                                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData.isEmpty){
+                                          if(theUsersData?.isEmpty ?? true){
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
@@ -785,7 +785,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                               }),
                             },
                             //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                            if(theUsersData.isEmpty){
+                            if(theUsersData?.isEmpty ?? true){
                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                             }
                             else{

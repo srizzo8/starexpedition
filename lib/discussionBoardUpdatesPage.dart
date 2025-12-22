@@ -184,7 +184,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                                           print("This is theUsersData: ${theUsersData}"),
 
                                           //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData.isEmpty){
+                                          if(theUsersData?.isEmpty ?? true){
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
@@ -465,7 +465,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                           }),
                                         },
                                         //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        if(theUsersData.isEmpty){
+                                        if(theUsersData?.isEmpty ?? true){
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                         }
                                         else{
@@ -521,7 +521,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                           }),
                                         },
                                         //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        if(theUsersData.isEmpty){
+                                        if(theUsersData?.isEmpty ?? true){
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                         }
                                         else{
@@ -712,7 +712,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                           }),
                                         },
                                         //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        if(theUsersData.isEmpty){
+                                        if(theUsersData?.isEmpty ?? true){
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                         }
                                         else{
@@ -974,7 +974,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 }),
                               },
 
-                              if(theUsersData.isEmpty){
+                              if(theUsersData?.isEmpty ?? true){
                                 Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                               }
                               else{

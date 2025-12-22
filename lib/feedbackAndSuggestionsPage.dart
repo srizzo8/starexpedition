@@ -156,7 +156,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
                                                   }),
                                                 },
                                                 //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                                if(theUsersData.isEmpty){
+                                                if(theUsersData?.isEmpty ?? true){
                                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                                 }
                                                 else{
@@ -389,7 +389,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                         },
 
                                         //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        if(theUsersData.isEmpty){
+                                        if(theUsersData?.isEmpty ?? true){
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                         }
                                         else{
@@ -440,7 +440,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                         },
 
                                         //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        if(theUsersData.isEmpty){
+                                        if(theUsersData?.isEmpty ?? true){
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                         }
                                         else{
@@ -597,7 +597,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                         },
 
                                         //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        if(theUsersData.isEmpty){
+                                        if(theUsersData?.isEmpty ?? true){
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                         }
                                         else{
@@ -790,7 +790,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                 }),
                               },
                               //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                              if(theUsersData.isEmpty){
+                              if(theUsersData?.isEmpty ?? true){
                                 Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                               }
                               else{
