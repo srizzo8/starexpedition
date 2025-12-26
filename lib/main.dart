@@ -4,9 +4,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:io' show HttpHeaders, Platform;
 import 'dart:math';
-import 'dart:html' as html;
+//if(kIsWeb) import 'dart:html' as html;
 import 'dart:typed_data';
-import 'package:js/js_util.dart' as jsUtil;
+import 'package:starexpedition4/web_related_information/webErrorHandlersImplementation.dart';
+//if(kIsWeb) import 'package:js/js_util.dart' as jsUtil;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -363,6 +364,10 @@ Future<String> readPlanetFile(String planetPath) async{
   }*/
 }
 
+/*void forWebPlatforms(){
+  getWebOnly().performATask();
+}*/
+
 /*List<String> reachEachLineInTextFile(String contentFromFile){
   List<String> fileContentAsList = contentFromFile.split("\n");
   return fileContentAsList;
@@ -403,7 +408,19 @@ String? determiningUsername(){
 }
 
 Future<Map<String, dynamic>> parseMyStackTrace(String st) async{
-  final myJsRegex = RegExp(r'(packages\/starexpedition4\/.+\.js):(\d+):(\d+)');
+  final myLines = st.split("\n");
+
+  for(final myLine in myLines){
+    final myMatch = RegExp(r'\((package:[^:]+):(\d+):(\d+)\)').firstMatch(myLine);
+
+    if(myMatch != null){
+      return { "file_name": myMatch.group(1), "line": myMatch.group(2), "column": myMatch.group(3), };
+    }
+  }
+
+  return { "file_name": null, "line": null, "column": null, };
+
+  /*final myJsRegex = RegExp(r'(packages\/starexpedition4\/.+\.js):(\d+):(\d+)');
   final myMatch = myJsRegex.firstMatch(st);
 
   if(myMatch != null){
@@ -420,7 +437,7 @@ Future<Map<String, dynamic>> parseMyStackTrace(String st) async{
   }
 
   //Falling back to the original regex:
-  return { "file_name": null, "line": null, "column": null, };
+  return { "file_name": null, "line": null, "column": null, };*/
 }
 
 Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? theUser, {Map<String, dynamic>? myExtraInfo}) async{
@@ -431,7 +448,7 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? the
   final myPublicToken = "bkg94itlep73igf81qw60";
 
   //Stack trace handling:
-  final Map<String, dynamic> myParsedStack = kIsWeb? <String, dynamic>{ "file_name": null, "line": null, "column": null } : parseMyStackTrace(myStacktrace.toString()) as Map<String, dynamic>;
+  final Map<String, dynamic> myParsedStack = kIsWeb? <String, dynamic>{ "file_name": null, "line": null, "column": null } : await parseMyStackTrace(myStacktrace.toString());
   //final myParsedStack = parseMyStackTrace(myStacktrace.toString());
 
   //Converting from web to raw JS stacktrace and from mobile and desktop to raw Dart stacktrace:
@@ -445,16 +462,10 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? the
   //Determining the value of theUser:
   theUser = determiningUsername();
 
-  //Build headers with an API key only for desktop and mobile devices:
-  final Map<String, String> myHeaders = kIsWeb? {
+  //Build headers with an API key:
+  final Map<String, String> myHeaders = {
     HttpHeaders.contentTypeHeader: "application/json",
     "x-api-key": myPublicToken,
-  } :
-  {
-    HttpHeaders.contentTypeHeader: "application/json",
-    "x-api-key": myPublicToken,
-    "x-force-header": "true",
-    "x-extra": "1",
   };
 
   print("These are the outgoing headers: $myHeaders");
@@ -504,7 +515,8 @@ void setupMyErrorHandlers(){
   };
 
   //For web errors:
-  if(kIsWeb){
+  setupWebErrorHandlers();
+  /*if(kIsWeb){
     //For JS runtime errors:
     html.window.addEventListener("error", (myEvent){
       final myJsError = myEvent as html.ErrorEvent;
@@ -527,7 +539,7 @@ void setupMyErrorHandlers(){
 
       loggingError(myReason.toString(), StackTrace.fromString(myStack ?? ""), determiningUsername(), myExtraInfo: {"origin": "js_promise"},);
     });
-  }
+  }*/
 }
 
 /*void setupWebJSErrors(){
@@ -712,6 +724,9 @@ Future<void> main() async {
   runZonedGuarded((){
     runApp(const MyApp());
   }, (error, stack){
+    print("Zone caught error");
+    print("This is the error: ${error}");
+    print("This is the stack: ${stack}");
     //Logging the error to the Supabase Edge function:
     loggingError(error.toString(), stack, determiningUsername(), myExtraInfo: { "origin": "zoned_guarded" },);
   }
@@ -910,6 +925,13 @@ class theStarExpeditionState extends State<StarExpedition> {
 
   //.sort((a, b) => a.starName!.compareTo(b.starName!));
   //userItemsExistingUsers? myChosenItemExistingUsers;
+
+  /*@override
+  void initState(){
+    super.initState();
+
+    setupMyErrorHandlers();
+  }*/
 
   @override
   Widget build(BuildContext context) {

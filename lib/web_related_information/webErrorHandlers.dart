@@ -1,0 +1,3 @@
+void setupWebErrorHandlers(){
+  //No implementation
+}
