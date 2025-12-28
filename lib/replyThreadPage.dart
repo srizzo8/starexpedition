@@ -569,13 +569,13 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             //Getting the information of the thread one replied to
                             print("page number: ${discussionBoardUpdatesPage.myLocation}, index place: ${discussionBoardUpdatesPage.myIndexPlaceDbu}");
-                            var mySublistsForDbu = discussionBoardUpdatesPage.mySublistsDbuInformation;
+                            //var mySublistsForDbu = discussionBoardUpdatesPage.mySublistsDbuInformation;
                             var dbuReplies = discussionBoardUpdatesPage.theDbuThreadReplies;
                             //print("mySublistsForDbu: ${mySublistsForDbu}");
-                            discussionBoardUpdatesPage.threadAuthorDbu = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["poster"].toString();
-                            discussionBoardUpdatesPage.threadTitleDbu = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["threadTitle"].toString();
-                            discussionBoardUpdatesPage.threadContentDbu = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["threadContent"].toString();
-                            discussionBoardUpdatesPage.threadID = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["threadId"].toString();
+                            //discussionBoardUpdatesPage.threadAuthorDbu = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["poster"].toString();
+                            //discussionBoardUpdatesPage.threadTitleDbu = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["threadTitle"].toString();
+                            //discussionBoardUpdatesPage.threadContentDbu = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["threadContent"].toString();
+                            //discussionBoardUpdatesPage.threadID = mySublistsForDbu[discussionBoardUpdatesPage.myLocation][discussionBoardUpdatesPage.myIndexPlaceDbu]["threadId"].toString();
 
                             print("${discussionBoardUpdatesPage.threadAuthorDbu} + ${discussionBoardUpdatesPage.threadTitleDbu} + ${discussionBoardUpdatesPage.threadContentDbu} + ${discussionBoardUpdatesPage.threadID}");
 
@@ -626,7 +626,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               });
 
                               //Getting the replies of the thread one made a reply to
-                              await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(dbuDoc).collection("Replies");//.add(oneReply);
+                              //await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(dbuDoc).collection("Replies");//.add(oneReply);
 
                               QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(dbuDoc).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
                               print("dbuReplies: ${dbuReplies.length}");
@@ -985,12 +985,12 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             //Getting thread information
                             print("page number: ${questionsAndAnswersPage.myLocation}, index place: ${questionsAndAnswersPage.myIndexPlaceQaa}");
-                            var mySublistsForQaa = questionsAndAnswersPage.mySublistsQaaInformation;
+                            //var mySublistsForQaa = questionsAndAnswersPage.mySublistsQaaInformation;
                             var qaaReplies = questionsAndAnswersPage.theQaaThreadReplies;
-                            questionsAndAnswersPage.threadAuthorQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["poster"].toString();
-                            questionsAndAnswersPage.threadTitleQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadTitle"].toString();
-                            questionsAndAnswersPage.threadContentQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadContent"].toString();
-                            questionsAndAnswersPage.threadID = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadId"].toString();
+                            //questionsAndAnswersPage.threadAuthorQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["poster"].toString();
+                            //questionsAndAnswersPage.threadTitleQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadTitle"].toString();
+                            //questionsAndAnswersPage.threadContentQaa = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadContent"].toString();
+                            //questionsAndAnswersPage.threadID = mySublistsForQaa[questionsAndAnswersPage.myLocation][questionsAndAnswersPage.myIndexPlaceQaa]["threadId"].toString();
 
                             print("${questionsAndAnswersPage.threadAuthorQaa} + ${questionsAndAnswersPage.threadTitleQaa} + ${questionsAndAnswersPage.threadContentQaa} + ${questionsAndAnswersPage.threadID}");
 
@@ -1028,7 +1028,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               });
 
                               //Getting the replies of the thread one made a reply to
-                              await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(qaaDoc).collection("Replies");//.add(oneReply);
+                              //await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(qaaDoc).collection("Replies");//.add(oneReply);
 
                               QuerySnapshot qaaRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(qaaDoc).collection("Replies").get();
                               print("qaaReplies: ${qaaReplies.length}");
@@ -1365,14 +1365,14 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             //Getting thread information
                             print("page number: ${technologiesPage.myLocation}, index place: ${technologiesPage.myIndexPlaceTechnologies}");
-                            var mySublistsForTechnologies = technologiesPage.mySublistsTechnologiesInformation;
+                            //var mySublistsForTechnologies = technologiesPage.mySublistsTechnologiesInformation;
                             var technologiesReplies = technologiesPage.theTThreadReplies;
-                            technologiesPage.threadAuthorT = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["poster"].toString();
-                            technologiesPage.threadTitleT = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["threadTitle"].toString();
-                            technologiesPage.threadContentT = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["threadContent"].toString();
-                            technologiesPage.threadID = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["threadId"].toString();
+                            //technologiesPage.threadAuthorT = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["poster"].toString();
+                            //technologiesPage.threadTitleT = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["threadTitle"].toString();
+                            //technologiesPage.threadContentT = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["threadContent"].toString();
+                            //technologiesPage.threadID = mySublistsForTechnologies[technologiesPage.myLocation][technologiesPage.myIndexPlaceTechnologies]["threadId"].toString();
 
-                            print("${technologiesPage.threadAuthorT} + ${technologiesPage.threadTitleT} + ${technologiesPage.threadContentT} + ${technologiesPage.threadID}");
+                            //print("${technologiesPage.threadAuthorT} + ${technologiesPage.threadTitleT} + ${technologiesPage.threadContentT} + ${technologiesPage.threadID}");
 
                             //Getting documents
                             if(firebaseDesktopHelper.onDesktop){
@@ -1408,7 +1408,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               });
 
                               //Getting the replies of the thread one made a reply to
-                              await FirebaseFirestore.instance.collection("Technologies").doc(technologiesDoc).collection("Replies");
+                              //await FirebaseFirestore.instance.collection("Technologies").doc(technologiesDoc).collection("Replies");
 
                               QuerySnapshot technologiesRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Technologies").doc(technologiesDoc).collection("Replies").get();
                               print("technologiesReplies: ${technologiesReplies.length}");
@@ -1744,12 +1744,12 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             //Getting thread information
                             print("page number: ${projectsPage.myLocation}, index place: ${projectsPage.myIndexPlaceProjects}");
-                            var mySublistsForProjects = projectsPage.mySublistsProjectsInformation;
+                            //var mySublistsForProjects = projectsPage.mySublistsProjectsInformation;
                             var projectsReplies = projectsPage.thePThreadReplies;
-                            projectsPage.threadAuthorP = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["poster"].toString();
-                            projectsPage.threadTitleP = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["threadTitle"].toString();
-                            projectsPage.threadContentP = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["threadContent"].toString();
-                            projectsPage.threadID = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["threadId"].toString();
+                            //projectsPage.threadAuthorP = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["poster"].toString();
+                            //projectsPage.threadTitleP = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["threadTitle"].toString();
+                            //projectsPage.threadContentP = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["threadContent"].toString();
+                            //projectsPage.threadID = mySublistsForProjects[projectsPage.myLocation][projectsPage.myIndexPlaceProjects]["threadId"].toString();
 
                             print("${projectsPage.threadAuthorP} + ${projectsPage.threadTitleP} + ${projectsPage.threadContentP} + ${projectsPage.threadID}");
 
@@ -1787,7 +1787,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               });
 
                               //Getting the replies of the thread one made a reply to
-                              await FirebaseFirestore.instance.collection("Projects").doc(projectsDoc).collection("Replies");
+                              //await FirebaseFirestore.instance.collection("Projects").doc(projectsDoc).collection("Replies");
 
                               QuerySnapshot projectsRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Projects").doc(projectsDoc).collection("Replies").get();
                               print("projectsReplies: ${projectsReplies.length}");
@@ -2123,12 +2123,12 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             //Getting thread information
                             print("page number: ${newDiscoveriesPage.myLocation}, index place: ${newDiscoveriesPage.myIndexPlaceNewDiscoveries}");
-                            var mySublistsForNewDiscoveries = newDiscoveriesPage.mySublistsNewDiscoveriesInformation;
+                            //var mySublistsForNewDiscoveries = newDiscoveriesPage.mySublistsNewDiscoveriesInformation;
                             var newDiscoveriesReplies = newDiscoveriesPage.theNdThreadReplies;
-                            newDiscoveriesPage.threadAuthorNd = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["poster"].toString();
-                            newDiscoveriesPage.threadTitleNd = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["threadTitle"].toString();
-                            newDiscoveriesPage.threadContentNd = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["threadContent"].toString();
-                            newDiscoveriesPage.threadID = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["threadId"].toString();
+                            //newDiscoveriesPage.threadAuthorNd = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["poster"].toString();
+                            //newDiscoveriesPage.threadTitleNd = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["threadTitle"].toString();
+                            //newDiscoveriesPage.threadContentNd = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["threadContent"].toString();
+                            //newDiscoveriesPage.threadID = mySublistsForNewDiscoveries[newDiscoveriesPage.myLocation][newDiscoveriesPage.myIndexPlaceNewDiscoveries]["threadId"].toString();
 
                             print("${newDiscoveriesPage.threadAuthorNd} + ${newDiscoveriesPage.threadTitleNd} + ${newDiscoveriesPage.threadContentNd} + ${newDiscoveriesPage.threadID}");
 
@@ -2162,7 +2162,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               });
 
                               //Getting the replies of the thread one made a reply to
-                              await FirebaseFirestore.instance.collection("New_Discoveries").doc(ndDoc).collection("Replies");
+                              //await FirebaseFirestore.instance.collection("New_Discoveries").doc(ndDoc).collection("Replies");
 
                               QuerySnapshot newDiscoveriesRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").doc(ndDoc).collection("Replies").get();
                               print("newDiscoveriesReplies: ${newDiscoveriesReplies.length}");
@@ -2498,12 +2498,12 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             //Getting thread information
                             print("page number: ${feedbackAndSuggestionsPage.myLocation}, index place: ${feedbackAndSuggestionsPage.myIndexPlaceFas}");
-                            var mySublistsForFeedbackAndSuggestions = feedbackAndSuggestionsPage.mySublistsFasInformation;
+                            //var mySublistsForFeedbackAndSuggestions = feedbackAndSuggestionsPage.mySublistsFasInformation;
                             var feedbackAndSuggestionsReplies = feedbackAndSuggestionsPage.theFasThreadReplies;
-                            feedbackAndSuggestionsPage.threadAuthorFas = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["poster"].toString();
-                            feedbackAndSuggestionsPage.threadTitleFas = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["threadTitle"].toString();
-                            feedbackAndSuggestionsPage.threadContentFas = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["threadContent"].toString();
-                            feedbackAndSuggestionsPage.threadID = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["threadId"].toString();
+                            //feedbackAndSuggestionsPage.threadAuthorFas = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["poster"].toString();
+                            //feedbackAndSuggestionsPage.threadTitleFas = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["threadTitle"].toString();
+                            //feedbackAndSuggestionsPage.threadContentFas = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["threadContent"].toString();
+                            //feedbackAndSuggestionsPage.threadID = mySublistsForFeedbackAndSuggestions[feedbackAndSuggestionsPage.myLocation][feedbackAndSuggestionsPage.myIndexPlaceFas]["threadId"].toString();
 
                             print("${feedbackAndSuggestionsPage.threadAuthorFas} + ${feedbackAndSuggestionsPage.threadTitleFas} + ${feedbackAndSuggestionsPage.threadContentFas} + ${feedbackAndSuggestionsPage.threadID}");
 
@@ -2540,7 +2540,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                               });
 
                               //Getting the replies of the thread one made a reply to
-                              await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(fasDoc).collection("Replies");
+                              //await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(fasDoc).collection("Replies");
 
                               QuerySnapshot feedbackAndSuggestionsRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(fasDoc).collection("Replies").get();
                               print("feedbackAndSuggestionsReplies: ${feedbackAndSuggestionsReplies.length}");

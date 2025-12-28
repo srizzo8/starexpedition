@@ -421,7 +421,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
               physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
-              itemCount: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].length,//FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").length//5,//discussionBoardUpdatesThreads[int.parse(threadID)][4].length,
+              itemCount: (mySublistsDbuThreadReplies.isNotEmpty && theCurrentPageDbuThreadReplies < mySublistsDbuThreadReplies.length) ? mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].length : 0,//mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].length,//FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").length//5,//discussionBoardUpdatesThreads[int.parse(threadID)][4].length,
               itemBuilder: (context, index){
                 return Column(
                   children: <Widget>[
@@ -1032,7 +1032,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
               height: MediaQuery.of(context).size.height * 0.015625,
             ),*/
             Center(
-              child: listOfDbuThreadReplies.length != 0? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+              child: (myPagesDbuThreadReplies.isNotEmpty && theCurrentPageDbuThreadReplies < myPagesDbuThreadReplies.length)? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
                 height: MediaQuery.of(context).size.height * 0.0782125,

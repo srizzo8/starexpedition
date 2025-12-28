@@ -344,7 +344,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemCount: mySublistsNdThreadReplies[theCurrentPageNdThreadReplies].length,
+                itemCount: (mySublistsNdThreadReplies.isNotEmpty && theCurrentPageNdThreadReplies < mySublistsNdThreadReplies.length) ? mySublistsNdThreadReplies[theCurrentPageNdThreadReplies].length : 0,//mySublistsNdThreadReplies[theCurrentPageNdThreadReplies].length,
                 itemBuilder: (context, index){
                   return Column(
                     children: <Widget>[

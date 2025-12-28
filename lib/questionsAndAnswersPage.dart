@@ -345,7 +345,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemCount: mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies].length,
+                itemCount: (mySublistsQaaThreadReplies.isNotEmpty && theCurrentPageQaaThreadReplies < mySublistsQaaThreadReplies.length) ? mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies].length : 0,//mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies].length,
                 itemBuilder: (context, index){
                   return Column(
                     children: <Widget>[

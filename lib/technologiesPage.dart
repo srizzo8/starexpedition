@@ -344,7 +344,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemCount: mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies].length,
+                itemCount: (mySublistsTechnologiesThreadReplies.isNotEmpty && theCurrentPageTechnologiesThreadReplies < mySublistsTechnologiesThreadReplies.length) ? mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies].length : 0,
                 itemBuilder: (context, index){
                   return Column(
                     children: <Widget>[

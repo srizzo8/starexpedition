@@ -350,7 +350,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
               physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
-              itemCount: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].length,
+              itemCount: (mySublistsFasThreadReplies.isNotEmpty && theCurrentPageFasThreadReplies < mySublistsFasThreadReplies.length) ? mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].length : 0,//mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].length,
               itemBuilder: (context, index){
                 return Column(
                   children: <Widget>[

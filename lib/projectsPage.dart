@@ -353,7 +353,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                 scrollDirection: Axis.vertical,
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].length,
+                itemCount: (mySublistsProjectsThreadReplies.isNotEmpty && theCurrentPageProjectsThreadReplies < mySublistsProjectsThreadReplies.length) ? mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].length : 0,//mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].length,
                 itemBuilder: (context, index){
                   return Column(
                     children: <Widget>[
