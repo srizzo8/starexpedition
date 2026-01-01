@@ -47,6 +47,10 @@ var mySublistsProjectsInformation;
 var myIndexPlaceProjects;
 var myLocation;
 
+int theCurrentPage = 0;
+
+int projectsNavigationDepth = 0;
+
 class projectsPage extends StatefulWidget{
   const projectsPage ({Key? key}) : super(key: key);
 
@@ -87,7 +91,7 @@ class routeToReplyToThreadProjectsPage{
 class projectsPageState extends State<projectsPage>{
   static String projectsRoute = '/projectsPage';
   int numberOfPages = (((discussionBoardPage.projectsThreads.length)/10)).ceil();
-  int theCurrentPage = 0;
+  //int theCurrentPage = 0;
 
   //Getting the threads that will appear in a page
   var listOfProjectsThreads = discussionBoardPage.projectsThreads;
@@ -104,164 +108,165 @@ class projectsPageState extends State<projectsPage>{
 
     var myPages = List.generate(
       numberOfPages,
-        (index) => Center(
-          child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: mySublistsProjects[theCurrentPage].length,
-              itemBuilder: (context, index){
-                return Column(
-                  children: <Widget>[
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.015625,
-                    ),
-                    Center(
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.75,
-                        height: MediaQuery.of(context).size.height * 0.08,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.grey[300],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              padding: EdgeInsets.zero,
+          (index) => Center(
+        child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: mySublistsProjects[theCurrentPage].length,
+            itemBuilder: (context, index){
+              return Column(
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.015625,
+                  ),
+                  Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.grey[300],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.050000),
-                                      child: Text.rich(
-                                        TextSpan(
-                                          text: "${mySublistsProjects[theCurrentPage][index]["threadTitle"].toString()}\nBy: ",
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
-                                          children: [
-                                            TextSpan(
-                                                text: "${mySublistsProjects[theCurrentPage][index]["poster"].toString()}",
-                                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
-                                                recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                                  projectsClickedOnUser = true,
+                            padding: EdgeInsets.zero,
+                          ),
+                          child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.050000),
+                                    child: Text.rich(
+                                      TextSpan(
+                                        text: "${mySublistsProjects[theCurrentPage][index]["threadTitle"].toString()}\nBy: ",
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                        children: [
+                                          TextSpan(
+                                              text: "${mySublistsProjects[theCurrentPage][index]["poster"].toString()}",
+                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                              recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                                projectsClickedOnUser = true,
 
-                                                  if(firebaseDesktopHelper.onDesktop){
-                                                    projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                                    theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjects[theCurrentPage][index]["poster"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
-                                                  }
-                                                  else{
-                                                    projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjects[theCurrentPage][index]["poster"].toString().toLowerCase()).get(),
-                                                    projectsNameData.docs.forEach((person){
-                                                      theUsersData = person.data();
-                                                    }),
-                                                  },
-                                                  //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                                  if(theUsersData?.isEmpty ?? true){
-                                                    print("The user does not exist"),
-                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                                                  }
-                                                  else{
-                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                                  }
+                                                if(firebaseDesktopHelper.onDesktop){
+                                                  projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                                  theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjects[theCurrentPage][index]["poster"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
                                                 }
-                                            ),
-                                            TextSpan(
-                                              text: " ",
-                                            ),
-                                          ],
-                                        ),
+                                                else{
+                                                  projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjects[theCurrentPage][index]["poster"].toString().toLowerCase()).get(),
+                                                  projectsNameData.docs.forEach((person){
+                                                    theUsersData = person.data();
+                                                  }),
+                                                },
+                                                //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                if(theUsersData?.isEmpty ?? true){
+                                                  print("The user does not exist"),
+                                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                                }
+                                                else{
+                                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                }
+                                              }
+                                          ),
+                                          TextSpan(
+                                            text: " ",
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                ]
-                            ),
-                            onPressed: () async{
-                              print("This is index: $index");
-                              print("listOfProjectsThreads is null? ${listOfProjectsThreads == null}");
-                              print("I clicked on a thread");
+                                ),
+                              ]
+                          ),
+                          onPressed: () async{
+                            print("This is index: $index");
+                            print("listOfProjectsThreads is null? ${listOfProjectsThreads == null}");
+                            print("I clicked on a thread");
 
-                              myIndexPlaceProjects = index;
-                              myLocation = theCurrentPage;
+                            myIndexPlaceProjects = index;
+                            myLocation = theCurrentPage;
 
-                              threadAuthorP = mySublistsProjects[theCurrentPage][index]["poster"].toString();//discussionBoardPage.projectsThreads![index]["poster"].toString();
-                              threadTitleP = mySublistsProjects[theCurrentPage][index]["threadTitle"].toString();//discussionBoardPage.projectsThreads![index]["threadTitle"].toString();
-                              threadContentP = mySublistsProjects[theCurrentPage][index]["threadContent"].toString();//discussionBoardPage.projectsThreads![index]["threadContent"].toString();
-                              threadID = mySublistsProjects[theCurrentPage][index]["threadId"].toString();//discussionBoardPage.projectsThreads![index]["threadId"].toString();
+                            threadAuthorP = mySublistsProjects[theCurrentPage][index]["poster"].toString();//discussionBoardPage.projectsThreads![index]["poster"].toString();
+                            threadTitleP = mySublistsProjects[theCurrentPage][index]["threadTitle"].toString();//discussionBoardPage.projectsThreads![index]["threadTitle"].toString();
+                            threadContentP = mySublistsProjects[theCurrentPage][index]["threadContent"].toString();//discussionBoardPage.projectsThreads![index]["threadContent"].toString();
+                            threadID = mySublistsProjects[theCurrentPage][index]["threadId"].toString();//discussionBoardPage.projectsThreads![index]["threadId"].toString();
 
-                              print(mySublistsProjects[theCurrentPage][index]);
-                              print("${threadAuthorP} + ${threadTitleP} + ${threadContentP} + ${threadID}");
-                              print("context: ${context}");
+                            print(mySublistsProjects[theCurrentPage][index]);
+                            print("${threadAuthorP} + ${threadTitleP} + ${threadContentP} + ${threadID}");
+                            print("context: ${context}");
 
-                              if(firebaseDesktopHelper.onDesktop){
-                                var thePThreads = await firebaseDesktopHelper.getFirestoreCollection("Projects");
-                                var matchingThread = thePThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+                            if(firebaseDesktopHelper.onDesktop){
+                              var thePThreads = await firebaseDesktopHelper.getFirestoreCollection("Projects");
+                              var matchingThread = thePThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
-                                if(matchingThread.isNotEmpty){
-                                  //Getting the document ID:
-                                  myDocP = matchingThread["docId"];
-                                  print("This is myDocP: ${myDocP}");
-                                }
-                                else{
-                                  print("Sorry; the thread was not found");
-                                }
+                              if(matchingThread.isNotEmpty){
+                                //Getting the document ID:
+                                myDocP = matchingThread["docId"];
+                                print("This is myDocP: ${myDocP}");
                               }
                               else{
-                                await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                  myDocP = d.docs.first.id;
-                                  print(myDocP);
-                                });
+                                print("Sorry; the thread was not found");
                               }
-
-                              if(firebaseDesktopHelper.onDesktop){
-                                thePThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Projects", myDocP, "Replies");
-
-                                print(thePThreadReplies.runtimeType);
-
-                                print(DateTime.now().runtimeType);
-
-                                thePThreadReplies.sort((b, a){
-                                  DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
-                                  DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
-                                  return dta.compareTo(dtb);
-                                });
-                              }
-                              else{
-                                await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies");
-
-                                QuerySnapshot pRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").get();
-                                thePThreadReplies = pRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
-                                print(thePThreadReplies.runtimeType);
-
-                                print(DateTime.now().runtimeType);
-
-                                (thePThreadReplies as List<dynamic>).sort((b2, a2) => (DateTime.parse(a2["time"])).compareTo(DateTime.parse(b2["time"])));
-                              }
-
-                              print("Number of thePThreadReplies: ${thePThreadReplies.length}");
-
-                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => projectsThreadsPage()));
                             }
-                        ),
+                            else{
+                              await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                myDocP = d.docs.first.id;
+                                print(myDocP);
+                              });
+                            }
+
+                            if(firebaseDesktopHelper.onDesktop){
+                              thePThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Projects", myDocP, "Replies");
+
+                              print(thePThreadReplies.runtimeType);
+
+                              print(DateTime.now().runtimeType);
+
+                              thePThreadReplies.sort((b, a){
+                                DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                                DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                                return dta.compareTo(dtb);
+                              });
+                            }
+                            else{
+                              await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies");
+
+                              QuerySnapshot pRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").get();
+                              thePThreadReplies = pRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                              print(thePThreadReplies.runtimeType);
+
+                              print(DateTime.now().runtimeType);
+
+                              (thePThreadReplies as List<dynamic>).sort((b2, a2) => (DateTime.parse(a2["time"])).compareTo(DateTime.parse(b2["time"])));
+                            }
+
+                            print("Number of thePThreadReplies: ${thePThreadReplies.length}");
+
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => projectsThreadsPage()));
+                          }
                       ),
                     ),
-                  ],
-                );
-              }
-          ),
+                  ),
+                ],
+              );
+            }
         ),
+      ),
     );
 
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text("Star Expedition"),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () =>{
-            print("portions: ${mySublistsProjects}"),
-            Navigator.pushNamed(context, '/discussionBoardPage'),
-          }
-        )
+          centerTitle: true,
+          title: Text("Star Expedition"),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              color: Colors.white,
+              onPressed: () =>{
+                print("portions: ${mySublistsProjects}"),
+                Navigator.pushNamed(context, '/discussionBoardPage'),
+                theCurrentPage = 0,
+              }
+          )
       ),
       body: Column(
         children: <Widget>[
@@ -278,27 +283,28 @@ class projectsPageState extends State<projectsPage>{
             //margin: EdgeInsets.only(left: 250.0),
             //alignment: Alignment.center,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-              ),
-              child: InkWell(
-                child: Ink(
-                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
-                  color: Colors.black,
-                  //height: 40,
-                  //width: 150,
-                  //child: Center(
-                  child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                  //),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
                 ),
-              ),
-              onPressed: (){
-                print(projectsBool);
-                projectsBool = true;
-                print(projectsBool);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
-                print("I am going to write a new thread.");
-              }
+                child: InkWell(
+                  child: Ink(
+                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
+                    color: Colors.black,
+                    //height: 40,
+                    //width: 150,
+                    //child: Center(
+                    child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                    //),
+                  ),
+                ),
+                onPressed: (){
+                  print(projectsBool);
+                  projectsBool = true;
+                  print(projectsBool);
+                  projectsNavigationDepth++;
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+                  print("I am going to write a new thread.");
+                }
             ),
           ),
           Expanded(
@@ -324,12 +330,17 @@ class projectsThreadContent extends State<projectsThreadsPage>{
   int numberOfPagesProjectsThreadReplies = 0;
   int theCurrentPageProjectsThreadReplies = 0;
 
-  var listOfProjectsThreadReplies = thePThreadReplies;
+  var listOfProjectsThreadReplies;
   var mySublistsProjectsThreadReplies = [];
   int portionSizeProjectsThreadReplies = 10;
 
   @override
   Widget build(BuildContext context){
+    listOfProjectsThreadReplies = thePThreadReplies;
+
+    //Clearing outdated sublists:
+    mySublistsProjectsThreadReplies.clear();
+
     if(listOfProjectsThreadReplies == []){
       numberOfPagesProjectsThreadReplies = 1;
     }
@@ -346,24 +357,24 @@ class projectsThreadContent extends State<projectsThreadsPage>{
 
     var myPagesProjectsThreadReplies = List.generate(
       numberOfPagesProjectsThreadReplies,
-        (myIndex) => Column(
-          children: <Widget>[
-            ListView.builder(
-                padding: EdgeInsets.zero,
-                scrollDirection: Axis.vertical,
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: (mySublistsProjectsThreadReplies.isNotEmpty && theCurrentPageProjectsThreadReplies < mySublistsProjectsThreadReplies.length) ? mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].length : 0,//mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].length,
-                itemBuilder: (context, index){
-                  return Column(
-                    children: <Widget>[
-                      mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"] != null && mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"] != null?
-                      Column(
-                          children: <Widget>[
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.015625,
-                            ),
-                            ElevatedButton(
+          (myIndex) => Column(
+        children: <Widget>[
+          ListView.builder(
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.vertical,
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: (mySublistsProjectsThreadReplies.isNotEmpty && theCurrentPageProjectsThreadReplies < mySublistsProjectsThreadReplies.length) ? mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].length : 0,//mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].length,
+              itemBuilder: (context, index){
+                return Column(
+                  children: <Widget>[
+                    mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"] != null && mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"] != null?
+                    Column(
+                        children: <Widget>[
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.015625,
+                          ),
+                          ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.blueGrey[300],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -376,29 +387,29 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                     text: "Reply to: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
-                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                          projectsClickedOnUser = true,
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                            projectsClickedOnUser = true,
 
-                                          if(firebaseDesktopHelper.onDesktop){
-                                            projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                            theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
+                                            if(firebaseDesktopHelper.onDesktop){
+                                              projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                              theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
+                                            }
+                                            else{
+                                              projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                              projectsNameData.docs.forEach((person){
+                                                theUsersData = person.data();
+                                              }),
+                                            },
+                                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            if(theUsersData?.isEmpty ?? true){
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                            }
+                                            else{
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            }
                                           }
-                                          else{
-                                            projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
-                                            projectsNameData.docs.forEach((person){
-                                              theUsersData = person.data();
-                                            }),
-                                          },
-                                          //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData?.isEmpty ?? true){
-                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                                          }
-                                          else{
-                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          }
-                                        }
                                       ),
                                       TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -413,164 +424,8 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                               onPressed: (){
                                 //Does nothing
                               }
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[300],
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                              child: Container(
-                                //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
-                                child: Text.rich(
-                                  TextSpan(
-                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
-                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                          projectsClickedOnUser = true,
-
-                                          if(firebaseDesktopHelper.onDesktop){
-                                            projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                            theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
-                                          }
-                                          else{
-                                            projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                            projectsNameData.docs.forEach((person){
-                                              theUsersData = person.data();
-                                            }),
-                                          },
-                                          //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData?.isEmpty ?? true){
-                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                                          }
-                                          else{
-                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          }
-                                        }
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}",
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                color: Colors.grey[300],
-                                width: MediaQuery.of(context).size.width * 0.5,
-                              ),
-                              onPressed: (){
-                                //Does nothing
-                              }
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                              child: InkWell(
-                                child: Ink(
-                                  child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
-                                  color: Colors.grey[500],
-                                  width: MediaQuery.of(context).size.width * 0.5,
-                                ),
-                                onTap: () async{
-                                  replyToReplyTimeP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["time"];
-                                  replyToReplyContentP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replyContent"].toString();
-                                  replyToReplyPosterP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replier"].toString();
-
-                                  print("This is replyToReplyTime: $replyToReplyTimeP");
-
-                                  if(firebaseDesktopHelper.onDesktop){
-                                    var theDocP = await firebaseDesktopHelper.getFirestoreCollection("Projects");
-                                    print("Hello. This is theDocP: $theDocP");
-                                    myDocP = theDocP.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
-                                    print("Hello. This is myDocP: $myDocP");
-                                    print("Hello. This is the runtime type of myDocP: ${myDocP.runtimeType}");
-
-                                    var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Projects", myDocP, "Replies");
-                                    print("Hello. This is tempReplyToReplyVar: ${tempReplyToReplyVar}");
-                                    print("Hello. This is the replyToReplyTimeP variable: ${replyToReplyTimeP}");
-                                    replyToReplyDocP = tempReplyToReplyVar.firstWhere((myTime) => firebaseDesktopHelper.formatMyTimestamp(myTime["time"]) == replyToReplyTimeP.toString(), orElse: () => <String, dynamic>{});
-                                    print("Hello. This is replyToReplyDocP: ${replyToReplyDocP}");
-                                  }
-                                  else{
-                                    await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                      myDocP = d.docs.first.id;
-                                      print(myDocP);
-                                    });
-
-                                    await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").where("time", isEqualTo: replyToReplyTimeP).get().then((rd) {
-                                      replyToReplyDocP = rd.docs.first.id;
-                                      print(replyToReplyDocP);
-                                    });
-                                  }
-
-                                  print(thePThreadReplies);
-                                  print(replyToReplyDocP);
-
-                                  if(firebaseDesktopHelper.onDesktop){
-                                    print("The doc: $myDocP");
-                                    print("The subdoc: $replyToReplyDocP");
-
-                                    try{
-                                      Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Projects", myDocP, "Replies", replyToReplyDocP);
-
-                                      print("This is dsData: ${dsData}");
-                                      print("This is dsData's runtime type: ${dsData.runtimeType}");
-
-                                      if(dsData != null){
-                                        print("This is dsData: ${dsData}");
-                                        print("This is dsData's runtime type: ${dsData.runtimeType}");
-                                      }
-                                      else{
-                                        print("The document is not found on Desktop");
-                                      }
-                                    }
-                                    catch (error){
-                                      print("There is an error on Desktop: ${error}");
-                                    }
-                                  }
-                                  else{
-                                    DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").doc(replyToReplyDocP).get();
-                                    print(ds.data());
-                                    print(ds.data().runtimeType);
-                                    print(thePThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeP));
-                                  }
-
-                                  myIndex = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeP);
-                                  myReplyToReplyP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][myIndex];
-                                  myReplyToReplyPMap = Map.from(myReplyToReplyP);
-
-                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentP, replyToReplyPosterP, myReplyToReplyPMap];
-                                  pRepliesToReplies.add(tempReplyToReplyList);
-
-                                  print("myReplyToReplyTMap: ${myReplyToReplyPMap}");
-                                  print("myReplyToReplyT: ${myReplyToReplyP["replyContent"]}");
-                                  print("This is myIndex: $myIndex");
-
-                                  projectsReplyBool = true;
-                                  projectsReplyingToReplyBool = true;
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                }
-                              ),
-                              onPressed: (){
-                                //Does nothing
-                              }
-                            ),
-                          ]
-                      ): Column(
-                          children: <Widget>[
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.015625,
-                            ),
-                            ElevatedButton(
+                          ),
+                          ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.grey[300],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -584,29 +439,28 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                     children: <TextSpan>[
                                       TextSpan(
                                           style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
-                                        recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                          projectsClickedOnUser = true,
+                                          text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
+                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                            projectsClickedOnUser = true,
 
-                                          if(firebaseDesktopHelper.onDesktop){
-                                            projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                            theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
-                                            print("theUsersData is this on Desktop: ${theUsersData}"),
+                                            if(firebaseDesktopHelper.onDesktop){
+                                              projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                              theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
+                                            }
+                                            else{
+                                              projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                              projectsNameData.docs.forEach((person){
+                                                theUsersData = person.data();
+                                              }),
+                                            },
+                                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            if(theUsersData?.isEmpty ?? true){
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                            }
+                                            else{
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            }
                                           }
-                                          else{
-                                            projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                            projectsNameData.docs.forEach((person){
-                                              theUsersData = person.data();
-                                            }),
-                                          },
-                                          //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          if(theUsersData?.isEmpty ?? true){
-                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                                          }
-                                          else{
-                                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                          }
-                                        }
                                       ),
                                       TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -625,240 +479,436 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                               onPressed: (){
                                 //Does nothing
                               }
-                            ),
-                            ElevatedButton(
+                          ),
+                          ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
-                                child: Ink(
-                                  child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
-                                  color: Colors.grey[500],
-                                  width: MediaQuery.of(context).size.width * 0.5,
-                                ),
-                                onTap: () async{
-                                  replyToReplyTimeP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["time"];
-                                  replyToReplyContentP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replyContent"].toString();
-                                  replyToReplyPosterP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replier"].toString();
+                                  child: Ink(
+                                    child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
+                                    color: Colors.grey[500],
+                                    width: MediaQuery.of(context).size.width * 0.5,
+                                  ),
+                                  onTap: () async{
+                                    replyToReplyTimeP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["time"];
+                                    replyToReplyContentP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replyContent"].toString();
+                                    replyToReplyPosterP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replier"].toString();
 
-                                  print("This is replyToReplyTime: $replyToReplyTimeP");
+                                    print("This is replyToReplyTime: $replyToReplyTimeP");
 
-                                  if(firebaseDesktopHelper.onDesktop){
-                                    var thePThreads = await firebaseDesktopHelper.getFirestoreCollection("Projects");
-                                    var matchingThread = thePThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+                                    if(firebaseDesktopHelper.onDesktop){
+                                      var theDocP = await firebaseDesktopHelper.getFirestoreCollection("Projects");
+                                      print("Hello. This is theDocP: $theDocP");
+                                      myDocP = theDocP.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
+                                      print("Hello. This is myDocP: $myDocP");
+                                      print("Hello. This is the runtime type of myDocP: ${myDocP.runtimeType}");
 
-                                    if(matchingThread.isNotEmpty){
-                                      //Getting the document ID:
-                                      myDocP = matchingThread["docId"];
-                                      print("This is myDocP: ${myDocP}");
+                                      var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Projects", myDocP, "Replies");
+                                      print("Hello. This is tempReplyToReplyVar: ${tempReplyToReplyVar}");
+                                      print("Hello. This is the replyToReplyTimeP variable: ${replyToReplyTimeP}");
+                                      replyToReplyDocP = tempReplyToReplyVar.firstWhere((myTime) => firebaseDesktopHelper.formatMyTimestamp(myTime["time"]) == replyToReplyTimeP.toString(), orElse: () => <String, dynamic>{});
+                                      print("Hello. This is replyToReplyDocP: ${replyToReplyDocP}");
                                     }
                                     else{
-                                      print("Sorry; the thread was not found");
+                                      await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                        myDocP = d.docs.first.id;
+                                        print(myDocP);
+                                      });
+
+                                      await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").where("time", isEqualTo: replyToReplyTimeP).get().then((rd) {
+                                        replyToReplyDocP = rd.docs.first.id;
+                                        print(replyToReplyDocP);
+                                      });
                                     }
 
-                                    var thePThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Projects", myDocP, "Replies");
-                                    var matchingReply = thePThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeP, orElse: () => <String, dynamic>{});
+                                    print(thePThreadReplies);
+                                    print(replyToReplyDocP);
 
-                                    if(matchingReply.isNotEmpty){
-                                      //Getting the document ID:
-                                      replyToReplyDocP = matchingReply["docId"];
-                                      print("This is replyToReplyDocP: ${replyToReplyDocP}");
-                                    }
-                                    else{
-                                      print("Sorry; the thread was not found");
-                                    }
-                                  }
-                                  else{
-                                    await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                      myDocP = d.docs.first.id;
-                                      print(myDocP);
-                                    });
+                                    if(firebaseDesktopHelper.onDesktop){
+                                      print("The doc: $myDocP");
+                                      print("The subdoc: $replyToReplyDocP");
 
-                                    await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").where("time", isEqualTo: replyToReplyTimeP).get().then((rd) {
-                                      replyToReplyDocP = rd.docs.first.id;
-                                      print(replyToReplyDocP);
-                                    });
-                                  }
+                                      try{
+                                        Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Projects", myDocP, "Replies", replyToReplyDocP);
 
-                                  print(thePThreadReplies);
-                                  print(replyToReplyDocP);
-
-                                  if(firebaseDesktopHelper.onDesktop){
-                                    print("The doc: $myDocP");
-                                    print("The subdoc: $replyToReplyDocP");
-
-                                    try{
-                                      Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Projects", myDocP, "Replies", replyToReplyDocP);
-
-                                      print("This is dsData: ${dsData}");
-                                      print("This is dsData's runtime type: ${dsData.runtimeType}");
-
-                                      if(dsData != null){
                                         print("This is dsData: ${dsData}");
                                         print("This is dsData's runtime type: ${dsData.runtimeType}");
+
+                                        if(dsData != null){
+                                          print("This is dsData: ${dsData}");
+                                          print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                        }
+                                        else{
+                                          print("The document is not found on Desktop");
+                                        }
                                       }
-                                      else{
-                                        print("The document is not found on Desktop");
+                                      catch (error){
+                                        print("There is an error on Desktop: ${error}");
                                       }
                                     }
-                                    catch (error){
-                                      print("There is an error on Desktop: ${error}");
+                                    else{
+                                      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").doc(replyToReplyDocP).get();
+                                      print(ds.data());
+                                      print(ds.data().runtimeType);
+                                      print(thePThreadReplies.indexWhere((i) => i["time"] == replyToReplyTimeP));
+                                    }
+
+                                    myIndex = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeP);
+                                    myReplyToReplyP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][myIndex];
+                                    myReplyToReplyPMap = Map.from(myReplyToReplyP);
+
+                                    List<dynamic> tempReplyToReplyList = [replyToReplyContentP, replyToReplyPosterP, myReplyToReplyPMap];
+                                    pRepliesToReplies.add(tempReplyToReplyList);
+
+                                    print("myReplyToReplyTMap: ${myReplyToReplyPMap}");
+                                    print("myReplyToReplyT: ${myReplyToReplyP["replyContent"]}");
+                                    print("This is myIndex: $myIndex");
+
+                                    projectsReplyBool = true;
+                                    projectsReplyingToReplyBool = true;
+                                    projectsNavigationDepth++;
+
+                                    final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                                    //Refreshing the page after returning from a reply:
+                                    if(myResult == true){
+                                      setState((){
+                                        //Clears sublists and forces a rebuild with new data:
+                                        mySublistsProjectsThreadReplies.clear();
+                                      });
                                     }
                                   }
-                                  else{
-                                    DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").doc(replyToReplyDocP).get();
-                                    print(ds.data());
-                                    print(ds.data().runtimeType);
-                                  }
-
-                                  myIndex = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeP);
-
-                                  print(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeP));
-                                  myReplyToReplyP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][myIndex];
-
-                                  myReplyToReplyPMap = Map.from(myReplyToReplyP);
-
-                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentP, replyToReplyPosterP, myReplyToReplyPMap];
-                                  pRepliesToReplies.add(tempReplyToReplyList);
-
-                                  print("myReplyToReplyPMap: ${myReplyToReplyPMap}");
-
-                                  print("myReplyToReplyP: ${myReplyToReplyP["replyContent"]}");
-                                  print("This is myIndex: $myIndex");
-
-                                  projectsReplyBool = true;
-                                  projectsReplyingToReplyBool = true;
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                }
                               ),
                               onPressed: (){
                                 //Does nothing
                               }
-                            ),
-                          ]
-                      ),
-                    ],
-                  );
-                }
-            ),
-          ],
-        ),
+                          ),
+                        ]
+                    ): Column(
+                        children: <Widget>[
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.015625,
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[300],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Container(
+                                //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
+                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                            projectsClickedOnUser = true,
+
+                                            if(firebaseDesktopHelper.onDesktop){
+                                              projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                              theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
+                                              print("theUsersData is this on Desktop: ${theUsersData}"),
+                                            }
+                                            else{
+                                              projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                              projectsNameData.docs.forEach((person){
+                                                theUsersData = person.data();
+                                              }),
+                                            },
+                                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            if(theUsersData?.isEmpty ?? true){
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                            }
+                                            else{
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            }
+                                          }
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                color: Colors.grey[300],
+                                width: MediaQuery.of(context).size.width * 0.5,
+                              ),
+                              onPressed: (){
+                                //Does nothing
+                              }
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[500],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: InkWell(
+                                  child: Ink(
+                                    child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
+                                    color: Colors.grey[500],
+                                    width: MediaQuery.of(context).size.width * 0.5,
+                                  ),
+                                  onTap: () async{
+                                    replyToReplyTimeP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["time"];
+                                    replyToReplyContentP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replyContent"].toString();
+                                    replyToReplyPosterP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replier"].toString();
+
+                                    print("This is replyToReplyTime: $replyToReplyTimeP");
+
+                                    if(firebaseDesktopHelper.onDesktop){
+                                      var thePThreads = await firebaseDesktopHelper.getFirestoreCollection("Projects");
+                                      var matchingThread = thePThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+
+                                      if(matchingThread.isNotEmpty){
+                                        //Getting the document ID:
+                                        myDocP = matchingThread["docId"];
+                                        print("This is myDocP: ${myDocP}");
+                                      }
+                                      else{
+                                        print("Sorry; the thread was not found");
+                                      }
+
+                                      var thePThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Projects", myDocP, "Replies");
+                                      var matchingReply = thePThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeP, orElse: () => <String, dynamic>{});
+
+                                      if(matchingReply.isNotEmpty){
+                                        //Getting the document ID:
+                                        replyToReplyDocP = matchingReply["docId"];
+                                        print("This is replyToReplyDocP: ${replyToReplyDocP}");
+                                      }
+                                      else{
+                                        print("Sorry; the thread was not found");
+                                      }
+                                    }
+                                    else{
+                                      await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                        myDocP = d.docs.first.id;
+                                        print(myDocP);
+                                      });
+
+                                      await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").where("time", isEqualTo: replyToReplyTimeP).get().then((rd) {
+                                        replyToReplyDocP = rd.docs.first.id;
+                                        print(replyToReplyDocP);
+                                      });
+                                    }
+
+                                    print(thePThreadReplies);
+                                    print(replyToReplyDocP);
+
+                                    if(firebaseDesktopHelper.onDesktop){
+                                      print("The doc: $myDocP");
+                                      print("The subdoc: $replyToReplyDocP");
+
+                                      try{
+                                        Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Projects", myDocP, "Replies", replyToReplyDocP);
+
+                                        print("This is dsData: ${dsData}");
+                                        print("This is dsData's runtime type: ${dsData.runtimeType}");
+
+                                        if(dsData != null){
+                                          print("This is dsData: ${dsData}");
+                                          print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                        }
+                                        else{
+                                          print("The document is not found on Desktop");
+                                        }
+                                      }
+                                      catch (error){
+                                        print("There is an error on Desktop: ${error}");
+                                      }
+                                    }
+                                    else{
+                                      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").doc(replyToReplyDocP).get();
+                                      print(ds.data());
+                                      print(ds.data().runtimeType);
+                                    }
+
+                                    myIndex = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeP);
+
+                                    print(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeP));
+                                    myReplyToReplyP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][myIndex];
+
+                                    myReplyToReplyPMap = Map.from(myReplyToReplyP);
+
+                                    List<dynamic> tempReplyToReplyList = [replyToReplyContentP, replyToReplyPosterP, myReplyToReplyPMap];
+                                    pRepliesToReplies.add(tempReplyToReplyList);
+
+                                    print("myReplyToReplyPMap: ${myReplyToReplyPMap}");
+
+                                    print("myReplyToReplyP: ${myReplyToReplyP["replyContent"]}");
+                                    print("This is myIndex: $myIndex");
+
+                                    projectsReplyBool = true;
+                                    projectsReplyingToReplyBool = true;
+                                    projectsNavigationDepth++;
+
+                                    final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                                    //Refreshing the page after returning from a reply:
+                                    if(myResult == true){
+                                      setState((){
+                                        //Clears sublists and forces a rebuild with new data:
+                                        mySublistsProjectsThreadReplies.clear();
+                                      });
+                                    }
+                                    //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                  }
+                              ),
+                              onPressed: (){
+                                //Does nothing
+                              }
+                          ),
+                        ]
+                    ),
+                  ],
+                );
+              }
+          ),
+        ],
+      ),
     );
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () =>{
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage())),
-          }
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () =>{
+              print("We're going backwards. This is the depth: ${projectsNavigationDepth}"),
+
+              if(Navigator.canPop(context)){
+                Navigator.pop(context),
+              },
+
+              projectsNavigationDepth = 0,
+            }
         ),
       ),
       body: SingleChildScrollView(
         child: Wrap(
-        children: <Widget>[
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.grey[300],
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                child: Padding(
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
-                  //child: Text("Thread title: " + threadTitleP + "\n" + "Posted by: " + threadAuthorP + "\n" + threadContentP),
-                  child: Text.rich(
-                    TextSpan(
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                      text: "Thread title: ${threadTitleP}\nPosted by: ",
-                      children: <TextSpan>[
-                        TextSpan(
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                          text: "${threadAuthorP}",
-                          recognizer: TapGestureRecognizer()..onTap = () async =>{
-                            projectsClickedOnUser = true,
+          children: <Widget>[
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.grey[300],
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    child: Padding(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
+                      //child: Text("Thread title: " + threadTitleP + "\n" + "Posted by: " + threadAuthorP + "\n" + threadContentP),
+                      child: Text.rich(
+                          TextSpan(
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                            text: "Thread title: ${threadTitleP}\nPosted by: ",
+                            children: <TextSpan>[
+                              TextSpan(
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                  text: "${threadAuthorP}",
+                                  recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                    projectsClickedOnUser = true,
 
-                            if(firebaseDesktopHelper.onDesktop){
-                              projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                              theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorP.toLowerCase(), orElse: () => <String, dynamic>{}),
-                            }
-                            else{
-                              projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorP.toLowerCase()).get(),
-                              projectsNameData.docs.forEach((person){
-                                theUsersData = person.data();
-                              }),
-                            },
-                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                            if(theUsersData?.isEmpty ?? true){
-                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                            }
-                            else{
-                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                            }
-                          }
-                        ),
-                        TextSpan(
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                          text: " ",
-                        ),
-                        TextSpan(
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                          text: "\n${threadContentP}",
-                        ),
-                      ],
-                    )
+                                    if(firebaseDesktopHelper.onDesktop){
+                                      projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                      theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorP.toLowerCase(), orElse: () => <String, dynamic>{}),
+                                    }
+                                    else{
+                                      projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorP.toLowerCase()).get(),
+                                      projectsNameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      }),
+                                    },
+                                    //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    if(theUsersData?.isEmpty ?? true){
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                    }
+                                    else{
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                    }
+                                  }
+                              ),
+                              TextSpan(
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                text: " ",
+                              ),
+                              TextSpan(
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                text: "\n${threadContentP}",
+                              ),
+                            ],
+                          )
+                      ),
+                    ),
+                    color: Colors.grey[300],
+                    alignment: Alignment.topLeft,
                   ),
                 ),
-                color: Colors.grey[300],
-                alignment: Alignment.topLeft,
-              ),
+                onPressed: (){
+                  //Does nothing
+                }
             ),
-            onPressed: (){
-              //Does nothing
-            }
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.grey[500],
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            child: InkWell(
-              child: Ink(
-                color: Colors.grey[500],
-                height: MediaQuery.of(context).size.height * 0.02734375,
-                child: Container(
-                  alignment: Alignment.topCenter,
-                  child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.grey[500],
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-              ),
-              onTap: (){
-                projectsReplyingToReplyBool = false;
-                projectsReplyBool = true;
-                print(reversedProjectsThreadsIterable.toList());
-                print(threadID);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                print('Replying to the thread');
-              }
+                child: InkWell(
+                    child: Ink(
+                      color: Colors.grey[500],
+                      height: MediaQuery.of(context).size.height * 0.02734375,
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                      ),
+                    ),
+                    onTap: () async {
+                      projectsReplyingToReplyBool = false;
+                      projectsReplyBool = true;
+                      projectsNavigationDepth++;
+                      print(reversedProjectsThreadsIterable.toList());
+                      print(threadID);
+
+                      final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                      //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                      //Refreshing the page after returning from a reply:
+                      if(myResult == true){
+                        setState((){
+                          //Clears sublists and forces a rebuild with new data:
+                          mySublistsProjectsThreadReplies.clear();
+                        });
+                      }
+
+                      print('Replying to the thread');
+                    }
+                ),
+                onPressed: (){
+                  //Does nothing
+                }
             ),
-            onPressed: (){
-              //Does nothing
-            }
-          ),
-          Center(
-            child: (myPagesProjectsThreadReplies.isNotEmpty && theCurrentPageProjectsThreadReplies < myPagesProjectsThreadReplies.length)? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
-          ),
+            Center(
+              child: (myPagesProjectsThreadReplies.isNotEmpty && theCurrentPageProjectsThreadReplies < myPagesProjectsThreadReplies.length)? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+            ),
             NumberPaginator(
-              height: MediaQuery.of(context).size.height * 0.0782125,
-              numberPages: listOfProjectsThreadReplies.length != 0? numberOfPagesProjectsThreadReplies : 1,
-              onPageChange: (myIndexProjectsThreadReplies){
-                setState((){
-                  theCurrentPageProjectsThreadReplies = myIndexProjectsThreadReplies;
-                });
-              }
+                height: MediaQuery.of(context).size.height * 0.0782125,
+                numberPages: listOfProjectsThreadReplies.length != 0? numberOfPagesProjectsThreadReplies : 1,
+                onPageChange: (myIndexProjectsThreadReplies){
+                  setState((){
+                    theCurrentPageProjectsThreadReplies = myIndexProjectsThreadReplies;
+                  });
+                }
             ),
           ],
         ),

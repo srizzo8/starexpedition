@@ -59,6 +59,13 @@ var projectsDoc;
 var ndDoc;
 var fasDoc;
 
+bool fromDbuReply = false;
+bool fromQaaReply = false;
+bool fromTechnologiesReply = false;
+bool fromProjectsReply = false;
+bool fromNdReply = false;
+bool fromFasReply = false;
+
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
 
@@ -639,7 +646,10 @@ class replyThreadPageState extends State<replyThreadPage>{
                             print("discussionBoardUpdatesPage.theDbuThreadReplies: ${discussionBoardUpdatesPage.theDbuThreadReplies}");
 
                             //Navigator.pop(context);
-                            Navigator.push(bc, MaterialPageRoute(builder: (context) => discussionBoardUpdatesPage.discussionBoardUpdatesThreadsPage()));
+
+                            fromDbuReply = true;
+                            //Navigator.push(bc, MaterialPageRoute(builder: (context) => discussionBoardUpdatesPage.discussionBoardUpdatesThreadsPage()));
+                            Navigator.pop(context, true);
 
                             //Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage.discussionBoardUpdatesPage()));
                             discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool = false;
@@ -1041,7 +1051,11 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             print("questionsAndAnswersPage.theQaaThreadReplies: ${questionsAndAnswersPage.theQaaThreadReplies}");
 
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersThreadsPage()));
+                            fromQaaReply = true;
+
+                            //Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage.questionsAndAnswersThreadsPage()));
+                            Navigator.pop(context, true);
+
                             questionsAndAnswersPage.questionsAndAnswersReplyBool = false;
                           }
                           if(technologiesPage.technologiesReplyBool == true){
@@ -1419,7 +1433,11 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             technologiesPage.theTThreadReplies = technologiesReplies;
 
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesThreadsPage()));
+                            fromTechnologiesReply = true;
+
+                            //Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage.technologiesThreadsPage()));
+
+                            Navigator.pop(context, true);
 
                             technologiesPage.technologiesReplyBool = false;
                           }
@@ -1798,7 +1816,10 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             projectsPage.thePThreadReplies = projectsReplies;
 
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsThreadsPage()));
+                            fromProjectsReply = true;
+
+                            //Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage.projectsThreadsPage()));
+                            Navigator.pop(context, true);
 
                             projectsPage.projectsReplyBool = false;
                           }
@@ -2173,7 +2194,10 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             newDiscoveriesPage.theNdThreadReplies = newDiscoveriesReplies;
 
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesThreadsPage()));
+                            fromNdReply = true;
+
+                            //Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage.newDiscoveriesThreadsPage()));
+                            Navigator.pop(context, true);
 
                             newDiscoveriesPage.newDiscoveriesReplyBool = false;
                           }
@@ -2551,7 +2575,10 @@ class replyThreadPageState extends State<replyThreadPage>{
 
                             feedbackAndSuggestionsPage.theFasThreadReplies = feedbackAndSuggestionsReplies;
 
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const feedbackAndSuggestionsPage.feedbackAndSuggestionsThreadsPage()));
+                            fromFasReply = true;
+
+                            //Navigator.push(context, MaterialPageRoute(builder: (context) => const feedbackAndSuggestionsPage.feedbackAndSuggestionsThreadsPage()));
+                            Navigator.pop(context, true);
 
                             feedbackAndSuggestionsPage.fasReplyBool = false;
                           }

@@ -51,6 +51,10 @@ var mySublistsFasInformation;
 var myIndexPlaceFas;
 var myLocation;
 
+int theCurrentPageFas = 0;
+
+int fasNavigationDepth = 0;
+
 class feedbackAndSuggestionsPage extends StatefulWidget{
   const feedbackAndSuggestionsPage ({Key? key}) : super(key: key);
 
@@ -71,11 +75,11 @@ class MyFeedbackAndSuggestionsPage extends StatelessWidget{
   @override
   Widget build(BuildContext bcfas){
     return MaterialApp(
-      title: 'Feedback And Suggestions Page',
-      routes: {
-        routeToCreateThread.createThreadPage: (context) => createThread(),
-        routeToReplyToThreadFas.replyThreadPage: (context) => replyThreadPage(),
-      }
+        title: 'Feedback And Suggestions Page',
+        routes: {
+          routeToCreateThread.createThreadPage: (context) => createThread(),
+          routeToReplyToThreadFas.replyThreadPage: (context) => replyThreadPage(),
+        }
     );
   }
 }
@@ -91,7 +95,7 @@ class routeToReplyToThreadFas{
 class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
   static String fasRoute = '/feedbackAndSuggestionsPage';
   int numberOfPagesFas = (((discussionBoardPage.feedbackAndSuggestionsThreads.length)/10)).ceil();
-  int theCurrentPageFas = 0;
+  //int theCurrentPageFas = 0;
 
   var listOfFasThreads = discussionBoardPage.feedbackAndSuggestionsThreads;
   var mySublistsFas = [];
@@ -260,6 +264,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
             color: Colors.white,
             onPressed: () =>{
               Navigator.pushNamed(context, '/discussionBoardPage'),
+              theCurrentPageFas = 0,
             }
         ),
       ),
@@ -279,40 +284,42 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
             //margin: EdgeInsets.only(left: 250.0),
             //alignment: Alignment.center,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-              ),
-              child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
-                  //height: 40,
-                  //width: 150,
-                  //child: Center(
-                  child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                  //),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
                 ),
-              ),
-              onPressed: (){
-                print(fasBool);
-                fasBool = true;
-                print(fasBool);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
-                print("I am going to write a new thread.");
-              }
+                child: InkWell(
+                  child: Ink(
+                    color: Colors.black,
+                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
+                    //height: 40,
+                    //width: 150,
+                    //child: Center(
+                    child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                    //),
+                  ),
+                ),
+                onPressed: (){
+                  print(fasBool);
+                  fasBool = true;
+                  print(fasBool);
+                  fasNavigationDepth++;
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
+                  print("I am going to write a new thread.");
+                }
             ),
           ),
           Expanded(
             child: listOfFasThreads.length != 0? myPagesFas[theCurrentPageFas] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
-            height: MediaQuery.of(context).size.height * 0.0782125,
-            numberPages: listOfFasThreads.length != 0? numberOfPagesFas : 1,
-            onPageChange: (myIndexFas){
-              setState((){
-                theCurrentPageFas = myIndexFas;
-              });
-            }
+              height: MediaQuery.of(context).size.height * 0.0782125,
+              numberPages: listOfFasThreads.length != 0? numberOfPagesFas : 1,
+              onPageChange: (myIndexFas){
+                setState((){
+                  theCurrentPageFas = myIndexFas;
+                  print("This is theCurrentPageFas: ${theCurrentPageFas}");
+                });
+              }
           ),
         ],
       ),
@@ -324,12 +331,17 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
   int numberOfPagesFasThreadReplies = 0;
   int theCurrentPageFasThreadReplies = 0;
 
-  var listOfFasThreadReplies = theFasThreadReplies;
+  var listOfFasThreadReplies;
   var mySublistsFasThreadReplies = [];
   int portionSizeFasThreadReplies = 10;
 
   @override
   Widget build(BuildContext context){
+    listOfFasThreadReplies = theFasThreadReplies;
+
+    //Clearing outdated sublists:
+    mySublistsFasThreadReplies.clear();
+
     if(listOfFasThreadReplies == []){
       numberOfPagesFasThreadReplies = 1;
     }
@@ -361,205 +373,217 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                             height: MediaQuery.of(context).size.height * 0.015625,
                           ),
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.blueGrey[300],
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Container(
-                              child: Text.rich(
-                                TextSpan(
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                  text: "Reply to: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
-                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                        fasClickedOnUser = true,
-
-                                        if(firebaseDesktopHelper.onDesktop){
-                                          fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
-                                        }
-                                        else{
-                                          fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
-                                          fasNameData.docs.forEach((person){
-                                            theUsersData = person.data();
-                                          }),
-                                        },
-
-                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        if(theUsersData?.isEmpty ?? true){
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                                        }
-                                        else{
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        }
-                                      }
-                                    ),
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: " ",
-                                    ),
-                                  ],
-                                ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.blueGrey[300],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
-                              color: Colors.blueGrey[300],
-                              width: MediaQuery.of(context).size.width * 0.5,
-                            ),
-                            onPressed: (){
-                              //Does nothing
-                            }
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.grey[300],
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Container(
-                              child: Text.rich(
-                                TextSpan(
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                  text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString())}\nPosted by: ",
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
-                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                        fasClickedOnUser = true,
+                              child: Container(
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Reply to: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                            fasClickedOnUser = true,
 
-                                        if(firebaseDesktopHelper.onDesktop){
-                                          fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
-                                        }
-                                        else{
-                                          fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                          fasNameData.docs.forEach((person){
-                                            theUsersData = person.data();
-                                          }),
-                                        },
+                                            if(firebaseDesktopHelper.onDesktop){
+                                              fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                              theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
+                                            }
+                                            else{
+                                              fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
+                                              fasNameData.docs.forEach((person){
+                                                theUsersData = person.data();
+                                              }),
+                                            },
 
-                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        if(theUsersData?.isEmpty ?? true){
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                                        }
-                                        else{
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        }
-                                      }
-                                    ),
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}",
-                                    ),
-                                  ],
+                                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            if(theUsersData?.isEmpty ?? true){
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                            }
+                                            else{
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            }
+                                          }
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              color: Colors.grey[300],
-                              width: MediaQuery.of(context).size.width * 0.5,
-                            ),
-                            onPressed: (){
-                              //Does nothing
-                            }
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.grey[500],
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: InkWell(
-                              child: Ink(
-                                child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
-                                color: Colors.grey[500],
+                                color: Colors.blueGrey[300],
                                 width: MediaQuery.of(context).size.width * 0.5,
                               ),
-                              onTap: () async{
-                                replyToReplyTimeFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["time"];
-                                replyToReplyContentFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replyContent"].toString();
-                                replyToReplyPosterFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replier"].toString();
+                              onPressed: (){
+                                //Does nothing
+                              }
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[300],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Container(
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
+                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                            fasClickedOnUser = true,
 
-                                print("This is replyToReplyTime: $replyToReplyTimeFas");
+                                            if(firebaseDesktopHelper.onDesktop){
+                                              fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                              theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
+                                            }
+                                            else{
+                                              fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                              fasNameData.docs.forEach((person){
+                                                theUsersData = person.data();
+                                              }),
+                                            },
 
-                                if(firebaseDesktopHelper.onDesktop){
-                                  var theDocFas = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
-                                  print("Hello. This is theDocFas: $theDocFas");
-                                  myDocFas = theDocFas.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
-                                  print("Hello. This is myDocFas: $myDocFas");
-                                  print("Hello. This is the runtime type of myDocFas: ${myDocFas.runtimeType}");
+                                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            if(theUsersData?.isEmpty ?? true){
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                            }
+                                            else{
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            }
+                                          }
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                color: Colors.grey[300],
+                                width: MediaQuery.of(context).size.width * 0.5,
+                              ),
+                              onPressed: (){
+                                //Does nothing
+                              }
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[500],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: InkWell(
+                                  child: Ink(
+                                    child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
+                                    color: Colors.grey[500],
+                                    width: MediaQuery.of(context).size.width * 0.5,
+                                  ),
+                                  onTap: () async{
+                                    replyToReplyTimeFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["time"];
+                                    replyToReplyContentFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replyContent"].toString();
+                                    replyToReplyPosterFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replier"].toString();
 
-                                  var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Feedback_And_Suggestions", myDocFas, "Replies");
-                                  print("Hello. This is tempReplyToReplyVar: ${tempReplyToReplyVar}");
-                                  print("Hello. This is the replyToReplyTimeFas variable: ${replyToReplyTimeFas}");
-                                  replyToReplyDocFas = tempReplyToReplyVar.firstWhere((myTime) => firebaseDesktopHelper.formatMyTimestamp(myTime["time"]) == replyToReplyTimeFas.toString(), orElse: () => <String, dynamic>{});
-                                  print("Hello. This is replyToReplyDocFas: ${replyToReplyDocFas}");
-                                }
-                                else{
-                                  await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                    myDocFas = d.docs.first.id;
-                                    print(myDocFas);
-                                  });
+                                    print("This is replyToReplyTime: $replyToReplyTimeFas");
 
-                                  await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").where("time", isEqualTo: replyToReplyTimeFas).get().then((rd) {
-                                    replyToReplyDocFas = rd.docs.first.id;
-                                    print(replyToReplyDocFas);
-                                  });
-                                }
+                                    if(firebaseDesktopHelper.onDesktop){
+                                      var theDocFas = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
+                                      print("Hello. This is theDocFas: $theDocFas");
+                                      myDocFas = theDocFas.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{})["docId"];
+                                      print("Hello. This is myDocFas: $myDocFas");
+                                      print("Hello. This is the runtime type of myDocFas: ${myDocFas.runtimeType}");
 
-                                print(theFasThreadReplies);
-                                print(replyToReplyDocFas);
-
-                                if(firebaseDesktopHelper.onDesktop){
-                                  print("The doc: $myDocFas");
-                                  print("The subdoc: $replyToReplyDocFas");
-
-                                  try{
-                                    Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Feedback_And_Suggestions", myDocFas, "Replies", replyToReplyDocFas);
-
-                                    print("This is dsData: ${dsData}");
-                                    print("This is dsData's runtime type: ${dsData.runtimeType}");
-
-                                    if(dsData != null){
-                                      print("This is dsData: ${dsData}");
-                                      print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                      var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Feedback_And_Suggestions", myDocFas, "Replies");
+                                      print("Hello. This is tempReplyToReplyVar: ${tempReplyToReplyVar}");
+                                      print("Hello. This is the replyToReplyTimeFas variable: ${replyToReplyTimeFas}");
+                                      replyToReplyDocFas = tempReplyToReplyVar.firstWhere((myTime) => firebaseDesktopHelper.formatMyTimestamp(myTime["time"]) == replyToReplyTimeFas.toString(), orElse: () => <String, dynamic>{});
+                                      print("Hello. This is replyToReplyDocFas: ${replyToReplyDocFas}");
                                     }
                                     else{
-                                      print("The document is not found on Desktop");
+                                      await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                        myDocFas = d.docs.first.id;
+                                        print(myDocFas);
+                                      });
+
+                                      await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").where("time", isEqualTo: replyToReplyTimeFas).get().then((rd) {
+                                        replyToReplyDocFas = rd.docs.first.id;
+                                        print(replyToReplyDocFas);
+                                      });
                                     }
+
+                                    print(theFasThreadReplies);
+                                    print(replyToReplyDocFas);
+
+                                    if(firebaseDesktopHelper.onDesktop){
+                                      print("The doc: $myDocFas");
+                                      print("The subdoc: $replyToReplyDocFas");
+
+                                      try{
+                                        Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Feedback_And_Suggestions", myDocFas, "Replies", replyToReplyDocFas);
+
+                                        print("This is dsData: ${dsData}");
+                                        print("This is dsData's runtime type: ${dsData.runtimeType}");
+
+                                        if(dsData != null){
+                                          print("This is dsData: ${dsData}");
+                                          print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                        }
+                                        else{
+                                          print("The document is not found on Desktop");
+                                        }
+                                      }
+                                      catch (error){
+                                        print("There is an error on Desktop: ${error}");
+                                      }
+                                    }
+                                    else{
+                                      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").doc(replyToReplyDocFas).get();
+                                      print(ds.data());
+                                      print(ds.data().runtimeType);
+                                    }
+                                    print(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas));
+
+                                    myIndex = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas);
+                                    myReplyToReplyFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][myIndex];
+                                    myReplyToReplyFasMap = Map.from(myReplyToReplyFas);
+
+                                    List<dynamic> tempReplyToReplyList = [replyToReplyContentFas, replyToReplyPosterFas, myReplyToReplyFasMap];
+                                    fasRepliesToReplies.add(tempReplyToReplyList);
+
+                                    print("myReplyToReplyFasMap: ${myReplyToReplyFasMap}");
+                                    print("myReplyToReplyFas: ${myReplyToReplyFas["replyContent"]}");
+                                    print("This is myIndex: $myIndex");
+
+                                    fasReplyBool = true;
+                                    fasReplyingToReplyBool = true;
+                                    fasNavigationDepth++;
+
+                                    final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                                    //Refreshing the page after returning from a reply:
+                                    if(myResult == true){
+                                      setState((){
+                                        //Clears sublists and forces a rebuild with new data:
+                                        mySublistsFasThreadReplies.clear();
+                                      });
+                                    }
+
+                                    //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                                   }
-                                  catch (error){
-                                    print("There is an error on Desktop: ${error}");
-                                  }
-                                }
-                                else{
-                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").doc(replyToReplyDocFas).get();
-                                  print(ds.data());
-                                  print(ds.data().runtimeType);
-                                }
-                                print(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas));
-
-                                myIndex = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas);
-                                myReplyToReplyFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][myIndex];
-                                myReplyToReplyFasMap = Map.from(myReplyToReplyFas);
-
-                                List<dynamic> tempReplyToReplyList = [replyToReplyContentFas, replyToReplyPosterFas, myReplyToReplyFasMap];
-                                fasRepliesToReplies.add(tempReplyToReplyList);
-
-                                print("myReplyToReplyFasMap: ${myReplyToReplyFasMap}");
-                                print("myReplyToReplyFas: ${myReplyToReplyFas["replyContent"]}");
-                                print("This is myIndex: $myIndex");
-
-                                fasReplyBool = true;
-                                fasReplyingToReplyBool = true;
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                              ),
+                              onPressed: (){
+                                //Does nothing
                               }
-                            ),
-                            onPressed: (){
-                              //Does nothing
-                            }
                           ),
                         ]
                     ): Column(
@@ -568,170 +592,182 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                             height: MediaQuery.of(context).size.height * 0.015625,
                           ),
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.grey[300],
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Container(
-                              child: Text.rich(
-                                TextSpan(
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                  text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString())}\nPosted by: ",
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
-                                      recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                        fasClickedOnUser = true,
-
-                                        if(firebaseDesktopHelper.onDesktop){
-                                          fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                          theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
-                                          print("theUsersData is this on Desktop: ${theUsersData}"),
-                                        }
-                                        else{
-                                          fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                          fasNameData.docs.forEach((person){
-                                            theUsersData = person.data();
-                                          }),
-                                        },
-
-                                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        if(theUsersData?.isEmpty ?? true){
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                                        }
-                                        else{
-                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                        }
-                                      }
-                                    ),
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: " ",
-                                    ),
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}",
-                                    ),
-                                  ],
-                                ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[300],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
-                              color: Colors.grey[300],
-                              width: MediaQuery.of(context).size.width * 0.5,
-                            ),
-                            onPressed: (){
-                              //Does nothing
-                            }
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.grey[500],
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: InkWell(
-                              child: Ink(
-                                child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
-                                color: Colors.grey[500],
+                              child: Container(
+                                child: Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
+                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                            fasClickedOnUser = true,
+
+                                            if(firebaseDesktopHelper.onDesktop){
+                                              fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                              theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
+                                              print("theUsersData is this on Desktop: ${theUsersData}"),
+                                            }
+                                            else{
+                                              fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString().toLowerCase()).get(),
+                                              fasNameData.docs.forEach((person){
+                                                theUsersData = person.data();
+                                              }),
+                                            },
+
+                                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            if(theUsersData?.isEmpty ?? true){
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                            }
+                                            else{
+                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                            }
+                                          }
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: " ",
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                color: Colors.grey[300],
                                 width: MediaQuery.of(context).size.width * 0.5,
                               ),
-                              onTap: () async{
-                                replyToReplyTimeFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["time"];
-                                replyToReplyContentFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replyContent"].toString();
-                                replyToReplyPosterFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replier"].toString();
+                              onPressed: (){
+                                //Does nothing
+                              }
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey[500],
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: InkWell(
+                                  child: Ink(
+                                    child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
+                                    color: Colors.grey[500],
+                                    width: MediaQuery.of(context).size.width * 0.5,
+                                  ),
+                                  onTap: () async{
+                                    replyToReplyTimeFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["time"];
+                                    replyToReplyContentFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replyContent"].toString();
+                                    replyToReplyPosterFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replier"].toString();
 
-                                print("This is replyToReplyTime: $replyToReplyTimeFas");
+                                    print("This is replyToReplyTime: $replyToReplyTimeFas");
 
-                                if(firebaseDesktopHelper.onDesktop){
-                                  var theFasThreads = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
-                                  var matchingThread = theFasThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+                                    if(firebaseDesktopHelper.onDesktop){
+                                      var theFasThreads = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
+                                      var matchingThread = theFasThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
-                                  if(matchingThread.isNotEmpty){
-                                    //Getting the document ID:
-                                    myDocFas = matchingThread["docId"];
-                                    print("This is myDocFas: ${myDocFas}");
-                                  }
-                                  else{
-                                    print("Sorry; the thread was not found");
-                                  }
+                                      if(matchingThread.isNotEmpty){
+                                        //Getting the document ID:
+                                        myDocFas = matchingThread["docId"];
+                                        print("This is myDocFas: ${myDocFas}");
+                                      }
+                                      else{
+                                        print("Sorry; the thread was not found");
+                                      }
 
-                                  var theFasThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Feedback_And_Suggestions", myDocFas, "Replies");
-                                  var matchingReply = theFasThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeFas, orElse: () => <String, dynamic>{});
+                                      var theFasThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Feedback_And_Suggestions", myDocFas, "Replies");
+                                      var matchingReply = theFasThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeFas, orElse: () => <String, dynamic>{});
 
-                                  if(matchingReply.isNotEmpty){
-                                    //Getting the document ID:
-                                    replyToReplyDocFas = matchingReply["docId"];
-                                    print("This is replyToReplyDocFas: ${replyToReplyDocFas}");
-                                  }
-                                  else{
-                                    print("Sorry; the thread was not found");
-                                  }
-                                }
-                                else{
-                                  await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                    myDocFas = d.docs.first.id;
-                                    print(myDocFas);
-                                  });
-
-                                  await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").where("time", isEqualTo: replyToReplyTimeFas).get().then((rd) {
-                                    replyToReplyDocFas = rd.docs.first.id;
-                                    print(replyToReplyDocFas);
-                                  });
-                                }
-
-                                print(theFasThreadReplies);
-                                print(replyToReplyDocFas);
-
-                                if(firebaseDesktopHelper.onDesktop){
-                                  print("The doc: $myDocFas");
-                                  print("The subdoc: $replyToReplyDocFas");
-
-                                  try{
-                                    Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Feedback_And_Suggestions", myDocFas, "Replies", replyToReplyDocFas);
-
-                                    print("This is dsData: ${dsData}");
-                                    print("This is dsData's runtime type: ${dsData.runtimeType}");
-
-                                    if(dsData != null){
-                                      print("This is dsData: ${dsData}");
-                                      print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                      if(matchingReply.isNotEmpty){
+                                        //Getting the document ID:
+                                        replyToReplyDocFas = matchingReply["docId"];
+                                        print("This is replyToReplyDocFas: ${replyToReplyDocFas}");
+                                      }
+                                      else{
+                                        print("Sorry; the thread was not found");
+                                      }
                                     }
                                     else{
-                                      print("The document is not found on Desktop");
+                                      await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                        myDocFas = d.docs.first.id;
+                                        print(myDocFas);
+                                      });
+
+                                      await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").where("time", isEqualTo: replyToReplyTimeFas).get().then((rd) {
+                                        replyToReplyDocFas = rd.docs.first.id;
+                                        print(replyToReplyDocFas);
+                                      });
                                     }
+
+                                    print(theFasThreadReplies);
+                                    print(replyToReplyDocFas);
+
+                                    if(firebaseDesktopHelper.onDesktop){
+                                      print("The doc: $myDocFas");
+                                      print("The subdoc: $replyToReplyDocFas");
+
+                                      try{
+                                        Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Feedback_And_Suggestions", myDocFas, "Replies", replyToReplyDocFas);
+
+                                        print("This is dsData: ${dsData}");
+                                        print("This is dsData's runtime type: ${dsData.runtimeType}");
+
+                                        if(dsData != null){
+                                          print("This is dsData: ${dsData}");
+                                          print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                        }
+                                        else{
+                                          print("The document is not found on Desktop");
+                                        }
+                                      }
+                                      catch (error){
+                                        print("There is an error on Desktop: ${error}");
+                                      }
+                                    }
+                                    else{
+                                      DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").doc(replyToReplyDocFas).get();
+                                      print(ds.data());
+                                      print(ds.data().runtimeType);
+                                    }
+
+                                    myIndex = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas);
+
+                                    print(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas));
+                                    myReplyToReplyFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][myIndex];
+
+                                    myReplyToReplyFasMap = Map.from(myReplyToReplyFas);
+
+                                    List<dynamic> tempReplyToReplyList = [replyToReplyContentFas, replyToReplyPosterFas, myReplyToReplyFasMap];
+                                    fasRepliesToReplies.add(tempReplyToReplyList);
+
+                                    print("myReplyToReplyFasMap: ${myReplyToReplyFasMap}");
+
+                                    print("myReplyToReplyFas: ${myReplyToReplyFas["replyContent"]}");
+                                    print("This is myIndex: $myIndex");
+
+                                    fasReplyBool = true;
+                                    fasReplyingToReplyBool = true;
+                                    fasNavigationDepth++;
+
+                                    final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                                    //Refreshing the page after returning from a reply:
+                                    if(myResult == true){
+                                      setState((){
+                                        //Clears sublists and forces a rebuild with new data:
+                                        mySublistsFasThreadReplies.clear();
+                                      });
+                                    }
+
+                                    //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                                   }
-                                  catch (error){
-                                    print("There is an error on Desktop: ${error}");
-                                  }
-                                }
-                                else{
-                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").doc(replyToReplyDocFas).get();
-                                  print(ds.data());
-                                  print(ds.data().runtimeType);
-                                }
-
-                                myIndex = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas);
-
-                                print(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeFas));
-                                myReplyToReplyFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][myIndex];
-
-                                myReplyToReplyFasMap = Map.from(myReplyToReplyFas);
-
-                                List<dynamic> tempReplyToReplyList = [replyToReplyContentFas, replyToReplyPosterFas, myReplyToReplyFasMap];
-                                fasRepliesToReplies.add(tempReplyToReplyList);
-
-                                print("myReplyToReplyFasMap: ${myReplyToReplyFasMap}");
-
-                                print("myReplyToReplyFas: ${myReplyToReplyFas["replyContent"]}");
-                                print("This is myIndex: $myIndex");
-
-                                fasReplyBool = true;
-                                fasReplyingToReplyBool = true;
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                              ),
+                              onPressed: (){
+                                //Does nothing
                               }
-                            ),
-                            onPressed: (){
-                              //Does nothing
-                            }
                           ),
                         ]
                     ),
@@ -751,7 +787,13 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const feedbackAndSuggestionsPage())),
+              print("We're going backwards. This is the depth: ${fasNavigationDepth}"),
+
+              if(Navigator.canPop(context)){
+                Navigator.pop(context),
+              },
+
+              fasNavigationDepth = 0,
             }
         ),
       ),
@@ -759,91 +801,103 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
         child: Wrap(
           children: <Widget>[
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.grey[300],
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  child: Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
-                    child: Text.rich(
-                      TextSpan(
-                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                        text: "Thread title: ${threadTitleFas}\nPosted by: ",
-                        children: <TextSpan>[
-                          TextSpan(
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                            text: "${threadAuthorFas}",
-                            recognizer: TapGestureRecognizer()..onTap = () async =>{
-                              fasClickedOnUser = true,
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.grey[300],
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    child: Padding(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
+                      child: Text.rich(
+                        TextSpan(
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          text: "Thread title: ${threadTitleFas}\nPosted by: ",
+                          children: <TextSpan>[
+                            TextSpan(
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                text: "${threadAuthorFas}",
+                                recognizer: TapGestureRecognizer()..onTap = () async =>{
+                                  fasClickedOnUser = true,
 
-                              if(firebaseDesktopHelper.onDesktop){
-                                fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorFas.toLowerCase(), orElse: () => <String, dynamic>{}),
-                              }
-                              else{
-                                fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorFas.toLowerCase()).get(),
-                                fasNameData.docs.forEach((person){
-                                  theUsersData = person.data();
-                                }),
-                              },
-                              //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                              if(theUsersData?.isEmpty ?? true){
-                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                              }
-                              else{
-                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                              }
-                            }
-                          ),
-                          TextSpan(
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                            text: " ",
-                          ),
-                          TextSpan(
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                            text: "\n${threadContentFas}",
-                          )
-                        ],
+                                  if(firebaseDesktopHelper.onDesktop){
+                                    fasNameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                                    theUsersData = fasNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorFas.toLowerCase(), orElse: () => <String, dynamic>{}),
+                                  }
+                                  else{
+                                    fasNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorFas.toLowerCase()).get(),
+                                    fasNameData.docs.forEach((person){
+                                      theUsersData = person.data();
+                                    }),
+                                  },
+                                  //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                  if(theUsersData?.isEmpty ?? true){
+                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                  }
+                                  else{
+                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                  }
+                                }
+                            ),
+                            TextSpan(
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                              text: " ",
+                            ),
+                            TextSpan(
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                              text: "\n${threadContentFas}",
+                            )
+                          ],
+                        ),
                       ),
                     ),
+                    color: Colors.grey[300],
+                    alignment: Alignment.topLeft,
                   ),
-                  color: Colors.grey[300],
-                  alignment: Alignment.topLeft,
                 ),
-              ),
-              onPressed: (){
-                //Does nothing
-              }
+                onPressed: (){
+                  //Does nothing
+                }
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.grey[500],
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              child: InkWell(
-                child: Ink(
-                  color: Colors.grey[500],
-                  height: MediaQuery.of(context).size.height * 0.02734375,
-                  child: Container(
-                    alignment: Alignment.topCenter,
-                    child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                  ),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.grey[500],
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                onTap: (){
-                  fasReplyingToReplyBool = false;
-                  fasReplyBool = true;
-                  print(reversedFasThreadsIterable.toList());
-                  print(threadID);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                  print('Replying to the thread');
+                child: InkWell(
+                    child: Ink(
+                      color: Colors.grey[500],
+                      height: MediaQuery.of(context).size.height * 0.02734375,
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                      ),
+                    ),
+                    onTap: () async{
+                      fasReplyingToReplyBool = false;
+                      fasReplyBool = true;
+                      fasNavigationDepth++;
+                      print(reversedFasThreadsIterable.toList());
+                      print(threadID);
+
+                      final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                      //Refreshing the page after returning from a reply:
+                      if(myResult == true){
+                        setState((){
+                          //Clears sublists and forces a rebuild with new data:
+                          mySublistsFasThreadReplies.clear();
+                        });
+                      }
+
+                      //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                      print('Replying to the thread');
+                    }
+                ),
+                onPressed: (){
+                  //Does nothing
                 }
-              ),
-              onPressed: (){
-                //Does nothing
-              }
             ),
             Center(
               child: (myPagesFasThreadReplies.isNotEmpty && theCurrentPageFasThreadReplies < myPagesFasThreadReplies.length)? myPagesFasThreadReplies[theCurrentPageFasThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),

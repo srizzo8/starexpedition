@@ -46,6 +46,10 @@ var mySublistsTechnologiesInformation;
 var myIndexPlaceTechnologies;
 var myLocation;
 
+int theCurrentPageTechnologies = 0;
+
+int technologiesNavigationDepth = 0;
+
 class technologiesPage extends StatefulWidget{
   const technologiesPage ({Key? key}) : super(key: key);
 
@@ -86,7 +90,7 @@ class routeToReplyToThreadTechnologiesPage{
 class technologiesPageState extends State<technologiesPage>{
   static String technologiesRoute = '/technologiesPage';
   int numberOfPagesTechnologies = (((discussionBoardPage.technologiesThreads.length)/10)).ceil();
-  int theCurrentPageTechnologies = 0;
+  //int theCurrentPageTechnologies = 0;
 
   var listOfTechnologiesThreads = discussionBoardPage.technologiesThreads;
   var mySublistsTechnologies = [];
@@ -255,6 +259,7 @@ class technologiesPageState extends State<technologiesPage>{
           color: Colors.white,
           onPressed: () =>{
             Navigator.pushNamed(context, '/discussionBoardPage'),
+            theCurrentPageTechnologies = 0,
           }
         ),
       ),
@@ -291,6 +296,7 @@ class technologiesPageState extends State<technologiesPage>{
                 print(technologiesBool);
                 technologiesBool = true;
                 print(technologiesBool);
+                technologiesNavigationDepth++;
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
                 print("I am going to write a new thread.");
               }
@@ -305,6 +311,7 @@ class technologiesPageState extends State<technologiesPage>{
             onPageChange: (myIndexTechnologies){
               setState((){
                 theCurrentPageTechnologies = myIndexTechnologies;
+                print("This is theCurrentPageTechnologies: ${theCurrentPageTechnologies}");
               });
             }
           ),
@@ -318,12 +325,17 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
   int numberOfPagesTechnologiesThreadReplies = 0;
   int theCurrentPageTechnologiesThreadReplies = 0;
 
-  var listOfTechnologiesThreadReplies = theTThreadReplies;
+  var listOfTechnologiesThreadReplies;
   var mySublistsTechnologiesThreadReplies = [];
   int portionSizeTechnologiesThreadReplies = 10;
 
   @override
   Widget build(BuildContext context){
+    listOfTechnologiesThreadReplies = theTThreadReplies;
+
+    //Clearing outdated sublists:
+    mySublistsTechnologiesThreadReplies.clear();
+
     if(listOfTechnologiesThreadReplies == []){
       numberOfPagesTechnologiesThreadReplies = 1;
     }
@@ -549,7 +561,17 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
 
                                 technologiesReplyBool = true;
                                 technologiesReplyingToReplyBool = true;
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                technologiesNavigationDepth++;
+
+                                final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                                //Refreshing the page after returning from a reply:
+                                if(myResult == true){
+                                  setState((){
+                                    //Clears sublists and forces a rebuild with new data:
+                                    mySublistsTechnologiesThreadReplies.clear();
+                                  });
+                                }
                               }
                             ),
                             onPressed: (){
@@ -721,7 +743,17 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
 
                                   technologiesReplyBool = true;
                                   technologiesReplyingToReplyBool = true;
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+                                  technologiesNavigationDepth++;
+
+                                  final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                                  //Refreshing the page after returning from a reply:
+                                  if(myResult == true){
+                                    setState((){
+                                      //Clears sublists and forces a rebuild with new data:
+                                      mySublistsTechnologiesThreadReplies.clear();
+                                    });
+                                  }
                                 }
                               ),
                               onPressed: (){
@@ -746,7 +778,13 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage())),
+            print("We're going backwards. This is the depth: ${technologiesNavigationDepth}"),
+
+            if(Navigator.canPop(context)){
+              Navigator.pop(context),
+            },
+
+            technologiesNavigationDepth = 0,
           }
         ),
       ),
@@ -828,13 +866,24 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                   child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
                 ),
               ),
-              onTap: (){
+              onTap: () async{
                 technologiesReplyingToReplyBool = false;
                 technologiesReplyBool = true;
+                technologiesNavigationDepth++;
                 print(reversedTechnologiesThreadsIterable.toList());
                 print(threadID);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
                 //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                //Refreshing the page after returning from a reply:
+                if(myResult == true){
+                  setState((){
+                    //Clears sublists and forces a rebuild with new data:
+                    mySublistsTechnologiesThreadReplies.clear();
+                  });
+                }
+
                 print('Replying to the thread');
               }
             ),
