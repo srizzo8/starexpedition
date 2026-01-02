@@ -765,7 +765,8 @@ List<myStars> starsForSearchBar = [
   myStars(starName: "HD 48948", imagePath: "assets/images/hd_48948.JPG", articlePath: "assets/text_files/star_files/hd_48948.txt"),
   myStars(starName: "LHS 1140", imagePath: "assets/images/lhs_1140.JPG", articlePath: "assets/text_files/star_files/lhs_1140.txt"),
   myStars(starName: "82 G Eridani", imagePath: "assets/images/82_g_eridani.png", articlePath: "assets/text_files/star_files/82_g_eridani.txt"),
-  myStars(starName: "Ross 508", imagePath: "assets/images/ross_508.JPG", articlePath: "assets/text_files/star_files/ross_508.txt")
+  myStars(starName: "Ross 508", imagePath: "assets/images/ross_508.JPG", articlePath: "assets/text_files/star_files/ross_508.txt"),
+  myStars(starName: "GJ 251", imagePath: "assets/images/gj_251.JPG", articlePath: "assets/text_files/star_files/gj_251.txt")
 ];
 
 class MyApp extends StatelessWidget {
