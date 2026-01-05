@@ -92,16 +92,45 @@ class technologiesPageState extends State<technologiesPage>{
   int numberOfPagesTechnologies = (((discussionBoardPage.technologiesThreads.length)/10)).ceil();
   //int theCurrentPageTechnologies = 0;
 
-  var listOfTechnologiesThreads = discussionBoardPage.technologiesThreads;
+  var listOfTechnologiesThreads = [];
   var mySublistsTechnologies = [];
   var portionSizeTechnologies = 10;
 
-  Widget build(BuildContext buildContext){
-    for(int i = 0; i < listOfTechnologiesThreads.length; i += portionSizeTechnologies){
-      mySublistsTechnologies.add(listOfTechnologiesThreads.sublist(i, i + portionSizeTechnologies > listOfTechnologiesThreads.length ? listOfTechnologiesThreads.length : i + portionSizeTechnologies));
-    }
+  int previousThreadsLength = -1;
 
-    mySublistsTechnologiesInformation = mySublistsTechnologies;
+  @override
+  void initState(){
+    super.initState();
+    listOfTechnologiesThreads = discussionBoardPage.technologiesThreads;
+    rebuildSublistsIfNecessary();
+  }
+
+  void rebuildSublistsIfNecessary(){
+    int myCurrentLength = listOfTechnologiesThreads?.length ?? 0;
+
+    if(previousThreadsLength != myCurrentLength){
+      previousThreadsLength = myCurrentLength;
+      mySublistsTechnologies.clear();
+
+      if(myCurrentLength == 0){
+        numberOfPagesTechnologies = 1;
+      }
+      else{
+        numberOfPagesTechnologies = (myCurrentLength / 10).ceil();
+
+        for(int i = 0; i < myCurrentLength; i += portionSizeTechnologies){
+          mySublistsTechnologies.add(listOfTechnologiesThreads.sublist(i, i + portionSizeTechnologies > myCurrentLength ? myCurrentLength : i + portionSizeTechnologies));
+        }
+      }
+
+      mySublistsTechnologiesInformation = mySublistsTechnologies;
+    }
+  }
+
+  Widget build(BuildContext buildContext){
+    listOfTechnologiesThreads = discussionBoardPage.technologiesThreads;
+
+    rebuildSublistsIfNecessary();
 
     var myPagesTechnologies = List.generate(
       numberOfPagesTechnologies,
@@ -329,21 +358,30 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
   var mySublistsTechnologiesThreadReplies = [];
   int portionSizeTechnologiesThreadReplies = 10;
 
+  //Key myPaginatorKey = UniqueKey();
+  int myPaginatorResetValue = 0;
+  int previousDataLength = -1;
+
   @override
   Widget build(BuildContext context){
     listOfTechnologiesThreadReplies = theTThreadReplies;
 
-    //Clearing outdated sublists:
-    mySublistsTechnologiesThreadReplies.clear();
+    int currentDataLength = listOfTechnologiesThreadReplies?.length ?? 0;
 
-    if(listOfTechnologiesThreadReplies == []){
-      numberOfPagesTechnologiesThreadReplies = 1;
-    }
-    else{
-      numberOfPagesTechnologiesThreadReplies = (((theTThreadReplies.length)/10)).ceil();
+    if(previousDataLength != currentDataLength){
+      previousDataLength = currentDataLength;
+      //Clearing outdated sublists:
+      mySublistsTechnologiesThreadReplies.clear();
 
-      for(int i = 0; i < listOfTechnologiesThreadReplies.length; i += portionSizeTechnologiesThreadReplies){
-        mySublistsTechnologiesThreadReplies.add(listOfTechnologiesThreadReplies.sublist(i, i + portionSizeTechnologiesThreadReplies > listOfTechnologiesThreadReplies.length ? listOfTechnologiesThreadReplies.length : i + portionSizeTechnologiesThreadReplies));
+      if(currentDataLength == 0){
+        numberOfPagesTechnologiesThreadReplies = 1;
+      }
+      else{
+        numberOfPagesTechnologiesThreadReplies = (((theTThreadReplies.length)/10)).ceil();
+
+        for(int i = 0; i < listOfTechnologiesThreadReplies.length; i += portionSizeTechnologiesThreadReplies){
+          mySublistsTechnologiesThreadReplies.add(listOfTechnologiesThreadReplies.sublist(i, i + portionSizeTechnologiesThreadReplies > listOfTechnologiesThreadReplies.length ? listOfTechnologiesThreadReplies.length : i + portionSizeTechnologiesThreadReplies));
+        }
       }
     }
 
@@ -568,8 +606,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                 //Refreshing the page after returning from a reply:
                                 if(myResult == true){
                                   setState((){
-                                    //Clears sublists and forces a rebuild with new data:
-                                    mySublistsTechnologiesThreadReplies.clear();
+                                    theCurrentPageTechnologiesThreadReplies = 0;
+                                    myPaginatorResetValue++;
                                   });
                                 }
                               }
@@ -750,8 +788,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                   //Refreshing the page after returning from a reply:
                                   if(myResult == true){
                                     setState((){
-                                      //Clears sublists and forces a rebuild with new data:
-                                      mySublistsTechnologiesThreadReplies.clear();
+                                      theCurrentPageTechnologiesThreadReplies = 0;
+                                      myPaginatorResetValue++;
                                     });
                                   }
                                 }
@@ -879,8 +917,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                 //Refreshing the page after returning from a reply:
                 if(myResult == true){
                   setState((){
-                    //Clears sublists and forces a rebuild with new data:
-                    mySublistsTechnologiesThreadReplies.clear();
+                    theCurrentPageTechnologiesThreadReplies = 0;
+                    myPaginatorResetValue++;
                   });
                 }
 
@@ -895,6 +933,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
             child: (myPagesTechnologiesThreadReplies.isNotEmpty && theCurrentPageTechnologiesThreadReplies < myPagesTechnologiesThreadReplies.length)? myPagesTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
+            key: ValueKey(myPaginatorResetValue),
             height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfTechnologiesThreadReplies.length != 0? numberOfPagesTechnologiesThreadReplies : 1,
             onPageChange: (myIndexTechnologiesThreadReplies){

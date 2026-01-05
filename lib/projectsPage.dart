@@ -94,17 +94,46 @@ class projectsPageState extends State<projectsPage>{
   //int theCurrentPage = 0;
 
   //Getting the threads that will appear in a page
-  var listOfProjectsThreads = discussionBoardPage.projectsThreads;
+  var listOfProjectsThreads = [];
   var mySublistsProjects = [];
   var portionSize = 10;
 
+  int previousThreadsLength = -1;
+
+  @override
+  void initState(){
+    super.initState();
+    listOfProjectsThreads = discussionBoardPage.projectsThreads;
+    rebuildSublistsIfNecessary();
+  }
+
+  void rebuildSublistsIfNecessary(){
+    int myCurrentLength = listOfProjectsThreads?.length ?? 0;
+
+    if(previousThreadsLength != myCurrentLength){
+      previousThreadsLength = myCurrentLength;
+      mySublistsProjects.clear();
+
+      if(myCurrentLength == 0){
+        numberOfPages = 1;
+      }
+      else{
+        numberOfPages = (myCurrentLength / 10).ceil();
+
+        for(int i = 0; i < myCurrentLength; i += portionSize){
+          mySublistsProjects.add(listOfProjectsThreads.sublist(i, i + portionSize > myCurrentLength ? myCurrentLength : i + portionSize));
+        }
+      }
+
+      mySublistsProjectsInformation = mySublistsProjects;
+    }
+  }
+
   //build method
   Widget build(BuildContext buildContext){
-    for(int i = 0; i < listOfProjectsThreads.length; i += portionSize){
-      mySublistsProjects.add(listOfProjectsThreads.sublist(i, i + portionSize > listOfProjectsThreads.length ? listOfProjectsThreads.length : i + portionSize));
-    }
+    listOfProjectsThreads = discussionBoardPage.projectsThreads;
 
-    mySublistsProjectsInformation = mySublistsProjects;
+    rebuildSublistsIfNecessary();
 
     var myPages = List.generate(
       numberOfPages,
@@ -334,26 +363,31 @@ class projectsThreadContent extends State<projectsThreadsPage>{
   var mySublistsProjectsThreadReplies = [];
   int portionSizeProjectsThreadReplies = 10;
 
+  int myPaginatorResetValue = 0;
+  int previousDataLength = -1;
+
   @override
   Widget build(BuildContext context){
     listOfProjectsThreadReplies = thePThreadReplies;
 
-    //Clearing outdated sublists:
-    mySublistsProjectsThreadReplies.clear();
+    int currentDataLength = listOfProjectsThreadReplies?.length ?? 0;
 
-    if(listOfProjectsThreadReplies == []){
-      numberOfPagesProjectsThreadReplies = 1;
-    }
-    else{
-      numberOfPagesProjectsThreadReplies = (((thePThreadReplies.length)/10)).ceil();
+    if(previousDataLength != currentDataLength){
+      previousDataLength = currentDataLength;
+      //Clearing outdated sublists:
+      mySublistsProjectsThreadReplies.clear();
 
-      for(int i = 0; i < listOfProjectsThreadReplies.length; i += portionSizeProjectsThreadReplies){
-        mySublistsProjectsThreadReplies.add(listOfProjectsThreadReplies.sublist(i, i + portionSizeProjectsThreadReplies > listOfProjectsThreadReplies.length ? listOfProjectsThreadReplies.length : i + portionSizeProjectsThreadReplies));
+      if(currentDataLength == 0){
+        numberOfPagesProjectsThreadReplies = 1;
+      }
+      else{
+        numberOfPagesProjectsThreadReplies = (((thePThreadReplies.length)/10)).ceil();
+
+        for(int i = 0; i < listOfProjectsThreadReplies.length; i += portionSizeProjectsThreadReplies){
+          mySublistsProjectsThreadReplies.add(listOfProjectsThreadReplies.sublist(i, i + portionSizeProjectsThreadReplies > listOfProjectsThreadReplies.length ? listOfProjectsThreadReplies.length : i + portionSizeProjectsThreadReplies));
+        }
       }
     }
-
-    //print("Some replies length: ${mySublistsProjectsThreadReplies[0].length}");
-    //print("Some more replies length: ${mySublistsProjectsThreadReplies[1].length}");
 
     var myPagesProjectsThreadReplies = List.generate(
       numberOfPagesProjectsThreadReplies,
@@ -575,8 +609,8 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                     //Refreshing the page after returning from a reply:
                                     if(myResult == true){
                                       setState((){
-                                        //Clears sublists and forces a rebuild with new data:
-                                        mySublistsProjectsThreadReplies.clear();
+                                        theCurrentPageProjectsThreadReplies = 0;
+                                        myPaginatorResetValue++;
                                       });
                                     }
                                   }
@@ -757,8 +791,8 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                     //Refreshing the page after returning from a reply:
                                     if(myResult == true){
                                       setState((){
-                                        //Clears sublists and forces a rebuild with new data:
-                                        mySublistsProjectsThreadReplies.clear();
+                                        theCurrentPageProjectsThreadReplies = 0;
+                                        myPaginatorResetValue++;
                                       });
                                     }
                                     //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
@@ -886,8 +920,8 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                       //Refreshing the page after returning from a reply:
                       if(myResult == true){
                         setState((){
-                          //Clears sublists and forces a rebuild with new data:
-                          mySublistsProjectsThreadReplies.clear();
+                          theCurrentPageProjectsThreadReplies = 0;
+                          myPaginatorResetValue++;
                         });
                       }
 
@@ -902,13 +936,14 @@ class projectsThreadContent extends State<projectsThreadsPage>{
               child: (myPagesProjectsThreadReplies.isNotEmpty && theCurrentPageProjectsThreadReplies < myPagesProjectsThreadReplies.length)? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-                height: MediaQuery.of(context).size.height * 0.0782125,
-                numberPages: listOfProjectsThreadReplies.length != 0? numberOfPagesProjectsThreadReplies : 1,
-                onPageChange: (myIndexProjectsThreadReplies){
-                  setState((){
-                    theCurrentPageProjectsThreadReplies = myIndexProjectsThreadReplies;
-                  });
-                }
+              key: ValueKey(myPaginatorResetValue),
+              height: MediaQuery.of(context).size.height * 0.0782125,
+              numberPages: listOfProjectsThreadReplies.length != 0? numberOfPagesProjectsThreadReplies : 1,
+              onPageChange: (myIndexProjectsThreadReplies){
+                setState((){
+                  theCurrentPageProjectsThreadReplies = myIndexProjectsThreadReplies;
+                });
+              }
             ),
           ],
         ),

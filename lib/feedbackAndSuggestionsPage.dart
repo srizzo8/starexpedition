@@ -97,16 +97,45 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
   int numberOfPagesFas = (((discussionBoardPage.feedbackAndSuggestionsThreads.length)/10)).ceil();
   //int theCurrentPageFas = 0;
 
-  var listOfFasThreads = discussionBoardPage.feedbackAndSuggestionsThreads;
+  var listOfFasThreads = [];
   var mySublistsFas = [];
   var portionSizeFas = 10;
 
-  Widget build(BuildContext buildContext){
-    for(int i = 0; i < listOfFasThreads.length; i += portionSizeFas){
-      mySublistsFas.add(listOfFasThreads.sublist(i, i + portionSizeFas > listOfFasThreads.length ? listOfFasThreads.length : i + portionSizeFas));
-    }
+  int previousThreadsLength = -1;
 
-    mySublistsFasInformation = mySublistsFas;
+  @override
+  void initState(){
+    super.initState();
+    listOfFasThreads = discussionBoardPage.feedbackAndSuggestionsThreads;
+    rebuildSublistsIfNecessary();
+  }
+
+  void rebuildSublistsIfNecessary(){
+    int myCurrentLength = listOfFasThreads?.length ?? 0;
+
+    if(previousThreadsLength != myCurrentLength){
+      previousThreadsLength = myCurrentLength;
+      mySublistsFas.clear();
+
+      if(myCurrentLength == 0){
+        numberOfPagesFas = 1;
+      }
+      else{
+        numberOfPagesFas = (myCurrentLength / 10).ceil();
+
+        for(int i = 0; i < myCurrentLength; i += portionSizeFas){
+          mySublistsFas.add(listOfFasThreads.sublist(i, i + portionSizeFas > myCurrentLength ? myCurrentLength : i + portionSizeFas));
+        }
+      }
+
+      mySublistsFasInformation = mySublistsFas;
+    }
+  }
+
+  Widget build(BuildContext buildContext){
+    listOfFasThreads = discussionBoardPage.feedbackAndSuggestionsThreads;
+
+    rebuildSublistsIfNecessary();
 
     var myPagesFas = List.generate(
       numberOfPagesFas,
@@ -335,21 +364,29 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
   var mySublistsFasThreadReplies = [];
   int portionSizeFasThreadReplies = 10;
 
+  int myPaginatorResetValue = 0;
+  int previousDataLength = -1;
+
   @override
   Widget build(BuildContext context){
     listOfFasThreadReplies = theFasThreadReplies;
 
-    //Clearing outdated sublists:
-    mySublistsFasThreadReplies.clear();
+    int currentDataLength = listOfFasThreadReplies?.length ?? 0;
 
-    if(listOfFasThreadReplies == []){
-      numberOfPagesFasThreadReplies = 1;
-    }
-    else{
-      numberOfPagesFasThreadReplies = (((theFasThreadReplies.length)/10)).ceil();
+    if(previousDataLength != currentDataLength){
+      previousDataLength = currentDataLength;
+      //Clearing outdated sublists:
+      mySublistsFasThreadReplies.clear();
 
-      for(int i = 0; i < listOfFasThreadReplies.length; i += portionSizeFasThreadReplies){
-        mySublistsFasThreadReplies.add(listOfFasThreadReplies.sublist(i, i + portionSizeFasThreadReplies > listOfFasThreadReplies.length ? listOfFasThreadReplies.length : i + portionSizeFasThreadReplies));
+      if(currentDataLength == 0){
+        numberOfPagesFasThreadReplies = 1;
+      }
+      else{
+        numberOfPagesFasThreadReplies = (((theFasThreadReplies.length)/10)).ceil();
+
+        for(int i = 0; i < listOfFasThreadReplies.length; i += portionSizeFasThreadReplies){
+          mySublistsFasThreadReplies.add(listOfFasThreadReplies.sublist(i, i + portionSizeFasThreadReplies > listOfFasThreadReplies.length ? listOfFasThreadReplies.length : i + portionSizeFasThreadReplies));
+        }
       }
     }
 
@@ -573,8 +610,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                     //Refreshing the page after returning from a reply:
                                     if(myResult == true){
                                       setState((){
-                                        //Clears sublists and forces a rebuild with new data:
-                                        mySublistsFasThreadReplies.clear();
+                                        theCurrentPageFasThreadReplies = 0;
+                                        myPaginatorResetValue++;
                                       });
                                     }
 
@@ -757,8 +794,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                     //Refreshing the page after returning from a reply:
                                     if(myResult == true){
                                       setState((){
-                                        //Clears sublists and forces a rebuild with new data:
-                                        mySublistsFasThreadReplies.clear();
+                                        theCurrentPageFasThreadReplies = 0;
+                                        myPaginatorResetValue++;
                                       });
                                     }
 
@@ -886,8 +923,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                       //Refreshing the page after returning from a reply:
                       if(myResult == true){
                         setState((){
-                          //Clears sublists and forces a rebuild with new data:
-                          mySublistsFasThreadReplies.clear();
+                          theCurrentPageFasThreadReplies = 0;
+                          myPaginatorResetValue++;
                         });
                       }
 
@@ -903,13 +940,14 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
               child: (myPagesFasThreadReplies.isNotEmpty && theCurrentPageFasThreadReplies < myPagesFasThreadReplies.length)? myPagesFasThreadReplies[theCurrentPageFasThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-                height: MediaQuery.of(context).size.height * 0.0782125,
-                numberPages: listOfFasThreadReplies.length != 0? numberOfPagesFasThreadReplies : 1,
-                onPageChange: (myIndexFasThreadReplies){
-                  setState((){
-                    theCurrentPageFasThreadReplies = myIndexFasThreadReplies;
-                  });
-                }
+              key: ValueKey(myPaginatorResetValue),
+              height: MediaQuery.of(context).size.height * 0.0782125,
+              numberPages: listOfFasThreadReplies.length != 0? numberOfPagesFasThreadReplies : 1,
+              onPageChange: (myIndexFasThreadReplies){
+                setState((){
+                  theCurrentPageFasThreadReplies = myIndexFasThreadReplies;
+                });
+              }
             ),
           ],
         ),

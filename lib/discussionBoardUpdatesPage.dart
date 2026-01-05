@@ -98,9 +98,40 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
   int theCurrentPageDbu = 0;
 
   //Getting the threads that will appear in a page
-  var listOfDbuThreads;
+  var listOfDbuThreads = [];
   var mySublistsDbu = [];
   var portionSizeDbu = 10;
+
+  int previousThreadsLength = -1;
+
+  @override
+  void initState(){
+    super.initState();
+    listOfDbuThreads = discussionBoardPage.discussionBoardUpdatesThreads;
+    rebuildSublistsIfNecessary();
+  }
+
+  void rebuildSublistsIfNecessary(){
+    int myCurrentLength = listOfDbuThreads?.length ?? 0;
+
+    if(previousThreadsLength != myCurrentLength){
+      previousThreadsLength = myCurrentLength;
+      mySublistsDbu.clear();
+
+      if(myCurrentLength == 0){
+        numberOfPagesDbu = 1;
+      }
+      else{
+        numberOfPagesDbu = (myCurrentLength / 10).ceil();
+
+        for(int i = 0; i < myCurrentLength; i += portionSizeDbu){
+          mySublistsDbu.add(listOfDbuThreads.sublist(i, i + portionSizeDbu > myCurrentLength ? myCurrentLength : i + portionSizeDbu));
+        }
+      }
+
+      mySublistsDbuInformation = mySublistsDbu;
+    }
+  }
 
   /*Future<List<dynamic>> getDbuThreads() async{
     var theSublistDbu = [];
@@ -120,16 +151,20 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
 
   //build method
   Widget build(BuildContext bc){
-    listOfDbuThreads = discussionBoardPage.discussionBoardUpdatesThreads;
+    /*listOfDbuThreads = discussionBoardPage.discussionBoardUpdatesThreads;
     for(int i = 0; i < listOfDbuThreads.length; i += portionSizeDbu){
       mySublistsDbu.add(listOfDbuThreads.sublist(i, i + portionSizeDbu > listOfDbuThreads.length ? listOfDbuThreads.length : i + portionSizeDbu));
     }
     print("listOfDbuThreads.length: ${listOfDbuThreads.length}");
 
-    mySublistsDbuInformation = mySublistsDbu;
+    mySublistsDbuInformation = mySublistsDbu;*/
 
     //double threadContainerHeight = 45.0;
     //double myFontSize = threadContainerHeight / 3.0;
+
+    listOfDbuThreads = discussionBoardPage.discussionBoardUpdatesThreads;
+
+    rebuildSublistsIfNecessary();
 
     var myPagesDbu = List.generate(
       numberOfPagesDbu,
@@ -401,27 +436,31 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
   var mySublistsDbuThreadReplies = [];
   int portionSizeDbuThreadReplies = 10;
 
+  int myPaginatorResetValue = 0;
+  int previousDataLength = -1;
+
   @override
   Widget build(BuildContext context) {
     listOfDbuThreadReplies = theDbuThreadReplies;
 
-    //Clearing outdated sublists:
-    mySublistsDbuThreadReplies.clear();
+    int currentDataLength = listOfDbuThreadReplies?.length ?? 0;
 
-    if(listOfDbuThreadReplies == []){
-      numberOfPagesDbuThreadReplies = 1;
-    }
-    else{
-      numberOfPagesDbuThreadReplies = (((theDbuThreadReplies.length)/10)).ceil();
+    if(previousDataLength != currentDataLength){
+      previousDataLength = currentDataLength;
+      //Clearing outdated sublists:
+      mySublistsDbuThreadReplies.clear();
 
-      for(int i = 0; i < listOfDbuThreadReplies.length; i += portionSizeDbuThreadReplies){
-        mySublistsDbuThreadReplies.add(listOfDbuThreadReplies.sublist(i, i + portionSizeDbuThreadReplies > listOfDbuThreadReplies.length ? listOfDbuThreadReplies.length : i + portionSizeDbuThreadReplies));
+      if(currentDataLength == 0){
+        numberOfPagesDbuThreadReplies = 1;
+      }
+      else{
+        numberOfPagesDbuThreadReplies = (((theDbuThreadReplies.length)/10)).ceil();
+
+        for(int i = 0; i < listOfDbuThreadReplies.length; i += portionSizeDbuThreadReplies){
+          mySublistsDbuThreadReplies.add(listOfDbuThreadReplies.sublist(i, i + portionSizeDbuThreadReplies > listOfDbuThreadReplies.length ? listOfDbuThreadReplies.length : i + portionSizeDbuThreadReplies));
+        }
       }
     }
-
-    /*for(int i = 0; i < listOfDbuThreadReplies.length; i += portionSizeDbuThreadReplies){
-      mySublistsDbuThreadReplies.add(listOfDbuThreadReplies.sublist(i, i + portionSizeDbuThreadReplies > listOfDbuThreadReplies.length ? listOfDbuThreadReplies.length : i + portionSizeDbuThreadReplies));
-    }*/
 
     var myPagesDbuThreadReplies = List.generate(
       numberOfPagesDbuThreadReplies,
@@ -683,8 +722,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 //Refreshing the page after returning from a reply:
                                 if(myResult == true){
                                   setState((){
-                                    //Clears sublists and forces a rebuild with new data:
-                                    mySublistsDbuThreadReplies.clear();
+                                    theCurrentPageDbuThreadReplies = 0;
+                                    myPaginatorResetValue++;
                                   });
                                 }
 
@@ -905,8 +944,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 //Refreshing the page after returning from a reply:
                                 if(myResult == true){
                                   setState((){
-                                    //Clears sublists and forces a rebuild with new data:
-                                    mySublistsDbuThreadReplies.clear();
+                                    theCurrentPageDbuThreadReplies = 0;
+                                    myPaginatorResetValue++;
                                   });
                                 }
 
@@ -1074,8 +1113,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                   //Refreshing the page after returning from a reply:
                   if(myResult == true){
                     setState((){
-                      //Clears sublists and forces a rebuild with new data:
-                      mySublistsDbuThreadReplies.clear();
+                      theCurrentPageDbuThreadReplies = 0;
+                      myPaginatorResetValue++;
                     });
                   }
 
@@ -1089,13 +1128,14 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
               child: (myPagesDbuThreadReplies.isNotEmpty && theCurrentPageDbuThreadReplies < myPagesDbuThreadReplies.length)? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-                height: MediaQuery.of(context).size.height * 0.0782125,
-                numberPages: listOfDbuThreadReplies.length != 0? numberOfPagesDbuThreadReplies : 1,
-                onPageChange: (myIndexDbuThreadReplies){
-                  setState((){
-                    theCurrentPageDbuThreadReplies = myIndexDbuThreadReplies;
-                  });
-                }
+              key: ValueKey(myPaginatorResetValue),
+              height: MediaQuery.of(context).size.height * 0.0782125,
+              numberPages: listOfDbuThreadReplies.length != 0? numberOfPagesDbuThreadReplies : 1,
+              onPageChange: (myIndexDbuThreadReplies){
+                setState((){
+                  theCurrentPageDbuThreadReplies = myIndexDbuThreadReplies;
+                });
+              }
             ),
           ],
         ),

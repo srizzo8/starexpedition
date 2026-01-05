@@ -92,16 +92,45 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
   int numberOfPagesQaa = (((discussionBoardPage.questionsAndAnswersThreads.length)/10)).ceil();
   //int theCurrentPageQaa = 0;
 
-  var listOfQaaThreads = discussionBoardPage.questionsAndAnswersThreads;
+  var listOfQaaThreads = [];
   var mySublistsQaa = [];
   var portionSizeQaa = 10;
 
-  Widget build(BuildContext buildContext){
-    for(int i = 0; i < listOfQaaThreads.length; i += portionSizeQaa){
-      mySublistsQaa.add(listOfQaaThreads.sublist(i, i + portionSizeQaa > listOfQaaThreads.length ? listOfQaaThreads.length : i + portionSizeQaa));
-    }
+  int previousThreadsLength = -1;
 
-    mySublistsQaaInformation = mySublistsQaa;
+  @override
+  void initState(){
+    super.initState();
+    listOfQaaThreads = discussionBoardPage.questionsAndAnswersThreads;
+    rebuildSublistsIfNecessary();
+  }
+
+  void rebuildSublistsIfNecessary(){
+    int myCurrentLength = listOfQaaThreads?.length ?? 0;
+
+    if(previousThreadsLength != myCurrentLength){
+      previousThreadsLength = myCurrentLength;
+      mySublistsQaa.clear();
+
+      if(myCurrentLength == 0){
+        numberOfPagesQaa = 1;
+      }
+      else{
+        numberOfPagesQaa = (myCurrentLength / 10).ceil();
+
+        for(int i = 0; i < myCurrentLength; i += portionSizeQaa){
+          mySublistsQaa.add(listOfQaaThreads.sublist(i, i + portionSizeQaa > myCurrentLength ? myCurrentLength : i + portionSizeQaa));
+        }
+      }
+
+      mySublistsQaaInformation = mySublistsQaa;
+    }
+  }
+
+  Widget build(BuildContext buildContext){
+    listOfQaaThreads = discussionBoardPage.questionsAndAnswersThreads;
+
+    rebuildSublistsIfNecessary();
 
     var myPagesQaa = List.generate(
       numberOfPagesQaa,
@@ -330,21 +359,29 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
   var mySublistsQaaThreadReplies = [];
   int portionSizeQaaThreadReplies = 10;
 
+  int myPaginatorResetValue = 0;
+  int previousDataLength = -1;
+
   @override
   Widget build(BuildContext context){
     listOfQaaThreadReplies = theQaaThreadReplies;
 
-    //Clearing outdated sublists:
-    mySublistsQaaThreadReplies.clear();
+    int currentDataLength = listOfQaaThreadReplies?.length ?? 0;
 
-    if(listOfQaaThreadReplies == []){
-      numberOfPagesQaaThreadReplies = 1;
-    }
-    else{
-      numberOfPagesQaaThreadReplies = (((theQaaThreadReplies.length)/10)).ceil();
+    if(previousDataLength != currentDataLength){
+      previousDataLength = currentDataLength;
+      //Clearing outdated sublists:
+      mySublistsQaaThreadReplies.clear();
 
-      for(int i = 0; i < listOfQaaThreadReplies.length; i += portionSizeQaaThreadReplies){
-        mySublistsQaaThreadReplies.add(listOfQaaThreadReplies.sublist(i, i + portionSizeQaaThreadReplies > listOfQaaThreadReplies.length ? listOfQaaThreadReplies.length : i + portionSizeQaaThreadReplies));
+      if(currentDataLength == 0){
+        numberOfPagesQaaThreadReplies = 1;
+      }
+      else{
+        numberOfPagesQaaThreadReplies = (((theQaaThreadReplies.length)/10)).ceil();
+
+        for(int i = 0; i < listOfQaaThreadReplies.length; i += portionSizeQaaThreadReplies){
+          mySublistsQaaThreadReplies.add(listOfQaaThreadReplies.sublist(i, i + portionSizeQaaThreadReplies > listOfQaaThreadReplies.length ? listOfQaaThreadReplies.length : i + portionSizeQaaThreadReplies));
+        }
       }
     }
 
@@ -568,8 +605,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                     //Refreshing the page after returning from a reply:
                                     if(myResult == true){
                                       setState((){
-                                        //Clears sublists and forces a rebuild with new data:
-                                        mySublistsQaaThreadReplies.clear();
+                                        theCurrentPageQaaThreadReplies = 0;
+                                        myPaginatorResetValue++;
                                       });
                                     }
                                     //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
@@ -753,8 +790,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                     //Refreshing the page after returning from a reply:
                                     if(myResult == true){
                                       setState((){
-                                        //Clears sublists and forces a rebuild with new data:
-                                        mySublistsQaaThreadReplies.clear();
+                                        theCurrentPageQaaThreadReplies = 0;
+                                        myPaginatorResetValue++;
                                       });
                                     }
 
@@ -885,8 +922,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                       //Refreshing the page after returning from a reply:
                       if(myResult == true){
                         setState((){
-                          //Clears sublists and forces a rebuild with new data:
-                          mySublistsQaaThreadReplies.clear();
+                          theCurrentPageQaaThreadReplies = 0;
+                          myPaginatorResetValue++;
                         });
                       }
                       //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
@@ -902,13 +939,14 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
               child: (myPagesQaaThreadReplies.isNotEmpty && theCurrentPageQaaThreadReplies < myPagesQaaThreadReplies.length)? myPagesQaaThreadReplies[theCurrentPageQaaThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-                height: MediaQuery.of(context).size.height * 0.0782125,
-                numberPages: listOfQaaThreadReplies.length != 0? numberOfPagesQaaThreadReplies : 1,
-                onPageChange: (myIndexQaaThreadReplies){
-                  setState((){
-                    theCurrentPageQaaThreadReplies = myIndexQaaThreadReplies;
-                  });
-                }
+              key: ValueKey(myPaginatorResetValue),
+              height: MediaQuery.of(context).size.height * 0.0782125,
+              numberPages: listOfQaaThreadReplies.length != 0? numberOfPagesQaaThreadReplies : 1,
+              onPageChange: (myIndexQaaThreadReplies){
+                setState((){
+                  theCurrentPageQaaThreadReplies = myIndexQaaThreadReplies;
+                });
+              }
             ),
           ],
         ),

@@ -92,16 +92,45 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
   int numberOfPagesNd = (((discussionBoardPage.newDiscoveriesThreads.length)/10)).ceil();
   //int theCurrentPageNd = 0;
 
-  var listOfNdThreads = discussionBoardPage.newDiscoveriesThreads;
+  var listOfNdThreads = [];
   var mySublistsNd = [];
   var portionSizeNd = 10;
 
-  Widget build(BuildContext buildContext){
-    for(int i = 0; i < listOfNdThreads.length; i += portionSizeNd){
-      mySublistsNd.add(listOfNdThreads.sublist(i, i + portionSizeNd > listOfNdThreads.length ? listOfNdThreads.length : i + portionSizeNd));
-    }
+  int previousThreadsLength = -1;
 
-    mySublistsNewDiscoveriesInformation = mySublistsNd;
+  @override
+  void initState(){
+    super.initState();
+    listOfNdThreads = discussionBoardPage.newDiscoveriesThreads;
+    rebuildSublistsIfNecessary();
+  }
+
+  void rebuildSublistsIfNecessary(){
+    int myCurrentLength = listOfNdThreads?.length ?? 0;
+
+    if(previousThreadsLength != myCurrentLength){
+      previousThreadsLength = myCurrentLength;
+      mySublistsNd.clear();
+
+      if(myCurrentLength == 0){
+        numberOfPagesNd = 1;
+      }
+      else{
+        numberOfPagesNd = (myCurrentLength / 10).ceil();
+
+        for(int i = 0; i < myCurrentLength; i += portionSizeNd){
+          mySublistsNd.add(listOfNdThreads.sublist(i, i + portionSizeNd > myCurrentLength ? myCurrentLength : i + portionSizeNd));
+        }
+      }
+
+      mySublistsNewDiscoveriesInformation = mySublistsNd;
+    }
+  }
+
+  Widget build(BuildContext buildContext){
+    listOfNdThreads = discussionBoardPage.newDiscoveriesThreads;
+
+    rebuildSublistsIfNecessary();
 
     var myPagesNd = List.generate(
       numberOfPagesNd,
@@ -329,21 +358,29 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
   var mySublistsNdThreadReplies = [];
   int portionSizeNdThreadReplies = 10;
 
+  int myPaginatorResetValue = 0;
+  int previousDataLength = -1;
+
   @override
   Widget build(BuildContext context){
     listOfNdThreadReplies = theNdThreadReplies;
 
-    //Clearing outdated sublists:
-    mySublistsNdThreadReplies.clear();
+    int currentDataLength = listOfNdThreadReplies?.length ?? 0;
 
-    if(listOfNdThreadReplies == []){
-      numberOfPagesNdThreadReplies = 1;
-    }
-    else{
-      numberOfPagesNdThreadReplies = (((theNdThreadReplies.length)/10)).ceil();
+    if(previousDataLength != currentDataLength){
+      previousDataLength = currentDataLength;
+      //Clearing outdated sublists:
+      mySublistsNdThreadReplies.clear();
 
-      for(int i = 0; i < listOfNdThreadReplies.length; i += portionSizeNdThreadReplies){
-        mySublistsNdThreadReplies.add(listOfNdThreadReplies.sublist(i, i + portionSizeNdThreadReplies > listOfNdThreadReplies.length ? listOfNdThreadReplies.length : i + portionSizeNdThreadReplies));
+      if(currentDataLength == 0){
+        numberOfPagesNdThreadReplies = 1;
+      }
+      else{
+        numberOfPagesNdThreadReplies = (((theNdThreadReplies.length)/10)).ceil();
+
+        for(int i = 0; i < listOfNdThreadReplies.length; i += portionSizeNdThreadReplies){
+          mySublistsNdThreadReplies.add(listOfNdThreadReplies.sublist(i, i + portionSizeNdThreadReplies > listOfNdThreadReplies.length ? listOfNdThreadReplies.length : i + portionSizeNdThreadReplies));
+        }
       }
     }
 
@@ -568,8 +605,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                     //Refreshing the page after returning from a reply:
                                     if(myResult == true){
                                       setState((){
-                                        //Clears sublists and forces a rebuild with new data:
-                                        mySublistsNdThreadReplies.clear();
+                                        theCurrentPageNdThreadReplies = 0;
+                                        myPaginatorResetValue++;
                                       });
                                     }
 
@@ -752,8 +789,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                     //Refreshing the page after returning from a reply:
                                     if(myResult == true){
                                       setState((){
-                                        //Clears sublists and forces a rebuild with new data:
-                                        mySublistsNdThreadReplies.clear();
+                                        theCurrentPageNdThreadReplies = 0;
+                                        myPaginatorResetValue++;
                                       });
                                     }
 
@@ -881,8 +918,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                       //Refreshing the page after returning from a reply:
                       if(myResult == true){
                         setState((){
-                          //Clears sublists and forces a rebuild with new data:
-                          mySublistsNdThreadReplies.clear();
+                          theCurrentPageNdThreadReplies = 0;
+                          myPaginatorResetValue++;
                         });
                       }
 
@@ -898,13 +935,14 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
               child: (myPagesNdThreadReplies.isNotEmpty && theCurrentPageNdThreadReplies < myPagesNdThreadReplies.length)? myPagesNdThreadReplies[theCurrentPageNdThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-                height: MediaQuery.of(context).size.height * 0.0782125,
-                numberPages: listOfNdThreadReplies.length != 0? numberOfPagesNdThreadReplies : 1,
-                onPageChange: (myIndexNdThreadReplies){
-                  setState((){
-                    theCurrentPageNdThreadReplies = myIndexNdThreadReplies;
-                  });
-                }
+              key: ValueKey(myPaginatorResetValue),
+              height: MediaQuery.of(context).size.height * 0.0782125,
+              numberPages: listOfNdThreadReplies.length != 0? numberOfPagesNdThreadReplies : 1,
+              onPageChange: (myIndexNdThreadReplies){
+                setState((){
+                  theCurrentPageNdThreadReplies = myIndexNdThreadReplies;
+                });
+              }
             ),
           ],
         ),
