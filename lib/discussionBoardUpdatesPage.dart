@@ -171,7 +171,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
           (index) => Center(
         child: ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: mySublistsDbu[theCurrentPageDbu].length,//mySublistsDbu[theCurrentPageDbu].length,//discussionBoardPage.discussionBoardUpdatesThreads.length,//discussionBoardUpdatesThreads.reversed.toList().length,
+            itemCount: (mySublistsDbu.isNotEmpty && theCurrentPageDbu < mySublistsDbu.length) ? mySublistsDbu[theCurrentPageDbu].length : 0,//mySublistsDbu[theCurrentPageDbu].length,//mySublistsDbu[theCurrentPageDbu].length,//discussionBoardPage.discussionBoardUpdatesThreads.length,//discussionBoardUpdatesThreads.reversed.toList().length,
             itemBuilder: (context, index){
               return Column(
                 children: <Widget>[

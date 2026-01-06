@@ -137,7 +137,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
           (index) => Center(
         child: ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: mySublistsNd[theCurrentPageNd].length,
+            itemCount: (mySublistsNd.isNotEmpty && theCurrentPageNd < mySublistsNd.length) ? mySublistsNd[theCurrentPageNd].length : 0,
             itemBuilder: (context, index){
               return Column(
                 children: <Widget>[

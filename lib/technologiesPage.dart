@@ -137,7 +137,7 @@ class technologiesPageState extends State<technologiesPage>{
         (index) => Center(
           child: ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: mySublistsTechnologies[theCurrentPageTechnologies].length,
+              itemCount: (mySublistsTechnologies.isNotEmpty && theCurrentPageTechnologies < mySublistsTechnologies.length) ? mySublistsTechnologies[theCurrentPageTechnologies].length : 0,
               itemBuilder: (context, index){
                 return Column(
                   children: <Widget>[

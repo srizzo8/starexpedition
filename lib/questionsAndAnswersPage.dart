@@ -137,7 +137,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
           (index) => Center(
         child: ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: mySublistsQaa[theCurrentPageQaa].length,//questionsAndAnswersThreads.reversed.toList().length,
+            itemCount: (mySublistsQaa.isNotEmpty && theCurrentPageQaa < mySublistsQaa.length) ? mySublistsQaa[theCurrentPageQaa].length : 0,
             itemBuilder: (context, index){
               return Column(
                 children: <Widget>[

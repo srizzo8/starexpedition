@@ -140,7 +140,7 @@ class projectsPageState extends State<projectsPage>{
           (index) => Center(
         child: ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: mySublistsProjects[theCurrentPage].length,
+            itemCount: (mySublistsProjects.isNotEmpty && theCurrentPage < mySublistsProjects.length) ? mySublistsProjects[theCurrentPage].length : 0,
             itemBuilder: (context, index){
               return Column(
                 children: <Widget>[

@@ -142,7 +142,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
           (index) => Center(
         child: ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: mySublistsFas[theCurrentPageFas].length,
+            itemCount: (mySublistsFas.isNotEmpty && theCurrentPageFas < mySublistsFas.length) ? mySublistsFas[theCurrentPageFas].length : 0,
             itemBuilder: (context, index){
               return Column(
                 children: <Widget>[
