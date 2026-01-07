@@ -332,7 +332,7 @@ class technologiesPageState extends State<technologiesPage>{
             ),
           ),
           Expanded(
-            child: listOfTechnologiesThreads.length != 0? myPagesTechnologies[theCurrentPageTechnologies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
+            child: listOfTechnologiesThreads.length != 0? myPagesTechnologies[theCurrentPageTechnologies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
             height: MediaQuery.of(context).size.height * 0.0782125,

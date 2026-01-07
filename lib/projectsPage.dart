@@ -337,7 +337,7 @@ class projectsPageState extends State<projectsPage>{
             ),
           ),
           Expanded(
-            child: listOfProjectsThreads.length != 0? myPages[theCurrentPage] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPages[theCurrentPage],
+            child: listOfProjectsThreads.length != 0? myPages[theCurrentPage] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPages[theCurrentPage],
           ),
           NumberPaginator(
               height: MediaQuery.of(context).size.height * 0.0782125,
