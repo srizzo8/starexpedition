@@ -64,6 +64,32 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
   TextEditingController myTemperature = TextEditingController();
   TextEditingController myLength = TextEditingController();
 
+  @override
+  void initState(){
+    super.initState();
+
+    //The temperature and length results become zero if a user leaves the Conversion Calculator page:
+    tempResults = 0.0;
+    lengthResults = 0.0;
+
+    //The temperature and length results become zero when a user erases the values in the text boxes:
+    myTemperature.addListener((){
+      if(myTemperature.text.isEmpty){
+        setState((){
+          tempResults = 0.0;
+        });
+      }
+    });
+
+    myLength.addListener((){
+      if(myLength.text.isEmpty){
+        setState((){
+          lengthResults = 0.0;
+        });
+      }
+    });
+  }
+
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
