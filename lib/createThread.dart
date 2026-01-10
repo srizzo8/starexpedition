@@ -1295,7 +1295,7 @@ class createThreadState extends State<createThread>{
                                 createFeedbackAndSuggestionsThread(theNewFeedbackAndSuggestionsThread);
 
                                 //Feedback:
-                                await sendUserFeedback(myUsername: usernameController.text, myThreadName: threadNameController.text, myThreadContent: threadContentController.text);
+                                sendUserFeedback(myUsername: usernameController.text, myThreadName: threadNameController.text, myThreadContent: threadContentController.text);
 
                                 if(myUsername != "" && myNewUsername == ""){
                                   if(firebaseDesktopHelper.onDesktop){
