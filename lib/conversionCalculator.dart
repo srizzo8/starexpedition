@@ -49,12 +49,9 @@ class decimalAndMinusExpectedFormat extends TextInputFormatter{
 }
 
 List<String> temperatureUnits = ["Celsius", "Fahrenheit", "Kelvin"];
-String dropdownTempValue = temperatureUnits[2];
-String secondDropdownTempValue = temperatureUnits[1];
 
 List<String> lengthUnits = ["AU", "Kilometers", "Light-years", "Miles", "Parsecs"];
-String dropdownLengthValue = lengthUnits[2];
-String secondDropdownLengthValue = lengthUnits[3];
+
 double tempResults = 0.0;
 double lengthResults = 0.0;
 
@@ -63,6 +60,12 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
 
   TextEditingController myTemperature = TextEditingController();
   TextEditingController myLength = TextEditingController();
+
+  String dropdownTempValue = temperatureUnits[2];
+  String secondDropdownTempValue = temperatureUnits[1];
+
+  String dropdownLengthValue = lengthUnits[2];
+  String secondDropdownLengthValue = lengthUnits[3];
 
   @override
   void initState(){
@@ -88,6 +91,13 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
         });
       }
     });
+
+    //Resetting dropdown values once a user has exited the page:
+    dropdownTempValue = temperatureUnits[2];
+    secondDropdownTempValue = temperatureUnits[1];
+
+    dropdownLengthValue = lengthUnits[2];
+    secondDropdownLengthValue = lengthUnits[3];
   }
 
   Widget build(BuildContext context){
