@@ -2600,7 +2600,7 @@ class articlePage extends StatelessWidget{
                                                 myStarPdfFile = PdfDocument.openFile(temporaryFile.path);
                                               }
                                               else if(kIsWeb){
-                                                myStarPdfFile = Future.value(PdfDocument.openData(myResponse.bodyBytes));
+                                                myStarPdfFile = PdfDocument.openData(myResponse.bodyBytes);
                                               }
                                               else{
                                                 var temporaryDirectory = await getTemporaryDirectory();
@@ -3508,18 +3508,7 @@ class planetArticle extends StatelessWidget{
                                           else{
                                             planetPdfBool = true;
 
-                                            var myResponse;
-
-                                            if(!kIsWeb){
-                                              myResponse = await http.get(Uri.parse(listOfPlanetUrls[indexPlace]));
-                                            }
-                                            else{
-                                              String myCorsProxy = "https://corsproxy.io/?";
-                                              String myProxiedUrl = myCorsProxy + Uri.encodeComponent(listOfPlanetUrls[indexPlace]);
-                                              print("Fetching with proxy: ${myProxiedUrl}");
-
-                                              myResponse = await http.get(Uri.parse(myProxiedUrl));
-                                            }
+                                            var myResponse = await http.get(Uri.parse(listOfPlanetUrls[indexPlace]));
 
                                             if(myResponse.statusCode == 200 && myResponse.headers["content-type"]?.contains("application/pdf") == true){
                                               if(firebaseDesktopHelper.onDesktop){
@@ -3529,7 +3518,7 @@ class planetArticle extends StatelessWidget{
                                                 myPlanetPdfFile = PdfDocument.openFile(temporaryFile.path);
                                               }
                                               else if(kIsWeb){
-                                                myPlanetPdfFile = Future.value(PdfDocument.openData(myResponse.bodyBytes));
+                                                myPlanetPdfFile = PdfDocument.openData(myResponse.bodyBytes);
                                               }
                                               else{
                                                 var temporaryDirectory = await getTemporaryDirectory();
