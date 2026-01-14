@@ -48,7 +48,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 //import 'package:advance_pdf_viewer_fork/advance_pdf_viewer_fork.dart';
 
-import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
+//import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 
 import 'package:pdfx/pdfx.dart';
 
@@ -3535,7 +3535,7 @@ class planetArticle extends StatelessWidget{
                                                 var temporaryDirectory = await getTemporaryDirectory();
                                                 var temporaryFile = File("${temporaryDirectory.path}/temporaryPdf.pdf");
                                                 await temporaryFile.writeAsBytes(myResponse.bodyBytes);
-                                                myPlanetPdfFile = PDFDocument.fromFile(temporaryFile);
+                                                myPlanetPdfFile = PdfDocument.openFile(temporaryFile.path);
                                               }
 
                                               //Going to the page that has the PDF

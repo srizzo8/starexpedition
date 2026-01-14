@@ -155,13 +155,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
-  easy_pdf_viewer:
-    dependency: "direct main"
-    description:
-      name: easy_pdf_viewer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.8"
   email_sender:
     dependency: "direct main"
     description:
