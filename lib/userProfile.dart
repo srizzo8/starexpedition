@@ -39,6 +39,17 @@ var dataOfUser;
 var myDocName;
 var userInformation;
 
+bool whitespaceChecker(String? myString){
+  if(myString == null){
+    return true;
+  }
+
+  //Removing unicode characters that are invisible and missed by the trim() method:
+  final cleaned = myString.replaceAll(RegExp(r'[\u200B-\u200D\uFEFF\u00A0]'), "");
+
+  return cleaned.trim().isEmpty;
+}
+
 class userProfilePage extends StatefulWidget{
   const userProfilePage ({Key? key}) : super(key: key);
 
@@ -442,8 +453,8 @@ class userProfileInUserPerspective extends StatelessWidget{
             Container(
               padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: myUsername != "" && myNewUsername == ""?
-                (myMain.usersBlurb != ""? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
-                (myMain.usersBlurb != ""? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
+                (myMain.usersBlurb != "" && whitespaceChecker(myMain.usersBlurb) == false? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
+                (myMain.usersBlurb != "" && whitespaceChecker(myMain.usersBlurb) == false? Text("${myMain.usersBlurb}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
             ),
             /*Container(
               height: MediaQuery.of(bc).size.height * 0.015625,
@@ -455,8 +466,8 @@ class userProfileInUserPerspective extends StatelessWidget{
             Container(
               padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: myUsername != "" && myNewUsername == ""?
-                (myMain.usersInterests != ""? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
-                (myMain.usersInterests != ""? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
+                (myMain.usersInterests != "" && whitespaceChecker(myMain.usersInterests) == false? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
+                (myMain.usersInterests != "" && whitespaceChecker(myMain.usersInterests) == false? Text("${myMain.usersInterests}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
             ),
             /*Container(
               height: MediaQuery.of(bc).size.height * 0.015625,
@@ -468,8 +479,8 @@ class userProfileInUserPerspective extends StatelessWidget{
             Container(
               padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: myUsername != "" && myNewUsername == ""?
-                (myMain.usersLocation != ""? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
-                (myMain.usersLocation != ""? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
+                (myMain.usersLocation != "" && whitespaceChecker(myMain.usersLocation) == false? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)):
+                (myMain.usersLocation != "" && whitespaceChecker(myMain.usersLocation) == false? Text("${myMain.usersLocation}", textAlign: TextAlign.center): Text("N/A", textAlign: TextAlign.center)),
             ),
             /*Container(
               height: MediaQuery.of(bc).size.height * 0.015625,
@@ -607,7 +618,7 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             ),
             Container(
               padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
-              child: !(theUsersData["usernameProfileInformation"]["userInformation"].isEmpty)?
+              child: !(theUsersData["usernameProfileInformation"]["userInformation"].isEmpty) && whitespaceChecker(theUsersData["usernameProfileInformation"]["userInformation"]) == false?
                 Text("${theUsersData["usernameProfileInformation"]["userInformation"]}", textAlign: TextAlign.center):
                 Text("N/A", textAlign: TextAlign.center),
             ),
@@ -620,7 +631,7 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             ),
             Container(
               padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
-              child: !(theUsersData["usernameProfileInformation"]["userInterests"].isEmpty)?
+              child: !(theUsersData["usernameProfileInformation"]["userInterests"].isEmpty) && whitespaceChecker(theUsersData["usernameProfileInformation"]["userInterests"]) == false?
               Text("${theUsersData["usernameProfileInformation"]["userInterests"]}", textAlign: TextAlign.center):
               Text("N/A", textAlign: TextAlign.center),
             ),
@@ -633,7 +644,7 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
             ),
             Container(
               padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
-              child: !(theUsersData["usernameProfileInformation"]["userLocation"].isEmpty)?
+              child: !(theUsersData["usernameProfileInformation"]["userLocation"].isEmpty) && whitespaceChecker(theUsersData["usernameProfileInformation"]["userLocation"]) == false?
                 Text("${theUsersData["usernameProfileInformation"]["userLocation"]}", textAlign: TextAlign.center):
                 Text("N/A", textAlign: TextAlign.center),
             ),
