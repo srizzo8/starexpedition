@@ -49,6 +49,17 @@ var docName;
 
 //SentryOptions so = "" as SentryOptions;
 
+bool whitespaceChecker(String? myString){
+  if(myString == null){
+    return true;
+  }
+
+  //Removing unicode characters that are invisible and missed by the trim() method:
+  final cleaned = myString.replaceAll(RegExp(r'[\u200B-\u200D\uFEFF\u00A0]'), "");
+
+  return cleaned.trim().isEmpty;
+}
+
 class createThread extends StatefulWidget{
   const createThread ({Key? key}) : super(key: key);
 
@@ -79,13 +90,13 @@ class createThreadState extends State<createThread>{
 
   List<Text> createThreadDialogMessage(List<String> info){
     List<Text> messageForUserCreateThread = [];
-    if(usernameController.text == ""){
+    if(whitespaceChecker(usernameController.text)){
       messageForUserCreateThread.add(Text("Username is empty"));
     }
-    if(threadNameController.text == ""){
+    if(whitespaceChecker(threadNameController.text)){
       messageForUserCreateThread.add(Text("Thread name is empty"));
     }
-    if(threadContentController.text == ""){
+    if(whitespaceChecker(threadContentController.text)){
       messageForUserCreateThread.add(Text("Thread content is empty"));
     }
 
@@ -311,7 +322,7 @@ class createThreadState extends State<createThread>{
                   else if(theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != ""){
                     usernameController.text = theRegisterPage.myNewUsername;
                   }
-                  if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != ""){
+                  if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != "" && whitespaceChecker(usernameController.text) == false && whitespaceChecker(threadNameController.text) == false && whitespaceChecker(threadContentController.text) == false){
                     //print(usernameController.text);
                     if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == false) {
                       final discussionBoardUpdatesThreadsInfo = Get.put(discussionBoardUpdatesInformation());

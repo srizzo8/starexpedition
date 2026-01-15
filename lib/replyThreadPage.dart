@@ -66,6 +66,17 @@ bool fromProjectsReply = false;
 bool fromNdReply = false;
 bool fromFasReply = false;
 
+bool whitespaceChecker(String? myString){
+  if(myString == null){
+    return true;
+  }
+
+  //Removing unicode characters that are invisible and missed by the trim() method:
+  final cleaned = myString.replaceAll(RegExp(r'[\u200B-\u200D\uFEFF\u00A0]'), "");
+
+  return cleaned.trim().isEmpty;
+}
+
 class replyThreadPage extends StatefulWidget{
   const replyThreadPage ({Key? key}) : super(key: key);
 
@@ -90,10 +101,10 @@ class replyThreadPageState extends State<replyThreadPage>{
 
   List<Text> createReplyDialogMessage(List<String> info){
     List<Text> messageForUserReplyToThread = [];
-    if(usernameReplyController.text == ""){
+    if(whitespaceChecker(usernameReplyController.text)){
       messageForUserReplyToThread.add(Text("Username is empty"));
     }
-    if(replyContentController.text == ""){
+    if(whitespaceChecker(replyContentController.text)){
       messageForUserReplyToThread.add(Text("Reply content is empty"));
     }
 
@@ -244,7 +255,7 @@ class replyThreadPageState extends State<replyThreadPage>{
                         else if(theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != ""){
                           usernameReplyController.text = theRegisterPage.myNewUsername;
                         }
-                        if(usernameReplyController.text != "" && replyContentController.text != ""){
+                        if(usernameReplyController.text != "" && replyContentController.text != "" && whitespaceChecker(usernameReplyController.text) == false && whitespaceChecker(replyContentController.text) == false){
                           if(discussionBoardUpdatesPage.discussionBoardUpdatesReplyBool == true){
                             //For the Discussion Board Updates subforum:
                             final discussionBoardUpdatesRepliesInfo = Get.put(discussionBoardUpdatesRepliesInformation());
