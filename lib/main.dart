@@ -180,6 +180,17 @@ writeFilesToCustomDevicePath() async{
 }
 */
 
+bool whitespaceChecker(String? myString){
+  if(myString == null){
+    return true;
+  }
+
+  //Removing unicode characters that are invisible and missed by the trim() method:
+  final cleaned = myString.replaceAll(RegExp(r'[\u200B-\u200D\uFEFF\u00A0]'), "");
+
+  return cleaned.trim().isEmpty;
+}
+
 //Trying to find local path
 Future<String> get findLocalPath async{
   final theDirectory = await getApplicationDocumentsDirectory();
@@ -2737,7 +2748,7 @@ class articlePage extends StatelessWidget{
                                                     TextButton(
                                                         child: Text("Ok"),
                                                         onPressed: () async{
-                                                          if(reasonForStarTrackNewUsers.text != ""){
+                                                          if(whitespaceChecker(reasonForStarTrackNewUsers.text) == false){
                                                             starsTracked.addEntries({theStar.starName!: reasonForStarTrackNewUsers.text}.entries);
 
                                                             if(firebaseDesktopHelper.onDesktop){
@@ -2910,7 +2921,7 @@ class articlePage extends StatelessWidget{
                                                     TextButton(
                                                         child: Text("Ok"),
                                                         onPressed: () async{
-                                                          if(reasonForStarTrackExistingUsers.text != ""){
+                                                          if(whitespaceChecker(reasonForStarTrackExistingUsers.text) == false){
                                                             print("docNameForStarsTrackedExistingUser: ${docNameForStarsTrackedExistingUser}");
                                                             starsTracked.addEntries({theStar.starName!: reasonForStarTrackExistingUsers.text}.entries);
 
@@ -3647,7 +3658,7 @@ class planetArticle extends StatelessWidget{
                                                   TextButton(
                                                       child: Text("Ok"),
                                                       onPressed: () async{
-                                                        if(reasonForPlanetTrackNewUsers.text != ""){
+                                                        if(whitespaceChecker(reasonForPlanetTrackNewUsers.text) == false){
                                                           planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackNewUsers.text}.entries);
 
                                                           if(firebaseDesktopHelper.onDesktop){
@@ -3813,7 +3824,7 @@ class planetArticle extends StatelessWidget{
                                                   TextButton(
                                                       child: Text("Ok"),
                                                       onPressed: () async{
-                                                        if(reasonForPlanetTrackExistingUsers.text != ""){
+                                                        if(whitespaceChecker(reasonForPlanetTrackExistingUsers.text) == false){
                                                           planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackExistingUsers.text}.entries);
 
                                                           if(firebaseDesktopHelper.onDesktop){
