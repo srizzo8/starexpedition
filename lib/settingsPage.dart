@@ -31,6 +31,14 @@ var usersEmailForEmailChangeMessage;
 var usersNewEmail;
 var userForEmailChange;
 
+bool whitespaceChecker(String? myString){
+  if(myString == null){
+    return true;
+  }
+
+  return myString.contains(RegExp(r'\s'));
+}
+
 class settingsPage extends StatefulWidget{
   const settingsPage ({Key? key}) : super(key: key);
 
@@ -213,6 +221,9 @@ class changePasswordPageState extends State<changePasswordPage>{
     }
     if((currentPasswordController.text == newPasswordController.text || currentPasswordController.text == secondNewPasswordController.text) && currentPasswordController.text == usersPass && newPasswordController.text != "" && secondNewPasswordController.text != ""){
       usersMessage.add(Text("Your new password cannot be your current password"));
+    }
+    if((whitespaceChecker(newPasswordController.text) || whitespaceChecker(secondNewPasswordController.text)) && (newPasswordController.text != "" || secondNewPasswordController.text != "")){
+      usersMessage.add(Text("Your new password must not contain any whitespace"));
     }
     return usersMessage;
   }

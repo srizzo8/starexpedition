@@ -621,6 +621,14 @@ class resetPasswordState extends State<resetPassword>{
   TextEditingController confirmNewPassController = TextEditingController();
   List<Text> usersMessage = [];
 
+  bool whitespaceChecker(String? myString){
+    if(myString == null){
+      return true;
+    }
+
+    return myString.contains(RegExp(r'\s'));
+  }
+
   Future<String> getUsersPassword(String username) async{
     var theUserDoc;
     String usersDecryptedPass = "";
@@ -672,6 +680,9 @@ class resetPasswordState extends State<resetPassword>{
     }
     if(((newPassController.text).length < 8 || (confirmNewPassController.text).length < 8) && newPassController.text != "" && confirmNewPassController.text != ""){
       messageForUser.add(Text("Your new password must be at least 8 characters long"));
+    }
+    if((whitespaceChecker(newPassController.text) && newPassController.text != "") || (whitespaceChecker(confirmNewPassController.text) && confirmNewPassController.text != "")){
+      messageForUser.add(Text("Your new password must not contain any whitespace"));
     }
 
     return messageForUser;
