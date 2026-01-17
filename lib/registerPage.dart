@@ -48,6 +48,14 @@ List<String> possibleUsernameChars = numRegExp + letterRegExp + ['_', '.'];
 
 final myKey = "Sixteen char key";
 
+bool whitespaceChecker(String? myString){
+  if(myString == null){
+    return true;
+  }
+
+  return myString.contains(RegExp(r'\s'));
+}
+
 bool checkSpecialCharacters(String p){
   var myPassList = p.split("");//json.decode(p).cast<String>().toList();
   for(String i in regExp){
@@ -92,6 +100,10 @@ bool checkUsernameValidity(String u){
   print("usernameList: ${usernameList}");
   int i = 0;
 
+  if(whitespaceChecker(u)){
+    return false;
+  }
+
   for(String y in usernameList){
     if(possibleUsernameChars.contains(y)){
       i++;
@@ -111,6 +123,10 @@ bool checkUsernameValidity(String u){
 }
 
 bool checkEmailValidity(String e){
+  if(whitespaceChecker(e)){
+    return false;
+  }
+
   if(e.contains("@") && "@".allMatches(e).length == 1){
     var emailAddressParts = e.split("@");
     print("emailAddressParts: ${emailAddressParts}");
@@ -202,7 +218,7 @@ class registerPageState extends State<registerPage>{
     if((checkUsernameValidity(theUsername.text) == false || (theUsername.text).contains(" ")) && theUsername.text != ""){
       messageForUser.add(Text("Usernames must only consist of letters, numbers, _, and/or ."));
     }
-    if((theUsername.text.length < 3 || theUsername.text.length > 25) && theUsername.text != ""){
+    if((theUsername.text.length < 3 || theUsername.text.length > 25) && whitespaceChecker(theUsername.text) == false && theUsername.text != ""){
       messageForUser.add(Text("Usernames must contain anywhere between 3 and 25 characters"));
     }
     if(email.text == ""){
@@ -225,6 +241,9 @@ class registerPageState extends State<registerPage>{
     }
     if((password.text).length < 8 && password.text != ""){
       messageForUser.add(Text("Password must be at least 8 characters long"));
+    }
+    if(whitespaceChecker(password.text) && password.text != ""){
+      messageForUser.add(Text("Password must not contain any whitespace"));
     }
 
     return messageForUser;
