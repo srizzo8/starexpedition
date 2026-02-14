@@ -106,7 +106,8 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
         centerTitle: true,
         title: Text("Star Expedition"),
       ),
-      body: Wrap(
+      body: SingleChildScrollView(
+        child: Column(
         children: <Widget>[
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,
@@ -142,12 +143,12 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Padding(
-            padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.15, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+            padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.15, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, right: 10.0),
             child: Row(
               children: <Widget>[
                 Container(
-                  padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.0281875, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
-                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.33333 : 180,
+                  padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.0281875, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, right: 10.0),
+                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.33333 : 150,
                   alignment: Alignment.centerLeft,
                   child: SizedBox(
                     child: TextField(
@@ -202,8 +203,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.025, 0.0, 0.0, 0.0),
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.0333,
+                    width: MediaQuery.of(context).size.width * 0.275,
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton(
+                        isExpanded: true,
                         value: dropdownTempValue,
                         icon: Icon(Icons.keyboard_arrow_down),
                         items: temperatureUnits.map((String tu){
@@ -225,8 +228,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.025, 0.0, 0.0, 0.0),
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.0333,
+                    width: MediaQuery.of(context).size.width * 0.275,
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton(
+                        isExpanded: true,
                         value: secondDropdownTempValue,
                         icon: Icon(Icons.keyboard_arrow_down),
                         items: temperatureUnits.map((String stu){
@@ -270,15 +275,16 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Padding(
-            padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.15, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
+            padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.15, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, right: 10.0),
             child: Row(
               children: <Widget>[
                 Container(
-                  padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.0281875, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0),
-                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.33333 : 180,
+                  padding: (kIsWeb || firebaseDesktopHelper.onDesktop)? EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.0281875, 0.0, 0.0, 0.0) : EdgeInsets.only(left: 10.0, right: 10.0),
+                  width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.33333 : 150,
                   alignment: Alignment.centerLeft,
                   child: SizedBox(
                     child: TextField(
+                      textAlignVertical: TextAlignVertical.center,
                       controller: myLength,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -377,8 +383,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.025, 0.0, 0.0, 0.0),
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.0333,
+                    width: MediaQuery.of(context).size.width * 0.275,
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton(
+                        isExpanded: true,
                         value: dropdownLengthValue,
                         icon: Icon(Icons.keyboard_arrow_down),
                         items: lengthUnits.map((String lu){
@@ -400,8 +408,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.025, 0.0, 0.0, 0.0),
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.0333,
+                    width: MediaQuery.of(context).size.width * 0.275,
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton(
+                        isExpanded: true,
                         value: secondDropdownLengthValue,
                         icon: Icon(Icons.keyboard_arrow_down),
                         items: lengthUnits.map((String slu){
@@ -508,6 +518,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
             ),
           ),*/
         ],
+      ),
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
     );

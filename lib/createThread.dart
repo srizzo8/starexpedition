@@ -243,6 +243,7 @@ class createThreadState extends State<createThread>{
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
                                     labelText: "Thread Name",
+                                    counterText: "",
                                   ),
                                   maxLength: 250,
                                   maxLengthEnforcement: MaxLengthEnforcement.enforced,
