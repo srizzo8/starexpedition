@@ -54,6 +54,8 @@ import 'package:pdfx/pdfx.dart';
 
 import 'package:http/http.dart' as http;
 
+import 'mostTrackedStarsAndPlanetsPage.dart';
+
 /*import 'webErrorStub.dart'
   if(dart.library.html) 'forWebErrors.dart';*/
 
@@ -122,6 +124,11 @@ bool planetPdfBool = false;
 
 var myStarPdfFile;
 var myPlanetPdfFile;
+
+List<String> starsUsersTracked = [];
+List<String> planetsUsersTracked = [];
+Map<String, String> starsAndAmountOfTracks = {};
+Map<String, String> planetsAndAmountOfTracks = {};
 
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
@@ -807,6 +814,7 @@ class MyApp extends StatelessWidget {
           routesToOtherPages.userProfileInUserPerspectivePage: (context) => userProfileInUserPerspective(),
           routesToOtherPages.userSearchBarPage: (context) => userSearchBarPage(),
           routesToOtherPages.nonexistentUserPage: (context) => nonexistentUser(),
+          routesToOtherPages.mostTrackedStarsAndPlanetsPage: (context) => mostTrackedStarsAndPlanetsPage(),
         }
     );
   }
@@ -826,6 +834,7 @@ class routesToOtherPages{
   static String userProfileInUserPerspectivePage = userProfileInUserPerspective.nameOfRoute;
   static String userSearchBarPage = userSearchBarPageState.nameOfRoute;
   static String nonexistentUserPage = nonexistentUser.nameOfRoute;
+  static String mostTrackedStarsAndPlanetsPage = mostTrackedStarsAndPlanetsPageState.nameOfRoute;
 }
 
 // This is the widget that will be shown
@@ -1522,6 +1531,75 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                     discussionBoardLogin = false;
                     // Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage()));
                     Navigator.pushReplacementNamed(context, routesToOtherPages.spectralClass);
+                  }
+              ),
+              ListTile(
+                  title: Text("Most Tracked Stars and Planets"),
+                  onTap: () async {
+                    discussionBoardLogin = false;
+                    starsUsersTracked = [];
+                    planetsUsersTracked = [];
+                    if(firebaseDesktopHelper.onDesktop){
+                      var myUsersDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
+                      for(int user = 0; user < myUsersDocs.length; user++){
+                        if(myUsersDocs[user]["usernameProfileInformation"]["starsTracked"] != {}){
+                          for(int myStar = 0; myStar < myUsersDocs[user]["usernameProfileInformation"]["starsTracked"].keys.length; myStar++){
+                            starsUsersTracked.add(myUsersDocs[user]["usernameProfileInformation"]["starsTracked"].keys.elementAt(myStar));
+                          }
+                        }
+
+                        if(myUsersDocs[user]["usernameProfileInformation"]["planetsTracked"] != {}){
+                          for(int myPlanet = 0; myPlanet < myUsersDocs[user]["usernameProfileInformation"]["planetsTracked"].keys.length; myPlanet++){
+                            planetsUsersTracked.add(myUsersDocs[user]["usernameProfileInformation"]["planetsTracked"].keys.elementAt(myPlanet));
+                          }
+                        }
+                      }
+                      print("Stars users tracked: ${starsUsersTracked}");
+                      print("Planets users tracked: ${planetsUsersTracked}");
+
+                      for(var s in allStars){
+                        starsAndAmountOfTracks[s] = (starsUsersTracked.where((myElement) => myElement == s).length).toString();
+                      }
+                      for(var p in allPlanets){
+                        planetsAndAmountOfTracks[p] = (planetsUsersTracked.where((myElement) => myElement == p).length).toString();
+                      }
+
+                      print("starsAndAmountOfTracks: ${starsAndAmountOfTracks}");
+                      print("planetsAndAmountOfTracks: ${planetsAndAmountOfTracks}");
+                    }
+                    else{
+                      await FirebaseFirestore.instance.collection("User").get().then((qSnapshot){
+                        for(var user in qSnapshot.docs){
+                          print("user: ${user.data()}");
+                          print("user.data()[usernameProfileInformation][starsTracked]: ${user.data()["usernameProfileInformation"]["starsTracked"]}");
+                          if(user.data()["usernameProfileInformation"]["starsTracked"] != {}){
+                            for(int myStar = 0; myStar < user.data()["usernameProfileInformation"]["starsTracked"].keys.length; myStar++){
+                              starsUsersTracked.add(user.data()["usernameProfileInformation"]["starsTracked"].keys.elementAt(myStar));
+                            }
+                          }
+
+                          if(user.data()["usernameProfileInformation"]["planetsTracked"] != {}){
+                            for(int myPlanet = 0; myPlanet < user.data()["usernameProfileInformation"]["planetsTracked"].keys.length; myPlanet++){
+                              planetsUsersTracked.add(user.data()["usernameProfileInformation"]["planetsTracked"].keys.elementAt(myPlanet));
+                            }
+                          }
+                        }
+                      });
+                      print("Stars users tracked: ${starsUsersTracked}");
+                      print("Planets users tracked: ${planetsUsersTracked}");
+
+                      for(var s in allStars){
+                        starsAndAmountOfTracks[s] = (starsUsersTracked.where((myElement) => myElement == s).length).toString();
+                      }
+                      for(var p in allPlanets){
+                        planetsAndAmountOfTracks[p] = (planetsUsersTracked.where((myElement) => myElement == p).length).toString();
+                      }
+
+                      print("starsAndAmountOfTracks: ${starsAndAmountOfTracks}");
+                      print("planetsAndAmountOfTracks: ${planetsAndAmountOfTracks}");
+                    }
+
+                    Navigator.pushReplacementNamed(context, routesToOtherPages.mostTrackedStarsAndPlanetsPage);
                   }
               ),
               ListTile(
