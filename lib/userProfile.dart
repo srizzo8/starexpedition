@@ -88,6 +88,7 @@ Future<void> uploadAndStoreProfilePicture(Uint8List myBytes, String nameOfUser) 
   var myInformation;
   var usersData;
   var docsName;
+  final myBase64Image = base64Encode(myBytes);
 
   if(firebaseDesktopHelper.onDesktop){
     List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
@@ -95,6 +96,15 @@ Future<void> uploadAndStoreProfilePicture(Uint8List myBytes, String nameOfUser) 
     var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == nameOfUser.toLowerCase(), orElse: () => <String, dynamic>{});
 
     docsName = usersProfileInfo["docId"];
+
+    //Getting the user's current profile information:
+    Map<String, dynamic> usersCurrentInfo = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"]);
+    usersCurrentInfo["userProfilePicture"] = myBase64Image;
+
+    //Updating the user's profile picture:
+    await firebaseDesktopHelper.updateFirestoreDocument("User/${docsName}", {
+      "usernameProfileInformation": usersCurrentInfo,
+    });
   }
   else{
     myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: nameOfUser.toLowerCase()).get();
@@ -102,12 +112,9 @@ Future<void> uploadAndStoreProfilePicture(Uint8List myBytes, String nameOfUser) 
       usersData = myResult.data();
       docsName = myResult.id;
     });
+
+    await FirebaseFirestore.instance.collection("User").doc(docsName).update({"usernameProfileInformation.userProfilePicture": myBase64Image});
   }
-
-  final myBase64Image = base64Encode(myBytes);
-
-  //Saving the URL to Firestore:
-  await FirebaseFirestore.instance.collection("User").doc(docsName).update({"usernameProfileInformation.userProfilePicture": myBase64Image});
 }
 
 class userProfilePage extends StatefulWidget{
@@ -193,6 +200,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
   Future<void> loadMyProfilePicture(String theUsersName) async{
     var usersData;
     var docsName;
+    String? myBase64String;
 
     if(myUsername != "" && myNewUsername == ""){
       theUsersName = myUsername;
@@ -206,22 +214,21 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
 
       var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == theUsersName.toLowerCase(), orElse: () => <String, dynamic>{});
 
-      docsName = usersProfileInfo["docId"];
+      myBase64String = usersProfileInfo["usernameProfileInformation"]?["userProfilePicture"] as String?;
     }
     else{
       myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersName.toLowerCase()).get();
       myInformation.docs.forEach((myResult){
-        usersData = myResult.data();
         docsName = myResult.id;
       });
+
+      final myDoc = await FirebaseFirestore.instance.collection("User").doc(docsName).get();
+
+      myBase64String = myDoc["usernameProfileInformation"]["userProfilePicture"] as String?;
     }
 
-    final myDoc = await FirebaseFirestore.instance.collection("User").doc(docsName).get();
-
-    final myBase64String = myDoc["usernameProfileInformation"]["userProfilePicture"] as String?;
-
     if(myBase64String != null && myBase64String.isNotEmpty){
-      setState(() => myImageBytes = base64Decode(myBase64String));
+      setState(() => myImageBytes = base64Decode(myBase64String!));
     }
   }
 
@@ -595,22 +602,22 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
   Future<void> loadProfilePictureInUsersPerspective() async{
     final theUsersName = myUsername != "" && myNewUsername == "" ? myUsername : myNewUsername;
     var docsName;
+    String? myBase64String;
 
     if(firebaseDesktopHelper.onDesktop){
       List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
       var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == theUsersName.toLowerCase(), orElse: () => <String, dynamic>{});
-      docsName = usersProfileInfo["docId"];
+      myBase64String = usersProfileInfo["usernameProfileInformation"]?["userProfilePicture"] as String?;
     }
     else{
       final myResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersName.toLowerCase()).get();
       myResult.docs.forEach((myDoc) => docsName = myDoc.id);
+      final myDoc = await FirebaseFirestore.instance.collection("User").doc(docsName).get();
+      myBase64String = myDoc["usernameProfileInformation"]["userProfilePicture"] as String?;
     }
 
-    final myDoc = await FirebaseFirestore.instance.collection("User").doc(docsName).get();
-    final myBase64String = myDoc["usernameProfileInformation"]["userProfilePicture"] as String?;
-
     if(myBase64String != null && myBase64String.isNotEmpty){
-      setState(() => myImageBytes = base64Decode(myBase64String));
+      setState(() => myImageBytes = base64Decode(myBase64String!));
     }
   }
 
