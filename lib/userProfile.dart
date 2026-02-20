@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 //import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:starexpedition4/settingsPage.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
@@ -32,6 +34,9 @@ import 'feedbackAndSuggestionsPage.dart';
 
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
+import 'package:image_picker/image_picker.dart';
+import 'package:file_selector/file_selector.dart';
+
 var myInformation;
 var myInterests;
 var myLocation;
@@ -48,6 +53,61 @@ bool whitespaceChecker(String? myString){
   final cleaned = myString.replaceAll(RegExp(r'[\u200B-\u200D\uFEFF\u00A0]'), "");
 
   return cleaned.trim().isEmpty;
+}
+
+//For profile pictures:
+//Choosing the image from a gallery:
+Future<Uint8List?> chooseProfilePicture() async{
+  if(!firebaseDesktopHelper.onDesktop){
+    final XFile? pickedPicture = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 512,
+      maxHeight: 512,
+    );
+
+    if(pickedPicture == null){
+      return null;
+    }
+
+    return await pickedPicture.readAsBytes();
+  }
+
+  const myTypeGroup = XTypeGroup(label: "Images", extensions: ["png", "jpg", "jpeg", "webp"],);
+
+  final XFile? myFile = await openFile(acceptedTypeGroups: [myTypeGroup]);
+
+  if(myFile == null){
+    return null;
+  }
+
+  return await myFile.readAsBytes();
+}
+
+//Converting the image to Base64 and saving it to Firestore:
+Future<void> uploadAndStoreProfilePicture(Uint8List myBytes, String nameOfUser) async{
+  var myInformation;
+  var usersData;
+  var docsName;
+
+  if(firebaseDesktopHelper.onDesktop){
+    List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+    var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == nameOfUser.toLowerCase(), orElse: () => <String, dynamic>{});
+
+    docsName = usersProfileInfo["docId"];
+  }
+  else{
+    myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: nameOfUser.toLowerCase()).get();
+    myInformation.docs.forEach((myResult){
+      usersData = myResult.data();
+      docsName = myResult.id;
+    });
+  }
+
+  final myBase64Image = base64Encode(myBytes);
+
+  //Saving the URL to Firestore:
+  await FirebaseFirestore.instance.collection("User").doc(docsName).update({"usernameProfileInformation.userProfilePicture": myBase64Image});
 }
 
 class userProfilePage extends StatefulWidget{
@@ -113,10 +173,87 @@ class userProfilePageState extends State<userProfilePage>{
   }
 }
 
-class editingMyUserProfile extends StatelessWidget{
+class editingMyUserProfile extends StatefulWidget{
+  const editingMyUserProfile({Key? key}): super(key: key);
+
+  @override
+  editingMyUserProfileState createState() => editingMyUserProfileState();
+}
+
+class editingMyUserProfileState extends State<editingMyUserProfile>{
   TextEditingController informationAboutMyselfController = TextEditingController();
   TextEditingController interestsController = TextEditingController();
   TextEditingController locationController = TextEditingController();
+
+  //For profile pictures:
+  Uint8List? myImageBytes;
+  bool isSaving = false;
+
+  //Loading existing photo from Firestore when user arrives on the page:
+  Future<void> loadMyProfilePicture(String theUsersName) async{
+    var usersData;
+    var docsName;
+
+    if(myUsername != "" && myNewUsername == ""){
+      theUsersName = myUsername;
+    }
+    else if(myUsername == "" && myNewUsername != ""){
+      theUsersName = myNewUsername;
+    }
+
+    if(firebaseDesktopHelper.onDesktop){
+      List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+      var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == theUsersName.toLowerCase(), orElse: () => <String, dynamic>{});
+
+      docsName = usersProfileInfo["docId"];
+    }
+    else{
+      myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersName.toLowerCase()).get();
+      myInformation.docs.forEach((myResult){
+        usersData = myResult.data();
+        docsName = myResult.id;
+      });
+    }
+
+    final myDoc = await FirebaseFirestore.instance.collection("User").doc(docsName).get();
+
+    final myBase64String = myDoc["usernameProfileInformation"]["userProfilePicture"] as String?;
+
+    if(myBase64String != null && myBase64String.isNotEmpty){
+      setState(() => myImageBytes = base64Decode(myBase64String));
+    }
+  }
+
+  //Opens a user's gallery on his or her device:
+  Future<void> handlingMyPick() async{
+    final myBytes = await chooseProfilePicture();
+
+    if(myBytes == null){
+      return;
+    }
+
+    setState(() => isSaving = true);
+
+    if(myUsername != "" && myNewUsername == ""){
+      await uploadAndStoreProfilePicture(myBytes, myUsername);
+    }
+    else if(myUsername == "" && myNewUsername != ""){
+      await uploadAndStoreProfilePicture(myBytes, myNewUsername);
+    }
+
+    setState((){
+      myImageBytes = myBytes;
+      isSaving = false;
+    });
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    String theNameOfUser = myUsername != "" && myNewUsername == ""? myUsername : myNewUsername;
+    loadMyProfilePicture(theNameOfUser);
+  }
 
   Widget build(BuildContext context){
     return Scaffold(
@@ -255,6 +392,29 @@ class editingMyUserProfile extends StatelessWidget{
                       ),
                     ]
                 ),
+              ),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black,
+                  ),
+                  child: InkWell(
+                    child: Ink(
+                      color: Colors.black,
+                      child: Text("Update Profile Picture", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                    ),
+                  ),
+                  onPressed: () async{
+                    handlingMyPick();
+                  }
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              CircleAvatar(
+                radius: 80,
+                backgroundImage: myImageBytes != null ? MemoryImage(myImageBytes!) : null,
               ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.015625,
@@ -415,8 +575,44 @@ class editingMyUserProfile extends StatelessWidget{
   }
 }
 
-class userProfileInUserPerspective extends StatelessWidget{
+class userProfileInUserPerspective extends StatefulWidget{
+  const userProfileInUserPerspective ({Key? key}) : super(key: key);
+
+  @override
+  userProfileInUserPerspectiveState createState() => userProfileInUserPerspectiveState();
+}
+
+class userProfileInUserPerspectiveState extends State<userProfileInUserPerspective>{
   static String nameOfRoute = '/userProfileInUserPerspective';
+  Uint8List? myImageBytes;
+
+  @override
+  void initState(){
+    super.initState();
+    loadProfilePictureInUsersPerspective();
+  }
+
+  Future<void> loadProfilePictureInUsersPerspective() async{
+    final theUsersName = myUsername != "" && myNewUsername == "" ? myUsername : myNewUsername;
+    var docsName;
+
+    if(firebaseDesktopHelper.onDesktop){
+      List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+      var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == theUsersName.toLowerCase(), orElse: () => <String, dynamic>{});
+      docsName = usersProfileInfo["docId"];
+    }
+    else{
+      final myResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersName.toLowerCase()).get();
+      myResult.docs.forEach((myDoc) => docsName = myDoc.id);
+    }
+
+    final myDoc = await FirebaseFirestore.instance.collection("User").doc(docsName).get();
+    final myBase64String = myDoc["usernameProfileInformation"]["userProfilePicture"] as String?;
+
+    if(myBase64String != null && myBase64String.isNotEmpty){
+      setState(() => myImageBytes = base64Decode(myBase64String));
+    }
+  }
 
   Widget build(BuildContext bc){
     return Scaffold(
@@ -443,9 +639,13 @@ class userProfileInUserPerspective extends StatelessWidget{
               Text("${myUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)):
               Text("${myNewUsername}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
             ),
-            /*Container(
+            Container(
               height: MediaQuery.of(bc).size.height * 0.015625,
-            ),*/
+            ),
+            myImageBytes != null? CircleAvatar(
+              radius: 80,
+              backgroundImage: myImageBytes != null ? MemoryImage(myImageBytes!) : null,
+            ): Container(),
             Container(
               padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nInformation About You:", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -557,8 +757,30 @@ class userProfileInUserPerspective extends StatelessWidget{
   }
 }
 
-class userProfileInOtherUsersPerspective extends StatelessWidget{
+class userProfileInOtherUsersPerspective extends StatefulWidget{
+  const userProfileInOtherUsersPerspective ({Key? key}) : super(key: key);
+
+  @override
+  userProfileInOtherUsersPerspectiveState createState() => userProfileInOtherUsersPerspectiveState();
+}
+
+class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUsersPerspective>{
   static String nameOfRoute = '/userProfileInOtherUsersPerspective';
+  Uint8List? myImageBytes;
+
+  @override
+  void initState(){
+    super.initState();
+    loadProfilePictureInOtherUsersPerspective();
+  }
+
+  Future<void> loadProfilePictureInOtherUsersPerspective() async{
+    final myBase64String = theUsersData["usernameProfileInformation"]?["userProfilePicture"] as String?;
+
+    if(myBase64String != null && myBase64String.isNotEmpty){
+      setState(() => myImageBytes = base64Decode(myBase64String));
+    }
+  }
 
   Widget build(BuildContext bc){
     return Scaffold(
@@ -609,9 +831,13 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
               padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("${theUsersData["username"]}'s Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
             ),
-            /*Container(
+            Container(
               height: MediaQuery.of(bc).size.height * 0.015625,
-            ),*/
+            ),
+            myImageBytes != null? CircleAvatar(
+              radius: 80,
+              backgroundImage: myImageBytes != null ? MemoryImage(myImageBytes!) : null,
+            ): Container(),
             Container(
               padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\nInformation About ${theUsersData["username"]}:", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -622,9 +848,6 @@ class userProfileInOtherUsersPerspective extends StatelessWidget{
                 Text("${theUsersData["usernameProfileInformation"]["userInformation"]}", textAlign: TextAlign.center):
                 Text("N/A", textAlign: TextAlign.center),
             ),
-            /*Container(
-              height: MediaQuery.of(bc).size.height * 0.015625,
-            ),*/
             Container(
               padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, MediaQuery.of(bc).size.height * 0.015625, MediaQuery.of(bc).size.width * 0.015625, 0.0),
               child: Text("\n${theUsersData["username"]}'s Interests:", style: TextStyle(fontWeight: FontWeight.bold)),

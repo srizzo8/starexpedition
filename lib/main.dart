@@ -831,7 +831,7 @@ class routesToOtherPages{
   static String thePlanetArticlePage = planetArticle.nameOfRoute;
   static String conversionCalculator = conversionCalculatorPageState.nameOfRoute;
   static String settingsPage = settingsPageState.nameOfRoute;
-  static String userProfileInUserPerspectivePage = userProfileInUserPerspective.nameOfRoute;
+  static String userProfileInUserPerspectivePage = userProfileInUserPerspectiveState.nameOfRoute;
   static String userSearchBarPage = userSearchBarPageState.nameOfRoute;
   static String nonexistentUserPage = nonexistentUser.nameOfRoute;
   static String mostTrackedStarsAndPlanetsPage = mostTrackedStarsAndPlanetsPageState.nameOfRoute;

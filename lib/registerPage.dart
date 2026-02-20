@@ -413,7 +413,7 @@ class registerPageState extends State<registerPage>{
                         emailAddress: email.text,
                         password: eBaseSixtyFour,
                         usernameLowercased: theUsername.text.toLowerCase(),
-                        usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
+                        usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
                       );
                       createUser(theNewUser);
                       userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
@@ -438,7 +438,7 @@ class registerPageState extends State<registerPage>{
                         emailAddress: email.text,
                         password: eBaseSixtyFour,
                         usernameLowercased: theUsername.text.toLowerCase(),
-                        usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
+                        usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
                       );
                       createUser(theNewUser);
                       //dbService.addUser(theNewUser);
@@ -491,7 +491,7 @@ class registerPageState extends State<registerPage>{
                           emailAddress: email.text,
                           password: eBaseSixtyFour,
                           usernameLowercased: theUsername.text.toLowerCase(),
-                          usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
+                          usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
                       );
                       createUser(theNewUser);
                       //dbService.addUser(theNewUser);
@@ -541,7 +541,7 @@ class registerPageState extends State<registerPage>{
                           emailAddress: email.text,
                           password: eBaseSixtyFour,
                           usernameLowercased: theUsername.text.toLowerCase(),
-                          usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}},
+                          usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
                       );
                       createUser(theNewUser);
                       //dbService.addUser(theNewUser);
