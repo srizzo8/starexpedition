@@ -240,9 +240,9 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
       return;
     }
 
-    setState(() => isSaving = true);
+    setState(() => myImageBytes = myBytes);
 
-    if(myUsername != "" && myNewUsername == ""){
+    /*if(myUsername != "" && myNewUsername == ""){
       await uploadAndStoreProfilePicture(myBytes, myUsername);
     }
     else if(myUsername == "" && myNewUsername != ""){
@@ -252,7 +252,8 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
     setState((){
       myImageBytes = myBytes;
       isSaving = false;
-    });
+    });*/
+
   }
 
   @override
@@ -439,6 +440,12 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                       ),
                     ),
                     onPressed: () async{
+                      final theUsername = myUsername != "" && myNewUsername == "" ? myUsername : myNewUsername;
+
+                      if(myImageBytes != null){
+                        await uploadAndStoreProfilePicture(myImageBytes!, theUsername);
+                      }
+
                       if(myUsername != "" && myNewUsername == ""){
                         if(firebaseDesktopHelper.onDesktop){
                           List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
