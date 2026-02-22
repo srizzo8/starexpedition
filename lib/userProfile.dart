@@ -192,6 +192,8 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
   TextEditingController interestsController = TextEditingController();
   TextEditingController locationController = TextEditingController();
 
+  final FocusNode myFieldFocus = FocusNode();
+
   //For profile pictures:
   Uint8List? myImageBytes;
   bool isSaving = false;
@@ -230,6 +232,10 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
     if(myBase64String != null && myBase64String.isNotEmpty){
       setState(() => myImageBytes = base64Decode(myBase64String!));
     }
+
+    if(mounted){
+      FocusScope.of(context).requestFocus(myFieldFocus);
+    }
   }
 
   //Opens a user's gallery on his or her device:
@@ -259,8 +265,24 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
   @override
   void initState(){
     super.initState();
+
+    informationAboutMyselfController.text = "${myMain.usersBlurb}";
+    interestsController.text = "${myMain.usersInterests}";
+    locationController.text = "${myMain.usersLocation}";
+
     String theNameOfUser = myUsername != "" && myNewUsername == ""? myUsername : myNewUsername;
     loadMyProfilePicture(theNameOfUser);
+
+    //Requesting focus on the first text field after the page builds:
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      FocusScope.of(context).requestFocus(myFieldFocus);
+    });
+  }
+
+  @override
+  void dispose(){
+    myFieldFocus.dispose();
+    super.dispose();
   }
 
   Widget build(BuildContext context){
@@ -309,13 +331,14 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                                     child: TextField(
                                       minLines: 5,
                                       maxLines: 5,
+                                      focusNode: myFieldFocus,
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(),
                                         labelText: "Information about yourself",
                                         //contentPadding: EdgeInsets.symmetric(vertical: 80),
                                       ),
                                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                      controller: informationAboutMyselfController..text = "${myMain.usersBlurb}",
+                                      controller: informationAboutMyselfController,
                                     ),
                                   ),
                                 ),
@@ -352,7 +375,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                                         labelText: "Your interests",
                                       ),
                                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                      controller: interestsController..text = "${myMain.usersInterests}",
+                                      controller: interestsController,
                                     ),
                                   ),
                                 ),
@@ -389,7 +412,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                                         labelText: "Your location",
                                       ),
                                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                      controller: locationController..text = "${myMain.usersLocation}",
+                                      controller: locationController,
                                     ),
                                   ),
                                 ),
