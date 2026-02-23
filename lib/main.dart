@@ -2374,6 +2374,10 @@ class articlePage extends StatelessWidget{
                 featuredStarOfTheDayBool = false,
                 Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => StarExpedition())),
               }
+              else if(fromMostTrackedStarsAndPlanetsPageStars == true){
+                fromMostTrackedStarsAndPlanetsPageStars = false,
+                Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => mostTrackedStarsAndPlanetsPage())),
+              }
               else{
                   showSearch(
                     context: bc,
@@ -3433,6 +3437,10 @@ class planetArticle extends StatelessWidget{
                 context: theContext,
                 delegate: CustomSearchDelegateForPlanets(),
               );
+            }
+            else if(fromMostTrackedStarsAndPlanetsPagePlanets == true){
+              fromMostTrackedStarsAndPlanetsPagePlanets = false;
+              Navigator.push(theContext, MaterialPageRoute(builder: (BuildContext context) => mostTrackedStarsAndPlanetsPage()));
             }
             else{
               hostStarInformation = await getStarInformation();
