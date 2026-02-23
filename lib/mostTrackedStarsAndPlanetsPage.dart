@@ -35,11 +35,92 @@ class mostTrackedStarsAndPlanetsPage extends StatefulWidget{
 class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlanetsPage>{
   static String nameOfRoute = '/mostTrackedStarsAndPlanetsPage';
 
-  var topFiveTrackedStars = (myMain.starsAndAmountOfTracks.entries.toList()..sort((starA, starB) => starB.value.compareTo(starA.value))).take(5).toList();
-  var topFiveTrackedPlanets = (myMain.planetsAndAmountOfTracks.entries.toList()..sort((planetA, planetB) => planetB.value.compareTo(planetA.value))).take(5).toList();
+  late var topFiveTrackedStars;
+  late var topFiveTrackedPlanets;
 
   var myClickedStar = myMain.myStars(starName: "not available");
   var myClickedPlanet;
+
+  bool isLoading = true;
+
+  @override
+  void initState(){
+    super.initState();
+    updateTrackedStarsAndPlanetsData();
+  }
+
+  void updateTrackedStarsAndPlanetsData() async{
+    //Fetching fresh data from Firestore:
+    List<Map<String, dynamic>> allUsers = [];
+
+    if(firebaseDesktopHelper.onDesktop){
+      allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+    }
+    else{
+      allUsers = await FirebaseFirestore.instance.collection("User").get().then((item) => item.docs.map((d) => d.data()).toList());
+    }
+
+    Map<String, int> updatedStarTrackAmounts = {};
+    Map<String, int> updatedPlanetTrackAmounts = {};
+
+    for(var user in allUsers){
+      final myProfileInfo = user["usernameProfileInformation"];
+
+      if(myProfileInfo == null){
+        continue;
+      }
+
+      final starsTracked = myProfileInfo["starsTracked"] as Map? ?? {};
+      starsTracked.keys.forEach((star){
+        updatedStarTrackAmounts[star] = (updatedStarTrackAmounts[star] ?? 0) + 1;
+      });
+
+      final planetsTracked = myProfileInfo["planetsTracked"] as Map? ?? {};
+      planetsTracked.keys.forEach((planet){
+        updatedPlanetTrackAmounts[planet] = (updatedPlanetTrackAmounts[planet] ?? 0) + 1;
+      });
+    }
+
+    if(mounted){
+      setState((){
+        //topFiveTrackedStars = (updatedStarTrackAmounts.entries.toList()..sort((starA, starB) => starB.value.compareTo(starA.value))).take(5).toList();
+        //topFiveTrackedPlanets = (updatedPlanetTrackAmounts.entries.toList()..sort((planetA, planetB) => planetB.value.compareTo(planetA.value))).take(5).toList();
+        //Top tracked stars list:
+        List<MapEntry<String, int>> mySortedStars = (updatedStarTrackAmounts.entries.toList()..sort((starA, starB) => starB.value.compareTo(starA.value)));
+
+        //Giving the "top 5 tracked stars" list some stars that have not been tracked at all until the "top 5 tracked stars" list finally has five stars:
+        for(var myStar in myMain.starsAndAmountOfTracks.keys){
+          if(mySortedStars.length >= 5){
+            break;
+          }
+
+          if(!updatedStarTrackAmounts.containsKey(myStar)){
+            mySortedStars.add(MapEntry(myStar, 0));
+          }
+        }
+
+        topFiveTrackedStars = mySortedStars.take(5).toList();
+
+        //Top tracked planets list:
+        List<MapEntry<String, int>> mySortedPlanets = (updatedPlanetTrackAmounts.entries.toList()..sort((planetA, planetB) => planetB.value.compareTo(planetA.value)));
+
+        //Giving the "top 5 tracked planets" list some planets that have not been tracked at all until the "top 5 tracked planets" list finally has five planets:
+        for(var myPlanet in myMain.planetsAndAmountOfTracks.keys){
+          if(mySortedPlanets.length >= 5){
+            break;
+          }
+
+          if(!updatedPlanetTrackAmounts.containsKey(myPlanet)){
+            mySortedPlanets.add(MapEntry(myPlanet, 0));
+          }
+        }
+
+        topFiveTrackedPlanets = mySortedPlanets.take(5).toList();
+
+        isLoading = false;
+      });
+    }
+  }
 
   Widget build(BuildContext context){
     List<String> informationAboutClickedStar = [];
@@ -49,7 +130,7 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
         centerTitle: true,
         title: Text("Star Expedition"),
       ),
-      body: SingleChildScrollView(
+      body: isLoading? Center(child: CircularProgressIndicator()): SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Container(
@@ -73,7 +154,7 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                   label: Text("Users Tracking", style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
-              rows: topFiveTrackedStars.asMap().entries.map((myEntry){
+              rows: topFiveTrackedStars.asMap().entries.map<DataRow>((myEntry){
                 int myIndex = myEntry.key;
                 var myStar = myEntry.value;
 
@@ -154,12 +235,12 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                           print("starTracked: ${myMain.starTracked}");
                         }
                       }
-                      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: myClickedStar)));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: myClickedStar))).then((_) => updateTrackedStarsAndPlanetsData());
                     }
                   ),
                   DataCell(
                     Center(
-                      child: Text(myStar.value),
+                      child: Text(myStar.value.toString()),
                     ),
                   ),
                 ]);
@@ -186,7 +267,7 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                   label: Text("Users Tracking", style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
-              rows: topFiveTrackedPlanets.asMap().entries.map((myEntry){
+              rows: topFiveTrackedPlanets.asMap().entries.map<DataRow>((myEntry){
                 int myIndex = myEntry.key;
                 var myPlanet = myEntry.value;
 
@@ -275,12 +356,12 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                           print("planetTracked: ${myMain.planetTracked}");
                         }
                       }
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(informationAboutClickedPlanet)));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(informationAboutClickedPlanet))).then((_) => updateTrackedStarsAndPlanetsData());
                     }
                   ),
                   DataCell(
                     Center(
-                      child: Text(myPlanet.value),
+                      child: Text(myPlanet.value.toString()),
                     ),
                   ),
                 ]);
