@@ -71,7 +71,12 @@ class loginPageState extends State<loginPage>{
   final userInfo = Get.put(theUserInformation());
 
   Widget build(BuildContext bc){
-    return Scaffold(
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
       appBar: AppBar(
           centerTitle: true,
           title: Text("Star Expedition"),
@@ -84,386 +89,387 @@ class loginPageState extends State<loginPage>{
           )
       ),
       body: Wrap(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text("Login", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          /*Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),*/
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Username",
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            Container(
+              alignment: Alignment.center,
+              child: Text("Login", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            ),
+            /*Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),*/
+            IntrinsicHeight(
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Flexible(
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                            ),
+                            child: SizedBox(
+                              child: TextField(
+                                minLines: 1,
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: "Username",
+                                ),
+                                controller: usernameController,
                               ),
-                              controller: usernameController,
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ]
+                  ]
+              ),
             ),
-          ),
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Password",
+            IntrinsicHeight(
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Flexible(
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                            ),
+                            child: SizedBox(
+                              child: TextField(
+                                minLines: 1,
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: "Password",
+                                ),
+                                controller: passwordController,
+                                obscureText: true,
                               ),
-                              controller: passwordController,
-                              obscureText: true,
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ]
+                  ]
+              ),
             ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Center(
-            child: ElevatedButton(
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            Center(
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black,
+                  ),
+                  child: InkWell(
+                    child: Ink(
+                      //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                      child: Text("Log in", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),// style: TextStyle(fontSize: 12.0)), //style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                    ),
+                  ),
+                  onPressed: () async{
+                    if(usernameController.text != "" && passwordController.text != "") {
+                      var userDocument;
+
+                      //userResult
+                      if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
+                        if(firebaseDesktopHelper.onDesktop){
+                          //var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
+                          /*userResult.docs.forEach((outcome){
+                            userDocument = outcome.data();
+                            //userLowercased = outcome.data()["username"].toLowerCase();
+                            print("This is the outcome: ${outcome.data()}");
+                          });*/
+                          var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                          userDocument = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                        }
+                        else{
+                          var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
+                          userResult.docs.forEach((outcome){
+                            userDocument = outcome.data();
+                            //userLowercased = outcome.data()["username"].toLowerCase();
+                            print("This is the outcome: ${outcome.data()}");
+                          });
+                        }
+
+                        print("keys: ${userDocument["password"]}");
+                        print("userDocument: $userDocument");
+                      }
+
+                      encrypt.Encrypted encryptedEnteredPass = theRegisterPage.encryptMyPassword(theRegisterPage.myKey, passwordController.text);
+                      print("Encrypted pass: ${encryptedEnteredPass.base64}");
+
+                      //print("userdocument[password]: ${userDocument["password"]}");
+                      //print("checking: ${theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"])}");
+
+                      //if(usernameList.contains(usernameController.text.toLowerCase())
+
+                      /*var passwordDocument;
+                        var passwordResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: passwordController.text).get();
+                        passwordResult.docs.forEach((outcome){
+                          passwordDocument = outcome.data();
+                        });*/
+                      //print("passwordDocument: $passwordDocument");
+
+                      //if(userLowercased == usernameController.text.toLowerCase())
+                      //if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
+                      if(userDocument != null && userDocument["usernameLowercased"] == usernameController.text.toLowerCase() && passwordController.text == theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"]) && usernameController.text != "" && passwordController.text != ""){ //myMain.theUsers!.contains(usernameController.text)
+                        print("userDocument is NOT null");
+                        if(myMain.discussionBoardLogin == true){
+                          if(firebaseDesktopHelper.onDesktop){
+                            var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                            var usernameFound = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                            myUsername = usernameFound["username"];
+                          }
+                          else{
+                            await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
+                              myUsername = theUn.docs.first.data()["username"];
+                            });
+                          }
+                          print("Logging in as: " + myUsername);
+                          print("myNewUsername: " + theRegisterPage.myNewUsername);
+                          Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
+                          myMain.discussionBoardLogin = false;
+                          loginBool = true;
+                        }
+                        else{
+                          print("Logging in 123");
+
+                          //sendAnEmail("funkykong2008@gmail.com", "Howdy Doody", "<h1>Hello there!</h1><p>Testing testing 123! Is this Patrick?</p>");
+
+                          if(firebaseDesktopHelper.onDesktop){
+                            var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                            var usernameFound = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                            myUsername = usernameFound["username"];
+                          }
+                          else{
+                            await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
+                              myUsername = theUn.docs.first.data()["username"];
+                            });
+                          }
+
+                          print("Logging in as " + myUsername);
+                          Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                          print("myUsername: " + myUsername);
+                          print("myNewUsername: " + theRegisterPage.myNewUsername);
+                          loginBool = true;
+                          //print("Outcome: ${userDocument.keys.sort()}");
+                        }
+                      }
+                      else{
+                        //print("userDocument info: ${userDocument["usernameLowercased"]}, ${userDocument["password"]}");
+                        //print("passwordDocument: $passwordDocument");
+                        if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext theContext){
+                                return AlertDialog(
+                                  title: const Text("Login unsuccessful"),
+                                  content: const Text("Your username-password combination is not correct"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => {
+                                        Navigator.pop(context),
+                                        usernameController.text = "",
+                                        passwordController.text = "",
+                                      },
+                                      child: const Text("Ok"),
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                        else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1){
+                          userDocument = null;
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext theContext){
+                                return AlertDialog(
+                                  title: const Text("Login unsuccessful"),
+                                  content: const Text("The username you have entered does not exist"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => {
+                                        Navigator.pop(context),
+                                        usernameController.text = "",
+                                        passwordController.text = "",
+                                      },
+                                      child: const Text("Ok"),
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                      }
+                    }
+                    else if(usernameController.text == "" && passwordController.text != ""){
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext theContext){
+                            return AlertDialog(
+                              title: const Text("Login unsuccessful"),
+                              content: const Text("Username is empty"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    Navigator.pop(context),
+                                    usernameController.text = "",
+                                    passwordController.text = "",
+                                  },
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            );
+                          }
+                      );
+                    }
+                    else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1 && usernameController.text != "" && passwordController.text == ""){
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext theContext){
+                            return AlertDialog(
+                              title: const Text("Login unsuccessful"),
+                              content: const Text("Password is empty"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    Navigator.pop(context),
+                                    usernameController.text = "",
+                                    passwordController.text = "",
+                                  },
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            );
+                          }
+                      );
+                    }
+                    else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1 && usernameController.text != "" && passwordController.text == ""){
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext theContext){
+                            return AlertDialog(
+                              title: const Text("Login unsuccessful"),
+                              content: const Text("The username you have entered does not exist\nPassword is empty"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    Navigator.pop(context),
+                                    usernameController.text = "",
+                                    passwordController.text = "",
+                                  },
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            );
+                          }
+                      );
+                    }
+                    else if(usernameController.text == "" && passwordController.text == ""){
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext theContext){
+                            return AlertDialog(
+                              title: const Text("Login unsuccessful"),
+                              content: const Text("Username is empty\nPassword is empty"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => {
+                                    Navigator.pop(context),
+                                    usernameController.text = "",
+                                    passwordController.text = "",
+                                  },
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            );
+                          }
+                      );
+                    }
+                  }
+              ),
+            ),
+            Center(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.031250,
+              )
+            ),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0),
+                child: Text("If you have forgotten your password, click the button below:", style: TextStyle(fontSize: 14.0), textAlign: TextAlign.center),
+              ),
+            ),
+            Center(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+            ),
+            Center(
+              child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   primary: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
+                    //color: Colors.black,
                     //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                    child: Text("Log in", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),// style: TextStyle(fontSize: 12.0)), //style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                    //height: 20,
+                    child: Text("Forgotten Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
+                  ),
+                  /*onPressed: () async{
+                    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPassword.forgottenPassword()));
+                  }*/
+                ),
+                onPressed: () async{
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPassword.forgottenPassword()));
+                }
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0),
+                child: Text("If you do not have an account, you can create an account:", style: TextStyle(fontSize: 14.0), textAlign: TextAlign.center),
+              ),
+            ),
+            Center(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+            ),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                ),
+                child: InkWell(
+                  child: Ink(
+                    color: Colors.black,
+                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                    //height: 20,
+                    child: Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                   ),
                 ),
                 onPressed: () async{
-                  if(usernameController.text != "" && passwordController.text != "") {
-                    var userDocument;
-
-                    //userResult
-                    if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
-                      if(firebaseDesktopHelper.onDesktop){
-                        //var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
-                        /*userResult.docs.forEach((outcome){
-                          userDocument = outcome.data();
-                          //userLowercased = outcome.data()["username"].toLowerCase();
-                          print("This is the outcome: ${outcome.data()}");
-                        });*/
-                        var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                        userDocument = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
-                      }
-                      else{
-                        var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
-                        userResult.docs.forEach((outcome){
-                          userDocument = outcome.data();
-                          //userLowercased = outcome.data()["username"].toLowerCase();
-                          print("This is the outcome: ${outcome.data()}");
-                        });
-                      }
-
-                      print("keys: ${userDocument["password"]}");
-                      print("userDocument: $userDocument");
-                    }
-
-                    encrypt.Encrypted encryptedEnteredPass = theRegisterPage.encryptMyPassword(theRegisterPage.myKey, passwordController.text);
-                    print("Encrypted pass: ${encryptedEnteredPass.base64}");
-
-                    //print("userdocument[password]: ${userDocument["password"]}");
-                    //print("checking: ${theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"])}");
-
-                    //if(usernameList.contains(usernameController.text.toLowerCase())
-
-                    /*var passwordDocument;
-                      var passwordResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: passwordController.text).get();
-                      passwordResult.docs.forEach((outcome){
-                        passwordDocument = outcome.data();
-                      });*/
-                    //print("passwordDocument: $passwordDocument");
-
-                    //if(userLowercased == usernameController.text.toLowerCase())
-                    //if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
-                    if(userDocument != null && userDocument["usernameLowercased"] == usernameController.text.toLowerCase() && passwordController.text == theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"]) && usernameController.text != "" && passwordController.text != ""){ //myMain.theUsers!.contains(usernameController.text)
-                      print("userDocument is NOT null");
-                      if(myMain.discussionBoardLogin == true){
-                        if(firebaseDesktopHelper.onDesktop){
-                          var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                          var usernameFound = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
-                          myUsername = usernameFound["username"];
-                        }
-                        else{
-                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
-                            myUsername = theUn.docs.first.data()["username"];
-                          });
-                        }
-                        print("Logging in as: " + myUsername);
-                        print("myNewUsername: " + theRegisterPage.myNewUsername);
-                        Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
-                        myMain.discussionBoardLogin = false;
-                        loginBool = true;
-                      }
-                      else{
-                        print("Logging in 123");
-
-                        //sendAnEmail("funkykong2008@gmail.com", "Howdy Doody", "<h1>Hello there!</h1><p>Testing testing 123! Is this Patrick?</p>");
-
-                        if(firebaseDesktopHelper.onDesktop){
-                          var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                          var usernameFound = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
-                          myUsername = usernameFound["username"];
-                        }
-                        else{
-                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get().then((theUn){
-                            myUsername = theUn.docs.first.data()["username"];
-                          });
-                        }
-
-                        print("Logging in as " + myUsername);
-                        Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
-                        print("myUsername: " + myUsername);
-                        print("myNewUsername: " + theRegisterPage.myNewUsername);
-                        loginBool = true;
-                        //print("Outcome: ${userDocument.keys.sort()}");
-                      }
-                    }
-                    else{
-                      //print("userDocument info: ${userDocument["usernameLowercased"]}, ${userDocument["password"]}");
-                      //print("passwordDocument: $passwordDocument");
-                      if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext theContext){
-                              return AlertDialog(
-                                title: const Text("Login unsuccessful"),
-                                content: const Text("Your username-password combination is not correct"),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => {
-                                      Navigator.pop(context),
-                                      usernameController.text = "",
-                                      passwordController.text = "",
-                                    },
-                                    child: const Text("Ok"),
-                                  )
-                                ],
-                              );
-                            }
-                        );
-                      }
-                      else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1){
-                        userDocument = null;
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext theContext){
-                              return AlertDialog(
-                                title: const Text("Login unsuccessful"),
-                                content: const Text("The username you have entered does not exist"),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => {
-                                      Navigator.pop(context),
-                                      usernameController.text = "",
-                                      passwordController.text = "",
-                                    },
-                                    child: const Text("Ok"),
-                                  )
-                                ],
-                              );
-                            }
-                        );
-                      }
-                    }
-                  }
-                  else if(usernameController.text == "" && passwordController.text != ""){
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext theContext){
-                          return AlertDialog(
-                            title: const Text("Login unsuccessful"),
-                            content: const Text("Username is empty"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  usernameController.text = "",
-                                  passwordController.text = "",
-                                },
-                                child: const Text("Ok"),
-                              )
-                            ],
-                          );
-                        }
-                    );
-                  }
-                  else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1 && usernameController.text != "" && passwordController.text == ""){
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext theContext){
-                          return AlertDialog(
-                            title: const Text("Login unsuccessful"),
-                            content: const Text("Password is empty"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  usernameController.text = "",
-                                  passwordController.text = "",
-                                },
-                                child: const Text("Ok"),
-                              )
-                            ],
-                          );
-                        }
-                    );
-                  }
-                  else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1 && usernameController.text != "" && passwordController.text == ""){
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext theContext){
-                          return AlertDialog(
-                            title: const Text("Login unsuccessful"),
-                            content: const Text("The username you have entered does not exist\nPassword is empty"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  usernameController.text = "",
-                                  passwordController.text = "",
-                                },
-                                child: const Text("Ok"),
-                              )
-                            ],
-                          );
-                        }
-                    );
-                  }
-                  else if(usernameController.text == "" && passwordController.text == ""){
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext theContext){
-                          return AlertDialog(
-                            title: const Text("Login unsuccessful"),
-                            content: const Text("Username is empty\nPassword is empty"),
-                            actions: [
-                              TextButton(
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  usernameController.text = "",
-                                  passwordController.text = "",
-                                },
-                                child: const Text("Ok"),
-                              )
-                            ],
-                          );
-                        }
-                    );
-                  }
+                  //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
+                  databaseService().initMyDatabase();
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => theRegisterPage.registerPage()));
+                  print("Signing up");
                 }
-            ),
-          ),
-          Center(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.031250,
-            )
-          ),
-          Center(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0),
-              child: Text("If you have forgotten your password, click the button below:", style: TextStyle(fontSize: 14.0), textAlign: TextAlign.center),
-            ),
-          ),
-          Center(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),
-          ),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
               ),
-              child: InkWell(
-                child: Ink(
-                  //color: Colors.black,
-                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                  //height: 20,
-                  child: Text("Forgotten Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
-                ),
-                /*onPressed: () async{
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPassword.forgottenPassword()));
-                }*/
-              ),
-              onPressed: () async{
-                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPassword.forgottenPassword()));
-              }
             ),
-          ),
-          Center(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0),
-              child: Text("If you do not have an account, you can create an account:", style: TextStyle(fontSize: 14.0), textAlign: TextAlign.center),
-            ),
-          ),
-          Center(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),
-          ),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-              ),
-              child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                  //height: 20,
-                  child: Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
-                ),
-              ),
-              onPressed: () async{
-                //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
-                databaseService().initMyDatabase();
-                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => theRegisterPage.registerPage()));
-                print("Signing up");
-              }
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

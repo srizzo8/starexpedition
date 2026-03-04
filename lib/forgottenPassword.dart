@@ -170,7 +170,12 @@ class forgottenPasswordState extends State<forgottenPassword>{
   }
 
   Widget build(BuildContext bc){
-    return Scaffold(
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
@@ -206,223 +211,196 @@ class forgottenPasswordState extends State<forgottenPassword>{
         ),
       ),
       body: Wrap(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text("Forgot Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          /*Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("Username", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              controller: myUsernameController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+            Container(
+              alignment: Alignment.center,
+              child: Text("Forgot Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            /*Center(
+              child: Container(
+                padding: const EdgeInsets.all(0.0),
+                alignment: Alignment.centerLeft,
+                child: Text("Username", style: TextStyle(fontSize: 14.0)),
+                height: 20,
+                width: 380,
               ),
             ),
-          ),*/
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(
+            Container(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
+                controller: myUsernameController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),*/
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
                     child: Center(
-                        child: Container(
+                        child: Padding(
                           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                            ),
-                            child: Scrollbar(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                reverse: true,
-                                child: SizedBox(
-                                  child: TextField(
-                                    minLines: 1,
-                                    maxLines: 1,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: "Username",
-                                    ),
-                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                    controller: myUsernameController,
-                                  ),
-                                ),
+                            child: TextField(
+                              maxLines: 1,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Username",
                               ),
+                              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                              controller: myUsernameController,
                             ),
                           ),
-                        )
-                    )
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          /*Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("Email address", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              controller: myEmailController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),*/
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(
-                    child: Center(
-                        child: Container(
-                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                            ),
-                            child: Scrollbar(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                reverse: true,
-                                child: SizedBox(
-                                  child: TextField(
-                                    minLines: 1,
-                                    maxLines: 1,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: "Email address",
-                                    ),
-                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                    controller: myEmailController,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                    )
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-              ),
-              child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                  child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
-                ),
-              ),
-              onPressed: () async{
-                print("Pressed");
-                usersMessage = await dialogMessageForgottenPassword([myUsernameController.text, myEmailController.text]);
-
-                if(usersMessage.isEmpty){
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext myContext){
-                        return AlertDialog(
-                          title: const Text("Successful"),
-                          content: const Text("You will receive an email containing further instructions regarding retrieving the password of your account"),
-                          actions: [
-                            TextButton(
-                              onPressed: () async{
-                                //Getting the person's username
-                                var docForUser;
-
-                                if(firebaseDesktopHelper.onDesktop){
-                                  List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                  docForUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myUsernameController.text).toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                  print("This is docForUser: ${docForUser}");
-                                }
-                                else{
-                                  var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myUsernameController.text).toLowerCase()).get();
-                                  theUserResult.docs.forEach((outcome){
-                                    docForUser = outcome.data();
-                                    print("docForUser: ${docForUser}");
-                                  });
-                                }
-                                //Leads to a page that has a six-digit code emailed to a user
-                                theUsersUsername = docForUser["username"];
-                                theUsersEmail = myEmailController.text;
-                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPasswordCodeEntry()));
-                                mySixDigitCode = await emailNotifications.sixDigitCode();
-                                print("mySixDigitCode: ${mySixDigitCode}");
-
-                                emailNotifications.sendAnEmail(theUsersEmail, "Password Reset Code", "Hi ${theUsersUsername},<br><br>We have noticed that you have forgotten your password. Please enter in this 6-digit verification code into Star Expedition: <br>${mySixDigitCode}<br>Once you have entered it in, you may reset your password.<br><br>Best,<br>Star Expedition");
-                              },
-                              child: const Text("Ok"),
-                            )
-                          ],
-                        );
-                      }
-                  );
-                }
-                else{
-                  showDialog(
-                    context: context,
-                    builder: (myContent) => AlertDialog(
-                      title: Text("Unsuccessful"),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: List.generate(usersMessage.length, (i){
-                          return usersMessage[i];
-                        }),
                       ),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: (){
-                            Navigator.pop(context);
-                            myUsernameController.text = "";
-                            myEmailController.text = "";
-                          },
-                          child: Container(
-                            child: const Text("Ok"),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              }
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            /*Center(
+              child: Container(
+                padding: const EdgeInsets.all(0.0),
+                alignment: Alignment.centerLeft,
+                child: Text("Email address", style: TextStyle(fontSize: 14.0)),
+                height: 20,
+                width: 380,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
+                controller: myEmailController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),*/
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
+                          child: TextField(
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: "Email address",
+                            ),
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                            controller: myEmailController,
+                            ),
+                          ),
+                      ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                ),
+                child: InkWell(
+                  child: Ink(
+                    color: Colors.black,
+                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                    child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                  ),
+                ),
+                onPressed: () async{
+                  print("Pressed");
+                  usersMessage = await dialogMessageForgottenPassword([myUsernameController.text, myEmailController.text]);
+
+                  if(usersMessage.isEmpty){
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext myContext){
+                          return AlertDialog(
+                            title: const Text("Successful"),
+                            content: const Text("You will receive an email containing further instructions regarding retrieving the password of your account"),
+                            actions: [
+                              TextButton(
+                                onPressed: () async{
+                                  //Getting the person's username
+                                  var docForUser;
+
+                                  if(firebaseDesktopHelper.onDesktop){
+                                    List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                    docForUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myUsernameController.text).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                    print("This is docForUser: ${docForUser}");
+                                  }
+                                  else{
+                                    var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myUsernameController.text).toLowerCase()).get();
+                                    theUserResult.docs.forEach((outcome){
+                                      docForUser = outcome.data();
+                                      print("docForUser: ${docForUser}");
+                                    });
+                                  }
+                                  //Leads to a page that has a six-digit code emailed to a user
+                                  theUsersUsername = docForUser["username"];
+                                  theUsersEmail = myEmailController.text;
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPasswordCodeEntry()));
+                                  mySixDigitCode = await emailNotifications.sixDigitCode();
+                                  print("mySixDigitCode: ${mySixDigitCode}");
+
+                                  emailNotifications.sendAnEmail(theUsersEmail, "Password Reset Code", "Hi ${theUsersUsername},<br><br>We have noticed that you have forgotten your password. Please enter in this 6-digit verification code into Star Expedition: <br>${mySixDigitCode}<br>Once you have entered it in, you may reset your password.<br><br>Best,<br>Star Expedition");
+                                },
+                                child: const Text("Ok"),
+                              )
+                            ],
+                          );
+                        }
+                    );
+                  }
+                  else{
+                    showDialog(
+                      context: context,
+                      builder: (myContent) => AlertDialog(
+                        title: Text("Unsuccessful"),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(usersMessage.length, (i){
+                            return usersMessage[i];
+                          }),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: (){
+                              Navigator.pop(context);
+                              myUsernameController.text = "";
+                              myEmailController.text = "";
+                            },
+                            child: Container(
+                              child: const Text("Ok"),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                }
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -449,7 +427,12 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
   }
 
   Widget build(BuildContext bc){
-    return Scaffold(
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
@@ -485,132 +468,133 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
         ),
       ),
       body: Wrap(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text("Enter in the 6-digit code that was emailed to you", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
-          ),
-          /*Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),*/
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(
-                    child: Center(
-                        child: Container(
-                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                            ),
-                            child: Scrollbar(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                reverse: true,
-                                child: SizedBox(
-                                  child: TextField(
-                                    minLines: 1,
-                                    maxLines: 1,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: "Six-digit code",
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            Container(
+              alignment: Alignment.center,
+              child: Text("Enter in the 6-digit code that was emailed to you", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
+            ),
+            /*Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),*/
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                      child: Center(
+                          child: Container(
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                              ),
+                              child: Scrollbar(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  reverse: true,
+                                  child: SizedBox(
+                                    child: TextField(
+                                      minLines: 1,
+                                      maxLines: 1,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: "Six-digit code",
+                                      ),
+                                      maxLength: 6,
+                                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                      controller: numberController,
                                     ),
-                                    maxLength: 6,
-                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                    controller: numberController,
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        )
-                    )
-                ),
-              ],
+                          )
+                      )
+                  ),
+                ],
+              ),
             ),
-          ),
-          /*Container(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-              ),
-              controller: numberController,
-              maxLength: 6,
-              obscureText: true,
-              keyboardType: TextInputType.number,
-            ),
-          ),*/
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-              ),
-              child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                  child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+            /*Container(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
                 ),
+                controller: numberController,
+                maxLength: 6,
+                obscureText: true,
+                keyboardType: TextInputType.number,
               ),
-              onPressed: (){
-                //Go to "changing password" screen
-                usersMessage = dialogMessageForgottenPasswordCode(numberController.text);
-                if(usersMessage.isEmpty){
-                  showDialog(
+            ),*/
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                ),
+                child: InkWell(
+                  child: Ink(
+                    color: Colors.black,
+                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                    child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                  ),
+                ),
+                onPressed: (){
+                  //Go to "changing password" screen
+                  usersMessage = dialogMessageForgottenPasswordCode(numberController.text);
+                  if(usersMessage.isEmpty){
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext myContext){
+                          return AlertDialog(
+                            title: const Text("Successful"),
+                            content: const Text("You can now reset your password"),
+                            actions: [
+                              TextButton(
+                                onPressed: () async => {
+                                  //Leads to a page where one can reset his or her password
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => resetPassword())),
+                                },
+                                child: const Text("Ok"),
+                              )
+                            ],
+                          );
+                        }
+                    );
+                  }
+                  else{
+                    showDialog(
                       context: context,
-                      builder: (BuildContext myContext){
-                        return AlertDialog(
-                          title: const Text("Successful"),
-                          content: const Text("You can now reset your password"),
-                          actions: [
-                            TextButton(
-                              onPressed: () async => {
-                                //Leads to a page where one can reset his or her password
-                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => resetPassword())),
-                              },
-                              child: const Text("Ok"),
-                            )
-                          ],
-                        );
-                      }
-                  );
-                }
-                else{
-                  showDialog(
-                    context: context,
-                    builder: (myContent) => AlertDialog(
-                      title: Text("Unsuccessful"),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: List.generate(usersMessage.length, (i){
-                          return usersMessage[i];
-                        }),
-                      ),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: (){
-                            Navigator.pop(context);
-                            numberController.text = "";
-                          },
-                          child: Container(
-                            child: const Text("Ok"),
-                          ),
+                      builder: (myContent) => AlertDialog(
+                        title: Text("Unsuccessful"),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(usersMessage.length, (i){
+                            return usersMessage[i];
+                          }),
                         ),
-                      ],
-                    ),
-                  );
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: (){
+                              Navigator.pop(context);
+                              numberController.text = "";
+                            },
+                            child: Container(
+                              child: const Text("Ok"),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 }
-              }
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -689,7 +673,12 @@ class resetPasswordState extends State<resetPassword>{
   }
 
   Widget build(BuildContext bc){
-    return Scaffold(
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
@@ -725,244 +714,245 @@ class resetPasswordState extends State<resetPassword>{
         ),
       ),
       body: Wrap(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text("Reset Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
-          ),
-          /*Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("New Password", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+            Container(
+              alignment: Alignment.center,
+              child: Text("Reset Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
+            ),
+            /*Center(
+              child: Container(
+                padding: const EdgeInsets.all(0.0),
+                alignment: Alignment.centerLeft,
+                child: Text("New Password", style: TextStyle(fontSize: 14.0)),
+                height: 20,
+                width: 380,
               ),
-              controller: newPassController,
-              obscureText: true,
             ),
-          ),*/
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(
-                    child: Center(
-                        child: Container(
-                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                            ),
-                            child: Scrollbar(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                reverse: true,
-                                child: SizedBox(
-                                  child: TextField(
-                                    minLines: 1,
-                                    maxLines: 1,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: "New password",
+            Container(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                controller: newPassController,
+                obscureText: true,
+              ),
+            ),*/
+            IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Flexible(
+                        child: Center(
+                            child: Container(
+                              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                                ),
+                                child: Scrollbar(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    reverse: true,
+                                    child: SizedBox(
+                                      child: TextField(
+                                        minLines: 1,
+                                        maxLines: 1,
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          labelText: "New password",
+                                        ),
+                                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                        controller: newPassController,
+                                        obscureText: true,
+                                      ),
                                     ),
-                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                    controller: newPassController,
-                                    obscureText: true,
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        )
-                    )
-                ),
-              ],
-            ),
-          ),
-          /*Container(
-            height: 5,
-          ),*/
-          /*Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("Confirm New Password", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-              ),
-              controller: confirmNewPassController,
-              obscureText: true,
-            ),
-          ),*/
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(
-                    child: Center(
-                        child: Container(
-                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                            ),
-                            child: Scrollbar(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                reverse: true,
-                                child: SizedBox(
-                                  child: TextField(
-                                    minLines: 1,
-                                    maxLines: 1,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: "Confirm new password",
-                                    ),
-                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                    controller: confirmNewPassController,
-                                    obscureText: true,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                    )
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-              ),
-              child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                  child: Text("Reset Your Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
-                ),
-              ),
-              onPressed: () async{
-                usersMessage = await dialogMessageForgottenPassword([newPassController.text, confirmNewPassController.text]);
-                if(usersMessage.isEmpty){
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext myContext){
-                        return AlertDialog(
-                          title: const Text("Successful"),
-                          content: const Text("You have successfully resetted your password"),
-                          actions: [
-                            TextButton(
-                              onPressed: () async {
-                                //Changing a user's password
-                                /*var docForUser;
-                                var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersUsername.toLowerCase()).get();
-                                theUserResult.docs.forEach((outcome){
-                                  docForUser = outcome.data();
-                                  print("This is the outcome: ${outcome.data()}");
-                                });*/
-                                var docForUser;
-                                var gettingTheDocName;
-
-                                if(firebaseDesktopHelper.onDesktop){
-                                  List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                  docForUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == theUsersUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                  print("This is docForUser: ${docForUser}");
-
-                                  gettingTheDocName = docForUser["docId"];
-
-                                  print("This is gettingTheDocName: ${gettingTheDocName}");
-
-                                  //Getting the current password of the user:
-                                  //Map<String, dynamic> passwordInfoOfUser = Map<String, dynamic>.from(docForUser["password"] ?? {});
-
-                                  //Updating a user's changes to his or her password:
-                                  await firebaseDesktopHelper.updateFirestoreDocument("User/$gettingTheDocName", {
-                                    "password": encryptMyPassword(myKey, newPassController.text).base64,
-                                  });
-                                }
-                                else{
-                                  var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersUsername.toLowerCase()).get();
-                                  theUserResult.docs.forEach((result){
-                                    docForUser = result.data();
-                                    print("This is the result: ${docForUser}");
-                                    gettingTheDocName = result.id;
-                                    print("gettingTheDocName: ${gettingTheDocName}");
-                                  });
-
-                                  FirebaseFirestore.instance.collection("User").doc(gettingTheDocName).update({"password" : encryptMyPassword(myKey, newPassController.text).base64}).whenComplete(() async{
-                                    print("Updated");
-                                  }).catchError((e) => print("This is your error: ${e}"));
-                                }
-
-                                //Leads to the Star Expedition login page:
-                                //myUsername = theUsersUsername;
-                                //loginBool = true;
-                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage()));
-                              },
-                              child: const Text("Ok"),
                             )
-                          ],
-                        );
-                      }
-                  );
-                }
-                else{
-                  showDialog(
-                    context: context,
-                    builder: (myContent) => AlertDialog(
-                      title: Text("Unsuccessful"),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: List.generate(usersMessage.length, (i){
-                          return usersMessage[i];
-                        }),
-                      ),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: (){
-                            Navigator.pop(context);
-                            newPassController.text = "";
-                            confirmNewPassController.text = "";
-                          },
-                          child: Container(
-                            child: const Text("Ok"),
-                          ),
-                        ),
-                      ],
+                        )
                     ),
-                  );
-                }
-              }
+                  ],
+                ),
+              ),
+            /*Container(
+              height: 5,
+            ),*/
+            /*Center(
+              child: Container(
+                padding: const EdgeInsets.all(0.0),
+                alignment: Alignment.centerLeft,
+                child: Text("Confirm New Password", style: TextStyle(fontSize: 14.0)),
+                height: 20,
+                width: 380,
+              ),
             ),
-          ),
-        ],
+            Container(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                controller: confirmNewPassController,
+                obscureText: true,
+              ),
+            ),*/
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Flexible(
+                      child: Center(
+                          child: Container(
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                              ),
+                              child: Scrollbar(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  reverse: true,
+                                  child: SizedBox(
+                                    child: TextField(
+                                      minLines: 1,
+                                      maxLines: 1,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: "Confirm new password",
+                                      ),
+                                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                      controller: confirmNewPassController,
+                                      obscureText: true,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                      )
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                ),
+                child: InkWell(
+                  child: Ink(
+                    color: Colors.black,
+                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                    child: Text("Reset Your Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                  ),
+                ),
+                onPressed: () async{
+                  usersMessage = await dialogMessageForgottenPassword([newPassController.text, confirmNewPassController.text]);
+                  if(usersMessage.isEmpty){
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext myContext){
+                          return AlertDialog(
+                            title: const Text("Successful"),
+                            content: const Text("You have successfully resetted your password"),
+                            actions: [
+                              TextButton(
+                                onPressed: () async {
+                                  //Changing a user's password
+                                  /*var docForUser;
+                                  var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersUsername.toLowerCase()).get();
+                                  theUserResult.docs.forEach((outcome){
+                                    docForUser = outcome.data();
+                                    print("This is the outcome: ${outcome.data()}");
+                                  });*/
+                                  var docForUser;
+                                  var gettingTheDocName;
+
+                                  if(firebaseDesktopHelper.onDesktop){
+                                    List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                    docForUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == theUsersUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                    print("This is docForUser: ${docForUser}");
+
+                                    gettingTheDocName = docForUser["docId"];
+
+                                    print("This is gettingTheDocName: ${gettingTheDocName}");
+
+                                    //Getting the current password of the user:
+                                    //Map<String, dynamic> passwordInfoOfUser = Map<String, dynamic>.from(docForUser["password"] ?? {});
+
+                                    //Updating a user's changes to his or her password:
+                                    await firebaseDesktopHelper.updateFirestoreDocument("User/$gettingTheDocName", {
+                                      "password": encryptMyPassword(myKey, newPassController.text).base64,
+                                    });
+                                  }
+                                  else{
+                                    var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersUsername.toLowerCase()).get();
+                                    theUserResult.docs.forEach((result){
+                                      docForUser = result.data();
+                                      print("This is the result: ${docForUser}");
+                                      gettingTheDocName = result.id;
+                                      print("gettingTheDocName: ${gettingTheDocName}");
+                                    });
+
+                                    FirebaseFirestore.instance.collection("User").doc(gettingTheDocName).update({"password" : encryptMyPassword(myKey, newPassController.text).base64}).whenComplete(() async{
+                                      print("Updated");
+                                    }).catchError((e) => print("This is your error: ${e}"));
+                                  }
+
+                                  //Leads to the Star Expedition login page:
+                                  //myUsername = theUsersUsername;
+                                  //loginBool = true;
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage()));
+                                },
+                                child: const Text("Ok"),
+                              )
+                            ],
+                          );
+                        }
+                    );
+                  }
+                  else{
+                    showDialog(
+                      context: context,
+                      builder: (myContent) => AlertDialog(
+                        title: Text("Unsuccessful"),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(usersMessage.length, (i){
+                            return usersMessage[i];
+                          }),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: (){
+                              Navigator.pop(context);
+                              newPassController.text = "";
+                              confirmNewPassController.text = "";
+                            },
+                            child: Container(
+                              child: const Text("Ok"),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                }
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

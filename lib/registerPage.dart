@@ -250,355 +250,361 @@ class registerPageState extends State<registerPage>{
   }
 
   Widget build(BuildContext buildContext){
-    return Scaffold(
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
       ),
       body: Wrap(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(buildContext).size.height * 0.015625,
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text("Register", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          /*Container(
-            height: MediaQuery.of(buildContext).size.height * 0.015625,
-          ),*/
-          /*Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("Username", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(buildContext).size.height * 0.015625,
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              controller: theUsername,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+            Container(
+              alignment: Alignment.center,
+              child: Text("Register", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            ),
+            /*Container(
+              height: MediaQuery.of(buildContext).size.height * 0.015625,
+            ),*/
+            /*Center(
+              child: Container(
+                padding: const EdgeInsets.all(0.0),
+                alignment: Alignment.centerLeft,
+                child: Text("Username", style: TextStyle(fontSize: 14.0)),
+                height: 20,
+                width: 380,
               ),
             ),
-          ),*/
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.015625, right: MediaQuery.of(buildContext).size.width * 0.031250),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(buildContext).size.width * 0.375000: 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Username",
-                              ),
-                              controller: theUsername,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(buildContext).size.width * 0.375000 : 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "E-mail address",
-                              ),
-                              controller: email,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(buildContext).size.width * 0.375000: 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Password",
-                              ),
-                              controller: password,
-                              obscureText: true,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          Container(
-            height: MediaQuery.of(buildContext).size.height * 0.015625,
-          ),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-              ),
-              child: InkWell(
-                child: Ink(
-                  //padding: EdgeInsets.all(MediaQuery.of(buildContext).size.height * 0.015625),
-                  child: Text("Sign Up for Star Expedition", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),
-                  ),
+            Container(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
+                controller: theUsername,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
                 ),
-                onPressed: () async{
-                  //Encrypting one's pass
-                  String eBaseSixtyFour = "";
-                  if(password.text != ""){
-                    encrypt.Encrypted e = encryptMyPassword(myKey, password.text);
-                    eBaseSixtyFour = e.base64;
-                  }
-
-                  print("theUsers: ${myMain.theUsers}");
-                  //If there are no users:
-                  if(theUsername.text != "" && myMain.theUsers!.isEmpty && checkUsernameValidity(theUsername.text) == true && email.text != "" && checkEmailValidity(email.text) == true && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
-                    if(myMain.discussionBoardLogin == true){
-                      userId = 0;
-                      myNewUsername = theUsername.text;
-                      myNewEmail = email.text;
-                      myNewPassword = eBaseSixtyFour;//password.text;
-                      Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
-                      var theNewUser = User(
-                        id: userId,
-                        username: theUsername.text,
-                        emailAddress: email.text,
-                        password: eBaseSixtyFour,
-                        usernameLowercased: theUsername.text.toLowerCase(),
-                        usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
-                      );
-                      createUser(theNewUser);
-                      userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
-                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
-                      myMain.theUsers!.add(dasUser);
-                      print(myMain.theUsers);
-                      myMain.discussionBoardLogin = false;
-                      registerBool = true;
-                      print("Registering successfully as: " + userEmailPasswordList.toString());
-                      //emailNotifications.registrationConfirmationEmail();
-                      emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
-                    }
-                    else{
-                      userId = 0;
-                      myNewUsername = theUsername.text;
-                      myNewEmail = email.text;
-                      myNewPassword = eBaseSixtyFour;
-                      Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
-                      var theNewUser = User(
-                        id: userId,
-                        username: theUsername.text,
-                        emailAddress: email.text,
-                        password: eBaseSixtyFour,
-                        usernameLowercased: theUsername.text.toLowerCase(),
-                        usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
-                      );
-                      createUser(theNewUser);
-                      //dbService.addUser(theNewUser);
-                      //dbService.getUsers();
-                      userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
-                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
-                      myMain.theUsers!.add(dasUser);
-                      print(myMain.theUsers);
-                      myMain.discussionBoardLogin = false;
-                      registerBool = true;
-                      print("Registering successfully as: " + userEmailPasswordList.toString());
-                      //emailNotifications.registrationConfirmationEmail();
-                      emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
-                    }
-                  }
-                  //If there is at least one user on Star Expedition:
-                  else if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && checkUsernameValidity(theUsername.text) == true && email.text != "" && checkEmailValidity(email.text) == true && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
-                    if(myMain.discussionBoardLogin == true){
-                      //userId = userId + 1;
-                      if(firebaseDesktopHelper.onDesktop){
-                        var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                        print("userIdResult: ${userIdResult}");
-                        var userIdFound;
-
-                        if(userIdResult.isEmpty){
-                          userIdFound = 1;
-                        }
-                        else{
-                          userIdResult.sort((myUserA, myUserB) => (myUserA["id"] as int).compareTo(myUserB["id"] as int));
-                          userIdFound = ((userIdResult.last["id"]) as int) + 1;
-                        }
-                        //var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
-                        print("userIdFound: ${userIdFound}");
-                        userId = userIdFound;
-                        print("This is the userId: $userId");
-                      }
-                      else{
-                        await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
-                          userId = myNumber.docs.first.data()["id"] + 1;
-                        });
-                      }
-
-                      myNewUsername = theUsername.text;
-                      myNewEmail = email.text;
-                      myNewPassword = eBaseSixtyFour;
-                      Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
-                      var theNewUser = User(
-                          id: userId,
-                          username: theUsername.text,
-                          emailAddress: email.text,
-                          password: eBaseSixtyFour,
-                          usernameLowercased: theUsername.text.toLowerCase(),
-                          usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
-                      );
-                      createUser(theNewUser);
-                      //dbService.addUser(theNewUser);
-                      //dbService.getUsers();
-                      userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
-                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
-                      myMain.theUsers!.add(dasUser);
-                      print(myMain.theUsers);
-                      myMain.discussionBoardLogin = false;
-                      registerBool = true;
-                      print("Registering successfully as: " + userEmailPasswordList.toString());
-                      //emailNotifications.registrationConfirmationEmail();
-                      emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
-                    }
-                    else{
-                      if(firebaseDesktopHelper.onDesktop){
-                        var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                        print("userIdResult: ${userIdResult}");
-                        var userIdFound;
-
-                        if(userIdResult.isEmpty){
-                          userIdFound = 1;
-                        }
-                        else{
-                          userIdResult.sort((myUserA, myUserB) => (myUserA["id"] as int).compareTo(myUserB["id"] as int));
-                          print("This is userIdResult.last: ${userIdResult.last["id"]}");
-                          userIdFound = ((userIdResult.last["id"]) as int) + 1;
-                        }
-                        //var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
-                        print("userIdFound: ${userIdFound}");
-                        userId = userIdFound;
-                        print("This is the userId: $userId");
-                      }
-                      else{
-                        await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
-                          userId = myNumber.docs.first.data()["id"] + 1;
-                        });
-                      }
-
-                      myNewUsername = theUsername.text;
-                      myNewEmail = email.text;
-                      myNewPassword = eBaseSixtyFour;
-                      Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
-                      var theNewUser = User(
-                          id: userId,
-                          username: theUsername.text,
-                          emailAddress: email.text,
-                          password: eBaseSixtyFour,
-                          usernameLowercased: theUsername.text.toLowerCase(),
-                          usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
-                      );
-                      createUser(theNewUser);
-                      //dbService.addUser(theNewUser);
-                      //dbService.getUsers();
-                      userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
-                      myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
-                      myMain.theUsers!.add(dasUser);
-                      print(myMain.theUsers);
-                      myMain.discussionBoardLogin = false;
-                      registerBool = true;
-                      print("Registering successfully as: " + userEmailPasswordList.toString());
-                      //emailNotifications.registrationConfirmationEmail();
-                      emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},<br><br>We hope you enjoy your time on here.<br>If you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.<br><br>Best,<br>Star Expedition");
-                    }
-                  }
-                  else{
-                    print(myMain.theUsers!.indexWhere((person) => person.username == theUsername.text));
-                    userCredentials.add(theUsername.text);
-                    userCredentials.add(email.text);
-                    userCredentials.add(password.text);
-
-                    myMessage = dialogMessage(userCredentials);
-                    print("myMessage.length: ${myMessage.length}");
-
-                    showDialog(
-                      context: buildContext,
-                      builder: (myContent) => AlertDialog(
-                        title: const Text("Registration unsuccessful"),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: List.generate(myMessage.length, (i){
-                            return myMessage[i];
-                          }),
-                        ),
-
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: (){
-                              Navigator.of(myContent).pop();
-                              theUsername.text = "";
-                              email.text = "";
-                              password.text = "";
-                            },
-                            child: Container(
-                              child: const Text("Ok"),
+              ),
+            ),*/
+            IntrinsicHeight(
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Flexible(
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.015625, right: MediaQuery.of(buildContext).size.width * 0.031250),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(buildContext).size.width * 0.375000: 320,
                             ),
-                          )
-                        ],
+                            child: SizedBox(
+                              child: TextField(
+                                minLines: 1,
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: "Username",
+                                ),
+                                controller: theUsername,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    );
-                    print("Registration incomplete");
-                  }
-                }
+                    ),
+                  ]
+                ),
             ),
-          )
-        ]
+            IntrinsicHeight(
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Flexible(
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(buildContext).size.width * 0.375000 : 320,
+                            ),
+                            child: SizedBox(
+                              child: TextField(
+                                minLines: 1,
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: "E-mail address",
+                                ),
+                                controller: email,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]
+              ),
+            ),
+            IntrinsicHeight(
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Flexible(
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, top: MediaQuery.of(buildContext).size.height * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(buildContext).size.width * 0.375000: 320,
+                            ),
+                            child: SizedBox(
+                              child: TextField(
+                                minLines: 1,
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: "Password",
+                                ),
+                                controller: password,
+                                obscureText: true,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]
+              ),
+            ),
+            Container(
+              height: MediaQuery.of(buildContext).size.height * 0.015625,
+            ),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                ),
+                child: InkWell(
+                  child: Ink(
+                    //padding: EdgeInsets.all(MediaQuery.of(buildContext).size.height * 0.015625),
+                    child: Text("Sign Up for Star Expedition", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),
+                    ),
+                  ),
+                  onPressed: () async{
+                    //Encrypting one's pass
+                    String eBaseSixtyFour = "";
+                    if(password.text != ""){
+                      encrypt.Encrypted e = encryptMyPassword(myKey, password.text);
+                      eBaseSixtyFour = e.base64;
+                    }
+
+                    print("theUsers: ${myMain.theUsers}");
+                    //If there are no users:
+                    if(theUsername.text != "" && myMain.theUsers!.isEmpty && checkUsernameValidity(theUsername.text) == true && email.text != "" && checkEmailValidity(email.text) == true && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
+                      if(myMain.discussionBoardLogin == true){
+                        userId = 0;
+                        myNewUsername = theUsername.text;
+                        myNewEmail = email.text;
+                        myNewPassword = eBaseSixtyFour;//password.text;
+                        Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
+                        var theNewUser = User(
+                          id: userId,
+                          username: theUsername.text,
+                          emailAddress: email.text,
+                          password: eBaseSixtyFour,
+                          usernameLowercased: theUsername.text.toLowerCase(),
+                          usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
+                        );
+                        createUser(theNewUser);
+                        userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
+                        myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
+                        myMain.theUsers!.add(dasUser);
+                        print(myMain.theUsers);
+                        myMain.discussionBoardLogin = false;
+                        registerBool = true;
+                        print("Registering successfully as: " + userEmailPasswordList.toString());
+                        //emailNotifications.registrationConfirmationEmail();
+                        emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
+                      }
+                      else{
+                        userId = 0;
+                        myNewUsername = theUsername.text;
+                        myNewEmail = email.text;
+                        myNewPassword = eBaseSixtyFour;
+                        Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
+                        var theNewUser = User(
+                          id: userId,
+                          username: theUsername.text,
+                          emailAddress: email.text,
+                          password: eBaseSixtyFour,
+                          usernameLowercased: theUsername.text.toLowerCase(),
+                          usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
+                        );
+                        createUser(theNewUser);
+                        //dbService.addUser(theNewUser);
+                        //dbService.getUsers();
+                        userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
+                        myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
+                        myMain.theUsers!.add(dasUser);
+                        print(myMain.theUsers);
+                        myMain.discussionBoardLogin = false;
+                        registerBool = true;
+                        print("Registering successfully as: " + userEmailPasswordList.toString());
+                        //emailNotifications.registrationConfirmationEmail();
+                        emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
+                      }
+                    }
+                    //If there is at least one user on Star Expedition:
+                    else if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && checkUsernameValidity(theUsername.text) == true && email.text != "" && checkEmailValidity(email.text) == true && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
+                      if(myMain.discussionBoardLogin == true){
+                        //userId = userId + 1;
+                        if(firebaseDesktopHelper.onDesktop){
+                          var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                          print("userIdResult: ${userIdResult}");
+                          var userIdFound;
+
+                          if(userIdResult.isEmpty){
+                            userIdFound = 1;
+                          }
+                          else{
+                            userIdResult.sort((myUserA, myUserB) => (myUserA["id"] as int).compareTo(myUserB["id"] as int));
+                            userIdFound = ((userIdResult.last["id"]) as int) + 1;
+                          }
+                          //var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
+                          print("userIdFound: ${userIdFound}");
+                          userId = userIdFound;
+                          print("This is the userId: $userId");
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
+                            userId = myNumber.docs.first.data()["id"] + 1;
+                          });
+                        }
+
+                        myNewUsername = theUsername.text;
+                        myNewEmail = email.text;
+                        myNewPassword = eBaseSixtyFour;
+                        Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
+                        var theNewUser = User(
+                            id: userId,
+                            username: theUsername.text,
+                            emailAddress: email.text,
+                            password: eBaseSixtyFour,
+                            usernameLowercased: theUsername.text.toLowerCase(),
+                            usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
+                        );
+                        createUser(theNewUser);
+                        //dbService.addUser(theNewUser);
+                        //dbService.getUsers();
+                        userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
+                        myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
+                        myMain.theUsers!.add(dasUser);
+                        print(myMain.theUsers);
+                        myMain.discussionBoardLogin = false;
+                        registerBool = true;
+                        print("Registering successfully as: " + userEmailPasswordList.toString());
+                        //emailNotifications.registrationConfirmationEmail();
+                        emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
+                      }
+                      else{
+                        if(firebaseDesktopHelper.onDesktop){
+                          var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                          print("userIdResult: ${userIdResult}");
+                          var userIdFound;
+
+                          if(userIdResult.isEmpty){
+                            userIdFound = 1;
+                          }
+                          else{
+                            userIdResult.sort((myUserA, myUserB) => (myUserA["id"] as int).compareTo(myUserB["id"] as int));
+                            print("This is userIdResult.last: ${userIdResult.last["id"]}");
+                            userIdFound = ((userIdResult.last["id"]) as int) + 1;
+                          }
+                          //var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
+                          print("userIdFound: ${userIdFound}");
+                          userId = userIdFound;
+                          print("This is the userId: $userId");
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
+                            userId = myNumber.docs.first.data()["id"] + 1;
+                          });
+                        }
+
+                        myNewUsername = theUsername.text;
+                        myNewEmail = email.text;
+                        myNewPassword = eBaseSixtyFour;
+                        Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
+                        var theNewUser = User(
+                            id: userId,
+                            username: theUsername.text,
+                            emailAddress: email.text,
+                            password: eBaseSixtyFour,
+                            usernameLowercased: theUsername.text.toLowerCase(),
+                            usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
+                        );
+                        createUser(theNewUser);
+                        //dbService.addUser(theNewUser);
+                        //dbService.getUsers();
+                        userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
+                        myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
+                        myMain.theUsers!.add(dasUser);
+                        print(myMain.theUsers);
+                        myMain.discussionBoardLogin = false;
+                        registerBool = true;
+                        print("Registering successfully as: " + userEmailPasswordList.toString());
+                        //emailNotifications.registrationConfirmationEmail();
+                        emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},<br><br>We hope you enjoy your time on here.<br>If you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.<br><br>Best,<br>Star Expedition");
+                      }
+                    }
+                    else{
+                      print(myMain.theUsers!.indexWhere((person) => person.username == theUsername.text));
+                      userCredentials.add(theUsername.text);
+                      userCredentials.add(email.text);
+                      userCredentials.add(password.text);
+
+                      myMessage = dialogMessage(userCredentials);
+                      print("myMessage.length: ${myMessage.length}");
+
+                      showDialog(
+                        context: buildContext,
+                        builder: (myContent) => AlertDialog(
+                          title: const Text("Registration unsuccessful"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(myMessage.length, (i){
+                              return myMessage[i];
+                            }),
+                          ),
+
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: (){
+                                Navigator.of(myContent).pop();
+                                theUsername.text = "";
+                                email.text = "";
+                                password.text = "";
+                              },
+                              child: Container(
+                                child: const Text("Ok"),
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                      print("Registration incomplete");
+                    }
+                  }
+              ),
+            )
+          ]
+        ),
       ),
     );
   }

@@ -126,7 +126,12 @@ class userSearchBarPageState extends State<userSearchBarPage>{
   mySearch ms = new mySearch();
 
   Widget build(BuildContext context){
-    return Scaffold(
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
@@ -139,35 +144,36 @@ class userSearchBarPageState extends State<userSearchBarPage>{
         ),*/
       ),
       body: Column(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Container(
-            child: Text("User Search", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Container(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                icon: Icon(Icons.search),
-              ),
-              controller: query,
-              onTap: (){
-                showSearch(
-                  context: context,
-                  delegate: mySearch(),
-                );
-              }
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
-          ),
-        ],
+            Container(
+              child: Text("User Search", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            Container(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  icon: Icon(Icons.search),
+                ),
+                controller: query,
+                onTap: (){
+                  showSearch(
+                    context: context,
+                    delegate: mySearch(),
+                  );
+                }
+              ),
+            ),
+          ],
+        ),
+        drawer: myMain.starExpeditionNavigationDrawer(),
       ),
-      drawer: myMain.starExpeditionNavigationDrawer(),
     );
   }
 }

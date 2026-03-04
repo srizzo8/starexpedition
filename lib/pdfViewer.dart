@@ -112,7 +112,12 @@ class pdfViewerState extends State<pdfViewer>{
 
   @override
   Widget build(BuildContext bc){
-    return Scaffold(
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
@@ -136,194 +141,194 @@ class pdfViewerState extends State<pdfViewer>{
         ),
       ),
       body: myMain.starPdfBool == true && myMain.planetPdfBool == false?
-      Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),
-            Expanded(
-              child: FutureBuilder(
-                  future: myMain.myStarPdfFile,
-                  builder: (bc, snapshot){
-                    if(snapshot.hasData){
-                      final docForPdfx = snapshot.data as PdfDocument;
-                      totalStarPdfPages = docForPdfx.pagesCount;
-
-                      if(snapshotExistsStars == false){
-                        snapshotExistsStars = true;
-                        myStarPdfxController = PdfController(document: Future.value(docForPdfx));
-
-                        //Initializing page numbers immediately:
-                        WidgetsBinding.instance.addPostFrameCallback((myVar){
-                          setState((){
-                            myStarPageNumber = 1;
-                            myStarPdfPage = 1;
-                          });
-                        });
-
-                        print("snapshotExistsStars: ${snapshotExistsStars}");
-                      }
-
-                      return PdfView(
-                        onPageChanged: (int myCurrentPage){
-                          setState((){
-                            myStarPdfPage = myCurrentPage;
-                            myStarPageNumber = myCurrentPage;
-                            print("myStarPdfPage: ${myStarPdfPage}");
-                          });
-                        },
-                        controller: myStarPdfxController,
-                      );
-                    }
-                    else{
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  }
+        Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),//const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: starPdfPageController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      decoration: const InputDecoration(
-                        labelText: "Page:",
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.015625,
-                  ),
-                  ElevatedButton(
-                      child: Text("Go", textAlign: TextAlign.center),
-                      onPressed: (){
-                        int? pageUserIsOn = int.tryParse(starPdfPageController.text);
-                        if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalStarPdfPages && !pageUserIsOn.toString().contains(".")){
-                          myStarPdfxController.jumpToPage(pageUserIsOn);
+              Expanded(
+                child: FutureBuilder(
+                    future: myMain.myStarPdfFile,
+                    builder: (bc, snapshot){
+                      if(snapshot.hasData){
+                        final docForPdfx = snapshot.data as PdfDocument;
+                        totalStarPdfPages = docForPdfx.pagesCount;
 
-                          print("myStarPdfPage: ${myStarPdfPage}");
-                        }
-                        else{
-                          if(pageUserIsOn == null){
-                            print("a page number is null");
-                            myStarPdfMessage = pdfDialogMessage("", totalStarPdfPages.toString());
-                          }
-                          else{
-                            myStarPdfMessage = pdfDialogMessage(pageUserIsOn.toString(), totalStarPdfPages.toString());
-                          }
+                        if(snapshotExistsStars == false){
+                          snapshotExistsStars = true;
+                          myStarPdfxController = PdfController(document: Future.value(docForPdfx));
 
-                          showDialog(
-                            context: bc,
-                            builder: (myContent) => AlertDialog(
-                              title: const Text("Error"),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(myStarPdfMessage.length, (i){
-                                  return myStarPdfMessage[i];
-                                }),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: (){
-                                    Navigator.of(myContent).pop();
-                                  },
-                                  child: Container(
-                                    child: const Text("Ok"),
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
+                          //Initializing page numbers immediately:
+                          WidgetsBinding.instance.addPostFrameCallback((myVar){
+                            setState((){
+                              myStarPageNumber = 1;
+                              myStarPdfPage = 1;
+                            });
+                          });
+
+                          print("snapshotExistsStars: ${snapshotExistsStars}");
                         }
-                      }
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),//const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  ElevatedButton(
-                    child: Container(
-                      child: Text("|<", textAlign: TextAlign.center),
-                    ),
-                    onPressed: (){
-                      if(myStarPageNumber > 1){
-                        myStarPdfxController.jumpToPage(1);
+
+                        return PdfView(
+                          onPageChanged: (int myCurrentPage){
+                            setState((){
+                              myStarPdfPage = myCurrentPage;
+                              myStarPageNumber = myCurrentPage;
+                              print("myStarPdfPage: ${myStarPdfPage}");
+                            });
+                          },
+                          controller: myStarPdfxController,
+                        );
                       }
                       else{
-                        print("Nothing needed");
+                        return Center(child: CircularProgressIndicator());
                       }
                     }
-                  ),
-                  ElevatedButton(
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),//const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: starPdfPageController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                        ],
+                        decoration: const InputDecoration(
+                          labelText: "Page:",
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.015625,
+                    ),
+                    ElevatedButton(
+                        child: Text("Go", textAlign: TextAlign.center),
+                        onPressed: (){
+                          int? pageUserIsOn = int.tryParse(starPdfPageController.text);
+                          if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalStarPdfPages && !pageUserIsOn.toString().contains(".")){
+                            myStarPdfxController.jumpToPage(pageUserIsOn);
+
+                            print("myStarPdfPage: ${myStarPdfPage}");
+                          }
+                          else{
+                            if(pageUserIsOn == null){
+                              print("a page number is null");
+                              myStarPdfMessage = pdfDialogMessage("", totalStarPdfPages.toString());
+                            }
+                            else{
+                              myStarPdfMessage = pdfDialogMessage(pageUserIsOn.toString(), totalStarPdfPages.toString());
+                            }
+
+                            showDialog(
+                              context: bc,
+                              builder: (myContent) => AlertDialog(
+                                title: const Text("Error"),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: List.generate(myStarPdfMessage.length, (i){
+                                    return myStarPdfMessage[i];
+                                  }),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: (){
+                                      Navigator.of(myContent).pop();
+                                    },
+                                    child: Container(
+                                      child: const Text("Ok"),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          }
+                        }
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0),//const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    ElevatedButton(
                       child: Container(
-                        child: Text("<", textAlign: TextAlign.center),
+                        child: Text("|<", textAlign: TextAlign.center),
                       ),
                       onPressed: (){
                         if(myStarPageNumber > 1){
-                          myStarPdfxController.jumpToPage(myStarPageNumber - 1);
-                          print("myStarPageNumber: ${myStarPageNumber}");
+                          myStarPdfxController.jumpToPage(1);
                         }
                         else{
                           print("Nothing needed");
                         }
                       }
-                  ),
-                  ElevatedButton(
-                      child: Container(
-                        child: Text(">", textAlign: TextAlign.center),
-                      ),
-                      onPressed: (){
-                        if(myStarPageNumber < totalStarPdfPages){
-                          myStarPdfxController.jumpToPage(myStarPageNumber + 1);
+                    ),
+                    ElevatedButton(
+                        child: Container(
+                          child: Text("<", textAlign: TextAlign.center),
+                        ),
+                        onPressed: (){
+                          if(myStarPageNumber > 1){
+                            myStarPdfxController.jumpToPage(myStarPageNumber - 1);
+                            print("myStarPageNumber: ${myStarPageNumber}");
+                          }
+                          else{
+                            print("Nothing needed");
+                          }
                         }
-                        else{
-                          print("Nothing needed");
+                    ),
+                    ElevatedButton(
+                        child: Container(
+                          child: Text(">", textAlign: TextAlign.center),
+                        ),
+                        onPressed: (){
+                          if(myStarPageNumber < totalStarPdfPages){
+                            myStarPdfxController.jumpToPage(myStarPageNumber + 1);
+                          }
+                          else{
+                            print("Nothing needed");
+                          }
                         }
-                      }
-                  ),
-                  ElevatedButton(
-                      child: Container(
-                        child: Text(">|", textAlign: TextAlign.center),
-                      ),
-                      onPressed: (){
-                        if(myStarPageNumber < totalStarPdfPages){
-                          myStarPdfxController.jumpToPage(totalStarPdfPages);
+                    ),
+                    ElevatedButton(
+                        child: Container(
+                          child: Text(">|", textAlign: TextAlign.center),
+                        ),
+                        onPressed: (){
+                          if(myStarPageNumber < totalStarPdfPages){
+                            myStarPdfxController.jumpToPage(totalStarPdfPages);
+                          }
+                          else{
+                            print("Nothing needed");
+                          }
                         }
-                        else{
-                          print("Nothing needed");
-                        }
-                      }
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),
-            Container(
-              alignment: Alignment.center,
-              child: snapshotExistsStars == true? Text("Page: ${myStarPdfPage} of ${totalStarPdfPages}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)) : Text(""),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),
-          ],
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: snapshotExistsStars == true? Text("Page: ${myStarPdfPage} of ${totalStarPdfPages}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)) : Text(""),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+            ],
       ): myMain.starPdfBool == false && myMain.planetPdfBool == true?
-        Column(
+      Column(
           children: <Widget>[
             Container(
               height: MediaQuery.of(context).size.height * 0.015625,
@@ -510,6 +515,7 @@ class pdfViewerState extends State<pdfViewer>{
         ],
       ):
       SizedBox.expand(),
+    ),
     );
   }
 }

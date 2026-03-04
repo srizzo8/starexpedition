@@ -23,6 +23,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 var theUser;
 var theNewUser;
@@ -50,6 +51,7 @@ class settingsPageState extends State<settingsPage>{
   static String nameOfRoute = '/settings';
 
   Widget build(BuildContext context){
+    ScreenUtil.init(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -75,13 +77,13 @@ class settingsPageState extends State<settingsPage>{
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
-              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
+              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
+              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
               primary: Colors.black,
             ),
             child: InkWell(
               child: Ink(
-                child: Text("Change Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                child: Text("Change Password", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
               ),
             ),
             onPressed: (){
@@ -93,13 +95,13 @@ class settingsPageState extends State<settingsPage>{
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
-              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
+              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
+              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
               primary: Colors.black,
             ),
             child: InkWell(
               child: Ink(
-                child: Text("Change Email Address", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                child: Text("Change Email\nAddress", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
               ),
             ),
             onPressed: (){
@@ -111,13 +113,13 @@ class settingsPageState extends State<settingsPage>{
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
-              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.375, MediaQuery.of(context).size.height * 0.0625) : Size(175, 36),
+              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
+              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
               primary: Colors.black,
             ),
             child: InkWell(
               child: Ink(
-                child: Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                child: Text("Update Profile", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
               ),
             ),
             onPressed: () async{
@@ -229,7 +231,12 @@ class changePasswordPageState extends State<changePasswordPage>{
   }
 
   Widget build(BuildContext context){
-    return Scaffold(
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
@@ -242,328 +249,329 @@ class changePasswordPageState extends State<changePasswordPage>{
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text("Change Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Current Password",
-                              ),
-                              controller: currentPasswordController,
-                              obscureText: true,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "New Password",
-                              ),
-                              controller: newPasswordController,
-                              obscureText: true,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Confirm New Password",
-                              ),
-                              controller: secondNewPasswordController,
-                              obscureText: true,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
               ),
-              child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                  child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+              Container(
+                alignment: Alignment.center,
+                child: Text("Change Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+              ),
+              IntrinsicHeight(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Flexible(
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                              ),
+                              child: SizedBox(
+                                child: TextField(
+                                  minLines: 1,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: "Current Password",
+                                  ),
+                                  controller: currentPasswordController,
+                                  obscureText: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
                 ),
               ),
-              onPressed: () async{
-                  print("currentPasswordController.text: ${currentPasswordController.text}");
-                  print("newPasswordController.text: ${newPasswordController.text}");
-                  print("secondNewPasswordController.text: ${secondNewPasswordController.text}");
-                  print("myUsername = ${myUsername}, myNewUsername = ${myNewUsername}");
-
-                  if(myUsername != "" && myNewUsername == ""){
-                    if(firebaseDesktopHelper.onDesktop){
-                      myUserResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                      userDoc = myUserResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-                      gettingDocName = userDoc["docId"];
-                    }
-                    else{
-                      myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                      myUserResult.docs.forEach((result){
-                        userDoc = result.data();
-                        print("This is the result: ${result.data()}");
-                        gettingDocName = result.id;
-                      });
-                    }
-                    print("userDoc[password]: ${userDoc["password"].toString()}");
-
-                    usersPass = decryptMyPassword(myKey, userDoc["password"]);
-                    print("usersPass: ${usersPass}");
-
-                    messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
-
-                    if(messageForUsers.isEmpty){
-                      //Password successfully changed
-                      print("gettingDocName: ${gettingDocName.toString()}");
-
-                      if(firebaseDesktopHelper.onDesktop){
-                        //List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                        //Updating a user's password:
-                        await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
-                          "password": encryptMyPassword(myKey, newPasswordController.text).base64,
-                        });
-                      }
-                      else{
-                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
-                          print("Updated");
-                        }).catchError((e) => print("This is your error: ${e}"));
-                      }
-
-                      print("This is new user password: ${userDoc["password"]}");
-
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext bc){
-                            return AlertDialog(
-                              title: Text("Password Change Successful"),
-                              content: Text("You have successfully changed your password"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => {
-                                    theUser = myUsername,
-                                    theNewUser = "",
-                                    usersEmail = userDoc["emailAddress"],
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                    //emailNotifications.passwordChangeConfirmationEmail(),
-                                    emailNotifications.sendAnEmail(usersEmail, "Password Change Confirmation", "Hi ${theUser},<br><br>We have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
+              IntrinsicHeight(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Flexible(
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                              ),
+                              child: SizedBox(
+                                child: TextField(
+                                  minLines: 1,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: "New Password",
+                                  ),
+                                  controller: newPasswordController,
+                                  obscureText: true,
                                 ),
-                              ],
-                            );
-                          }
-                      );
-                    }
-                    else{
-                      showDialog(
-                        context: context,
-                        builder: (myContent) => AlertDialog(
-                          title: Text("Password Change Unsuccessful"),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(messageForUsers.length, (i){
-                              return messageForUsers[i];
-                            }),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: (){
-                                Navigator.of(myContent).pop();
-                                currentPasswordController.text = "";
-                                newPasswordController.text = "";
-                                secondNewPasswordController.text = "";
-                              },
-                              child: Container(
-                                child: const Text("Ok"),
                               ),
                             ),
-                          ],
-                        ),
-                      );
-                    }
-                  }
-                  else if(myUsername == "" && myNewUsername != ""){
-                    if(firebaseDesktopHelper.onDesktop){
-                      myUserResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                      userDoc = myUserResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-                      gettingDocName = userDoc["docId"];
-                    }
-                    else{
-                      myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                      myUserResult.docs.forEach((result){
-                        userDoc = result.data();
-                        print("This is the result: ${result.data()}");
-                        gettingDocName = result.id;
-                      });
-                    }
-                    print("userDoc[password]: ${userDoc["password"].toString()}");
-
-                    usersPass = decryptMyPassword(myKey, userDoc["password"]);
-                    print("usersPass: ${usersPass}");
-
-                    messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
-
-                    if(messageForUsers.isEmpty){
-                      //Password successfully changed
-                      print("gettingDocName: ${gettingDocName.toString()}");
-
-                      if(firebaseDesktopHelper.onDesktop){
-                        //List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
-                        //Map<String, dynamic> currentInfoOfUser = everyUser.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});//Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
-
-                        //Updating a user's password:
-                        await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
-                          "password": encryptMyPassword(myKey, newPasswordController.text).base64,
-                        });
-                      }
-                      else{
-                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
-                          print("Updated");
-                        }).catchError((e) => print("This is your error: ${e}"));
-                      }
-
-                      print("This is new user password: ${userDoc["password"]}");
-
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext bc){
-                            return AlertDialog(
-                              title: Text("Password Change Successful"),
-                              content: Text("You have successfully changed your password"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => {
-                                    theUser = "",
-                                    theNewUser = myNewUsername,
-                                    usersEmail = userDoc["emailAddress"],
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                    //emailNotifications.passwordChangeConfirmationEmail(),
-                                    emailNotifications.sendAnEmail(usersEmail, "Password Change Confirmation", "Hi ${theNewUser},<br><br>We have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
-                                    currentPasswordController.text = "",
-                                    newPasswordController.text = "",
-                                    secondNewPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                      );
-                    }
-                    else{
-                      showDialog(
-                        context: context,
-                        builder: (myContent) => AlertDialog(
-                          title: Text("Password Change Unsuccessful"),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(messageForUsers.length, (i){
-                              return messageForUsers[i];
-                            }),
                           ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: (){
-                                Navigator.of(myContent).pop();
-                                currentPasswordController.text = "";
-                                newPasswordController.text = "";
-                                secondNewPasswordController.text = "";
-                              },
-                              child: Container(
-                                child: const Text("Ok"),
+                        ),
+                      ),
+                    ]
+                ),
+              ),
+              IntrinsicHeight(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Flexible(
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                              ),
+                              child: SizedBox(
+                                child: TextField(
+                                  minLines: 1,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: "Confirm New Password",
+                                  ),
+                                  controller: secondNewPasswordController,
+                                  obscureText: true,
+                                ),
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      );
+                      ),
+                    ]
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black,
+                  ),
+                  child: InkWell(
+                    child: Ink(
+                      color: Colors.black,
+                      //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                      child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                    ),
+                  ),
+                  onPressed: () async{
+                      print("currentPasswordController.text: ${currentPasswordController.text}");
+                      print("newPasswordController.text: ${newPasswordController.text}");
+                      print("secondNewPasswordController.text: ${secondNewPasswordController.text}");
+                      print("myUsername = ${myUsername}, myNewUsername = ${myNewUsername}");
+
+                      if(myUsername != "" && myNewUsername == ""){
+                        if(firebaseDesktopHelper.onDesktop){
+                          myUserResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                          userDoc = myUserResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                          gettingDocName = userDoc["docId"];
+                        }
+                        else{
+                          myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                          myUserResult.docs.forEach((result){
+                            userDoc = result.data();
+                            print("This is the result: ${result.data()}");
+                            gettingDocName = result.id;
+                          });
+                        }
+                        print("userDoc[password]: ${userDoc["password"].toString()}");
+
+                        usersPass = decryptMyPassword(myKey, userDoc["password"]);
+                        print("usersPass: ${usersPass}");
+
+                        messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
+
+                        if(messageForUsers.isEmpty){
+                          //Password successfully changed
+                          print("gettingDocName: ${gettingDocName.toString()}");
+
+                          if(firebaseDesktopHelper.onDesktop){
+                            //List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                            //Updating a user's password:
+                            await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
+                              "password": encryptMyPassword(myKey, newPasswordController.text).base64,
+                            });
+                          }
+                          else{
+                            FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
+                              print("Updated");
+                            }).catchError((e) => print("This is your error: ${e}"));
+                          }
+
+                          print("This is new user password: ${userDoc["password"]}");
+
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext bc){
+                                return AlertDialog(
+                                  title: Text("Password Change Successful"),
+                                  content: Text("You have successfully changed your password"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => {
+                                        theUser = myUsername,
+                                        theNewUser = "",
+                                        usersEmail = userDoc["emailAddress"],
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                        //emailNotifications.passwordChangeConfirmationEmail(),
+                                        emailNotifications.sendAnEmail(usersEmail, "Password Change Confirmation", "Hi ${theUser},<br><br>We have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
+                                        currentPasswordController.text = "",
+                                        newPasswordController.text = "",
+                                        secondNewPasswordController.text = "",
+                                      },
+                                      child: Text("Ok"),
+                                    ),
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                        else{
+                          showDialog(
+                            context: context,
+                            builder: (myContent) => AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(messageForUsers.length, (i){
+                                  return messageForUsers[i];
+                                }),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: (){
+                                    Navigator.of(myContent).pop();
+                                    currentPasswordController.text = "";
+                                    newPasswordController.text = "";
+                                    secondNewPasswordController.text = "";
+                                  },
+                                  child: Container(
+                                    child: const Text("Ok"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                      else if(myUsername == "" && myNewUsername != ""){
+                        if(firebaseDesktopHelper.onDesktop){
+                          myUserResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                          userDoc = myUserResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                          gettingDocName = userDoc["docId"];
+                        }
+                        else{
+                          myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                          myUserResult.docs.forEach((result){
+                            userDoc = result.data();
+                            print("This is the result: ${result.data()}");
+                            gettingDocName = result.id;
+                          });
+                        }
+                        print("userDoc[password]: ${userDoc["password"].toString()}");
+
+                        usersPass = decryptMyPassword(myKey, userDoc["password"]);
+                        print("usersPass: ${usersPass}");
+
+                        messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
+
+                        if(messageForUsers.isEmpty){
+                          //Password successfully changed
+                          print("gettingDocName: ${gettingDocName.toString()}");
+
+                          if(firebaseDesktopHelper.onDesktop){
+                            //List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+                            //Map<String, dynamic> currentInfoOfUser = everyUser.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});//Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
+
+                            //Updating a user's password:
+                            await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
+                              "password": encryptMyPassword(myKey, newPasswordController.text).base64,
+                            });
+                          }
+                          else{
+                            FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
+                              print("Updated");
+                            }).catchError((e) => print("This is your error: ${e}"));
+                          }
+
+                          print("This is new user password: ${userDoc["password"]}");
+
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext bc){
+                                return AlertDialog(
+                                  title: Text("Password Change Successful"),
+                                  content: Text("You have successfully changed your password"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => {
+                                        theUser = "",
+                                        theNewUser = myNewUsername,
+                                        usersEmail = userDoc["emailAddress"],
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                        //emailNotifications.passwordChangeConfirmationEmail(),
+                                        emailNotifications.sendAnEmail(usersEmail, "Password Change Confirmation", "Hi ${theNewUser},<br><br>We have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
+                                        currentPasswordController.text = "",
+                                        newPasswordController.text = "",
+                                        secondNewPasswordController.text = "",
+                                      },
+                                      child: Text("Ok"),
+                                    ),
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                        else{
+                          showDialog(
+                            context: context,
+                            builder: (myContent) => AlertDialog(
+                              title: Text("Password Change Unsuccessful"),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(messageForUsers.length, (i){
+                                  return messageForUsers[i];
+                                }),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: (){
+                                    Navigator.of(myContent).pop();
+                                    currentPasswordController.text = "";
+                                    newPasswordController.text = "";
+                                    secondNewPasswordController.text = "";
+                                  },
+                                  child: Container(
+                                    child: const Text("Ok"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
                     }
-                  }
-                }
-            ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-    ),
     );
   }
 }
@@ -620,7 +628,12 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
   }
 
   Widget build(BuildContext context){
-    return Scaffold(
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
@@ -633,416 +646,417 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text("Change Your Email Address", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          /*Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("Current Email Address", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              controller: currentEmailAddressController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
               ),
-            ),
-          ),*/
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Current Email Address",
-                              ),
-                              controller: currentEmailAddressController,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          /*Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("New Email Address", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              controller: newEmailAddressController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
+              Container(
+                alignment: Alignment.center,
+                child: Text("Change Your Email Address", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
               ),
-            ),
-          ),*/
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "New Email Address",
-                              ),
-                              controller: newEmailAddressController,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          /*Center(
-            child: Container(
-              padding: const EdgeInsets.all(0.0),
-              alignment: Alignment.centerLeft,
-              child: Text("Password", style: TextStyle(fontSize: 14.0)),
-              height: 20,
-              width: 380,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              controller: myPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),*/
-          IntrinsicHeight(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Flexible(
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                          ),
-                          child: SizedBox(
-                            child: TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Password",
-                              ),
-                              controller: myPasswordController,
-                              obscureText: true,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ]
-            ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-              ),
-              child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                  child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+              /*Center(
+                child: Container(
+                  padding: const EdgeInsets.all(0.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text("Current Email Address", style: TextStyle(fontSize: 14.0)),
+                  height: 20,
+                  width: 380,
                 ),
               ),
-                onPressed: () async{
-                  //if(currentEmailAddressController.text != "" && newEmailAddressController.text != "" && myPasswordController.text != ""){
-                  if(myUsername != "" && myNewUsername == ""){
-                    if(firebaseDesktopHelper.onDesktop){
-                      myEmailResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                      docForUsername = myEmailResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-                      gettingDocName = docForUsername["docId"];
-                    }
-                    else{
-                      myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                      myEmailResult.docs.forEach((myResult){
-                        docForUsername = myResult.data();
-                        print("This is the result: ${myResult.data()}");
-                        gettingDocName = myResult.id;
-                      });
-                    }
-                    print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
-                    usersEmailForEmailChangeMessage = docForUsername["emailAddress"];
-                    userForEmailChange = myUsername;
-
-                    messageForUsers = dialogMessageChangeEmailAddress([currentEmailAddressController.text, newEmailAddressController.text, myPasswordController.text]);
-
-                    if(messageForUsers.isEmpty){
-                      //email address successfully changed
-                      print("Your email will change");
-
-                      if(firebaseDesktopHelper.onDesktop){
-                        //Updating a user's email address:
-                        await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
-                          "emailAddress": newEmailAddressController.text,
-                        });
-
-                        List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-                        var theMatchingUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                        if(theMatchingUser.isNotEmpty){
-                          du = theMatchingUser;
-                          print("This is du: ${du}");
-                        }
-                        else{
-                          print("User is not found");
-                        }
-                      }
-                      else{
-                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
-                          print("Updated the email address");
-                        }).catchError((e) => print("This is your error: ${e}"));
-
-                        var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                        newEmailResult.docs.forEach((theResult){
-                          du = theResult.data();
-                          print("This is the result: ${theResult.data()}");
-                          //var gettingDn = theResult.id;
-                        });
-                      }
-
-                      print("This is new user email address: ${docForUsername["emailAddress"]}");
-
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext bc){
-                            return AlertDialog(
-                              title: Text("Email Address Change Successful"),
-                              content: Text("You have successfully changed your email address"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => {
-                                    usersEmailAddress = docForUsername["emailAddress"],
-                                    usersNewEmail = du["emailAddress"],
-                                    print("usersNewEmail: ${usersNewEmail}"),
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-
-                                    //For previous email address:
-                                    emailNotifications.sendAnEmail(usersEmailForEmailChangeMessage, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>We have noticed that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
-
-                                    //For new email address:
-                                    emailNotifications.sendAnEmail(usersNewEmail, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>This message is to confirm that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}.<br><br>Best,<br>Star Expedition"),
-
-                                    currentEmailAddressController.text = "",
-                                    newEmailAddressController.text = "",
-                                    myPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
+              Container(
+                padding: EdgeInsets.all(20.0),
+                child: TextField(
+                  controller: currentEmailAddressController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),*/
+              IntrinsicHeight(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Flexible(
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                              ),
+                              child: SizedBox(
+                                child: TextField(
+                                  minLines: 1,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: "Current Email Address",
+                                  ),
+                                  controller: currentEmailAddressController,
                                 ),
-                              ],
-                            );
-                          }
-                      );
-                    }
-                    else{
-                      showDialog(
-                        context: context,
-                        builder: (myContent) => AlertDialog(
-                          title: Text("Email Address Change Unsuccessful"),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(messageForUsers.length, (i){
-                              return messageForUsers[i];
-                            }),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: (){
-                                Navigator.pop(context);
-                                currentEmailAddressController.text = "";
-                                newEmailAddressController.text = "";
-                                myPasswordController.text = "";
-                              },
-                              child: Container(
-                                child: const Text("Ok"),
                               ),
                             ),
-                          ],
-                        ),
-                      );
-                    }
-                  }
-                  else if(myUsername == "" && myNewUsername != ""){
-                    if(firebaseDesktopHelper.onDesktop){
-                      myEmailResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                      docForUsername = myEmailResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-                      gettingDocName = docForUsername["docId"];
-                    }
-                    else{
-                      myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                      myEmailResult.docs.forEach((myResult){
-                        docForUsername = myResult.data();
-                        print("This is the result: ${myResult.data()}");
-                        gettingDocName = myResult.id;
-                      });
-                    }
-                    print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
-                    usersEmailForEmailChangeMessage = docForUsername["emailAddress"];
-                    userForEmailChange = myNewUsername;
-
-                    messageForUsers = dialogMessageChangeEmailAddress([currentEmailAddressController.text, newEmailAddressController.text, myPasswordController.text]);
-
-                    if(messageForUsers.isEmpty){
-                      //email address successfully changed
-                      print("Your email will change");
-
-                      if(firebaseDesktopHelper.onDesktop){
-                        //Updating a user's email address:
-                        await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
-                          "emailAddress": newEmailAddressController.text,
-                        });
-
-                        List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-                        var theMatchingUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                        if(theMatchingUser.isNotEmpty){
-                          du = theMatchingUser;
-                          print("This is du: ${du}");
-                        }
-                        else{
-                          print("User is not found");
-                        }
-                      }
-                      else{
-                        FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
-                          print("Updated the email address");
-                        }).catchError((e) => print("This is your error: ${e}"));
-
-                        var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                        newEmailResult.docs.forEach((theResult){
-                          du = theResult.data();
-                          print("This is the result: ${theResult.data()}");
-                          //var gettingDn = theResult.id;
-                        });
-                      }
-
-                      print("This is new user email address: ${docForUsername["emailAddress"]}");
-
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext bc){
-                            return AlertDialog(
-                              title: Text("Email Address Change Successful"),
-                              content: Text("You have successfully changed your email address"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => {
-                                    usersEmailAddress = docForUsername["emailAddress"],
-                                    usersNewEmail = du["emailAddress"],
-                                    print("usersNewEmail: ${usersNewEmail}"),
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-
-                                    //For previous email address:
-                                    emailNotifications.sendAnEmail(usersEmailForEmailChangeMessage, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>We have noticed that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
-
-                                    //For new email address:
-                                    emailNotifications.sendAnEmail(usersNewEmail, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>This message is to confirm that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}.<br><br>Best,<br>Star Expedition"),
-
-                                    currentEmailAddressController.text = "",
-                                    newEmailAddressController.text = "",
-                                    myPasswordController.text = "",
-                                  },
-                                  child: Text("Ok"),
-                                ),
-                              ],
-                            );
-                          }
-                      );
-                    }
-                    else{
-                      showDialog(
-                        context: context,
-                        builder: (myContent) => AlertDialog(
-                          title: Text("Email Address Change Unsuccessful"),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(messageForUsers.length, (i){
-                              return messageForUsers[i];
-                            }),
                           ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: (){
-                                Navigator.pop(context);
-                                currentEmailAddressController.text = "";
-                                newEmailAddressController.text = "";
-                                myPasswordController.text = "";
-                              },
-                              child: Container(
-                                child: const Text("Ok"),
+                        ),
+                      ),
+                    ]
+                ),
+              ),
+              /*Center(
+                child: Container(
+                  padding: const EdgeInsets.all(0.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text("New Email Address", style: TextStyle(fontSize: 14.0)),
+                  height: 20,
+                  width: 380,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(20.0),
+                child: TextField(
+                  controller: newEmailAddressController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),*/
+            IntrinsicHeight(
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Flexible(
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                            ),
+                            child: SizedBox(
+                              child: TextField(
+                                minLines: 1,
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: "New Email Address",
+                                ),
+                                controller: newEmailAddressController,
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      );
+                      ),
+                    ),
+                  ]
+                ),
+              ),
+              /*Center(
+                child: Container(
+                  padding: const EdgeInsets.all(0.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text("Password", style: TextStyle(fontSize: 14.0)),
+                  height: 20,
+                  width: 380,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(20.0),
+                child: TextField(
+                  controller: myPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),*/
+            IntrinsicHeight(
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Flexible(
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                            ),
+                            child: SizedBox(
+                              child: TextField(
+                                minLines: 1,
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: "Password",
+                                ),
+                                controller: myPasswordController,
+                                obscureText: true,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.black,
+                  ),
+                  child: InkWell(
+                    child: Ink(
+                      color: Colors.black,
+                      //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                      child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                    ),
+                  ),
+                    onPressed: () async{
+                      //if(currentEmailAddressController.text != "" && newEmailAddressController.text != "" && myPasswordController.text != ""){
+                      if(myUsername != "" && myNewUsername == ""){
+                        if(firebaseDesktopHelper.onDesktop){
+                          myEmailResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                          docForUsername = myEmailResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                          gettingDocName = docForUsername["docId"];
+                        }
+                        else{
+                          myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                          myEmailResult.docs.forEach((myResult){
+                            docForUsername = myResult.data();
+                            print("This is the result: ${myResult.data()}");
+                            gettingDocName = myResult.id;
+                          });
+                        }
+                        print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
+                        usersEmailForEmailChangeMessage = docForUsername["emailAddress"];
+                        userForEmailChange = myUsername;
+
+                        messageForUsers = dialogMessageChangeEmailAddress([currentEmailAddressController.text, newEmailAddressController.text, myPasswordController.text]);
+
+                        if(messageForUsers.isEmpty){
+                          //email address successfully changed
+                          print("Your email will change");
+
+                          if(firebaseDesktopHelper.onDesktop){
+                            //Updating a user's email address:
+                            await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
+                              "emailAddress": newEmailAddressController.text,
+                            });
+
+                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                            var theMatchingUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                            if(theMatchingUser.isNotEmpty){
+                              du = theMatchingUser;
+                              print("This is du: ${du}");
+                            }
+                            else{
+                              print("User is not found");
+                            }
+                          }
+                          else{
+                            FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
+                              print("Updated the email address");
+                            }).catchError((e) => print("This is your error: ${e}"));
+
+                            var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                            newEmailResult.docs.forEach((theResult){
+                              du = theResult.data();
+                              print("This is the result: ${theResult.data()}");
+                              //var gettingDn = theResult.id;
+                            });
+                          }
+
+                          print("This is new user email address: ${docForUsername["emailAddress"]}");
+
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext bc){
+                                return AlertDialog(
+                                  title: Text("Email Address Change Successful"),
+                                  content: Text("You have successfully changed your email address"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => {
+                                        usersEmailAddress = docForUsername["emailAddress"],
+                                        usersNewEmail = du["emailAddress"],
+                                        print("usersNewEmail: ${usersNewEmail}"),
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+
+                                        //For previous email address:
+                                        emailNotifications.sendAnEmail(usersEmailForEmailChangeMessage, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>We have noticed that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
+
+                                        //For new email address:
+                                        emailNotifications.sendAnEmail(usersNewEmail, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>This message is to confirm that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}.<br><br>Best,<br>Star Expedition"),
+
+                                        currentEmailAddressController.text = "",
+                                        newEmailAddressController.text = "",
+                                        myPasswordController.text = "",
+                                      },
+                                      child: Text("Ok"),
+                                    ),
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                        else{
+                          showDialog(
+                            context: context,
+                            builder: (myContent) => AlertDialog(
+                              title: Text("Email Address Change Unsuccessful"),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(messageForUsers.length, (i){
+                                  return messageForUsers[i];
+                                }),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                    currentEmailAddressController.text = "";
+                                    newEmailAddressController.text = "";
+                                    myPasswordController.text = "";
+                                  },
+                                  child: Container(
+                                    child: const Text("Ok"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                      else if(myUsername == "" && myNewUsername != ""){
+                        if(firebaseDesktopHelper.onDesktop){
+                          myEmailResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                          docForUsername = myEmailResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                          gettingDocName = docForUsername["docId"];
+                        }
+                        else{
+                          myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                          myEmailResult.docs.forEach((myResult){
+                            docForUsername = myResult.data();
+                            print("This is the result: ${myResult.data()}");
+                            gettingDocName = myResult.id;
+                          });
+                        }
+                        print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
+                        usersEmailForEmailChangeMessage = docForUsername["emailAddress"];
+                        userForEmailChange = myNewUsername;
+
+                        messageForUsers = dialogMessageChangeEmailAddress([currentEmailAddressController.text, newEmailAddressController.text, myPasswordController.text]);
+
+                        if(messageForUsers.isEmpty){
+                          //email address successfully changed
+                          print("Your email will change");
+
+                          if(firebaseDesktopHelper.onDesktop){
+                            //Updating a user's email address:
+                            await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
+                              "emailAddress": newEmailAddressController.text,
+                            });
+
+                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                            var theMatchingUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                            if(theMatchingUser.isNotEmpty){
+                              du = theMatchingUser;
+                              print("This is du: ${du}");
+                            }
+                            else{
+                              print("User is not found");
+                            }
+                          }
+                          else{
+                            FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
+                              print("Updated the email address");
+                            }).catchError((e) => print("This is your error: ${e}"));
+
+                            var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                            newEmailResult.docs.forEach((theResult){
+                              du = theResult.data();
+                              print("This is the result: ${theResult.data()}");
+                              //var gettingDn = theResult.id;
+                            });
+                          }
+
+                          print("This is new user email address: ${docForUsername["emailAddress"]}");
+
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext bc){
+                                return AlertDialog(
+                                  title: Text("Email Address Change Successful"),
+                                  content: Text("You have successfully changed your email address"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => {
+                                        usersEmailAddress = docForUsername["emailAddress"],
+                                        usersNewEmail = du["emailAddress"],
+                                        print("usersNewEmail: ${usersNewEmail}"),
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+
+                                        //For previous email address:
+                                        emailNotifications.sendAnEmail(usersEmailForEmailChangeMessage, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>We have noticed that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
+
+                                        //For new email address:
+                                        emailNotifications.sendAnEmail(usersNewEmail, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>This message is to confirm that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}.<br><br>Best,<br>Star Expedition"),
+
+                                        currentEmailAddressController.text = "",
+                                        newEmailAddressController.text = "",
+                                        myPasswordController.text = "",
+                                      },
+                                      child: Text("Ok"),
+                                    ),
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                        else{
+                          showDialog(
+                            context: context,
+                            builder: (myContent) => AlertDialog(
+                              title: Text("Email Address Change Unsuccessful"),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(messageForUsers.length, (i){
+                                  return messageForUsers[i];
+                                }),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: (){
+                                    Navigator.pop(context);
+                                    currentEmailAddressController.text = "";
+                                    newEmailAddressController.text = "";
+                                    myPasswordController.text = "";
+                                  },
+                                  child: Container(
+                                    child: const Text("Ok"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
                     }
-                  }
-                }
-            ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-    ),
     );
   }
 }

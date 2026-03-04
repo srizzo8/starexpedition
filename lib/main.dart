@@ -53,6 +53,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:pdfx/pdfx.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'mostTrackedStarsAndPlanetsPage.dart';
 
@@ -799,6 +800,14 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.red,//Colors.red,
         ),
+        builder: (context, child){
+          return ScreenUtilInit(
+            designSize: const Size(360, 690),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (_, __) => child!,
+          );
+        },
         home: StarExpedition(),
         routes:{
           routesToOtherPages.spectralClass: (context) => spectralClassPage(),

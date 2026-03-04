@@ -286,7 +286,12 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
   }
 
   Widget build(BuildContext context){
-    return Scaffold(
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: Text("Star Expedition"),
@@ -300,45 +305,46 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
           ),
         ),
         body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: MediaQuery.of(context).size.height * 0.015625,
-              ),
-              Container(
-                child: Text("Editing Your Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.015625,
-              ),
-              IntrinsicHeight(
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Flexible(
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                              ),
-                              child: Scrollbar(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  reverse: true,
-                                  child: SizedBox(
-                                    child: TextField(
-                                      minLines: 5,
-                                      maxLines: 5,
-                                      focusNode: myFieldFocus,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        labelText: "Information about yourself",
-                                        //contentPadding: EdgeInsets.symmetric(vertical: 80),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015625,
+                ),
+                Container(
+                  child: Text("Editing Your Profile", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015625,
+                ),
+                IntrinsicHeight(
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Flexible(
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                                ),
+                                child: Scrollbar(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    reverse: true,
+                                    child: SizedBox(
+                                      child: TextField(
+                                        minLines: 5,
+                                        maxLines: 5,
+                                        focusNode: myFieldFocus,
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          labelText: "Information about yourself",
+                                          //contentPadding: EdgeInsets.symmetric(vertical: 80),
+                                        ),
+                                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                        controller: informationAboutMyselfController,
                                       ),
-                                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                      controller: informationAboutMyselfController,
                                     ),
                                   ),
                                 ),
@@ -346,9 +352,8 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                             ),
                           ),
                         ),
-                      ),
-                    ]
-                ),
+                      ]
+                  ),
               ),
               IntrinsicHeight(
                 child: Row(
@@ -424,191 +429,192 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                     ]
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
-                  ),
-                  child: InkWell(
-                    child: Ink(
-                      color: Colors.black,
-                      child: Text("Update Profile Picture", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
-                    ),
-                  ),
-                  onPressed: () async{
-                    handlingMyPick();
-                  }
-                ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.015625,
-              ),
-              CircleAvatar(
-                radius: 80,
-                backgroundImage: myImageBytes != null ? MemoryImage(myImageBytes!) : null,
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.015625,
-              ),
-              Center(
-                child: ElevatedButton(
+                Padding(
+                  padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                  child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: Colors.black,
                     ),
                     child: InkWell(
                       child: Ink(
                         color: Colors.black,
-                        //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                        child: Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                        child: Text("Update Profile Picture", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                       ),
                     ),
                     onPressed: () async{
-                      final theUsername = myUsername != "" && myNewUsername == "" ? myUsername : myNewUsername;
-
-                      if(myImageBytes != null){
-                        await uploadAndStoreProfilePicture(myImageBytes!, theUsername);
-                      }
-
-                      if(myUsername != "" && myNewUsername == ""){
-                        if(firebaseDesktopHelper.onDesktop){
-                          List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                          var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                          myDocName = usersProfileInfo["docId"];
-
-                          //Getting the current profile info of the user:
-                          Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
-
-                          currentInfoOfUser["userInformation"] = informationAboutMyselfController.text;
-                          currentInfoOfUser["userInterests"] = interestsController.text;
-                          currentInfoOfUser["userLocation"] = locationController.text;
-
-                          //Seeing what is in currentInfoOfUser:
-                          print("User information: ${currentInfoOfUser["userInformation"]}");
-                          print("User interests: ${currentInfoOfUser["userInterests"]}");
-                          print("User location: ${currentInfoOfUser["userLocation"]}");
-
-                          //Updating a user's changes:
-                          await firebaseDesktopHelper.updateFirestoreDocument("User/$myDocName", {
-                            "usernameProfileInformation": currentInfoOfUser,
-                          });
-                        }
-                        else{
-                          myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                          myInformation.docs.forEach((myResult){
-                            dataOfUser = myResult.data();
-                            myDocName = myResult.id;
-                          });
-
-                          FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                            "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
-                          }).then((i){
-                            print("You have updated the user information (for already existing users)!");
-                          });
-
-                          myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                          myInterests.docs.forEach((myResult){
-                            dataOfUser = myResult.data();
-                            myDocName = myResult.id;
-                          });
-
-                          FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                            "usernameProfileInformation.userInterests": interestsController.text,
-                          }).then((i){
-                            print("You have updated the user interests (for already existing users)!");
-                          });
-
-                          myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                          myLocation.docs.forEach((myResult){
-                            dataOfUser = myResult.data();
-                            myDocName = myResult.id;
-                          });
-
-                          FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                            "usernameProfileInformation.userLocation": locationController.text,
-                          }).then((i){
-                            print("You have updated the user location (for already existing users)!");
-                          });
-                        }
-
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
-                      }
-                      else if(myUsername == "" && myNewUsername != ""){
-                        if(firebaseDesktopHelper.onDesktop){
-                          List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                          var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                          myDocName = usersProfileInfo["docId"];
-
-                          //Getting the current profile info of the user:
-                          Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
-
-                          currentInfoOfUser["userInformation"] = informationAboutMyselfController.text;
-                          currentInfoOfUser["userInterests"] = interestsController.text;
-                          currentInfoOfUser["userLocation"] = locationController.text;
-
-                          //Seeing what is in currentInfoOfUser:
-                          print("User information: ${currentInfoOfUser["userInformation"]}");
-                          print("User interests: ${currentInfoOfUser["userInterests"]}");
-                          print("User location: ${currentInfoOfUser["userLocation"]}");
-
-                          //Updating a user's changes:
-                          await firebaseDesktopHelper.updateFirestoreDocument("User/$myDocName", {
-                            "usernameProfileInformation": currentInfoOfUser,
-                          });
-                        }
-                        else{
-                          myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                          myInformation.docs.forEach((myResult){
-                            dataOfUser = myResult.data();
-                            myDocName = myResult.id;
-                          });
-
-                          FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                            "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
-                          }).then((j){
-                            print("You have updated the user information (for new users)!");
-                          });
-
-                          myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                          myInformation.docs.forEach((myResult){
-                            dataOfUser = myResult.data();
-                            myDocName = myResult.id;
-                          });
-
-                          FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                            "usernameProfileInformation.userInterests": interestsController.text,
-                          }).then((j){
-                            print("You have updated the user interests (for new users)!");
-                          });
-
-                          myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                          myLocation.docs.forEach((myResult){
-                            dataOfUser = myResult.data();
-                            myDocName = myResult.id;
-                          });
-
-                          FirebaseFirestore.instance.collection("User").doc(myDocName).update({
-                            "usernameProfileInformation.userLocation": locationController.text,
-                          }).then((j){
-                            print("You have updated the user location (for new users)!");
-                          });
-                        }
-
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
-                      }
+                      handlingMyPick();
                     }
+                  ),
                 ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.015625,
-              ),
-            ],
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015625,
+                ),
+                CircleAvatar(
+                  radius: 80,
+                  backgroundImage: myImageBytes != null ? MemoryImage(myImageBytes!) : null,
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015625,
+                ),
+                Center(
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black,
+                      ),
+                      child: InkWell(
+                        child: Ink(
+                          color: Colors.black,
+                          //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                          child: Text("Update Profile", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                        ),
+                      ),
+                      onPressed: () async{
+                        final theUsername = myUsername != "" && myNewUsername == "" ? myUsername : myNewUsername;
+
+                        if(myImageBytes != null){
+                          await uploadAndStoreProfilePicture(myImageBytes!, theUsername);
+                        }
+
+                        if(myUsername != "" && myNewUsername == ""){
+                          if(firebaseDesktopHelper.onDesktop){
+                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                            var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                            myDocName = usersProfileInfo["docId"];
+
+                            //Getting the current profile info of the user:
+                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
+
+                            currentInfoOfUser["userInformation"] = informationAboutMyselfController.text;
+                            currentInfoOfUser["userInterests"] = interestsController.text;
+                            currentInfoOfUser["userLocation"] = locationController.text;
+
+                            //Seeing what is in currentInfoOfUser:
+                            print("User information: ${currentInfoOfUser["userInformation"]}");
+                            print("User interests: ${currentInfoOfUser["userInterests"]}");
+                            print("User location: ${currentInfoOfUser["userLocation"]}");
+
+                            //Updating a user's changes:
+                            await firebaseDesktopHelper.updateFirestoreDocument("User/$myDocName", {
+                              "usernameProfileInformation": currentInfoOfUser,
+                            });
+                          }
+                          else{
+                            myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                            myInformation.docs.forEach((myResult){
+                              dataOfUser = myResult.data();
+                              myDocName = myResult.id;
+                            });
+
+                            FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                              "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
+                            }).then((i){
+                              print("You have updated the user information (for already existing users)!");
+                            });
+
+                            myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                            myInterests.docs.forEach((myResult){
+                              dataOfUser = myResult.data();
+                              myDocName = myResult.id;
+                            });
+
+                            FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                              "usernameProfileInformation.userInterests": interestsController.text,
+                            }).then((i){
+                              print("You have updated the user interests (for already existing users)!");
+                            });
+
+                            myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                            myLocation.docs.forEach((myResult){
+                              dataOfUser = myResult.data();
+                              myDocName = myResult.id;
+                            });
+
+                            FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                              "usernameProfileInformation.userLocation": locationController.text,
+                            }).then((i){
+                              print("You have updated the user location (for already existing users)!");
+                            });
+                          }
+
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
+                        }
+                        else if(myUsername == "" && myNewUsername != ""){
+                          if(firebaseDesktopHelper.onDesktop){
+                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                            var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                            myDocName = usersProfileInfo["docId"];
+
+                            //Getting the current profile info of the user:
+                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
+
+                            currentInfoOfUser["userInformation"] = informationAboutMyselfController.text;
+                            currentInfoOfUser["userInterests"] = interestsController.text;
+                            currentInfoOfUser["userLocation"] = locationController.text;
+
+                            //Seeing what is in currentInfoOfUser:
+                            print("User information: ${currentInfoOfUser["userInformation"]}");
+                            print("User interests: ${currentInfoOfUser["userInterests"]}");
+                            print("User location: ${currentInfoOfUser["userLocation"]}");
+
+                            //Updating a user's changes:
+                            await firebaseDesktopHelper.updateFirestoreDocument("User/$myDocName", {
+                              "usernameProfileInformation": currentInfoOfUser,
+                            });
+                          }
+                          else{
+                            myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                            myInformation.docs.forEach((myResult){
+                              dataOfUser = myResult.data();
+                              myDocName = myResult.id;
+                            });
+
+                            FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                              "usernameProfileInformation.userInformation": informationAboutMyselfController.text,
+                            }).then((j){
+                              print("You have updated the user information (for new users)!");
+                            });
+
+                            myInterests = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                            myInformation.docs.forEach((myResult){
+                              dataOfUser = myResult.data();
+                              myDocName = myResult.id;
+                            });
+
+                            FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                              "usernameProfileInformation.userInterests": interestsController.text,
+                            }).then((j){
+                              print("You have updated the user interests (for new users)!");
+                            });
+
+                            myLocation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                            myLocation.docs.forEach((myResult){
+                              dataOfUser = myResult.data();
+                              myDocName = myResult.id;
+                            });
+
+                            FirebaseFirestore.instance.collection("User").doc(myDocName).update({
+                              "usernameProfileInformation.userLocation": locationController.text,
+                            }).then((j){
+                              print("You have updated the user location (for new users)!");
+                            });
+                          }
+
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
+                        }
+                      }
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015625,
+                ),
+              ],
+            ),
           ),
-        )
+        ),
     );
   }
 }

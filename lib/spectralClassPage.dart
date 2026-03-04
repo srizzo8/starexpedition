@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
@@ -206,23 +207,20 @@ class spectralClassPageState extends State<spectralClassPage>{
               columns: [
                 DataColumn(label: Expanded(
                   child: Center(
-                    child: FittedBox(
-                      child: Text('Spectral Class', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-                    ),
+                    child: Text('Spectral\nClass', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10.0.sp)),
+                  ),
                   ),
                 ),
                 DataColumn(label: Expanded(
                   child: Center(
-                    child: FittedBox(
-                      child: Text('Temperature', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-                    ),
+                    child: Text('Temperature', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10.0.sp)),
+                  ),
                   ),
                 ),
                 DataColumn(label: Expanded(
                   child: Center(
-                    child: FittedBox(
-                      child: Text('Stars with Articles', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5))),
-                    ),
+                    child: Text('Stars with\nArticles', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10.0.sp)),
+                  ),
                   ),
                 ),
               ],
