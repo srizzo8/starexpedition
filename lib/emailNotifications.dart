@@ -24,6 +24,7 @@ import 'package:starexpedition4/forgottenPassword.dart' as forgottenPassword;
 import 'package:http/http.dart' as http;
 
 var myPort;
+final myClient = http.Client();
 
 class emailNotifications extends StatelessWidget {
   const emailNotifications ({Key? key}) : super(key: key);
@@ -37,7 +38,7 @@ class emailNotifications extends StatelessWidget {
 }
 
 Future<void> sendAnEmail(String to, String mySubject, String myHtml) async{
-  final myResponse = await http.post(
+  final myResponse = await myClient.post(
     Uri.parse("https://star-expedition-emails.vercel.app/api/sendEmails"),
     headers: {"Content-Type": "application/json"},
     body: jsonEncode({"to": to, "subject": mySubject, "html": myHtml}),
