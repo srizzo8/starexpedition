@@ -89,12 +89,15 @@ class mySearch extends SearchDelegate{
     myMatchQuery.sort((u1, u2) => u1.compareTo(u2));
 
     return ListView.builder(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: myMatchQuery.length,
       itemBuilder: (bc4, index){
         var myResult = myMatchQuery[index];
         return ListTile(
           title: Text(myResult),
           onTap: () async{
+            FocusScope.of(bc4).unfocus();
+
             if(firebaseDesktopHelper.onDesktop){
               nameClickedData = await firebaseDesktopHelper.getFirestoreCollection("User");
               theUsersData = nameClickedData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
@@ -126,12 +129,7 @@ class userSearchBarPageState extends State<userSearchBarPage>{
   mySearch ms = new mySearch();
 
   Widget build(BuildContext context){
-    return Listener(
-      behavior: HitTestBehavior.translucent,
-      onPointerDown: (_){
-        FocusManager.instance.primaryFocus?.unfocus();
-      },
-      child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
@@ -173,7 +171,6 @@ class userSearchBarPageState extends State<userSearchBarPage>{
           ],
         ),
         drawer: myMain.starExpeditionNavigationDrawer(),
-      ),
-    );
+      );
   }
 }

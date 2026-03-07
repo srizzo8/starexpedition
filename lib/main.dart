@@ -26,7 +26,7 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show SystemChannels, rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
@@ -769,15 +769,15 @@ List<myStars> starsForSearchBar = [
   myStars(starName: "Tau Ceti", imagePath: "assets/images/tau_ceti.jpg", articlePath: "assets/text_files/star_files/tau_ceti.txt"),
   myStars(starName: "Ross 128", imagePath: "assets/images/ross_128.jpg", articlePath: "assets/text_files/star_files/ross_128.txt"),
   myStars(starName: "Luyten's Star", imagePath: "assets/images/luytens_star.jpg", articlePath: "assets/text_files/star_files/luytens_star.txt"),
-  myStars(starName: "Kapteyn's Star", imagePath: "assets/images/kapteyns_star.jpg", articlePath: "assets/text_files/star_files/kapteyns_star.txt"),
+  //myStars(starName: "Kapteyn's Star", imagePath: "assets/images/kapteyns_star.jpg", articlePath: "assets/text_files/star_files/kapteyns_star.txt"),
   myStars(starName: "Wolf 1061", imagePath: "assets/images/wolf_1061.jpg", articlePath: "assets/text_files/star_files/wolf_1061.txt"),
-  myStars(starName: "Gliese 876", imagePath: "assets/images/gliese_876.jpg", articlePath: "assets/text_files/star_files/gliese_876.txt"),
-  myStars(starName: "Gliese 581", imagePath: "assets/images/gliese_581.jpg", articlePath: "assets/text_files/star_files/gliese_581.txt"),
-  myStars(starName: "Lacaille 9352", imagePath: "assets/images/lacaille_9352.jpg", articlePath: "assets/text_files/star_files/lacaille_9352.txt"),
+  //myStars(starName: "Gliese 876", imagePath: "assets/images/gliese_876.jpg", articlePath: "assets/text_files/star_files/gliese_876.txt"),
+  //myStars(starName: "Gliese 581", imagePath: "assets/images/gliese_581.jpg", articlePath: "assets/text_files/star_files/gliese_581.txt"),
+  //myStars(starName: "Lacaille 9352", imagePath: "assets/images/lacaille_9352.jpg", articlePath: "assets/text_files/star_files/lacaille_9352.txt"),
   myStars(starName: "Gliese 667 C", imagePath: "assets/images/gliese_667_c.jpg", articlePath: "assets/text_files/star_files/gliese_667_c.txt"),
-  myStars(starName: "HD 85512", imagePath: "assets/images/hd_85512.jpg", articlePath: "assets/text_files/star_files/hd_85512.txt"),
-  myStars(starName: "LHS 475", imagePath: "assets/images/lhs_475.JPG", articlePath: "assets/text_files/star_files/lhs_475.txt"),
-  myStars(starName: "Wolf 359", imagePath: "assets/images/wolf_359.JPG", articlePath: "assets/text_files/star_files/wolf_359.txt"),
+  //myStars(starName: "HD 85512", imagePath: "assets/images/hd_85512.jpg", articlePath: "assets/text_files/star_files/hd_85512.txt"),
+  //myStars(starName: "LHS 475", imagePath: "assets/images/lhs_475.JPG", articlePath: "assets/text_files/star_files/lhs_475.txt"),
+  //myStars(starName: "Wolf 359", imagePath: "assets/images/wolf_359.JPG", articlePath: "assets/text_files/star_files/wolf_359.txt"),
   myStars(starName: "Teegarden's Star", imagePath: "assets/images/teegardens_star.JPG", articlePath: "assets/text_files/star_files/teegardens_star.txt"),
   myStars(starName: "TRAPPIST-1", imagePath: "assets/images/trappist_1.JPG", articlePath: "assets/text_files/star_files/trappist_1.txt"),
   myStars(starName: "Gliese 12", imagePath: "assets/images/gliese_12.JPG", articlePath: "assets/text_files/star_files/gliese_12.txt"),
@@ -785,7 +785,9 @@ List<myStars> starsForSearchBar = [
   myStars(starName: "LHS 1140", imagePath: "assets/images/lhs_1140.JPG", articlePath: "assets/text_files/star_files/lhs_1140.txt"),
   myStars(starName: "82 G Eridani", imagePath: "assets/images/82_g_eridani.png", articlePath: "assets/text_files/star_files/82_g_eridani.txt"),
   myStars(starName: "Ross 508", imagePath: "assets/images/ross_508.JPG", articlePath: "assets/text_files/star_files/ross_508.txt"),
-  myStars(starName: "GJ 251", imagePath: "assets/images/gj_251.JPG", articlePath: "assets/text_files/star_files/gj_251.txt")
+  myStars(starName: "GJ 251", imagePath: "assets/images/gj_251.JPG", articlePath: "assets/text_files/star_files/gj_251.txt"),
+  myStars(starName: "GJ 1002", imagePath: "assets/images/gj_1002.JPG", articlePath: "assets/text_files/star_files/gj_1002.txt"),
+  myStars(starName: "GJ 1061", imagePath: "assets/images/gj_1061.JPG", articlePath: "assets/text_files/star_files/gj_1061.txt")
 ];
 
 class MyApp extends StatelessWidget {
@@ -1676,8 +1678,11 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
 );*/
 
 class CustomSearchDelegate extends SearchDelegate {
-
   List<String> starInfo = [];
+  final ScrollController myScrollController = ScrollController();
+
+  @override
+  TextInputAction get textInputAction => TextInputAction.search;
 
   // This is the first overwrite (to clear the search text)
   @override
@@ -1709,6 +1714,35 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     List<myStars> myMatchQuery = [];
+
+    if(!myScrollController.hasListeners){
+      myScrollController.addListener((){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      });
+    }
+
+    SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+      FocusScope.of(context).requestFocus(FocusNode());}
+    );
+
+    Future.delayed(Duration(milliseconds: 50), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 100), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 250), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 500), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
 
     for(var star in starsForSearchBar) {
       if (star.starName!.toLowerCase().contains(query)) {
@@ -1840,20 +1874,31 @@ class CustomSearchDelegate extends SearchDelegate {
       }
     }*/
 
-    return ListView.builder(
-      itemCount: myMatchQuery.length,
-      itemBuilder: (context, index) {
-        var result = myMatchQuery[index]; //If user enters in a key, the result is the key.
-        /*for(var s in otherNamesMatchQuery.values){
-          if((otherNamesMatchQuery.entries.firstWhere((element) => element.value == s)) == myMatchQuery[index]){
-            result = myMatchQuery[index]; //If user enters in a value, it will find the value's key and the result will be the key.
-          }
-        }*/
-        //otherNamesMatchQuery.keys.elementAt(index);
-        return ListTile(
-          title: Text(result.starName!), // The ! is there so that it can prevent errors, especially for variables that are set to null
-        );
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
       },
+      onPanDown: (_){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      child: ListView.builder(
+        controller: myScrollController,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: myMatchQuery.length,
+        itemBuilder: (context, index) {
+          var result = myMatchQuery[index]; //If user enters in a key, the result is the key.
+          /*for(var s in otherNamesMatchQuery.values){
+            if((otherNamesMatchQuery.entries.firstWhere((element) => element.value == s)) == myMatchQuery[index]){
+              result = myMatchQuery[index]; //If user enters in a value, it will find the value's key and the result will be the key.
+            }
+          }*/
+          //otherNamesMatchQuery.keys.elementAt(index);
+          return ListTile(
+            title: Text(result.starName!), // The ! is there so that it can prevent errors, especially for variables that are set to null
+          );
+        },
+      ),
     );
   }
 
@@ -2002,6 +2047,7 @@ class CustomSearchDelegate extends SearchDelegate {
     myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
 
     return ListView.builder(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: myMatchQuery.length,
       itemBuilder: (context, index) {
         return ListTile(
@@ -2009,6 +2055,8 @@ class CustomSearchDelegate extends SearchDelegate {
                 style: TextStyle(
                     color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () async{
+              SystemChannels.textInput.invokeMethod("TextInput.hide");
+
               correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
               print(correctStar);
               starInfo = await getStarInformation();
@@ -2077,6 +2125,10 @@ class CustomSearchDelegate extends SearchDelegate {
 
 class CustomSearchDelegateForPlanets extends SearchDelegate{
   List<String> planetInfo = [];
+  final ScrollController myScrollController = ScrollController();
+
+  @override
+  TextInputAction get textInputAction => TextInputAction.search;
 
   // This is the first overwrite (to clear the search text)
   @override
@@ -2108,21 +2160,61 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
   Widget buildResults(BuildContext context) {
     List<myStars> myMatchQueryPlanets = [];
 
+    if(!myScrollController.hasListeners){
+      myScrollController.addListener((){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      });
+    }
+
+    SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+      FocusScope.of(context).requestFocus(FocusNode());}
+    );
+
+    Future.delayed(Duration(milliseconds: 50), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 100), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 250), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 500), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
     for(var planet in allPlanets){
       if(planet.toLowerCase().contains(query)){
         myMatchQueryPlanets.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
       }
     }
 
-    return ListView.builder(
-      itemCount: myMatchQueryPlanets.length,
-      itemBuilder: (context, index) {
-        var result = myMatchQueryPlanets[index]; //If user enters in a key, the result is the key.
-
-        return ListTile(
-          title: Text(result.starName!),
-        );
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
       },
+      onPanDown: (_){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      child: ListView.builder(
+        controller: myScrollController,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: myMatchQueryPlanets.length,
+        itemBuilder: (context, index) {
+          var result = myMatchQueryPlanets[index]; //If user enters in a key, the result is the key.
+
+          return ListTile(
+            title: Text(result.starName!),
+          );
+        },
+      ),
     );
   }
 
@@ -2140,11 +2232,14 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
     myMatchQueryPlanets.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
 
     return ListView.builder(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: myMatchQueryPlanets.length,
       itemBuilder: (context, index) {
         return ListTile(
             title: Text(myMatchQueryPlanets[index].starName!, style: TextStyle(color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
             onTap: () async{
+              SystemChannels.textInput.invokeMethod("TextInput.hide");
+
               fromSearchBarToPlanetArticle = true;
               correctPlanet = myMatchQueryPlanets[index].starName!;
 
