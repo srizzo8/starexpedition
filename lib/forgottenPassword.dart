@@ -248,16 +248,21 @@ class forgottenPasswordState extends State<forgottenPassword>{
                     child: Center(
                         child: Padding(
                           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
-                            child: TextField(
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: "Username",
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                               ),
-                              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                              controller: myUsernameController,
-                            ),
+                              child: TextField(
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: "Username",
+                                ),
+                                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                controller: myUsernameController,
+                              ),
                           ),
+                        ),
                       ),
                   ),
                 ],
@@ -292,6 +297,10 @@ class forgottenPasswordState extends State<forgottenPassword>{
                     child: Center(
                       child: Container(
                         padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, top: MediaQuery.of(context).size.height * 0.015625, right: MediaQuery.of(context).size.width * 0.031250),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                          ),
                           child: TextField(
                             maxLines: 1,
                             decoration: InputDecoration(
@@ -302,6 +311,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
                             controller: myEmailController,
                             ),
                           ),
+                        ),
                       ),
                   ),
                 ],
