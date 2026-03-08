@@ -17,7 +17,7 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show SystemChannels, rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 import 'package:starexpedition4/userProfile.dart';
@@ -35,6 +35,11 @@ class userSearchBarPage extends StatefulWidget{
 
 class mySearch extends SearchDelegate{
   List<dynamic> usernameList = myMain.theListOfUsers;
+
+  final ScrollController myScrollController = ScrollController();
+
+  @override
+  TextInputAction get textInputAction => TextInputAction.search;
 
   @override
   List<Widget>? buildActions(BuildContext bc){
@@ -61,19 +66,60 @@ class mySearch extends SearchDelegate{
   @override
   Widget buildResults(BuildContext bc3){
     List<String> myMatchQuery = [];
+
+    if(!myScrollController.hasListeners){
+      myScrollController.addListener((){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      });
+    }
+
+    SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+      FocusScope.of(bc3).requestFocus(FocusNode());}
+    );
+
+    Future.delayed(Duration(milliseconds: 50), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 100), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 250), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 500), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
     for(var user in usernameList){
       if(user.toLowerCase().contains(query.toLowerCase())){
         myMatchQuery.add(user);
       }
     }
-    return ListView.builder(
-      itemCount: myMatchQuery.length,
-      itemBuilder: (bc3, index){
-        var myResult = myMatchQuery[index];
-        return ListTile(
-          title: Text(myResult),
-        );
-      }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      onPanDown: (_){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      child: ListView.builder(
+        controller: myScrollController,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: myMatchQuery.length,
+        itemBuilder: (bc3, index){
+          var myResult = myMatchQuery[index];
+          return ListTile(
+            title: Text(myResult),
+          );
+        }
+      ),
     );
   }
 
@@ -88,37 +134,41 @@ class mySearch extends SearchDelegate{
 
     myMatchQuery.sort((u1, u2) => u1.compareTo(u2));
 
-    return ListView.builder(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: myMatchQuery.length,
-      itemBuilder: (bc4, index){
-        var myResult = myMatchQuery[index];
-        return ListTile(
-          title: Text(myResult),
-          onTap: () async{
-            FocusScope.of(bc4).unfocus();
+    return GestureDetector(
+      onTap: () => FocusScope.of(bc4).unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: ListView.builder(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: myMatchQuery.length,
+        itemBuilder: (bc4, index){
+          var myResult = myMatchQuery[index];
+          return ListTile(
+            title: Text(myResult),
+            onTap: () async{
+              SystemChannels.textInput.invokeMethod("TextInput.hide");
 
-            if(firebaseDesktopHelper.onDesktop){
-              nameClickedData = await firebaseDesktopHelper.getFirestoreCollection("User");
-              theUsersData = nameClickedData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
-              print("nameclickeddata: ${nameClickedData}");
-              print("theusersdata: ${theUsersData}");
+              if(firebaseDesktopHelper.onDesktop){
+                nameClickedData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                theUsersData = nameClickedData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                print("nameclickeddata: ${nameClickedData}");
+                print("theusersdata: ${theUsersData}");
 
-              Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
+                Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
+              }
+              else{
+                nameClickedData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myResult.toLowerCase()).get();
+                nameClickedData.docs.forEach((person){
+                  theUsersData = person.data();
+                });
+                print("You clicked on someone's name: ${myResult}");
+                print("The user's data: ${theUsersData}");
+                print("Stars tracked: ${theUsersData["usernameProfileInformation"]["starsTracked"]}");
+                Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
+              }
             }
-            else{
-              nameClickedData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myResult.toLowerCase()).get();
-              nameClickedData.docs.forEach((person){
-                theUsersData = person.data();
-              });
-              print("You clicked on someone's name: ${myResult}");
-              print("The user's data: ${theUsersData}");
-              print("Stars tracked: ${theUsersData["usernameProfileInformation"]["starsTracked"]}");
-              Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
-            }
-          }
-        );
-      }
+          );
+        }
+      ),
     );
   }
 }
@@ -129,48 +179,54 @@ class userSearchBarPageState extends State<userSearchBarPage>{
   mySearch ms = new mySearch();
 
   Widget build(BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Star Expedition"),
-        /*leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            color: Colors.white,
-            onPressed: () =>{
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
-            }
-        ),*/
-      ),
-      body: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),
-            Container(
-              child: Text("User Search", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),
-            Container(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  icon: Icon(Icons.search),
-                ),
-                controller: query,
-                onTap: (){
-                  showSearch(
-                    context: context,
-                    delegate: mySearch(),
-                  );
-                }
-              ),
-            ),
-          ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Star Expedition"),
+          /*leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              color: Colors.white,
+              onPressed: () =>{
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
+              }
+          ),*/
         ),
-        drawer: myMain.starExpeditionNavigationDrawer(),
-      );
+        body: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Container(
+                child: Text("User Search", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Container(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    icon: Icon(Icons.search),
+                  ),
+                  controller: query,
+                  readOnly: true,
+                  focusNode: FocusNode(canRequestFocus: false),
+                  onTap: (){
+                    showSearch(
+                      context: context,
+                      delegate: mySearch(),
+                    );
+                  }
+                ),
+              ),
+            ],
+          ),
+          drawer: myMain.starExpeditionNavigationDrawer(),
+        ),
+    );
   }
 }
