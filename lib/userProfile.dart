@@ -860,7 +860,10 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                         Navigator.of(bc).pop(),
                       }
                       else{
-                          Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => userSearchBarPage())),
+                          showSearch(
+                            context: bc,
+                            delegate: mySearch(),
+                          ),
                         }
             }
         ),

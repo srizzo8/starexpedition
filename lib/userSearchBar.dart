@@ -57,7 +57,8 @@ class mySearch extends SearchDelegate{
   Widget? buildLeading(BuildContext bc2){
     return IconButton(
       onPressed: (){
-        close(bc2, null);
+        //close(bc2, null);
+        Navigator.push(bc2, MaterialPageRoute(builder: (BuildContext context) => userSearchBarPage()));
       },
       icon: Icon(Icons.arrow_back),
     );
