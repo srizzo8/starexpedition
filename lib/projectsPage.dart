@@ -276,6 +276,10 @@ class projectsPageState extends State<projectsPage>{
                       ),
                     ),
                   ),
+                  index == mySublistsProjects[theCurrentPage].length - 1? Container(
+                    height: MediaQuery.of(context).size.height * 0.015625,
+                  ):
+                  Container(),
                 ],
               );
             }

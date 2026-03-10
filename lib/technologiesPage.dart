@@ -272,6 +272,10 @@ class technologiesPageState extends State<technologiesPage>{
                         ),
                       ),
                     ),
+                    index == mySublistsTechnologies[theCurrentPageTechnologies].length - 1? Container(
+                      height: MediaQuery.of(context).size.height * 0.015625,
+                    ):
+                    Container(),
                   ],
                 );
               }
