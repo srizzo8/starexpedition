@@ -623,6 +623,10 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                 //Does nothing
                               }
                           ),
+                          index == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].length - 1? Container(
+                            height: MediaQuery.of(context).size.height * 0.015625,
+                          ):
+                          Container(),
                         ]
                     ): Column(
                         children: <Widget>[
@@ -806,6 +810,10 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                                 //Does nothing
                               }
                           ),
+                          index == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies].length - 1? Container(
+                            height: MediaQuery.of(context).size.height * 0.015625,
+                          ):
+                          Container(),
                         ]
                     ),
                   ],
@@ -937,7 +945,7 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                 }
             ),
             Center(
-              child: (myPagesProjectsThreadReplies.isNotEmpty && theCurrentPageProjectsThreadReplies < myPagesProjectsThreadReplies.length)? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+              child: (myPagesProjectsThreadReplies.isNotEmpty && theCurrentPageProjectsThreadReplies < myPagesProjectsThreadReplies.length && mySublistsProjectsThreadReplies.isNotEmpty)? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
               key: ValueKey(myPaginatorResetValue),

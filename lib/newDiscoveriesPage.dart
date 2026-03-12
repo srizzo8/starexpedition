@@ -621,6 +621,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                 //Does nothibg
                               }
                           ),
+                          index == mySublistsNdThreadReplies[theCurrentPageNdThreadReplies].length - 1? Container(
+                            height: MediaQuery.of(context).size.height * 0.015625,
+                          ):
+                          Container(),
                         ]
                     ): Column(
                         children: <Widget>[
@@ -805,6 +809,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                 //Does nothing
                               }
                           ),
+                          index == mySublistsNdThreadReplies[theCurrentPageNdThreadReplies].length - 1? Container(
+                            height: MediaQuery.of(context).size.height * 0.015625,
+                          ):
+                          Container(),
                         ]
                     ),
                   ],
@@ -936,7 +944,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                 }
             ),
             Center(
-              child: (myPagesNdThreadReplies.isNotEmpty && theCurrentPageNdThreadReplies < myPagesNdThreadReplies.length)? myPagesNdThreadReplies[theCurrentPageNdThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+              child: (myPagesNdThreadReplies.isNotEmpty && theCurrentPageNdThreadReplies < myPagesNdThreadReplies.length && mySublistsNdThreadReplies.isNotEmpty)? myPagesNdThreadReplies[theCurrentPageNdThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
               key: ValueKey(myPaginatorResetValue),

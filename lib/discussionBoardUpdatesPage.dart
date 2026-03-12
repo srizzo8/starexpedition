@@ -736,6 +736,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
                               }
                           ),
+                          index == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].length - 1? Container(
+                            height: MediaQuery.of(context).size.height * 0.015625,
+                          ):
+                          Container(),
                         ]
                     ): Column(
                         children: <Widget>[
@@ -991,6 +995,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                     print(theDbuThreadReplies.length);*/
                               }
                           ),
+                          index == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].length - 1? Container(
+                            height: MediaQuery.of(context).size.height * 0.015625,
+                          ):
+                          Container(),
                         ]
                     ),
                   ],
@@ -1103,6 +1111,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                   ),
                 ),
                 onPressed: () async {
+                  print("Pages length: ${myPagesDbuThreadReplies.length}");
+
                   discussionBoardUpdatesReplyingToReplyBool = false;
                   discussionBoardUpdatesReplyBool = true;
                   dbuNavigationDepth++;
@@ -1129,7 +1139,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
               height: MediaQuery.of(context).size.height * 0.015625,
             ),*/
             Center(
-              child: (myPagesDbuThreadReplies.isNotEmpty && theCurrentPageDbuThreadReplies < myPagesDbuThreadReplies.length)? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+              child: (myPagesDbuThreadReplies.isNotEmpty && theCurrentPageDbuThreadReplies < myPagesDbuThreadReplies.length && mySublistsDbuThreadReplies.isNotEmpty)? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
               key: ValueKey(myPaginatorResetValue),

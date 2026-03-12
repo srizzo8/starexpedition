@@ -620,6 +620,10 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                               //Does nothing
                             }
                           ),
+                          index == mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies].length - 1? Container(
+                            height: MediaQuery.of(context).size.height * 0.015625,
+                          ):
+                          Container(),
                         ]
                       ): Column(
                           children: <Widget>[
@@ -802,6 +806,10 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                 //Does nothing
                               }
                             ),
+                            index == mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies].length - 1? Container(
+                              height: MediaQuery.of(context).size.height * 0.015625,
+                            ):
+                            Container(),
                           ]
                       ),
                     ],
@@ -934,7 +942,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
             }
           ),
           Center(
-            child: (myPagesTechnologiesThreadReplies.isNotEmpty && theCurrentPageTechnologiesThreadReplies < myPagesTechnologiesThreadReplies.length)? myPagesTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.062500, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
+            child: (myPagesTechnologiesThreadReplies.isNotEmpty && theCurrentPageTechnologiesThreadReplies < myPagesTechnologiesThreadReplies.length && mySublistsTechnologiesThreadReplies.isNotEmpty)? myPagesTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
             key: ValueKey(myPaginatorResetValue),
