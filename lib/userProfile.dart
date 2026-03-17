@@ -117,6 +117,38 @@ Future<void> uploadAndStoreProfilePicture(Uint8List myBytes, String nameOfUser) 
   }
 }
 
+Future<void> removeProfilePicture(String nameOfUser) async{
+  var myInformation;
+  var usersData;
+  var docsName;
+
+  if(firebaseDesktopHelper.onDesktop){
+    List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+    var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == nameOfUser.toLowerCase(), orElse: () => <String, dynamic>{});
+
+    docsName = usersProfileInfo["docId"];
+
+    //Getting the user's current profile information:
+    Map<String, dynamic> usersCurrentInfo = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"]);
+    usersCurrentInfo["userProfilePicture"] = "";
+
+    //Updating the user's profile picture:
+    await firebaseDesktopHelper.updateFirestoreDocument("User/${docsName}", {
+      "usernameProfileInformation": usersCurrentInfo,
+    });
+  }
+  else{
+    myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: nameOfUser.toLowerCase()).get();
+    myInformation.docs.forEach((myResult){
+      usersData = myResult.data();
+      docsName = myResult.id;
+    });
+
+    await FirebaseFirestore.instance.collection("User").doc(docsName).update({"usernameProfileInformation.userProfilePicture": ""});
+  }
+}
+
 class userProfilePage extends StatefulWidget{
   const userProfilePage ({Key? key}) : super(key: key);
 
@@ -197,6 +229,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
   //For profile pictures:
   Uint8List? myImageBytes;
   bool isSaving = false;
+  bool holdingRemovalOfPicture = false;
 
   //Loading existing photo from Firestore when user arrives on the page:
   Future<void> loadMyProfilePicture(String theUsersName) async{
@@ -299,6 +332,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
               icon: Icon(Icons.arrow_back),
               color: Colors.white,
               onPressed: () =>{
+                holdingRemovalOfPicture = false,
                 Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage())),
                 print("Going back to settings page"),
               }
@@ -429,29 +463,52 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                     ]
                 ),
               ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.black,
-                    ),
-                    child: InkWell(
-                      child: Ink(
-                        color: Colors.black,
-                        child: Text("Update Profile Picture", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
-                      ),
-                    ),
-                    onPressed: () async{
-                      handlingMyPick();
-                    }
-                  ),
-                ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.015625,
                 ),
                 CircleAvatar(
                   radius: 80,
                   backgroundImage: myImageBytes != null ? MemoryImage(myImageBytes!) : null,
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015625,
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black,
+                      ),
+                      child: InkWell(
+                        child: Ink(
+                          color: Colors.black,
+                          child: Text("Update Profile Picture", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                        ),
+                      ),
+                      onPressed: () async{
+                        handlingMyPick();
+                      }
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015625,
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black,
+                      ),
+                      child: InkWell(
+                        child: Ink(
+                          color: Colors.black,
+                          child: Text("Remove Profile Picture", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                        ),
+                      ),
+                      onPressed: () async{
+                        holdingRemovalOfPicture = true;
+                      }
+                  ),
                 ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.015625,
@@ -473,6 +530,16 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
 
                         if(myImageBytes != null){
                           await uploadAndStoreProfilePicture(myImageBytes!, theUsername);
+                        }
+
+                        if(holdingRemovalOfPicture == true){
+                          if(myUsername != "" && myNewUsername == ""){
+                            removeProfilePicture(myUsername);
+                          }
+                          else if(myUsername == "" && myNewUsername != ""){
+                            removeProfilePicture(myNewUsername);
+                          }
+                          holdingRemovalOfPicture = false;
                         }
 
                         if(myUsername != "" && myNewUsername == ""){
