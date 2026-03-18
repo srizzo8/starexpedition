@@ -514,10 +514,11 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                       }
                   ),
                 ),
-                Container(
+                /*Container(
                   height: MediaQuery.of(context).size.height * 0.015625,
-                ),
-                Center(
+                ),*/
+                Padding(
+                  padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: Colors.black,
