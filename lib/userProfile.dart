@@ -468,7 +468,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                 ),
                 CircleAvatar(
                   radius: 80,
-                  backgroundImage: myImageBytes != null ? MemoryImage(myImageBytes!) : null,
+                  backgroundImage: (myImageBytes != null && !holdingRemovalOfPicture) ? MemoryImage(myImageBytes!) : null,
                 ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.015625,
@@ -486,14 +486,16 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                         ),
                       ),
                       onPressed: () async{
+                        holdingRemovalOfPicture = false;
                         handlingMyPick();
                       }
                   ),
                 ),
-                Container(
+                /*Container(
                   height: MediaQuery.of(context).size.height * 0.015625,
-                ),
-                Padding(
+                ),*/
+                if(hasProfilePicture == true && holdingRemovalOfPicture == false)
+                  Padding(
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -506,7 +508,9 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                         ),
                       ),
                       onPressed: () async{
-                        holdingRemovalOfPicture = true;
+                        setState((){
+                          holdingRemovalOfPicture = true;
+                        });
                       }
                   ),
                 ),
@@ -540,6 +544,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                             removeProfilePicture(myNewUsername);
                           }
                           holdingRemovalOfPicture = false;
+                          hasProfilePicture == false;
                         }
 
                         if(myUsername != "" && myNewUsername == ""){

@@ -32,12 +32,49 @@ var usersEmailForEmailChangeMessage;
 var usersNewEmail;
 var userForEmailChange;
 
+bool hasProfilePicture = false;
+
 bool whitespaceChecker(String? myString){
   if(myString == null){
     return true;
   }
 
   return myString.contains(RegExp(r'\s'));
+}
+
+//Check if a user has a profile picture:
+Future<bool> checkUserProfilePicture(String nameOfUser) async{
+  var myInformation;
+  var usersData;
+
+  if(firebaseDesktopHelper.onDesktop){
+    List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+    var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == nameOfUser.toLowerCase(), orElse: () => <String, dynamic>{});
+
+    //Getting the user's current profile information:
+    Map<String, dynamic> usersCurrentInfo = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"]);
+
+    if(usersCurrentInfo["userProfilePicture"] == ""){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+  else{
+    myInformation = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: nameOfUser.toLowerCase()).get();
+    myInformation.docs.forEach((myResult){
+      usersData = myResult.data();
+    });
+
+    if(usersData["usernameProfileInformation"]["userProfilePicture"] == ""){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
 }
 
 class settingsPage extends StatefulWidget{
@@ -144,6 +181,10 @@ class settingsPageState extends State<settingsPage>{
                     //myMain.planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
                   });
                 }
+
+                //Check if a user has a profile picture or not:
+                hasProfilePicture = await checkUserProfilePicture(myUsername);
+                print("Does the user have a profile picture? ${hasProfilePicture}");
               }
               else if(myUsername == "" && myNewUsername != ""){
                 if(firebaseDesktopHelper.onDesktop){
@@ -165,6 +206,9 @@ class settingsPageState extends State<settingsPage>{
                     //myMain.planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
                   });
                 }
+                //Check if a user has a profile picture or not:
+                hasProfilePicture = await checkUserProfilePicture(myNewUsername);
+                print("Does the user have a profile picture? ${hasProfilePicture}");
               }
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => editingMyUserProfile()));
             }
