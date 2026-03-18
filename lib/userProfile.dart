@@ -494,7 +494,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
                 /*Container(
                   height: MediaQuery.of(context).size.height * 0.015625,
                 ),*/
-                if(hasProfilePicture == true && holdingRemovalOfPicture == false)
+                if((hasProfilePicture == true || myImageBytes != null) && holdingRemovalOfPicture == false)
                   Padding(
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                   child: ElevatedButton(
