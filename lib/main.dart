@@ -2925,117 +2925,123 @@ class articlePage extends StatelessWidget{
                                           showDialog(
                                               context: bc,
                                               builder: (BuildContext context){
-                                                return AlertDialog(
-                                                  title: Text("Tracking ${theStar.starName!}"),
-                                                  content: Wrap(
-                                                    children: <Widget>[
-                                                      Center(
-                                                        child: Container(
-                                                          alignment: Alignment.centerLeft,
-                                                          child: Text("Why are you interested in tracking this star?"),
+                                                return Listener(
+                                                  behavior: HitTestBehavior.translucent,
+                                                  onPointerDown: (_){
+                                                    FocusManager.instance.primaryFocus?.unfocus();
+                                                  },
+                                                  child: AlertDialog(
+                                                    title: Text("Tracking ${theStar.starName!}"),
+                                                    content: Wrap(
+                                                      children: <Widget>[
+                                                        Center(
+                                                          child: Container(
+                                                            alignment: Alignment.centerLeft,
+                                                            child: Text("Why are you interested in tracking this star?"),
+                                                          ),
                                                         ),
+                                                        TextField(
+                                                          controller: reasonForStarTrackNewUsers,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                          child: Text("Ok"),
+                                                          onPressed: () async{
+                                                            if(whitespaceChecker(reasonForStarTrackNewUsers.text) == false){
+                                                              starsTracked.addEntries({theStar.starName!: reasonForStarTrackNewUsers.text}.entries);
+
+                                                              if(firebaseDesktopHelper.onDesktop){
+                                                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                                                var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForStarsTrackedNewUser, orElse: () => <String, dynamic>{});
+
+                                                                Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
+
+                                                                //Updating starsTracked:
+                                                                currentInfoOfUser["starsTracked"] = starsTracked;
+
+                                                                await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForStarsTrackedNewUser", {
+                                                                  "usernameProfileInformation": currentInfoOfUser,
+                                                                });
+                                                              }
+                                                              else{
+                                                                FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedNewUser).update({
+                                                                  "usernameProfileInformation.starsTracked": starsTracked,
+                                                                }).then((outcome) {
+                                                                  print("starsTracked updated!");
+                                                                });
+                                                              }
+
+                                                              if(myNewUsername != "" && myUsername == ""){
+                                                                if(firebaseDesktopHelper.onDesktop){
+                                                                  var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                  var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                                  //Getting the current profile info of the user:
+                                                                  Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
+                                                                  starTracked = currentInfoOfNewUser["starsTracked"].containsKey(theStar.starName!);
+                                                                  print("starTracked: ${starTracked}");
+                                                                }
+                                                                else{
+                                                                  var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                                  var docNameForNewUsers;
+                                                                  theNewUser.docs.forEach((result){
+                                                                    docNameForNewUsers = result.id;
+                                                                  });
+
+                                                                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                                                                  Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                                                                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                                  print("starTracked: ${starTracked}");
+                                                                }
+                                                              }
+                                                              else if(myNewUsername == "" && myUsername != ""){
+                                                                if(firebaseDesktopHelper.onDesktop){
+                                                                  var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                  var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                                  //Getting the current profile info of the user:
+                                                                  Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
+                                                                  starTracked = currentInfoOfExistingUser["starsTracked"].containsKey(theStar.starName!);
+                                                                  print("starTracked: ${starTracked}");
+                                                                }
+                                                                else{
+                                                                  var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                                  var docNameForExistingUsers;
+                                                                  theExistingUser.docs.forEach((result){
+                                                                    docNameForExistingUsers = result.id;
+                                                                  });
+
+                                                                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                                                                  Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                                                                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                                  print("starTracked: ${starTracked}");
+                                                                }
+                                                              }
+
+                                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+
+                                                              /*
+                                                            Navigator.pop(bc);
+                                                            showSearch(
+                                                                context: context,
+                                                                delegate: CustomSearchDelegate()
+                                                            );*/
+                                                            }
+                                                          }
                                                       ),
-                                                      TextField(
-                                                        controller: reasonForStarTrackNewUsers,
+                                                      TextButton(
+                                                          child: Text("Cancel"),
+                                                          onPressed: ()=>{
+                                                            Navigator.pop(context),
+                                                          }
                                                       ),
                                                     ],
                                                   ),
-                                                  actions: [
-                                                    TextButton(
-                                                        child: Text("Ok"),
-                                                        onPressed: () async{
-                                                          if(whitespaceChecker(reasonForStarTrackNewUsers.text) == false){
-                                                            starsTracked.addEntries({theStar.starName!: reasonForStarTrackNewUsers.text}.entries);
-
-                                                            if(firebaseDesktopHelper.onDesktop){
-                                                              List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                                              var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForStarsTrackedNewUser, orElse: () => <String, dynamic>{});
-
-                                                              Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
-
-                                                              //Updating starsTracked:
-                                                              currentInfoOfUser["starsTracked"] = starsTracked;
-
-                                                              await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForStarsTrackedNewUser", {
-                                                                "usernameProfileInformation": currentInfoOfUser,
-                                                              });
-                                                            }
-                                                            else{
-                                                              FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedNewUser).update({
-                                                                "usernameProfileInformation.starsTracked": starsTracked,
-                                                              }).then((outcome) {
-                                                                print("starsTracked updated!");
-                                                              });
-                                                            }
-
-                                                            if(myNewUsername != "" && myUsername == ""){
-                                                              if(firebaseDesktopHelper.onDesktop){
-                                                                var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                                var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                                                //Getting the current profile info of the user:
-                                                                Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
-                                                                starTracked = currentInfoOfNewUser["starsTracked"].containsKey(theStar.starName!);
-                                                                print("starTracked: ${starTracked}");
-                                                              }
-                                                              else{
-                                                                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                                                                var docNameForNewUsers;
-                                                                theNewUser.docs.forEach((result){
-                                                                  docNameForNewUsers = result.id;
-                                                                });
-
-                                                                DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
-                                                                Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
-
-                                                                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
-                                                                print("starTracked: ${starTracked}");
-                                                              }
-                                                            }
-                                                            else if(myNewUsername == "" && myUsername != ""){
-                                                              if(firebaseDesktopHelper.onDesktop){
-                                                                var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                                var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                                                //Getting the current profile info of the user:
-                                                                Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
-                                                                starTracked = currentInfoOfExistingUser["starsTracked"].containsKey(theStar.starName!);
-                                                                print("starTracked: ${starTracked}");
-                                                              }
-                                                              else{
-                                                                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                                                                var docNameForExistingUsers;
-                                                                theExistingUser.docs.forEach((result){
-                                                                  docNameForExistingUsers = result.id;
-                                                                });
-
-                                                                DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
-                                                                Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
-
-                                                                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
-                                                                print("starTracked: ${starTracked}");
-                                                              }
-                                                            }
-
-                                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
-
-                                                            /*
-                                                          Navigator.pop(bc);
-                                                          showSearch(
-                                                              context: context,
-                                                              delegate: CustomSearchDelegate()
-                                                          );*/
-                                                          }
-                                                        }
-                                                    ),
-                                                    TextButton(
-                                                        child: Text("Cancel"),
-                                                        onPressed: ()=>{
-                                                          Navigator.pop(context),
-                                                        }
-                                                    ),
-                                                  ],
                                                 );
                                               }
                                           );
@@ -3098,116 +3104,122 @@ class articlePage extends StatelessWidget{
                                           showDialog(
                                               context: bc,
                                               builder: (BuildContext context){
-                                                return AlertDialog(
-                                                  title: Text("Tracking ${theStar.starName!}"),
-                                                  content: Wrap(
-                                                    children: <Widget>[
-                                                      Center(
-                                                        child: Container(
-                                                          alignment: Alignment.centerLeft,
-                                                          child: Text("Why are you interested in tracking this star?"),
+                                                return Listener(
+                                                  behavior: HitTestBehavior.translucent,
+                                                  onPointerDown: (_){
+                                                    FocusManager.instance.primaryFocus?.unfocus();
+                                                  },
+                                                  child: AlertDialog(
+                                                    title: Text("Tracking ${theStar.starName!}"),
+                                                    content: Wrap(
+                                                      children: <Widget>[
+                                                        Center(
+                                                          child: Container(
+                                                            alignment: Alignment.centerLeft,
+                                                            child: Text("Why are you interested in tracking this star?"),
+                                                          ),
                                                         ),
+                                                        TextField(
+                                                          controller: reasonForStarTrackExistingUsers,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                          child: Text("Ok"),
+                                                          onPressed: () async{
+                                                            if(whitespaceChecker(reasonForStarTrackExistingUsers.text) == false){
+                                                              print("docNameForStarsTrackedExistingUser: ${docNameForStarsTrackedExistingUser}");
+                                                              starsTracked.addEntries({theStar.starName!: reasonForStarTrackExistingUsers.text}.entries);
+
+                                                              if(firebaseDesktopHelper.onDesktop){
+                                                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                                                var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForStarsTrackedExistingUser, orElse: () => <String, dynamic>{});
+
+                                                                Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
+
+                                                                //Updating starsTracked:
+                                                                currentInfoOfUser["starsTracked"] = starsTracked;
+
+                                                                await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForStarsTrackedExistingUser", {
+                                                                  "usernameProfileInformation": currentInfoOfUser,
+                                                                });
+                                                              }
+                                                              else{
+                                                                FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedExistingUser).update({
+                                                                  "usernameProfileInformation.starsTracked": starsTracked,
+                                                                }).then((outcome) {
+                                                                  print("starsTracked updated!");
+                                                                });
+                                                              }
+
+                                                              if(myNewUsername != "" && myUsername == ""){
+                                                                if(firebaseDesktopHelper.onDesktop){
+                                                                  var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                  var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                                  //Getting the current profile info of the user:
+                                                                  Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
+                                                                  starTracked = currentInfoOfNewUser["starsTracked"].containsKey(theStar.starName!);
+                                                                  print("starTracked: ${starTracked}");
+                                                                }
+                                                                else{
+                                                                  var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                                  var docNameForNewUsers;
+                                                                  theNewUser.docs.forEach((result){
+                                                                    docNameForNewUsers = result.id;
+                                                                  });
+
+                                                                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                                                                  Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                                                                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                                  print("starTracked: ${starTracked}");
+                                                                }
+                                                              }
+                                                              else if(myNewUsername == "" && myUsername != ""){
+                                                                if(firebaseDesktopHelper.onDesktop){
+                                                                  var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                  var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                                  //Getting the current profile info of the user:
+                                                                  Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
+                                                                  starTracked = currentInfoOfExistingUser["starsTracked"].containsKey(theStar.starName!);
+                                                                  print("starTracked: ${starTracked}");
+                                                                }
+                                                                else{
+                                                                  var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                                  var docNameForExistingUsers;
+                                                                  theExistingUser.docs.forEach((result){
+                                                                    docNameForExistingUsers = result.id;
+                                                                  });
+
+                                                                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                                                                  Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                                                                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                                  print("starTracked: ${starTracked}");
+                                                                }
+                                                              }
+
+                                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+                                                              /*Navigator.pop(bc);
+                                                      showSearch(
+                                                          context: context,
+                                                          delegate: CustomSearchDelegate()
+                                                      );*/
+                                                            }
+                                                          }
                                                       ),
-                                                      TextField(
-                                                        controller: reasonForStarTrackExistingUsers,
+                                                      TextButton(
+                                                          child: Text("Cancel"),
+                                                          onPressed: ()=>{
+                                                            Navigator.pop(context),
+                                                          }
                                                       ),
                                                     ],
                                                   ),
-                                                  actions: [
-                                                    TextButton(
-                                                        child: Text("Ok"),
-                                                        onPressed: () async{
-                                                          if(whitespaceChecker(reasonForStarTrackExistingUsers.text) == false){
-                                                            print("docNameForStarsTrackedExistingUser: ${docNameForStarsTrackedExistingUser}");
-                                                            starsTracked.addEntries({theStar.starName!: reasonForStarTrackExistingUsers.text}.entries);
-
-                                                            if(firebaseDesktopHelper.onDesktop){
-                                                              List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                                              var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForStarsTrackedExistingUser, orElse: () => <String, dynamic>{});
-
-                                                              Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
-
-                                                              //Updating starsTracked:
-                                                              currentInfoOfUser["starsTracked"] = starsTracked;
-
-                                                              await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForStarsTrackedExistingUser", {
-                                                                "usernameProfileInformation": currentInfoOfUser,
-                                                              });
-                                                            }
-                                                            else{
-                                                              FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedExistingUser).update({
-                                                                "usernameProfileInformation.starsTracked": starsTracked,
-                                                              }).then((outcome) {
-                                                                print("starsTracked updated!");
-                                                              });
-                                                            }
-
-                                                            if(myNewUsername != "" && myUsername == ""){
-                                                              if(firebaseDesktopHelper.onDesktop){
-                                                                var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                                var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                                                //Getting the current profile info of the user:
-                                                                Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
-                                                                starTracked = currentInfoOfNewUser["starsTracked"].containsKey(theStar.starName!);
-                                                                print("starTracked: ${starTracked}");
-                                                              }
-                                                              else{
-                                                                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                                                                var docNameForNewUsers;
-                                                                theNewUser.docs.forEach((result){
-                                                                  docNameForNewUsers = result.id;
-                                                                });
-
-                                                                DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
-                                                                Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
-
-                                                                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
-                                                                print("starTracked: ${starTracked}");
-                                                              }
-                                                            }
-                                                            else if(myNewUsername == "" && myUsername != ""){
-                                                              if(firebaseDesktopHelper.onDesktop){
-                                                                var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                                var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                                                //Getting the current profile info of the user:
-                                                                Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
-                                                                starTracked = currentInfoOfExistingUser["starsTracked"].containsKey(theStar.starName!);
-                                                                print("starTracked: ${starTracked}");
-                                                              }
-                                                              else{
-                                                                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                                                                var docNameForExistingUsers;
-                                                                theExistingUser.docs.forEach((result){
-                                                                  docNameForExistingUsers = result.id;
-                                                                });
-
-                                                                DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
-                                                                Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
-
-                                                                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
-                                                                print("starTracked: ${starTracked}");
-                                                              }
-                                                            }
-
-                                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
-                                                            /*Navigator.pop(bc);
-                                                    showSearch(
-                                                        context: context,
-                                                        delegate: CustomSearchDelegate()
-                                                    );*/
-                                                          }
-                                                        }
-                                                    ),
-                                                    TextButton(
-                                                        child: Text("Cancel"),
-                                                        onPressed: ()=>{
-                                                          Navigator.pop(context),
-                                                        }
-                                                    ),
-                                                  ],
                                                 );
                                               }
                                           );
@@ -3839,110 +3851,116 @@ class planetArticle extends StatelessWidget{
                                         showDialog(
                                             context: theContext,
                                             builder: (BuildContext context){
-                                              return AlertDialog(
-                                                title: Text("Tracking ${correctPlanet}"),
-                                                content: Wrap(
-                                                  children: <Widget>[
-                                                    Center(
-                                                      child: Container(
-                                                        alignment: Alignment.centerLeft,
-                                                        child: Text("Why are you interested in tracking this planet?"),
+                                              return Listener(
+                                                behavior: HitTestBehavior.translucent,
+                                                onPointerDown: (_){
+                                                  FocusManager.instance.primaryFocus?.unfocus();
+                                                },
+                                                child: AlertDialog(
+                                                  title: Text("Tracking ${correctPlanet}"),
+                                                  content: Wrap(
+                                                    children: <Widget>[
+                                                      Center(
+                                                        child: Container(
+                                                          alignment: Alignment.centerLeft,
+                                                          child: Text("Why are you interested in tracking this planet?"),
+                                                        ),
                                                       ),
+                                                      TextField(
+                                                        controller: reasonForPlanetTrackNewUsers,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                        child: Text("Ok"),
+                                                        onPressed: () async{
+                                                          if(whitespaceChecker(reasonForPlanetTrackNewUsers.text) == false){
+                                                            planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackNewUsers.text}.entries);
+
+                                                            if(firebaseDesktopHelper.onDesktop){
+                                                              List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                                              var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForPlanetsTrackedNewUser, orElse: () => <String, dynamic>{});
+
+                                                              Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
+
+                                                              //Updating planetsTracked:
+                                                              currentInfoOfUser["planetsTracked"] = planetsTracked;
+
+                                                              await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForPlanetsTrackedNewUser", {
+                                                                "usernameProfileInformation": currentInfoOfUser,
+                                                              });
+                                                            }
+                                                            else{
+                                                              FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedNewUser).update({
+                                                                "usernameProfileInformation.planetsTracked": planetsTracked,
+                                                              }).then((outcome) {
+                                                                print("planetsTracked updated!");
+                                                              });
+                                                            }
+
+                                                            //Is the planet tracked by the user?
+                                                            if(myNewUsername != "" && myUsername == ""){
+                                                              if(firebaseDesktopHelper.onDesktop){
+                                                                var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                                //Getting the current profile info of the user:
+                                                                Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
+                                                                planetTracked = currentInfoOfNewUser["planetsTracked"].containsKey(correctPlanet);
+                                                                print("planetTracked: ${planetTracked}");
+                                                              }
+                                                              else{
+                                                                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                                var theDocNameForNewUsers;
+                                                                theNewUser.docs.forEach((result){
+                                                                  theDocNameForNewUsers = result.id;
+                                                                });
+
+                                                                DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                                                                Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                                                planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                                print("planetTracked: ${planetTracked}");
+                                                              }
+                                                            }
+                                                            else if(myNewUsername == "" && myUsername != ""){
+                                                              if(firebaseDesktopHelper.onDesktop){
+                                                                var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                                //Getting the current profile info of the user:
+                                                                Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
+                                                                planetTracked = currentInfoOfExistingUser["planetsTracked"].containsKey(correctPlanet);
+                                                                print("planetTracked: ${planetTracked}");
+                                                              }
+                                                              else{
+                                                                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                                var theDocNameForExistingUsers;
+                                                                theExistingUser.docs.forEach((result){
+                                                                  theDocNameForExistingUsers = result.id;
+                                                                });
+
+                                                                DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                                                                Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                                                planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                                print("planetTracked: ${planetTracked}");
+                                                              }
+                                                            }
+                                                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                                                          }
+                                                        }
                                                     ),
-                                                    TextField(
-                                                      controller: reasonForPlanetTrackNewUsers,
+                                                    TextButton(
+                                                        child: Text("Cancel"),
+                                                        onPressed: ()=>{
+                                                          Navigator.pop(context),
+                                                        }
                                                     ),
                                                   ],
                                                 ),
-                                                actions: [
-                                                  TextButton(
-                                                      child: Text("Ok"),
-                                                      onPressed: () async{
-                                                        if(whitespaceChecker(reasonForPlanetTrackNewUsers.text) == false){
-                                                          planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackNewUsers.text}.entries);
-
-                                                          if(firebaseDesktopHelper.onDesktop){
-                                                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                                            var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForPlanetsTrackedNewUser, orElse: () => <String, dynamic>{});
-
-                                                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
-
-                                                            //Updating planetsTracked:
-                                                            currentInfoOfUser["planetsTracked"] = planetsTracked;
-
-                                                            await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForPlanetsTrackedNewUser", {
-                                                              "usernameProfileInformation": currentInfoOfUser,
-                                                            });
-                                                          }
-                                                          else{
-                                                            FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedNewUser).update({
-                                                              "usernameProfileInformation.planetsTracked": planetsTracked,
-                                                            }).then((outcome) {
-                                                              print("planetsTracked updated!");
-                                                            });
-                                                          }
-
-                                                          //Is the planet tracked by the user?
-                                                          if(myNewUsername != "" && myUsername == ""){
-                                                            if(firebaseDesktopHelper.onDesktop){
-                                                              var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                              var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                                              //Getting the current profile info of the user:
-                                                              Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
-                                                              planetTracked = currentInfoOfNewUser["planetsTracked"].containsKey(correctPlanet);
-                                                              print("planetTracked: ${planetTracked}");
-                                                            }
-                                                            else{
-                                                              var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                                                              var theDocNameForNewUsers;
-                                                              theNewUser.docs.forEach((result){
-                                                                theDocNameForNewUsers = result.id;
-                                                              });
-
-                                                              DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
-                                                              Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
-
-                                                              planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
-                                                              print("planetTracked: ${planetTracked}");
-                                                            }
-                                                          }
-                                                          else if(myNewUsername == "" && myUsername != ""){
-                                                            if(firebaseDesktopHelper.onDesktop){
-                                                              var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                              var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                                              //Getting the current profile info of the user:
-                                                              Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
-                                                              planetTracked = currentInfoOfExistingUser["planetsTracked"].containsKey(correctPlanet);
-                                                              print("planetTracked: ${planetTracked}");
-                                                            }
-                                                            else{
-                                                              var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                                                              var theDocNameForExistingUsers;
-                                                              theExistingUser.docs.forEach((result){
-                                                                theDocNameForExistingUsers = result.id;
-                                                              });
-
-                                                              DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
-                                                              Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
-
-                                                              planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
-                                                              print("planetTracked: ${planetTracked}");
-                                                            }
-                                                          }
-                                                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
-                                                        }
-                                                      }
-                                                  ),
-                                                  TextButton(
-                                                      child: Text("Cancel"),
-                                                      onPressed: ()=>{
-                                                        Navigator.pop(context),
-                                                      }
-                                                  ),
-                                                ],
                                               );
                                             }
                                         );
@@ -4005,111 +4023,117 @@ class planetArticle extends StatelessWidget{
                                         showDialog(
                                             context: theContext,
                                             builder: (BuildContext context){
-                                              return AlertDialog(
-                                                title: Text("Tracking ${correctPlanet}"),
-                                                content: Wrap(
-                                                  children: <Widget>[
-                                                    Center(
-                                                      child: Container(
-                                                        alignment: Alignment.centerLeft,
-                                                        child: Text("Why are you interested in tracking this planet?"),
+                                              return Listener(
+                                                behavior: HitTestBehavior.translucent,
+                                                onPointerDown: (_){
+                                                  FocusManager.instance.primaryFocus?.unfocus();
+                                                },
+                                                child: AlertDialog(
+                                                  title: Text("Tracking ${correctPlanet}"),
+                                                  content: Wrap(
+                                                    children: <Widget>[
+                                                      Center(
+                                                        child: Container(
+                                                          alignment: Alignment.centerLeft,
+                                                          child: Text("Why are you interested in tracking this planet?"),
+                                                        ),
                                                       ),
+                                                      TextField(
+                                                        controller: reasonForPlanetTrackExistingUsers,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                        child: Text("Ok"),
+                                                        onPressed: () async{
+                                                          if(whitespaceChecker(reasonForPlanetTrackExistingUsers.text) == false){
+                                                            planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackExistingUsers.text}.entries);
+
+                                                            if(firebaseDesktopHelper.onDesktop){
+                                                              List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                                              var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForPlanetsTrackedExistingUser, orElse: () => <String, dynamic>{});
+                                                              print("This is currentuser: ${currentUser}");
+
+                                                              Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
+
+                                                              //Updating planetsTracked:
+                                                              currentInfoOfUser["planetsTracked"] = planetsTracked;
+
+                                                              await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForPlanetsTrackedExistingUser", {
+                                                                "usernameProfileInformation": currentInfoOfUser,
+                                                              });
+                                                            }
+                                                            else{
+                                                              FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedExistingUser).update({
+                                                                "usernameProfileInformation.planetsTracked": planetsTracked,
+                                                              }).then((outcome) {
+                                                                print("planetsTracked updated!");
+                                                              });
+                                                            }
+
+                                                            //Is the planet tracked by the user?
+                                                            if(myNewUsername != "" && myUsername == ""){
+                                                              if(firebaseDesktopHelper.onDesktop){
+                                                                var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                                //Getting the current profile info of the user:
+                                                                Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
+                                                                planetTracked = currentInfoOfNewUser["planetsTracked"].containsKey(correctPlanet);
+                                                                print("planetTracked: ${planetTracked}");
+                                                              }
+                                                              else{
+                                                                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                                                var theDocNameForNewUsers;
+                                                                theNewUser.docs.forEach((result){
+                                                                  theDocNameForNewUsers = result.id;
+                                                                });
+
+                                                                DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                                                                Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                                                planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                                print("planetTracked: ${planetTracked}");
+                                                              }
+                                                            }
+                                                            else if(myNewUsername == "" && myUsername != ""){
+                                                              if(firebaseDesktopHelper.onDesktop){
+                                                                var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                                //Getting the current profile info of the user:
+                                                                Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
+                                                                planetTracked = currentInfoOfExistingUser["planetsTracked"].containsKey(correctPlanet);
+                                                                print("planetTracked: ${planetTracked}");
+                                                              }
+                                                              else{
+                                                                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                                                var theDocNameForExistingUsers;
+                                                                theExistingUser.docs.forEach((result){
+                                                                  theDocNameForExistingUsers = result.id;
+                                                                });
+
+                                                                DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                                                                Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                                                planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                                print("planetTracked: ${planetTracked}");
+                                                              }
+                                                            }
+                                                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                                                          }
+                                                        }
                                                     ),
-                                                    TextField(
-                                                      controller: reasonForPlanetTrackExistingUsers,
+                                                    TextButton(
+                                                        child: Text("Cancel"),
+                                                        onPressed: ()=>{
+                                                          Navigator.pop(context),
+                                                        }
                                                     ),
                                                   ],
                                                 ),
-                                                actions: [
-                                                  TextButton(
-                                                      child: Text("Ok"),
-                                                      onPressed: () async{
-                                                        if(whitespaceChecker(reasonForPlanetTrackExistingUsers.text) == false){
-                                                          planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackExistingUsers.text}.entries);
-
-                                                          if(firebaseDesktopHelper.onDesktop){
-                                                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                                            var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForPlanetsTrackedExistingUser, orElse: () => <String, dynamic>{});
-                                                            print("This is currentuser: ${currentUser}");
-
-                                                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
-
-                                                            //Updating planetsTracked:
-                                                            currentInfoOfUser["planetsTracked"] = planetsTracked;
-
-                                                            await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForPlanetsTrackedExistingUser", {
-                                                              "usernameProfileInformation": currentInfoOfUser,
-                                                            });
-                                                          }
-                                                          else{
-                                                            FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedExistingUser).update({
-                                                              "usernameProfileInformation.planetsTracked": planetsTracked,
-                                                            }).then((outcome) {
-                                                              print("planetsTracked updated!");
-                                                            });
-                                                          }
-
-                                                          //Is the planet tracked by the user?
-                                                          if(myNewUsername != "" && myUsername == ""){
-                                                            if(firebaseDesktopHelper.onDesktop){
-                                                              var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                              var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                                              //Getting the current profile info of the user:
-                                                              Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
-                                                              planetTracked = currentInfoOfNewUser["planetsTracked"].containsKey(correctPlanet);
-                                                              print("planetTracked: ${planetTracked}");
-                                                            }
-                                                            else{
-                                                              var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                                                              var theDocNameForNewUsers;
-                                                              theNewUser.docs.forEach((result){
-                                                                theDocNameForNewUsers = result.id;
-                                                              });
-
-                                                              DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
-                                                              Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
-
-                                                              planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
-                                                              print("planetTracked: ${planetTracked}");
-                                                            }
-                                                          }
-                                                          else if(myNewUsername == "" && myUsername != ""){
-                                                            if(firebaseDesktopHelper.onDesktop){
-                                                              var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                              var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                                              //Getting the current profile info of the user:
-                                                              Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
-                                                              planetTracked = currentInfoOfExistingUser["planetsTracked"].containsKey(correctPlanet);
-                                                              print("planetTracked: ${planetTracked}");
-                                                            }
-                                                            else{
-                                                              var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                                                              var theDocNameForExistingUsers;
-                                                              theExistingUser.docs.forEach((result){
-                                                                theDocNameForExistingUsers = result.id;
-                                                              });
-
-                                                              DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
-                                                              Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
-
-                                                              planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
-                                                              print("planetTracked: ${planetTracked}");
-                                                            }
-                                                          }
-                                                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
-                                                        }
-                                                      }
-                                                  ),
-                                                  TextButton(
-                                                      child: Text("Cancel"),
-                                                      onPressed: ()=>{
-                                                        Navigator.pop(context),
-                                                      }
-                                                  ),
-                                                ],
                                               );
                                             }
                                         );
