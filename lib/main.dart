@@ -1396,21 +1396,21 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                   decoration: BoxDecoration(
                     color: Colors.red,
                   ),
-                  child: Text("Star Expedition Navigation Drawer", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                  child: Text("Star Expedition Navigation Menu", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
                 ),
               if(myNewUsername != "" && myUsername == "")
                 DrawerHeader(
                   decoration: BoxDecoration(
                     color: Colors.red,
                   ),
-                  child: Text("Star Expedition Navigation Drawer\n\nHi ${myNewUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                  child: Text("Star Expedition Navigation Menu\n\nHi ${myNewUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
                 ),
               if(myNewUsername == "" && myUsername != "")
                 DrawerHeader(
                   decoration: BoxDecoration(
                     color: Colors.red,
                   ),
-                  child: Text("Star Expedition Navigation Drawer\n\nHi ${myUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                  child: Text("Star Expedition Navigation Menu\n\nHi ${myUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
                 ),
               ListTile(
                   title: myNewUsername == "" && myUsername == ""? Text("Login") : Text("Logout"),
