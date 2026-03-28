@@ -131,13 +131,14 @@ bool checkEmailValidity(String e){
     var emailAddressParts = e.split("@");
     print("emailAddressParts: ${emailAddressParts}");
     if(emailAddressParts.length == 2){
-      if(emailAddressParts[0] != "" && !(emailAddressParts[0].contains(" ")) && emailAddressParts[1] != ""){
-        if((emailAddressParts[1]).toLowerCase() == ("gmail.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("yahoo.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("icloud.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("hotmail.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("outlook.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("aol.com").toLowerCase()){
+      if(emailAddressParts[0] != "" && !(emailAddressParts[0].contains(" ")) && emailAddressParts[1] != "" && !(emailAddressParts[1].contains(" ")) && (emailAddressParts[1].contains("."))){
+        /*if((emailAddressParts[1]).toLowerCase() == ("gmail.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("yahoo.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("icloud.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("hotmail.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("outlook.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("aol.com").toLowerCase()){
           return true;
         }
         else{
           return false;
-        }
+        }*/
+        return true;
       }
       else{
         return false;
