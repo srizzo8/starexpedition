@@ -732,6 +732,14 @@ class resetPasswordState extends State<resetPassword>{
               alignment: Alignment.center,
               child: Text("Reset Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
             ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+              child: Text("${registrationRequirements[2]}", textAlign: TextAlign.center),
+            ),
             /*Center(
               child: Container(
                 padding: const EdgeInsets.all(0.0),

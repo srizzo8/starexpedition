@@ -302,6 +302,14 @@ class changePasswordPageState extends State<changePasswordPage>{
                 alignment: Alignment.center,
                 child: Text("Change Your Password", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
               ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+                child: Text("${registrationRequirements[2]}", textAlign: TextAlign.center),
+              ),
               IntrinsicHeight(
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -698,6 +706,14 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
               Container(
                 alignment: Alignment.center,
                 child: Text("Change Your Email Address", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+                child: Text("${registrationRequirements[1]}", textAlign: TextAlign.center),
               ),
               /*Center(
                 child: Container(

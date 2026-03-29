@@ -48,6 +48,8 @@ List<String> possibleUsernameChars = numRegExp + letterRegExp + ['_', '.'];
 
 final myKey = "Sixteen char key";
 
+List<String> registrationRequirements = ["Usernames must not be used by anyone else, contain anywhere between 3 and 25 characters, and only consist of letters, numbers, _, and/or .", "Email addresses must not have any spaces and have the (name)@(website) format.", "Passwords must contain at least one letter, one number, and one special character, be at least 8 characters long, and not have any whitespace."];
+
 bool whitespaceChecker(String? myString){
   if(myString == null){
     return true;
@@ -269,6 +271,14 @@ class registerPageState extends State<registerPage>{
             Container(
               alignment: Alignment.center,
               child: Text("Register", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            ),
+            Container(
+              height: MediaQuery.of(buildContext).size.height * 0.015625,
+            ),
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
+              child: Text("To register successfully on Star Expedition:\n\n${registrationRequirements[0]}\n${registrationRequirements[1]}\n${registrationRequirements[2]}", textAlign: TextAlign.center),
             ),
             /*Container(
               height: MediaQuery.of(buildContext).size.height * 0.015625,
