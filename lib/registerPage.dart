@@ -263,7 +263,8 @@ class registerPageState extends State<registerPage>{
         centerTitle: true,
         title: Text("Star Expedition"),
       ),
-      body: Wrap(
+      body: SingleChildScrollView(
+        child: Column(
           children: <Widget>[
             Container(
               height: MediaQuery.of(buildContext).size.height * 0.015625,
@@ -613,9 +614,13 @@ class registerPageState extends State<registerPage>{
                     }
                   }
               ),
-            )
+            ),
+            Container(
+              height: 350,
+            ),
           ]
         ),
+      ),
       ),
     );
   }
