@@ -55,6 +55,9 @@ int theCurrentPageFas = 0;
 
 int fasNavigationDepth = 0;
 
+bool fromFasThread = false;
+bool fromFasPage = false;
+
 class feedbackAndSuggestionsPage extends StatefulWidget{
   const feedbackAndSuggestionsPage ({Key? key}) : super(key: key);
 
@@ -193,6 +196,8 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage>{
                                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                                 }
                                                 else{
+                                                  theUsernameResult = mySublistsFas[theCurrentPageFas][index]["poster"].toString(),
+                                                  fromFasPage = true,
                                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                                 }
                                               }
@@ -446,6 +451,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString(),
+                                              fromFasThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -497,6 +504,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString(),
+                                              fromFasThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -670,6 +679,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString(),
+                                              fromFasThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -839,7 +850,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
               print("We're going backwards. This is the depth: ${fasNavigationDepth}"),
 
               if(Navigator.canPop(context)){
-                Navigator.pop(context),
+                //Navigator.pop(context),
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const feedbackAndSuggestionsPage())),
               },
 
               fasNavigationDepth = 0,
@@ -885,6 +897,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                   }
                                   else{
+                                    theUsernameResult = threadAuthorFas,
+                                    fromFasThread = true,
                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                   }
                                 }

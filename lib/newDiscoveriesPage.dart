@@ -50,6 +50,9 @@ int theCurrentPageNd = 0;
 
 int ndNavigationDepth = 0;
 
+bool fromNdThread = false;
+bool fromNdPage = false;
+
 class newDiscoveriesPage extends StatefulWidget{
   const newDiscoveriesPage ({Key? key}) : super(key: key);
 
@@ -188,6 +191,8 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage>{
                                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                                 }
                                                 else{
+                                                  theUsernameResult = mySublistsNd[theCurrentPageNd][index]["poster"].toString(),
+                                                  fromNdPage = true,
                                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                                 }
                                               }
@@ -440,6 +445,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString(),
+                                              fromNdThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -491,6 +498,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString(),
+                                              fromNdThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -665,6 +674,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString(),
+                                              fromNdThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -834,7 +845,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
               print("We're going backwards. This is the depth: ${ndNavigationDepth}"),
 
               if(Navigator.canPop(context)){
-                Navigator.pop(context),
+                //Navigator.pop(context),
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage())),
               },
 
               ndNavigationDepth = 0,
@@ -880,6 +892,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage>{
                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                   }
                                   else{
+                                    theUsernameResult = threadAuthorNd,
+                                    fromNdThread = true,
                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                   }
                                 }

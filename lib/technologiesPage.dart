@@ -50,6 +50,9 @@ int theCurrentPageTechnologies = 0;
 
 int technologiesNavigationDepth = 0;
 
+bool fromTThread = false;
+bool fromTPage = false;
+
 class technologiesPage extends StatefulWidget{
   const technologiesPage ({Key? key}) : super(key: key);
 
@@ -188,6 +191,8 @@ class technologiesPageState extends State<technologiesPage>{
                                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                                   }
                                                   else{
+                                                    theUsernameResult = mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString(),
+                                                    fromTPage = true,
                                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                                   }
                                                 }
@@ -441,6 +446,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                         }
                                         else{
+                                          theUsernameResult = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString(),
+                                          fromTThread = true,
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                         }
                                       }
@@ -492,6 +499,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                         }
                                         else{
+                                          theUsernameResult = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString(),
+                                          fromTThread = true,
                                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                         }
                                       }
@@ -664,6 +673,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                           }
                                           else{
+                                            theUsernameResult = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString(),
+                                            fromTThread = true,
                                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                           }
                                         }
@@ -831,7 +842,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
             print("We're going backwards. This is the depth: ${technologiesNavigationDepth}"),
 
             if(Navigator.canPop(context)){
-              Navigator.pop(context),
+              //Navigator.pop(context),
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage())),
             },
 
             technologiesNavigationDepth = 0,
@@ -878,6 +890,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage>{
                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                             }
                             else{
+                              theUsernameResult = threadAuthorT,
+                              fromTThread = true,
                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                             }
                           }

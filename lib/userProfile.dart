@@ -44,6 +44,9 @@ var dataOfUser;
 var myDocName;
 var userInformation;
 
+bool fromUserProfileInUserPerspective = false;
+bool fromUserProfileInOtherUsersPerspective = false;
+
 bool whitespaceChecker(String? myString){
   if(myString == null){
     return true;
@@ -703,6 +706,8 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
   static String nameOfRoute = '/userProfileInUserPerspective';
   Uint8List? myImageBytes;
 
+  myMain.myStars clickedStar = myMain.myStars(starName: "not available");
+
   @override
   void initState(){
     super.initState();
@@ -732,6 +737,8 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
   }
 
   Widget build(BuildContext bc){
+    List<String> informationAboutClickedStar = [];
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -836,7 +843,87 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                 //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
                 if(!(myMain.starsUserTracked.isEmpty))
                   for(int s = 0; s < (myMain.starsUserTracked.keys.toList()).length; s++)
-                    Text("${myMain.starsUserTracked.keys.toList()[s]}\n${myMain.starsUserTracked.values.toList()[s]}\n", textAlign: TextAlign.center),
+                    Column(
+                      children: <Widget>[
+                        GestureDetector(
+                          child: Text("${myMain.starsUserTracked.keys.toList()[s]}", textAlign: TextAlign.center),
+                          onTap: () async{
+                            myMain.correctStar = myMain.starsUserTracked.keys.toList()[s];
+                            print(myMain.correctStar);
+                            clickedStar.starName = myMain.correctStar;
+                            print(clickedStar.starName);
+
+                            informationAboutClickedStar = await myMain.getStarInformation();
+                            print(informationAboutClickedStar);
+                            fromUserProfileInUserPerspective = true;
+
+                            myMain.starFileContent = await myMain.readStarFile();
+                            myMain.listOfStarUrls = myMain.starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+
+                            myMain.listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+
+                            //Is a user tracking this star?
+                            if(myNewUsername != "" && myUsername == ""){
+                              if(firebaseDesktopHelper.onDesktop){
+                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                //var docNameForNewUsers = usersProfileInfo["docId"];
+
+                                Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
+
+                                myMain.starTracked = currentInfoOfNewUser?["starsTracked"].containsKey(myMain.correctStar);
+                                print("starTracked: ${myMain.starTracked}");
+                              }
+                              else{
+                                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                var docNameForNewUsers;
+                                theNewUser.docs.forEach((result){
+                                  docNameForNewUsers = result.id;
+                                });
+
+                                DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                                Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                                myMain.starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMain.correctStar);
+                                print("starTracked: ${myMain.starTracked}");
+                              }
+                            }
+                            else if(myNewUsername == "" && myUsername != ""){
+                              if(firebaseDesktopHelper.onDesktop){
+                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                //var docNameForExistingUsers = usersProfileInfo["docId"];
+
+                                Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
+
+                                myMain.starTracked = currentInfoOfExistingUser?["starsTracked"].containsKey(myMain.correctStar);
+                                print("starTracked: ${myMain.starTracked}");
+                              }
+                              else{
+                                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                var docNameForExistingUsers;
+                                theExistingUser.docs.forEach((result){
+                                docNameForExistingUsers = result.id;
+                                });
+
+                                DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                                Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                                myMain.starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMain.correctStar);
+                                print("starTracked: ${myMain.starTracked}");
+                              }
+                            }
+
+                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
+                          }
+                        ),
+                        Text("\n${myMain.starsUserTracked.values.toList()[s]}\n", textAlign: TextAlign.center),
+                      ],
+                    ),
 
                 if(myMain.starsUserTracked.isEmpty)
                   Text("N/A", textAlign: TextAlign.center),
@@ -861,7 +948,97 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                 //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
                 if(!(myMain.planetsUserTracked.isEmpty))
                   for(int p = 0; p < (myMain.planetsUserTracked.keys.toList()).length; p++)
-                    Text("${myMain.planetsUserTracked.keys.toList()[p]}\n${myMain.planetsUserTracked.values.toList()[p]}\n", textAlign: TextAlign.center),
+                    Column(
+                      children: <Widget>[
+                        GestureDetector(
+                          child: Text("${myMain.planetsUserTracked.keys.toList()[p]}", textAlign: TextAlign.center),
+                          onTap: () async{
+                            myMain.correctPlanet = myMain.planetsUserTracked.keys.toList()[p];
+
+                            myMain.starsAndTheirPlanets.forEach((key, value){
+                              print("key: ${key}, value: ${value}");
+                              for(var v in value){
+                                if(v == myMain.correctPlanet){
+                                  myMain.correctStar = key;
+                                  break;
+                                }
+                                else{
+                                  //continue
+                                }
+                              }
+                            });
+
+                            var theStarInfo = await myMain.getStarInformation();
+
+                            myMain.informationAboutPlanet = await myMain.articlePage(theStarInfo).getPlanetData();
+
+                            fromUserProfileInUserPerspective = true;
+
+                            myMain.planetFileContent = await myMain.readPlanetFile(myMain.informationAboutPlanet[6].toString());
+                            myMain.listOfPlanetUrls = myMain.planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+
+                            myMain.listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+
+                            print("listOfPlanetUrls: ${myMain.listOfPlanetUrls}");
+
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(myMain.informationAboutPlanet)));
+                            //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
+                            //Navigator.push(context, new MaterialPageRoute(builder: (context) => new planetArticle(starAndPlanetInfo: new starAndPlanetInformation)));
+
+                            //Is the planet tracked by the user?
+                            if(myNewUsername != "" && myUsername == ""){
+                              if(firebaseDesktopHelper.onDesktop){
+                                var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                //Getting the current profile info of the user:
+                                Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
+                                myMain.planetTracked = currentInfoOfNewUser["planetsTracked"].containsKey(myMain.correctPlanet);
+                                print("planetTracked: ${myMain.planetTracked}");
+                              }
+                              else{
+                                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                var theDocNameForNewUsers;
+                                theNewUser.docs.forEach((result){
+                                  theDocNameForNewUsers = result.id;
+                                });
+
+                                DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                                Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                myMain.planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(myMain.correctPlanet);
+                                print("planetTracked: ${myMain.planetTracked}");
+                              }
+                            }
+                            else if(myNewUsername == "" && myUsername != ""){
+                              if(firebaseDesktopHelper.onDesktop){
+                                var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                //Getting the current profile info of the user:
+                                Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
+                                myMain.planetTracked = currentInfoOfExistingUser["planetsTracked"].containsKey(myMain.correctPlanet);
+                                print("planetTracked: ${myMain.planetTracked}");
+                              }
+                              else{
+                                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                var theDocNameForExistingUsers;
+                                theExistingUser.docs.forEach((result){
+                                  theDocNameForExistingUsers = result.id;
+                                });
+
+                                DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                                Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                myMain.planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(myMain.correctPlanet);
+                                print("planetTracked: ${myMain.planetTracked}");
+                              }
+                            }
+                          }
+                        ),
+                        Text("\n${myMain.planetsUserTracked.values.toList()[p]}\n", textAlign: TextAlign.center),
+                      ],
+                    ),
 
                 if(myMain.planetsUserTracked.isEmpty)
                   Text("N/A", textAlign: TextAlign.center),
@@ -885,6 +1062,8 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
   static String nameOfRoute = '/userProfileInOtherUsersPerspective';
   Uint8List? myImageBytes;
 
+  myMain.myStars clickedStar = myMain.myStars(starName: "not available");
+
   @override
   void initState(){
     super.initState();
@@ -900,6 +1079,8 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
   }
 
   Widget build(BuildContext bc){
+    List<String> informationAboutClickedStar = [];
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -908,36 +1089,84 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
-              if(dbuClickedOnUser == true && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == false){
+              if(dbuClickedOnUser == true && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == false && fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == false && fromDbuPage == false && fromNdPage == false && fromPPage == false && fromQaaPage == false && fromTPage == false && fromFasPage == false){
                 dbuClickedOnUser = false,
                 Navigator.of(bc).pop(),
               }
-              else if(dbuClickedOnUser == false && ndClickedOnUser == true && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == false){
+              else if(dbuClickedOnUser == false && ndClickedOnUser == true && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == false && fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == false && fromDbuPage == false && fromNdPage == false && fromPPage == false && fromQaaPage == false && fromTPage == false && fromFasPage == false){
                 ndClickedOnUser = false,
                 Navigator.of(bc).pop(),
               }
-              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == true && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == false){
+              else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == true && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == false && fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == false && fromDbuPage == false && fromNdPage == false && fromPPage == false && fromQaaPage == false && fromTPage == false && fromFasPage == false){
                   projectsClickedOnUser = false,
                   Navigator.of(bc).pop(),
                 }
-                else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == true && technologiesClickedOnUser == false && fasClickedOnUser == false){
+                else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == true && technologiesClickedOnUser == false && fasClickedOnUser == false && fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == false && fromDbuPage == false && fromNdPage == false && fromPPage == false && fromQaaPage == false && fromTPage == false && fromFasPage == false){
                     qaaClickedOnUser = false,
                     Navigator.of(bc).pop(),
                   }
-                  else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == true && fasClickedOnUser == false){
+                  else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == true && fasClickedOnUser == false && fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == false && fromDbuPage == false && fromNdPage == false && fromPPage == false && fromQaaPage == false && fromTPage == false && fromFasPage == false){
                       technologiesClickedOnUser = false,
                       Navigator.of(bc).pop(),
                     }
-                    else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == true){
+                    else if(dbuClickedOnUser == false && ndClickedOnUser == false && projectsClickedOnUser == false && qaaClickedOnUser == false && technologiesClickedOnUser == false && fasClickedOnUser == true && fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == false && fromDbuPage == false && fromNdPage == false && fromPPage == false && fromQaaPage == false && fromTPage == false && fromFasPage == false){
                         fasClickedOnUser = false,
                         Navigator.of(bc).pop(),
                       }
-                      else{
-                          showSearch(
-                            context: bc,
-                            delegate: mySearch(),
-                          ),
+                      else if(fromDbuThread == true && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == false){
+                          fromDbuThread = false,
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => discussionBoardUpdatesThreadsPage())),
                         }
+                        else if(fromDbuThread == false && fromNdThread == true && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == false){
+                            fromNdThread = false,
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => newDiscoveriesThreadsPage())),
+                          }
+                          else if(fromDbuThread == false && fromNdThread == false && fromPThread == true && fromQaaThread == false && fromTThread == false && fromFasThread == false){
+                              fromPThread = false,
+                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => projectsThreadsPage())),
+                            }
+                            else if(fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == true && fromTThread == false && fromFasThread == false){
+                                fromQaaThread = false,
+                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => questionsAndAnswersThreadsPage())),
+                              }
+                              else if(fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == true && fromFasThread == false){
+                                  fromTThread = false,
+                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => technologiesThreadsPage())),
+                                }
+                                else if(fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == true){
+                                    fromFasThread = false,
+                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => feedbackAndSuggestionsThreadsPage())),
+                                  }
+                                  else if(fromDbuPage == true && fromNdPage == false && fromPPage == false && fromQaaPage == false && fromTPage == false && fromFasPage == false){
+                                      fromDbuPage = false,
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage())),
+                                    }
+                                    else if(fromDbuPage == false && fromNdPage == true && fromPPage == false && fromQaaPage == false && fromTPage == false && fromFasPage == false){
+                                        fromNdPage = false,
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => const newDiscoveriesPage())),
+                                      }
+                                      else if(fromDbuPage == false && fromNdPage == false && fromPPage == true && fromQaaPage == false && fromTPage == false && fromFasPage == false){
+                                          fromPPage = false,
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const projectsPage())),
+                                        }
+                                        else if(fromDbuPage == false && fromNdPage == false && fromPPage == false && fromQaaPage == true && fromTPage == false && fromFasPage == false){
+                                            fromQaaPage = false,
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage())),
+                                          }
+                                          else if(fromDbuPage == false && fromNdPage == false && fromPPage == false && fromQaaPage == false && fromTPage == true && fromFasPage == false){
+                                              fromTPage = false,
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => const technologiesPage())),
+                                            }
+                                            else if(fromDbuPage == false && fromNdPage == false && fromPPage == false && fromQaaPage == false && fromTPage == false && fromFasPage == true){
+                                                fromFasPage = false,
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => const feedbackAndSuggestionsPage())),
+                                              }
+                                  else{
+                                      showSearch(
+                                        context: bc,
+                                        delegate: mySearch(),
+                                      ),
+                                    }
             }
         ),
       ),
@@ -1016,7 +1245,87 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
               children: <Widget>[
                 if(!(theUsersData["usernameProfileInformation"]["starsTracked"].isEmpty))
                   for(int s = 0; s < (theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()).length; s++)
-                    Text("${theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s]}\n${theUsersData["usernameProfileInformation"]["starsTracked"].values.toList()[s]}\n", textAlign: TextAlign.center),
+                    Column(
+                      children: <Widget>[
+                        GestureDetector(
+                          child: Text("${theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s]}", textAlign: TextAlign.center),
+                          onTap: () async{
+                            myMain.correctStar = theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s];
+                            print(myMain.correctStar);
+                            clickedStar.starName = myMain.correctStar;
+                            print(clickedStar.starName);
+
+                            informationAboutClickedStar = await myMain.getStarInformation();
+                            print(informationAboutClickedStar);
+                            fromUserProfileInOtherUsersPerspective = true;
+
+                            myMain.starFileContent = await myMain.readStarFile();
+                            myMain.listOfStarUrls = myMain.starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+
+                            myMain.listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+
+                            //Is a user tracking this star?
+                            if(myNewUsername != "" && myUsername == ""){
+                              if(firebaseDesktopHelper.onDesktop){
+                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                //var docNameForNewUsers = usersProfileInfo["docId"];
+
+                                Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
+
+                                myMain.starTracked = currentInfoOfNewUser?["starsTracked"].containsKey(myMain.correctStar);
+                                print("starTracked: ${myMain.starTracked}");
+                              }
+                              else{
+                                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                var docNameForNewUsers;
+                                theNewUser.docs.forEach((result){
+                                  docNameForNewUsers = result.id;
+                                });
+
+                                DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                                Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                                myMain.starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMain.correctStar);
+                                print("starTracked: ${myMain.starTracked}");
+                              }
+                            }
+                            else if(myNewUsername == "" && myUsername != ""){
+                              if(firebaseDesktopHelper.onDesktop){
+                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                //var docNameForExistingUsers = usersProfileInfo["docId"];
+
+                                Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
+
+                                myMain.starTracked = currentInfoOfExistingUser?["starsTracked"].containsKey(myMain.correctStar);
+                                print("starTracked: ${myMain.starTracked}");
+                              }
+                              else{
+                                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                var docNameForExistingUsers;
+                                theExistingUser.docs.forEach((result){
+                                  docNameForExistingUsers = result.id;
+                                });
+
+                                DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                                Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                                myMain.starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMain.correctStar);
+                                print("starTracked: ${myMain.starTracked}");
+                              }
+                            }
+
+                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
+                          }
+                        ),
+                        Text("\n${theUsersData["usernameProfileInformation"]["starsTracked"].values.toList()[s]}\n", textAlign: TextAlign.center),
+                      ],
+                    ),
 
                 if(theUsersData["usernameProfileInformation"]["starsTracked"].isEmpty)
                   Text("N/A", textAlign: TextAlign.center),
@@ -1034,7 +1343,97 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                 //var starsUserTrackedKeys = myMain.starsUserTracked.keys as List;
                 if(!(theUsersData["usernameProfileInformation"]["planetsTracked"].isEmpty))
                   for(int p = 0; p < (theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()).length; p++)
-                    Text("${theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p]}\n${theUsersData["usernameProfileInformation"]["planetsTracked"].values.toList()[p]}\n", textAlign: TextAlign.center),
+                    Column(
+                      children: <Widget>[
+                        GestureDetector(
+                          child: Text("${theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p]}", textAlign: TextAlign.center),
+                          onTap: () async{
+                            myMain.correctPlanet = theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p];
+
+                            myMain.starsAndTheirPlanets.forEach((key, value){
+                              print("key: ${key}, value: ${value}");
+                              for(var v in value){
+                                if(v == myMain.correctPlanet){
+                                  myMain.correctStar = key;
+                                  break;
+                                }
+                                else{
+                                  //continue
+                                }
+                              }
+                            });
+
+                            var theStarInfo = await myMain.getStarInformation();
+
+                            myMain.informationAboutPlanet = await myMain.articlePage(theStarInfo).getPlanetData();
+
+                            fromUserProfileInOtherUsersPerspective = true;
+
+                            myMain.planetFileContent = await myMain.readPlanetFile(myMain.informationAboutPlanet[6].toString());
+                            myMain.listOfPlanetUrls = myMain.planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+
+                            myMain.listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+
+                            print("listOfPlanetUrls: ${myMain.listOfPlanetUrls}");
+
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(myMain.informationAboutPlanet)));
+                            //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
+                            //Navigator.push(context, new MaterialPageRoute(builder: (context) => new planetArticle(starAndPlanetInfo: new starAndPlanetInformation)));
+
+                            //Is the planet tracked by the user?
+                            if(myNewUsername != "" && myUsername == ""){
+                              if(firebaseDesktopHelper.onDesktop){
+                                var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                //Getting the current profile info of the user:
+                                Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
+                                myMain.planetTracked = currentInfoOfNewUser["planetsTracked"].containsKey(myMain.correctPlanet);
+                                print("planetTracked: ${myMain.planetTracked}");
+                              }
+                              else{
+                                var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                                var theDocNameForNewUsers;
+                                theNewUser.docs.forEach((result){
+                                  theDocNameForNewUsers = result.id;
+                                });
+
+                                DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                                Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                                myMain.planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(myMain.correctPlanet);
+                                print("planetTracked: ${myMain.planetTracked}");
+                              }
+                            }
+                            else if(myNewUsername == "" && myUsername != ""){
+                              if(firebaseDesktopHelper.onDesktop){
+                                var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                //Getting the current profile info of the user:
+                                Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
+                                myMain.planetTracked = currentInfoOfExistingUser["planetsTracked"].containsKey(myMain.correctPlanet);
+                                print("planetTracked: ${myMain.planetTracked}");
+                              }
+                              else{
+                                var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                var theDocNameForExistingUsers;
+                                theExistingUser.docs.forEach((result){
+                                  theDocNameForExistingUsers = result.id;
+                                });
+
+                                DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                                Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                                myMain.planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(myMain.correctPlanet);
+                                print("planetTracked: ${myMain.planetTracked}");
+                              }
+                            }
+                          }
+                        ),
+                        Text("\n${theUsersData["usernameProfileInformation"]["planetsTracked"].values.toList()[p]}\n", textAlign: TextAlign.center),
+                      ],
+                    ),
 
                 if(theUsersData["usernameProfileInformation"]["planetsTracked"].isEmpty)
                   Text("N/A", textAlign: TextAlign.center),

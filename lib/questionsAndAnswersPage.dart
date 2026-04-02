@@ -50,6 +50,9 @@ int theCurrentPageQaa = 0;
 
 int qaaNavigationDepth = 0;
 
+bool fromQaaThread = false;
+bool fromQaaPage = false;
+
 class questionsAndAnswersPage extends StatefulWidget{
   const questionsAndAnswersPage ({Key? key}) : super(key: key);
 
@@ -189,6 +192,8 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage>{
                                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                                 }
                                                 else{
+                                                  theUsernameResult = mySublistsQaa[theCurrentPageQaa][index]["poster"].toString(),
+                                                  fromQaaPage = true,
                                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                                 }
                                               }
@@ -441,6 +446,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString(),
+                                              fromQaaThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -492,6 +499,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString(),
+                                              fromQaaThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -666,6 +675,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString(),
+                                              fromQaaThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -836,7 +847,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
               print("We're going backwards. This is the depth: ${qaaNavigationDepth}"),
 
               if(Navigator.canPop(context)){
-                Navigator.pop(context),
+                //Navigator.pop(context),
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const questionsAndAnswersPage())),
               },
 
               qaaNavigationDepth = 0,
@@ -883,6 +895,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                   }
                                   else{
+                                    theUsernameResult = threadAuthorQaa,
+                                    fromQaaThread = true,
                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                   }
                                 }

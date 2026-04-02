@@ -131,6 +131,8 @@ List<String> planetsUsersTracked = [];
 Map<String, String> starsAndAmountOfTracks = {};
 Map<String, String> planetsAndAmountOfTracks = {};
 
+bool fromProfileAndStar = false;
+
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
 
@@ -1435,6 +1437,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                     title: Text("My Profile"),
                     onTap: () async{
                       if(myUsername != "" && myNewUsername == ""){
+                        theUsernameResult = myUsername;
                         if(firebaseDesktopHelper.onDesktop){
                           List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
 
@@ -1474,6 +1477,7 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                         Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
                       }
                       else if(myUsername == "" && myNewUsername != ""){
+                        theUsernameResult = myNewUsername;
                         if(firebaseDesktopHelper.onDesktop){
                           List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
 
@@ -2476,7 +2480,7 @@ class articlePage extends StatelessWidget{
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
-            onPressed: () =>{
+            onPressed: () async =>{
               //Navigator.pop(bc),
               //Navigator.push(bc, MaterialPageRoute(builder: (bc) => const StarExpedition())),
               //Going from the star article page to the search suggestions page
@@ -2491,6 +2495,42 @@ class articlePage extends StatelessWidget{
               else if(fromMostTrackedStarsAndPlanetsPageStars == true){
                 fromMostTrackedStarsAndPlanetsPageStars = false,
                 Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => mostTrackedStarsAndPlanetsPage())),
+              }
+              else if(fromUserProfileInUserPerspective == true && fromProfileAndStar == false){
+                fromUserProfileInUserPerspective = false,
+                Navigator.pushReplacementNamed(bc, routesToOtherPages.userProfileInUserPerspectivePage),
+              }
+              else if(fromUserProfileInOtherUsersPerspective == true && fromProfileAndStar == false){
+                fromUserProfileInOtherUsersPerspective = false,
+                if(firebaseDesktopHelper.onDesktop){
+                  nameClickedData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                  theUsersData = nameClickedData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == theUsernameResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+
+                  Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                }
+                else{
+                  nameClickedData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsernameResult.toLowerCase()).get(),
+                  nameClickedData.docs.forEach((person){
+                    theUsersData = person.data();
+                  }),
+                  Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                }
+              }
+              else if(fromProfileAndStar == true){
+                fromProfileAndStar = false,
+                if(firebaseDesktopHelper.onDesktop){
+                  nameClickedData = await firebaseDesktopHelper.getFirestoreCollection("User"),
+                  theUsersData = nameClickedData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == theUsernameResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>),
+
+                  Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                }
+                else{
+                  nameClickedData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsernameResult.toLowerCase()).get(),
+                  nameClickedData.docs.forEach((person){
+                    theUsersData = person.data();
+                  }),
+                  Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                }
               }
               else{
                   showSearch(
@@ -2711,6 +2751,10 @@ class articlePage extends StatelessWidget{
                                             listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
                                             print("listOfPlanetUrls: ${listOfPlanetUrls}");
+
+                                            if(fromUserProfileInUserPerspective == true || fromUserProfileInOtherUsersPerspective == true){
+                                              fromProfileAndStar = true;
+                                            }
 
                                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
                                             //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
@@ -3567,6 +3611,26 @@ class planetArticle extends StatelessWidget{
             else if(fromMostTrackedStarsAndPlanetsPagePlanets == true){
               fromMostTrackedStarsAndPlanetsPagePlanets = false;
               Navigator.push(theContext, MaterialPageRoute(builder: (BuildContext context) => mostTrackedStarsAndPlanetsPage()));
+            }
+            else if(fromUserProfileInUserPerspective == true && fromProfileAndStar == false){
+              fromUserProfileInUserPerspective = false;
+              Navigator.pushReplacementNamed(theContext, routesToOtherPages.userProfileInUserPerspectivePage);
+            }
+            else if(fromUserProfileInOtherUsersPerspective == true && fromProfileAndStar == false){
+              fromUserProfileInOtherUsersPerspective = false;
+              if(firebaseDesktopHelper.onDesktop){
+                nameClickedData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                theUsersData = nameClickedData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == theUsernameResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+
+                Navigator.push(theContext, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
+              }
+              else{
+                nameClickedData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsernameResult.toLowerCase()).get();
+                nameClickedData.docs.forEach((person){
+                  theUsersData = person.data();
+                });
+                Navigator.push(theContext, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
+              }
             }
             else{
               hostStarInformation = await getStarInformation();

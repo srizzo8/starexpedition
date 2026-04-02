@@ -55,6 +55,9 @@ int theCurrentPageDbu = 0;
 
 int dbuNavigationDepth = 0;
 
+bool fromDbuThread = false;
+bool fromDbuPage = false;
+
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
 
@@ -227,6 +230,8 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
                                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                                 }
                                                 else{
+                                                  theUsernameResult = mySublistsDbu[theCurrentPageDbu][index]["poster"].toString(),
+                                                  fromDbuPage = true,
                                                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                                 }
                                               }
@@ -523,6 +528,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString(),
+                                              fromDbuThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -579,6 +586,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString(),
+                                              fromDbuThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -786,6 +795,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
                                             else{
+                                              theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString(),
+                                              fromDbuThread = true,
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             }
                                           }
@@ -1021,7 +1032,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
               print("We're going backwards. This is the depth: ${dbuNavigationDepth}"),
 
               if(Navigator.canPop(context)){
-                Navigator.pop(context),
+                //Navigator.pop(context),
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage())),
               },
 
               dbuNavigationDepth = 0,
@@ -1071,6 +1083,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                   }
                                   else{
+                                    theUsernameResult = threadAuthorDbu,
+                                    fromDbuThread = true,
                                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                   }
                                 }

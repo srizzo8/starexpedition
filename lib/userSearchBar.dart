@@ -25,6 +25,7 @@ import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 var nameClickedData;
 var theUsersData;
+var theUsernameResult = "";
 
 class userSearchBarPage extends StatefulWidget{
   const userSearchBarPage ({Key? key}) : super(key: key);
@@ -147,6 +148,8 @@ class mySearch extends SearchDelegate{
             title: Text(myResult),
             onTap: () async{
               SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+              theUsernameResult = myResult;
 
               if(firebaseDesktopHelper.onDesktop){
                 nameClickedData = await firebaseDesktopHelper.getFirestoreCollection("User");
