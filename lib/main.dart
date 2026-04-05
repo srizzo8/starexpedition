@@ -800,6 +800,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        navigatorObservers: [routesToOtherPages.myRouteObserver],
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.red,//Colors.red,
@@ -848,6 +849,8 @@ class routesToOtherPages{
   static String userSearchBarPage = userSearchBarPageState.nameOfRoute;
   static String nonexistentUserPage = nonexistentUser.nameOfRoute;
   static String mostTrackedStarsAndPlanetsPage = mostTrackedStarsAndPlanetsPageState.nameOfRoute;
+
+  static final RouteObserver<ModalRoute<Object?>> myRouteObserver = RouteObserver<ModalRoute<void>>();
 }
 
 // This is the widget that will be shown
@@ -3341,6 +3344,9 @@ class articlePage extends StatelessWidget{
                                                       await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheNewUser", {
                                                         "usernameProfileInformation": currentInfoOfNewUser,
                                                       });
+
+                                                      print("starsTracked: ${starsTracked}");
+                                                      starsUserTracked.remove(theStar.starName!);
                                                     }
                                                     else{
                                                       var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -3361,6 +3367,9 @@ class articlePage extends StatelessWidget{
                                                       }).then((outcome) {
                                                         print("Untracked the star!");
                                                       });
+
+                                                      print("starsTracked: ${starsTracked}");
+                                                      starsUserTracked.remove(theStar.starName!);
                                                     }
 
                                                     if(myNewUsername != "" && myUsername == ""){
@@ -3372,6 +3381,7 @@ class articlePage extends StatelessWidget{
                                                         Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
                                                         starTracked = currentInfoOfNewUser["starsTracked"].containsKey(theStar.starName!);
                                                         print("starTracked: ${starTracked}");
+                                                        starsUsersTracked.remove(theStar.starName!);
                                                       }
                                                       else{
                                                         var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -3385,6 +3395,7 @@ class articlePage extends StatelessWidget{
 
                                                         starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
                                                         print("starTracked: ${starTracked}");
+                                                        starsUserTracked.remove(theStar.starName!);
                                                       }
                                                     }
                                                     else if(myNewUsername == "" && myUsername != ""){
@@ -3396,6 +3407,7 @@ class articlePage extends StatelessWidget{
                                                         Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
                                                         starTracked = currentInfoOfExistingUser["starsTracked"].containsKey(theStar.starName!);
                                                         print("starTracked: ${starTracked}");
+                                                        starsUserTracked.remove(theStar.starName!);
                                                       }
                                                       else{
                                                         var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -3409,10 +3421,11 @@ class articlePage extends StatelessWidget{
 
                                                         starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
                                                         print("starTracked: ${starTracked}");
+                                                        starsUserTracked.remove(theStar.starName!);
                                                       }
                                                     }
 
-                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+                                                    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
 
                                                     /*Navigator.pop(context);
                                                 showSearch(
@@ -3440,6 +3453,9 @@ class articlePage extends StatelessWidget{
                                                       await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheExistingUser", {
                                                         "usernameProfileInformation": currentInfoOfExistingUser,
                                                       });
+
+                                                      print("starsTracked: ${starsTracked}");
+                                                      starsUserTracked.remove(theStar.starName!);
                                                     }
                                                     else{
                                                       var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -3460,6 +3476,9 @@ class articlePage extends StatelessWidget{
                                                       }).then((outcome) {
                                                         print("Untracked the star!");
                                                       });
+
+                                                      print("starsTracked: ${starsTracked}");
+                                                      starsUserTracked.remove(theStar.starName!);
                                                     }
                                                     if(myNewUsername != "" && myUsername == ""){
                                                       if(firebaseDesktopHelper.onDesktop){
@@ -3470,6 +3489,7 @@ class articlePage extends StatelessWidget{
                                                         Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
                                                         starTracked = currentInfoOfNewUser["starsTracked"].containsKey(theStar.starName!);
                                                         print("starTracked: ${starTracked}");
+                                                        starsUserTracked.remove(theStar.starName!);
                                                       }
                                                       else{
                                                         var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -3483,6 +3503,7 @@ class articlePage extends StatelessWidget{
 
                                                         starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
                                                         print("starTracked: ${starTracked}");
+                                                        starsUserTracked.remove(theStar.starName!);
                                                       }
                                                     }
                                                     else if(myNewUsername == "" && myUsername != ""){
@@ -3494,6 +3515,7 @@ class articlePage extends StatelessWidget{
                                                         Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
                                                         starTracked = currentInfoOfExistingUser["starsTracked"].containsKey(theStar.starName!);
                                                         print("starTracked: ${starTracked}");
+                                                        starsUserTracked.remove(theStar.starName!);
                                                       }
                                                       else{
                                                         var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -3507,10 +3529,11 @@ class articlePage extends StatelessWidget{
 
                                                         starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
                                                         print("starTracked: ${starTracked}");
+                                                        starsUserTracked.remove(theStar.starName!);
                                                       }
                                                     }
 
-                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+                                                    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
 
                                                     /*Navigator.pop(context);
                                                 showSearch(
@@ -4273,6 +4296,10 @@ class planetArticle extends StatelessWidget{
                                                         await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheNewUser", {
                                                           "usernameProfileInformation": currentInfoOfNewUser,
                                                         });
+
+                                                        print("planetTracked: ${planetTracked}");
+
+                                                        planetsUserTracked.remove(correctPlanet);
                                                       }
                                                       else{
                                                         var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -4293,6 +4320,9 @@ class planetArticle extends StatelessWidget{
                                                         }).then((outcome) {
                                                           print("Untracked the planet!");
                                                         });
+
+                                                        print("planetTracked: ${planetTracked}");
+                                                        planetsUserTracked.remove(correctPlanet);
                                                       }
 
                                                       //Is the planet tracked by the user?
@@ -4305,6 +4335,8 @@ class planetArticle extends StatelessWidget{
                                                           Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
                                                           planetTracked = currentInfoOfNewUser["planetsTracked"].containsKey(correctPlanet);
                                                           print("planetTracked: ${planetTracked}");
+
+                                                          planetsUserTracked.remove(correctPlanet);
                                                         }
                                                         else{
                                                           var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -4318,6 +4350,7 @@ class planetArticle extends StatelessWidget{
 
                                                           planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
                                                           print("planetTracked: ${planetTracked}");
+                                                          planetsUserTracked.remove(correctPlanet);
                                                         }
                                                       }
                                                       else if(myNewUsername == "" && myUsername != ""){
@@ -4329,6 +4362,7 @@ class planetArticle extends StatelessWidget{
                                                           Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
                                                           planetTracked = currentInfoOfExistingUser["planetsTracked"].containsKey(correctPlanet);
                                                           print("planetTracked: ${planetTracked}");
+                                                          planetsUserTracked.remove(correctPlanet);
                                                         }
                                                         else{
                                                           var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -4342,10 +4376,11 @@ class planetArticle extends StatelessWidget{
 
                                                           planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
                                                           print("planetTracked: ${planetTracked}");
+                                                          planetsUserTracked.remove(correctPlanet);
                                                         }
                                                       }
 
-                                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                                                      await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
 
                                                       /*hostStarInformation = await getStarInformation();
                                                   print("hoststarinformation: ${hostStarInformation}");
@@ -4372,6 +4407,8 @@ class planetArticle extends StatelessWidget{
                                                         await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheExistingUser", {
                                                           "usernameProfileInformation": currentInfoOfExistingUser,
                                                         });
+
+                                                        planetsUserTracked.remove(correctPlanet);
                                                       }
                                                       else{
                                                         var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -4392,6 +4429,8 @@ class planetArticle extends StatelessWidget{
                                                         }).then((outcome) {
                                                           print("Untracked the planet!");
                                                         });
+
+                                                        planetsUserTracked.remove(correctPlanet);
                                                       }
 
                                                       //Is the planet tracked by the user?
@@ -4404,6 +4443,7 @@ class planetArticle extends StatelessWidget{
                                                           Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
                                                           planetTracked = currentInfoOfNewUser["planetsTracked"].containsKey(correctPlanet);
                                                           print("planetTracked: ${planetTracked}");
+                                                          planetsUserTracked.remove(correctPlanet);
                                                         }
                                                         else{
                                                           var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
@@ -4417,6 +4457,7 @@ class planetArticle extends StatelessWidget{
 
                                                           planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
                                                           print("planetTracked: ${planetTracked}");
+                                                          planetsUserTracked.remove(correctPlanet);
                                                         }
                                                       }
                                                       else if(myNewUsername == "" && myUsername != ""){
@@ -4428,6 +4469,7 @@ class planetArticle extends StatelessWidget{
                                                           Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
                                                           planetTracked = currentInfoOfExistingUser["planetsTracked"].containsKey(correctPlanet);
                                                           print("planetTracked: ${planetTracked}");
+                                                          planetsUserTracked.remove(correctPlanet);
                                                         }
                                                         else{
                                                           var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
@@ -4441,10 +4483,11 @@ class planetArticle extends StatelessWidget{
 
                                                           planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
                                                           print("planetTracked: ${planetTracked}");
+                                                          planetsUserTracked.remove(correctPlanet);
                                                         }
                                                       }
 
-                                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                                                      await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
 
                                                       /*hostStarInformation = await getStarInformation();
                                                   print("hoststarinformation: ${hostStarInformation}");

@@ -695,14 +695,14 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
   }
 }
 
-class userProfileInUserPerspective extends StatefulWidget{
+class userProfileInUserPerspective extends StatefulWidget with RouteAware{
   const userProfileInUserPerspective ({Key? key}) : super(key: key);
 
   @override
   userProfileInUserPerspectiveState createState() => userProfileInUserPerspectiveState();
 }
 
-class userProfileInUserPerspectiveState extends State<userProfileInUserPerspective>{
+class userProfileInUserPerspectiveState extends State<userProfileInUserPerspective> with RouteAware{
   static String nameOfRoute = '/userProfileInUserPerspective';
   Uint8List? myImageBytes;
 
@@ -712,6 +712,18 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
   void initState(){
     super.initState();
     loadProfilePictureInUsersPerspective();
+  }
+
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
   }
 
   Future<void> loadProfilePictureInUsersPerspective() async{
@@ -918,7 +930,11 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                               }
                             }
 
-                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
+                            await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
+
+                            setState((){
+                              //continue
+                            });
                           }
                         ),
                         Text("\n${myMain.starsUserTracked.values.toList()[s]}\n", textAlign: TextAlign.center),
@@ -981,7 +997,6 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
 
                             print("listOfPlanetUrls: ${myMain.listOfPlanetUrls}");
 
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(myMain.informationAboutPlanet)));
                             //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
                             //Navigator.push(context, new MaterialPageRoute(builder: (context) => new planetArticle(starAndPlanetInfo: new starAndPlanetInformation)));
 
@@ -1034,6 +1049,11 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                                 print("planetTracked: ${myMain.planetTracked}");
                               }
                             }
+                            await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(myMain.informationAboutPlanet)));
+
+                            setState((){
+                              //continue
+                            });
                           }
                         ),
                         Text("\n${myMain.planetsUserTracked.values.toList()[p]}\n", textAlign: TextAlign.center),
@@ -1058,7 +1078,7 @@ class userProfileInOtherUsersPerspective extends StatefulWidget{
   userProfileInOtherUsersPerspectiveState createState() => userProfileInOtherUsersPerspectiveState();
 }
 
-class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUsersPerspective>{
+class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUsersPerspective> with RouteAware{
   static String nameOfRoute = '/userProfileInOtherUsersPerspective';
   Uint8List? myImageBytes;
 
@@ -1068,6 +1088,18 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
   void initState(){
     super.initState();
     loadProfilePictureInOtherUsersPerspective();
+  }
+
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
   }
 
   Future<void> loadProfilePictureInOtherUsersPerspective() async{
@@ -1320,7 +1352,11 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                               }
                             }
 
-                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
+                            await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
+
+                            setState((){
+                              //continue
+                            });
                           }
                         ),
                         Text("\n${theUsersData["usernameProfileInformation"]["starsTracked"].values.toList()[s]}\n", textAlign: TextAlign.center),
@@ -1376,7 +1412,6 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
 
                             print("listOfPlanetUrls: ${myMain.listOfPlanetUrls}");
 
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(myMain.informationAboutPlanet)));
                             //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
                             //Navigator.push(context, new MaterialPageRoute(builder: (context) => new planetArticle(starAndPlanetInfo: new starAndPlanetInformation)));
 
@@ -1429,6 +1464,11 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                                 print("planetTracked: ${myMain.planetTracked}");
                               }
                             }
+                            await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(myMain.informationAboutPlanet)));
+
+                            setState((){
+                              //continue
+                            });
                           }
                         ),
                         Text("\n${theUsersData["usernameProfileInformation"]["planetsTracked"].values.toList()[p]}\n", textAlign: TextAlign.center),
