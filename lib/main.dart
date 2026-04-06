@@ -88,8 +88,8 @@ var usersBlurb;
 var usersInterests;
 var usersLocation;
 var numberOfPostsUserHasMade;
-var starsUserTracked;
-var planetsUserTracked;
+var starsUserTracked = {};
+var planetsUserTracked = {};
 
 var theListOfUsers = [];
 
