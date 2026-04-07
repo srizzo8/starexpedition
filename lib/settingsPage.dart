@@ -93,13 +93,13 @@ class settingsPageState extends State<settingsPage>{
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
-        leading: IconButton(
+        /*leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () async =>{
             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
           }
-        ),
+        ),*/
       ),
       body: Column(
         children: <Widget>[
@@ -215,6 +215,7 @@ class settingsPageState extends State<settingsPage>{
           ),
         ],
       ),
+      drawer: myMain.starExpeditionNavigationDrawer(),
     );
   }
 }

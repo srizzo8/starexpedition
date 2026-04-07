@@ -755,13 +755,13 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
-        leading: IconButton(
+        /*leading: IconButton(
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
               Navigator.push(bc, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
             }
-        ),
+        ),*/
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -1067,6 +1067,7 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
           ],
         ),
       ),
+      drawer: myMain.starExpeditionNavigationDrawer(),
     );
   }
 }
