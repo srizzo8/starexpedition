@@ -940,10 +940,10 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                           ),
                         ),
                         s < (myMain.starsUserTracked.keys.toList()).length - 1? Container(
-                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625, 0.0),
+                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, 0.0, MediaQuery.of(context).size.width * 0.015625, 0.0),
                           child: Text("${myMain.starsUserTracked.values.toList()[s]}\n", textAlign: TextAlign.center),
                         ): Container(
-                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625, 0.0),
+                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, 0.0, MediaQuery.of(context).size.width * 0.015625, 0.0),
                           child: Text("${myMain.starsUserTracked.values.toList()[s]}", textAlign: TextAlign.center),
                         ),
                       ],
@@ -1067,7 +1067,7 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625, 0.0),
+                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, 0.0, MediaQuery.of(context).size.width * 0.015625, 0.0),
                           child: Text("${myMain.planetsUserTracked.values.toList()[p]}\n", textAlign: TextAlign.center),
                         ),
                       ],
@@ -1376,10 +1376,10 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                           ),
                         ),
                         s < (theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()).length - 1? Container(
-                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625, 0.0),
+                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, 0.0, MediaQuery.of(context).size.width * 0.015625, 0.0),
                           child: Text("${theUsersData["usernameProfileInformation"]["starsTracked"].values.toList()[s]}\n", textAlign: TextAlign.center),
                         ): Container(
-                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625, 0.0),
+                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, 0.0, MediaQuery.of(context).size.width * 0.015625, 0.0),
                           child: Text("${theUsersData["usernameProfileInformation"]["starsTracked"].values.toList()[s]}", textAlign: TextAlign.center),
                         ),
                       ],
@@ -1496,7 +1496,7 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625, 0.0),
+                          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, 0.0, MediaQuery.of(context).size.width * 0.015625, 0.0),
                           child: Text("${theUsersData["usernameProfileInformation"]["planetsTracked"].values.toList()[p]}\n", textAlign: TextAlign.center),
                         ),
                       ],
