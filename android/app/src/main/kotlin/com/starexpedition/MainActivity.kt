@@ -1,4 +1,4 @@
-package com.srizzo.starexpedition4
+package com.starexpedition
 
 import io.flutter.embedding.android.FlutterActivity
 
