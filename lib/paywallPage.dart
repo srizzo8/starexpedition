@@ -70,17 +70,19 @@ class paywallPageState extends State<paywallPage>{
         backgroundColor: Colors.red,
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
           Text(
-            widget.isExpired? "Your free trial has unfortunately ended" : "Welcome to our free trial",
+            widget.isExpired? "Your free trial has unfortunately ended." : "Welcome to our free trial!",
             style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold),
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.031250,
           ),
           Text(
-            widget.isExpired? "Subscribe to continue using Star Expedition" : "Choose your plan",
+            widget.isExpired? "Subscribe to continue using Star Expedition." : "Choose your plan.",
             style: TextStyle(color: Colors.black, fontSize: 18.0),
           ),
 
