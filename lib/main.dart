@@ -57,6 +57,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'mostTrackedStarsAndPlanetsPage.dart';
 
+import 'package:starexpedition4/trials_and_payments/theBillingService.dart';
+import 'package:starexpedition4/trials_and_payments/theTrialService.dart';
+import 'package:starexpedition4/paywallPage.dart';
+import 'package:starexpedition4/subscriptionGate.dart';
+
 /*import 'webErrorStub.dart'
   if(dart.library.html) 'forWebErrors.dart';*/
 
@@ -799,7 +804,8 @@ class MyApp extends StatelessWidget {
   // of your application
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return subscriptionGate(
+      myChild: MaterialApp(
         navigatorObservers: [routesToOtherPages.myRouteObserver],
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -830,6 +836,7 @@ class MyApp extends StatelessWidget {
           routesToOtherPages.nonexistentUserPage: (context) => nonexistentUser(),
           routesToOtherPages.mostTrackedStarsAndPlanetsPage: (context) => mostTrackedStarsAndPlanetsPage(),
         }
+      ),
     );
   }
 }
@@ -988,7 +995,8 @@ class theStarExpeditionState extends State<StarExpedition> {
     //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
     print(timeNow);
 
-    return Scaffold(
+    return subscriptionGate(
+      myChild: Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
@@ -1379,6 +1387,7 @@ class theStarExpeditionState extends State<StarExpedition> {
         ],
       ),
       drawer: starExpeditionNavigationDrawer(),
+    ),
     );
   }
 
