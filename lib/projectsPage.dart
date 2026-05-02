@@ -929,8 +929,8 @@ class projectsThreadContent extends State<projectsThreadsPage>{
                       color: Colors.grey[500],
                       height: MediaQuery.of(context).size.height * 0.02734375,
                       child: Container(
-                        alignment: Alignment.topCenter,
-                        child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                        alignment: Alignment.center,
+                        child: Text("Reply to thread", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center,),
                       ),
                     ),
                     onTap: () async {
