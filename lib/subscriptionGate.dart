@@ -103,7 +103,7 @@ class gateLoadingPage extends StatelessWidget{
         backgroundColor: Colors.red,
       ),
       body: Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(color: Colors.red,),
       ),
     );
   }
