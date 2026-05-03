@@ -88,7 +88,7 @@ class paywallPageState extends State<paywallPage>{
 
           //The subscription plan buttons:
           if(isLoading)
-            const CircularProgressIndicator()
+            const CircularProgressIndicator(color: Colors.red)
           else ...[
             if(monthly != null)...[
               Container(
