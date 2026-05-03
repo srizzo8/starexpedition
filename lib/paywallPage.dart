@@ -83,7 +83,7 @@ class paywallPageState extends State<paywallPage>{
           ),
           Text(
             widget.isExpired? "Subscribe to continue using Star Expedition." : "Choose your plan.",
-            style: TextStyle(color: Colors.black, fontSize: 18.0),
+            style: TextStyle(color: Colors.black),
           ),
 
           //The subscription plan buttons:
@@ -93,7 +93,7 @@ class paywallPageState extends State<paywallPage>{
             if(monthly != null)...[
               Container(
                 alignment: Alignment.topCenter,
-                child: const Text("Our monthly plan", style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold)),
+                child: const Text("Our monthly plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
               ),
               Center(
                 child: ElevatedButton(
@@ -119,7 +119,7 @@ class paywallPageState extends State<paywallPage>{
             if(yearly != null)...[
               Container(
                 alignment: Alignment.topCenter,
-                child: const Text("Our yearly plan", style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold)),
+                child: const Text("Our yearly plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
               ),
               Center(
                 child: ElevatedButton(
@@ -142,7 +142,7 @@ class paywallPageState extends State<paywallPage>{
             //If neither the monthly nor yearly subscription products are available:
             if(monthly == null && yearly == null)
               Container(
-                child: Text("\nThe subscription plans are currently unavailable. We are sorry for the inconvenience.", textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold),),
+                child: Text("\nThe subscription plans are currently unavailable. We are sorry for the inconvenience.", textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
               ),
             Container(
               height: MediaQuery.of(context).size.height * 0.031250,
@@ -150,7 +150,7 @@ class paywallPageState extends State<paywallPage>{
           ],
           Container(
             alignment: Alignment.topCenter,
-            child: const Text("You can cancel at any time on Google Play.\nThere are no charges during your free trial.", style: TextStyle(color: Colors.black, fontSize: 18.0)),
+            child: const Text("You can cancel at any time on Google Play.\nThere are no charges during your free trial.", style: TextStyle(color: Colors.black)),
           ),
         ],
       ),
