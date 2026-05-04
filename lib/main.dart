@@ -6,6 +6,7 @@ import 'dart:io' show HttpHeaders, Platform;
 import 'dart:math';
 //if(kIsWeb) import 'dart:html' as html;
 import 'dart:typed_data';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:starexpedition4/web_related_information/webErrorHandlersImplementation.dart';
 //if(kIsWeb) import 'package:js/js_util.dart' as jsUtil;
 
@@ -1000,6 +1001,54 @@ class theStarExpeditionState extends State<StarExpedition> {
 
     setupMyErrorHandlers();
   }*/
+
+  final theTrialService myTrialService = theTrialService();
+
+  @override
+  void initState(){
+    super.initState();
+    showTrialDialog();
+  }
+
+  Future<void> showTrialDialog() async{
+    final myDays = await myTrialService.daysLeftOfTrial();
+
+    if(myDays <= 0){
+      return;
+    }
+
+    //Check if the trial dialog has already been shown today:
+    final myPrefs = await SharedPreferences.getInstance();
+    final lastShown = myPrefs.getString("freeTrialDialogLastShown");
+    final todaysDate = DateTime.now().toIso8601String().substring(0, 10);
+
+    //If the trial dialog has already been shown today:
+    if(lastShown == todaysDate){
+      return;
+    }
+
+    //Saving today's date:
+    await myPrefs.setString("freeTrialDialogLastShown", todaysDate);
+
+    //The trial dialog:
+    showDialog(
+      context: context,
+      builder: (BuildContext bc){
+        return AlertDialog(
+          title: Text("Your Free Trial"),
+          content: Text("You have ${myDays} days left in your free trial.\nAfter your free trial ends, you will need to subscribe to continue using Star Expedition."),
+          actions: [
+            TextButton(
+              onPressed: () => {
+                Navigator.of(bc).pop(),
+              },
+              child: Text("Ok"),
+            ),
+          ],
+        );
+      }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
