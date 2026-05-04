@@ -176,11 +176,13 @@ class loginPageState extends State<loginPage>{
                     ),
                   ),
                   onPressed: () async{
+                    var myServerCheck = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get(GetOptions(source: Source.server));
+
                     if(usernameController.text != "" && passwordController.text != "") {
                       var userDocument;
 
                       //userResult
-                      if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
+                      if(myServerCheck.docs.isNotEmpty){
                         if(firebaseDesktopHelper.onDesktop){
                           //var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
                           /*userResult.docs.forEach((outcome){
@@ -192,12 +194,8 @@ class loginPageState extends State<loginPage>{
                           userDocument = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
                         }
                         else{
-                          var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
-                          userResult.docs.forEach((outcome){
-                            userDocument = outcome.data();
-                            //userLowercased = outcome.data()["username"].toLowerCase();
-                            print("This is the outcome: ${outcome.data()}");
-                          });
+                          userDocument = myServerCheck.docs.first.data();
+                          print("This is the outcome: ${userDocument}");
                         }
 
                         print("keys: ${userDocument["password"]}");
@@ -267,7 +265,7 @@ class loginPageState extends State<loginPage>{
                       else{
                         //print("userDocument info: ${userDocument["usernameLowercased"]}, ${userDocument["password"]}");
                         //print("passwordDocument: $passwordDocument");
-                        if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1){
+                        if(myServerCheck.docs.isNotEmpty){
                           showDialog(
                               context: context,
                               builder: (BuildContext theContext){
@@ -288,7 +286,7 @@ class loginPageState extends State<loginPage>{
                               }
                           );
                         }
-                        else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1){
+                        else if(myServerCheck.docs.isEmpty){
                           userDocument = null;
                           showDialog(
                               context: context,
@@ -333,7 +331,7 @@ class loginPageState extends State<loginPage>{
                           }
                       );
                     }
-                    else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) != -1 && usernameController.text != "" && passwordController.text == ""){
+                    else if(usernameController.text != "" && passwordController.text == ""){
                       showDialog(
                           context: context,
                           builder: (BuildContext theContext){
@@ -354,7 +352,7 @@ class loginPageState extends State<loginPage>{
                           }
                       );
                     }
-                    else if(myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == usernameController.text.toLowerCase()) == -1 && usernameController.text != "" && passwordController.text == ""){
+                    else if(myServerCheck.docs.isEmpty && usernameController.text != "" && passwordController.text == ""){
                       showDialog(
                           context: context,
                           builder: (BuildContext theContext){

@@ -619,11 +619,22 @@ Future<void> main() async {
       projectId: dotenv.env["FIREBASE_PROJECT_ID"]!
     ));
 
-    await FirebaseFirestore.instance.collection("User").get().then((snapshot){
-      snapshot.docs.forEach((item){
-        usersOnStarExpeditionDocs.add(item.data());
+    try{
+      await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.server)).then((snapshot){
+        snapshot.docs.forEach((item){
+          usersOnStarExpeditionDocs.add(item.data());
+        });
       });
-    });
+    }
+    catch (e){
+      //Going to cache if the server is unavailable
+      print("The server is unavailable. Error: ${e}");
+      await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.cache)).then((snapshot){
+        snapshot.docs.forEach((item){
+          usersOnStarExpeditionDocs.add(item.data());
+        });
+      });
+    }
     print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
 
     starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
@@ -696,11 +707,24 @@ Future<void> main() async {
   else{
     await Firebase.initializeApp();
 
-    await FirebaseFirestore.instance.collection("User").get().then((snapshot){
-      snapshot.docs.forEach((item){
-        usersOnStarExpeditionDocs.add(item.data());
+    try{
+      await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.server)).then((snapshot){
+        snapshot.docs.forEach((item){
+          usersOnStarExpeditionDocs.add(item.data());
+        });
       });
-    });
+    }
+    catch (e){
+      //Going to cache if the server is unavailable
+      print("The server is unavailable. Error: ${e}");
+
+      await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.cache)).then((snapshot){
+        snapshot.docs.forEach((item){
+          usersOnStarExpeditionDocs.add(item.data());
+        });
+      });
+    }
+
     print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
 
     starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
