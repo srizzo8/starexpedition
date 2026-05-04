@@ -286,7 +286,7 @@ class loginPageState extends State<loginPage>{
                               }
                           );
                         }
-                        else if(myServerCheck.docs.isEmpty){
+                        else if(myServerCheck.docs.isEmpty && passwordController.text != ""){
                           userDocument = null;
                           showDialog(
                               context: context,
@@ -331,7 +331,7 @@ class loginPageState extends State<loginPage>{
                           }
                       );
                     }
-                    else if(usernameController.text != "" && passwordController.text == ""){
+                    else if(usernameController.text != "" && myServerCheck.docs.isNotEmpty && passwordController.text == ""){
                       showDialog(
                           context: context,
                           builder: (BuildContext theContext){
