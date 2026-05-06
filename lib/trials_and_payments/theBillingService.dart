@@ -22,8 +22,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 class theBillingService{
-  static const String myMonthlyId = "theMonthlyId";
-  static const String myYearlyId = "theYearlyId";
+  static const String myMonthlyId = "star_expedition_monthly";
+  static const String myYearlyId = "star_expedition_yearly";
 
   StreamSubscription? purchaseSubscription;
   final Function(bool isSubscribed) onSubscriptionChanged;
