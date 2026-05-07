@@ -39,6 +39,7 @@ class subscriptionGateState extends State<subscriptionGate>{
   myAccessState myAccess = myAccessState.loading;
   late theBillingService myBillingService;
   final theTrialService myTrialService = theTrialService();
+  bool userIsSubscribed = false;
 
   @override
   void initState(){
@@ -46,6 +47,7 @@ class subscriptionGateState extends State<subscriptionGate>{
 
     myBillingService = theBillingService(
       onSubscriptionChanged: (isSubscribed) async{
+        userIsSubscribed = isSubscribed;
         if(isSubscribed){
           setState(() => myAccess = myAccessState.permitted);
         }
@@ -61,11 +63,17 @@ class subscriptionGateState extends State<subscriptionGate>{
 
   Future<void> init() async{
     await myTrialService.getInstallationDate();
+
+    //Giving some billing time to restore purchases:
+    await Future.delayed(Duration(seconds: 3));
     await myBillingService.initialize();
 
     final inTrial = await myTrialService.isInTrial();
 
-    setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
+    //Updates here only happen if the billing has not unlocked yet:
+    if(!userIsSubscribed){
+      setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
+    }
   }
 
   @override

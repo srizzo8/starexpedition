@@ -34,7 +34,16 @@ class theBillingService{
     final bool available = await InAppPurchase.instance.isAvailable();
     print("Is the billing available? ${available}");
 
-    purchaseSubscription = InAppPurchase.instance.purchaseStream.listen(handleMyPurchaseUpdate);
+    purchaseSubscription = InAppPurchase.instance.purchaseStream.listen(
+      handleMyPurchaseUpdate,
+      onError: (myError){
+        print("The purchase stream error: ${myError}");
+      }
+    );
+
+    //Waiting some time to ensure that the stream is ready:
+    await Future.delayed(Duration(seconds: 2));
+    await InAppPurchase.instance.restorePurchases();
 
     //Asking Google Play if the device has an active subscription:
     await InAppPurchase.instance.restorePurchases();
@@ -43,6 +52,22 @@ class theBillingService{
   void handleMyPurchaseUpdate(List<PurchaseDetails> myPurchases){
     print("The purchase update has been received: ${myPurchases.length} purchases");
 
+    for(final myPurchase in myPurchases){
+      print("The purchase status: ${myPurchase.status}");
+      print("The purchase ID: ${myPurchase.productID}");
+
+      if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
+        print("An active subscription has been found. The app will be unlocked.");
+        completeMyPurchase(myPurchase);
+        onSubscriptionChanged(true);
+      }
+      else if(myPurchase.status == PurchaseStatus.error || myPurchase.status == PurchaseStatus.canceled){
+        print("Either there is a subscription error or the subscription has been cancelled.");
+        onSubscriptionChanged(false);
+      }
+    }
+
+    //If there are no relevant purchases found:
     final myRelevantPurchases = myPurchases.where((p) => p.productID == myMonthlyId || p.productID == myYearlyId);
 
     print("The relevant purchases: ${myRelevantPurchases.length}");
@@ -51,19 +76,6 @@ class theBillingService{
       print("No relevant purchases have been found");
       onSubscriptionChanged(false);
       return;
-    }
-
-    for(final myPurchase in myRelevantPurchases){
-      print("The purchase status: ${myPurchase.status}");
-      print("The purchase ID: ${myPurchase.productID}");
-
-      if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
-        completeMyPurchase(myPurchase);
-        onSubscriptionChanged(true);
-      }
-      else if(myPurchase.status == PurchaseStatus.error || myPurchase.status == PurchaseStatus.canceled){
-        onSubscriptionChanged(false);
-      }
     }
   }
 
