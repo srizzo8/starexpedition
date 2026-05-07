@@ -31,6 +31,9 @@ class theBillingService{
   theBillingService({required this.onSubscriptionChanged});
 
   Future<void> initialize() async{
+    final bool available = await InAppPurchase.instance.isAvailable();
+    print("Is the billing available? ${available}");
+
     purchaseSubscription = InAppPurchase.instance.purchaseStream.listen(handleMyPurchaseUpdate);
 
     //Asking Google Play if the device has an active subscription:
@@ -38,14 +41,22 @@ class theBillingService{
   }
 
   void handleMyPurchaseUpdate(List<PurchaseDetails> myPurchases){
+    print("The purchase update has been received: ${myPurchases.length} purchases");
+
     final myRelevantPurchases = myPurchases.where((p) => p.productID == myMonthlyId || p.productID == myYearlyId);
 
+    print("The relevant purchases: ${myRelevantPurchases.length}");
+
     if(myRelevantPurchases.isEmpty){
+      print("No relevant purchases have been found");
       onSubscriptionChanged(false);
       return;
     }
 
     for(final myPurchase in myRelevantPurchases){
+      print("The purchase status: ${myPurchase.status}");
+      print("The purchase ID: ${myPurchase.productID}");
+
       if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
         completeMyPurchase(myPurchase);
         onSubscriptionChanged(true);
