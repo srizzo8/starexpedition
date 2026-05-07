@@ -1007,7 +1007,10 @@ class theStarExpeditionState extends State<StarExpedition> {
   @override
   void initState(){
     super.initState();
-    showTrialDialog();
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      showTrialDialog();
+    });
   }
 
   Future<void> showTrialDialog() async{
