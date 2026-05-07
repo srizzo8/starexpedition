@@ -368,7 +368,6 @@ class forgottenPasswordState extends State<forgottenPassword>{
                                   theUsersEmail = myEmailController.text;
                                   Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPasswordCodeEntry()));
                                   mySixDigitCode = await emailNotifications.sixDigitCode();
-                                  print("mySixDigitCode: ${mySixDigitCode}");
 
                                   emailNotifications.sendAnEmail(theUsersEmail, "Password Reset Code", "Hi ${theUsersUsername},<br><br>We have noticed that you have forgotten your password. Please enter in this 6-digit verification code into Star Expedition: <br>${mySixDigitCode}<br>Once you have entered it in, you may reset your password.<br><br>Best,<br>Star Expedition");
                                 },
