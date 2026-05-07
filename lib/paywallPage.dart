@@ -85,6 +85,9 @@ class paywallPageState extends State<paywallPage>{
             widget.isExpired? "Subscribe to continue using Star Expedition." : "Choose your plan.",
             style: TextStyle(color: Colors.black),
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.031250,
+          ),
 
           //The subscription plan buttons:
           if(isLoading)
