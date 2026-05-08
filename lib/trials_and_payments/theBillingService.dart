@@ -27,8 +27,9 @@ class theBillingService{
 
   StreamSubscription? purchaseSubscription;
   final Function(bool isSubscribed) onSubscriptionChanged;
+  final Function(String? myProductId) onProductIdChanged;
 
-  theBillingService({required this.onSubscriptionChanged});
+  theBillingService({required this.onSubscriptionChanged, required this.onProductIdChanged});
 
   Future<void> initialize() async{
     final bool available = await InAppPurchase.instance.isAvailable();
@@ -43,7 +44,6 @@ class theBillingService{
 
     //Waiting some time to ensure that the stream is ready:
     await Future.delayed(Duration(seconds: 2));
-    await InAppPurchase.instance.restorePurchases();
 
     //Asking Google Play if the device has an active subscription:
     await InAppPurchase.instance.restorePurchases();
@@ -51,21 +51,6 @@ class theBillingService{
 
   void handleMyPurchaseUpdate(List<PurchaseDetails> myPurchases){
     print("The purchase update has been received: ${myPurchases.length} purchases");
-
-    for(final myPurchase in myPurchases){
-      print("The purchase status: ${myPurchase.status}");
-      print("The purchase ID: ${myPurchase.productID}");
-
-      if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
-        print("An active subscription has been found. The app will be unlocked.");
-        completeMyPurchase(myPurchase);
-        onSubscriptionChanged(true);
-      }
-      else if(myPurchase.status == PurchaseStatus.error || myPurchase.status == PurchaseStatus.canceled){
-        print("Either there is a subscription error or the subscription has been cancelled.");
-        onSubscriptionChanged(false);
-      }
-    }
 
     //If there are no relevant purchases found:
     final myRelevantPurchases = myPurchases.where((p) => p.productID == myMonthlyId || p.productID == myYearlyId);
@@ -75,7 +60,25 @@ class theBillingService{
     if(myRelevantPurchases.isEmpty){
       print("No relevant purchases have been found");
       onSubscriptionChanged(false);
+      onProductIdChanged(null);
       return;
+    }
+
+    for(final myPurchase in myPurchases){
+      print("The purchase status: ${myPurchase.status}");
+      print("The purchase ID: ${myPurchase.productID}");
+
+      if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
+        print("An active subscription has been found. The app will be unlocked.");
+        completeMyPurchase(myPurchase);
+        onSubscriptionChanged(true);
+        onProductIdChanged(myPurchase.productID);
+      }
+      else if(myPurchase.status == PurchaseStatus.error || myPurchase.status == PurchaseStatus.canceled){
+        print("Either there is a subscription error or the subscription has been cancelled.");
+        onSubscriptionChanged(false);
+        onProductIdChanged(null);
+      }
     }
   }
 

@@ -40,6 +40,7 @@ class subscriptionGateState extends State<subscriptionGate>{
   late theBillingService myBillingService;
   final theTrialService myTrialService = theTrialService();
   bool userIsSubscribed = false;
+  String? myActiveProductId;
 
   @override
   void initState(){
@@ -47,17 +48,18 @@ class subscriptionGateState extends State<subscriptionGate>{
 
     myBillingService = theBillingService(
       onSubscriptionChanged: (isSubscribed) async{
-        /*userIsSubscribed = isSubscribed;
+        userIsSubscribed = isSubscribed;
         if(isSubscribed){
           setState(() => myAccess = myAccessState.permitted);
         }
         else{
           final inTrial = await myTrialService.isInTrial();
           setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
-        }*/
-        final inTrial = await myTrialService.isInTrial();
-        setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
-      }
+        }
+      },
+      onProductIdChanged: (myProductId){
+        setState(() => myActiveProductId = myProductId);
+      },
     );
 
     init();
@@ -90,7 +92,7 @@ class subscriptionGateState extends State<subscriptionGate>{
     }
     else{
       //If the trial has expired or if one is not subscribed, the paywall should show:
-      return MaterialApp(debugShowCheckedModeBanner: false, home: paywallPage(myBillingService: myBillingService, isExpired: true,),);
+      return MaterialApp(debugShowCheckedModeBanner: false, home: paywallPage(myBillingService: myBillingService, isExpired: true, activeProductId: myActiveProductId),);
     }
   }
 

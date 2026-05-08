@@ -24,8 +24,9 @@ import 'package:starexpedition4/trials_and_payments/theBillingService.dart';
 class paywallPage extends StatefulWidget{
   final theBillingService myBillingService;
   final bool isExpired;
+  final String? activeProductId;
 
-  const paywallPage({required this.myBillingService, this.isExpired = false, super.key});
+  const paywallPage({required this.myBillingService, this.isExpired = false, this.activeProductId, super.key});
 
   @override
   paywallPageState createState() => paywallPageState();
@@ -34,13 +35,11 @@ class paywallPage extends StatefulWidget{
 class paywallPageState extends State<paywallPage>{
   List<ProductDetails> myProducts = [];
   bool isLoading = true;
-  String? myActiveSubscriptionId;
 
   @override
   void initState(){
     super.initState();
     loadMyProducts();
-    checkActiveSubscription();
   }
 
   Future<void> loadMyProducts() async{
@@ -55,30 +54,6 @@ class paywallPageState extends State<paywallPage>{
       myProducts = theProducts;
       isLoading = false;
     });
-  }
-
-  //Checking to see which subscription is currently active for a user:
-  Future<void> checkActiveSubscription() async{
-    try{
-      print("Checking if there is an active subscription");
-
-      //Restoring purchases to get the current subscription status:
-      await InAppPurchase.instance.restorePurchases();
-
-      //Listening for stored purchases:
-      InAppPurchase.instance.purchaseStream.listen((myPurchases){
-        for(final myPurchase in myPurchases){
-          print("Found the purchase: ${myPurchase.productID}, ${myPurchase.status}");
-
-          if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
-            setState(() => myActiveSubscriptionId = myPurchase.productID);
-          }
-        }
-      });
-    }
-    catch (e){
-      print("There is an error when checking for a subscription: ${e}");
-    }
   }
 
   ProductDetails? getMyProduct(String myId){
@@ -134,17 +109,17 @@ class paywallPageState extends State<paywallPage>{
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     //If the user has an active yearly plan, this is greyed:
-                    primary: myActiveSubscriptionId == theBillingService.myYearlyId? Colors.grey : Colors.black,
+                    primary: widget.activeProductId == theBillingService.myYearlyId? Colors.grey : Colors.black,
                   ),
                   child: InkWell(
                     child: Ink(
                       //If the user has an active yearly plan, this is greyed:
-                      color: myActiveSubscriptionId == theBillingService.myYearlyId? Colors.grey : Colors.black,
-                      child: Text(myActiveSubscriptionId == theBillingService.myMonthlyId? "Your current plan" : myActiveSubscriptionId == theBillingService.myYearlyId? "Switch to Monthly (${monthly?.price}/month)" : "${monthly?.price}/month", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                      color: widget.activeProductId == theBillingService.myYearlyId? Colors.grey : Colors.black,
+                      child: Text(widget.activeProductId == theBillingService.myMonthlyId? "Your current plan" : widget.activeProductId == theBillingService.myYearlyId? "Switch to Monthly (${monthly?.price}/month)" : "${monthly?.price}/month", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                     ),
                   ),
                   //Does nothing if a user already has an active monthly plan:
-                  onPressed: myActiveSubscriptionId == theBillingService.myMonthlyId? null : (){
+                  onPressed: widget.activeProductId == theBillingService.myMonthlyId? null : (){
                     print("Paying for a monthly subscription");
                     widget.myBillingService.subscribe(monthly!);
                   }
@@ -163,17 +138,17 @@ class paywallPageState extends State<paywallPage>{
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       //If the user has an active monthly plan, this is greyed:
-                      primary: myActiveSubscriptionId == theBillingService.myMonthlyId? Colors.grey : Colors.black,
+                      primary: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey : Colors.black,
                     ),
                     child: InkWell(
                       child: Ink(
                         //If the user has an active monthly plan, this is greyed:
-                        color: myActiveSubscriptionId == theBillingService.myMonthlyId? Colors.grey : Colors.black,
-                        child: Text(myActiveSubscriptionId == theBillingService.myYearlyId? "Your current plan" : myActiveSubscriptionId == theBillingService.myMonthlyId? "Switch to Yearly (${yearly?.price}/year)" : "${yearly?.price}/year", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                        color: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey : Colors.black,
+                        child: Text(widget.activeProductId == theBillingService.myYearlyId? "Your current plan" : widget.activeProductId == theBillingService.myMonthlyId? "Switch to Yearly (${yearly?.price}/year)" : "${yearly?.price}/year", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                       ),
                     ),
                     //Does nothing if a user already has an active yearly plan:
-                    onPressed: myActiveSubscriptionId == theBillingService.myYearlyId? null : (){
+                    onPressed: widget.activeProductId == theBillingService.myYearlyId? null : (){
                       print("Paying for a yearly subscription");
                       widget.myBillingService.subscribe(yearly!);
                     }
