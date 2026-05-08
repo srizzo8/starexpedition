@@ -108,13 +108,13 @@ class paywallPageState extends State<paywallPage>{
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    //If the user has an active yearly plan, this is greyed:
-                    primary: widget.activeProductId == theBillingService.myYearlyId? Colors.grey : Colors.black,
+                    //If the user has an active monthly plan, this is greyed:
+                    primary: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey : Colors.black,
                   ),
                   child: InkWell(
                     child: Ink(
-                      //If the user has an active yearly plan, this is greyed:
-                      color: widget.activeProductId == theBillingService.myYearlyId? Colors.grey : Colors.black,
+                      //If the user has an active monthly plan, this is greyed:
+                      color: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey : Colors.black,
                       child: Text(widget.activeProductId == theBillingService.myMonthlyId? "Your current plan" : widget.activeProductId == theBillingService.myYearlyId? "Switch to Monthly (${monthly?.price}/month)" : "${monthly?.price}/month", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                     ),
                   ),
@@ -137,13 +137,13 @@ class paywallPageState extends State<paywallPage>{
               Center(
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      //If the user has an active monthly plan, this is greyed:
-                      primary: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey : Colors.black,
+                      //If the user has an active yearly plan, this is greyed:
+                      primary: widget.activeProductId == theBillingService.myYearlyId? Colors.grey : Colors.black,
                     ),
                     child: InkWell(
                       child: Ink(
-                        //If the user has an active monthly plan, this is greyed:
-                        color: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey : Colors.black,
+                        //If the user has an active yearly plan, this is greyed:
+                        color: widget.activeProductId == theBillingService.myYearlyId? Colors.grey : Colors.black,
                         child: Text(widget.activeProductId == theBillingService.myYearlyId? "Your current plan" : widget.activeProductId == theBillingService.myMonthlyId? "Switch to Yearly (${yearly?.price}/year)" : "${yearly?.price}/year", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                       ),
                     ),
