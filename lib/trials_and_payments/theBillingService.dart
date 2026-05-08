@@ -60,7 +60,7 @@ class theBillingService{
     if(myRelevantPurchases.isEmpty){
       print("No relevant purchases have been found");
       onSubscriptionChanged(false);
-      onProductIdChanged(null);
+      //onProductIdChanged(null);
       return;
     }
 
@@ -77,7 +77,7 @@ class theBillingService{
       else if(myPurchase.status == PurchaseStatus.error || myPurchase.status == PurchaseStatus.canceled){
         print("Either there is a subscription error or the subscription has been cancelled.");
         onSubscriptionChanged(false);
-        onProductIdChanged(null);
+        //onProductIdChanged(null);
       }
     }
   }
