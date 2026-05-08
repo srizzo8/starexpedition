@@ -66,14 +66,16 @@ class subscriptionGateState extends State<subscriptionGate>{
 
     //Giving some billing time to restore purchases:
     await Future.delayed(Duration(seconds: 3));
-    await myBillingService.initialize();
+    /*await myBillingService.initialize();
 
     final inTrial = await myTrialService.isInTrial();
 
     //Updates here only happen if the billing has not unlocked yet:
     if(!userIsSubscribed){
       setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
-    }
+    }*/
+
+    setState(() => myAccess = myAccessState.blocked);
   }
 
   @override
