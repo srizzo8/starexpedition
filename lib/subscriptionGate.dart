@@ -48,14 +48,17 @@ class subscriptionGateState extends State<subscriptionGate>{
 
     myBillingService = theBillingService(
       onSubscriptionChanged: (isSubscribed) async{
-        userIsSubscribed = isSubscribed;
+        /*userIsSubscribed = isSubscribed;
         if(isSubscribed){
           setState(() => myAccess = myAccessState.permitted);
         }
         else{
           final inTrial = await myTrialService.isInTrial();
           setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
-        }
+        }*/
+        userIsSubscribed = false;
+        final inTrial = await myTrialService.isInTrial();
+        setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
       },
       onProductIdChanged: (myProductId){
         setState(() => myActiveProductId = myProductId);
