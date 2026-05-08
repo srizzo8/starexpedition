@@ -61,7 +61,7 @@ class theTrialService{
 
   //Returns true if a user's trial is still in the one-week time window:
   Future<bool> isInTrial() async{
-    /*final myDeviceId = await getDeviceId();
+    final myDeviceId = await getDeviceId();
 
     //Checking Firestore database:
     final myDoc = await FirebaseFirestore.instance.collection("Trials").doc(myDeviceId).get();
@@ -74,8 +74,7 @@ class theTrialService{
     final daysSinceInstall = DateTime.now().difference(myInstallDate).inDays;
     final inTrial = daysSinceInstall < myTrialDays;
 
-    return inTrial;*/
-    return false;
+    return inTrial;
   }
 
   //Checking how many days are left for a user's trial:

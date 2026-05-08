@@ -45,6 +45,12 @@ class paywallPageState extends State<paywallPage>{
 
   Future<void> loadMyProducts() async{
     final theProducts = await widget.myBillingService.getMyProducts();
+    print("The products loaded: ${theProducts.length}");
+
+    for(final myProduct in theProducts){
+      print("Product: ${myProduct.id}, ${myProduct.price}");
+    }
+
     setState((){
       myProducts = theProducts;
       isLoading = false;
@@ -53,12 +59,25 @@ class paywallPageState extends State<paywallPage>{
 
   //Checking to see which subscription is currently active for a user:
   Future<void> checkActiveSubscription() async{
-    final myPurchases = await InAppPurchase.instance.purchaseStream.first;
+    try{
+      print("Checking if there is an active subscription");
 
-    for(final myPurchase in myPurchases){
-      if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
-        setState(() => myActiveSubscriptionId = myPurchase.productID);
-      }
+      //Restoring purchases to get the current subscription status:
+      await InAppPurchase.instance.restorePurchases();
+
+      //Listening for stored purchases:
+      InAppPurchase.instance.purchaseStream.listen((myPurchases){
+        for(final myPurchase in myPurchases){
+          print("Found the purchase: ${myPurchase.productID}, ${myPurchase.status}");
+
+          if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
+            setState(() => myActiveSubscriptionId = myPurchase.productID);
+          }
+        }
+      });
+    }
+    catch (e){
+      print("There is an error when checking for a subscription: ${e}");
     }
   }
 
