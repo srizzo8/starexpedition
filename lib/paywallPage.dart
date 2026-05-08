@@ -34,11 +34,13 @@ class paywallPage extends StatefulWidget{
 class paywallPageState extends State<paywallPage>{
   List<ProductDetails> myProducts = [];
   bool isLoading = true;
+  String? myActiveSubscriptionId;
 
   @override
   void initState(){
     super.initState();
     loadMyProducts();
+    checkActiveSubscription();
   }
 
   Future<void> loadMyProducts() async{
@@ -47,6 +49,17 @@ class paywallPageState extends State<paywallPage>{
       myProducts = theProducts;
       isLoading = false;
     });
+  }
+
+  //Checking to see which subscription is currently active for a user:
+  Future<void> checkActiveSubscription() async{
+    final myPurchases = await InAppPurchase.instance.purchaseStream.first;
+
+    for(final myPurchase in myPurchases){
+      if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
+        setState(() => myActiveSubscriptionId = myPurchase.productID);
+      }
+    }
   }
 
   ProductDetails? getMyProduct(String myId){
@@ -101,15 +114,18 @@ class paywallPageState extends State<paywallPage>{
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
+                    //If the user has an active yearly plan, this is greyed:
+                    primary: myActiveSubscriptionId == theBillingService.myYearlyId? Colors.grey : Colors.black,
                   ),
                   child: InkWell(
                     child: Ink(
-                      color: Colors.black,
-                      child: Text("${monthly?.price}/month", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                      //If the user has an active yearly plan, this is greyed:
+                      color: myActiveSubscriptionId == theBillingService.myYearlyId? Colors.grey : Colors.black,
+                      child: Text(myActiveSubscriptionId == theBillingService.myMonthlyId? "Your current plan" : myActiveSubscriptionId == theBillingService.myYearlyId? "Switch to Monthly (${monthly?.price}/month)" : "${monthly?.price}/month", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                     ),
                   ),
-                  onPressed: (){
+                  //Does nothing if a user already has an active monthly plan:
+                  onPressed: myActiveSubscriptionId == theBillingService.myMonthlyId? null : (){
                     print("Paying for a monthly subscription");
                     widget.myBillingService.subscribe(monthly!);
                   }
@@ -127,15 +143,18 @@ class paywallPageState extends State<paywallPage>{
               Center(
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.black,
+                      //If the user has an active monthly plan, this is greyed:
+                      primary: myActiveSubscriptionId == theBillingService.myMonthlyId? Colors.grey : Colors.black,
                     ),
                     child: InkWell(
                       child: Ink(
-                        color: Colors.black,
-                        child: Text("${yearly?.price}/year", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                        //If the user has an active monthly plan, this is greyed:
+                        color: myActiveSubscriptionId == theBillingService.myMonthlyId? Colors.grey : Colors.black,
+                        child: Text(myActiveSubscriptionId == theBillingService.myYearlyId? "Your current plan" : myActiveSubscriptionId == theBillingService.myMonthlyId? "Switch to Yearly (${yearly?.price}/year)" : "${yearly?.price}/year", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                       ),
                     ),
-                    onPressed: (){
+                    //Does nothing if a user already has an active yearly plan:
+                    onPressed: myActiveSubscriptionId == theBillingService.myYearlyId? null : (){
                       print("Paying for a yearly subscription");
                       widget.myBillingService.subscribe(yearly!);
                     }
