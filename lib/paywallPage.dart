@@ -108,8 +108,9 @@ class paywallPageState extends State<paywallPage>{
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    //If the user has an active monthly plan, this is greyed:
-                    primary: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[700] : Colors.black,
+                    primary: Colors.black,
+                    //When onPressed is null, this button is grey[500]:
+                    onSurface: Colors.grey[500],
                   ),
                   child: Text(widget.activeProductId == theBillingService.myMonthlyId? "Your current plan" : widget.activeProductId == theBillingService.myYearlyId? "Switch to Monthly (${monthly?.price}/month)" : "${monthly?.price}/month", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                   //Does nothing if a user already has an active monthly plan:
@@ -131,8 +132,9 @@ class paywallPageState extends State<paywallPage>{
               Center(
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      //If the user has an active yearly plan, this is greyed:
-                      primary: widget.activeProductId == theBillingService.myYearlyId? Colors.grey[700] : Colors.black,
+                      primary: Colors.black,
+                      //When onPressed is null, this button is grey[500]:
+                      onSurface: Colors.grey[500],
                     ),
                     child: Text(widget.activeProductId == theBillingService.myYearlyId? "Your current plan" : widget.activeProductId == theBillingService.myMonthlyId? "Switch to Yearly (${yearly?.price}/year)" : "${yearly?.price}/year", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                     //Does nothing if a user already has an active yearly plan:
