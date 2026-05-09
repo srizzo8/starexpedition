@@ -82,7 +82,7 @@ class paywallPageState extends State<paywallPage>{
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Text(
-            widget.isExpired? "Your free trial has unfortunately ended." : "Welcome to our free trial!",
+            widget.isExpired? "Your free trial or subscription has unfortunately ended." : "Welcome to our free trial!",
             style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold),
           ),
           Container(
