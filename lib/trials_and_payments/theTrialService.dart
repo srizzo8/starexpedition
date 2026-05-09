@@ -71,10 +71,9 @@ class theTrialService{
     }
 
     final myInstallDate = DateTime.parse(myDoc.data()!["installDate"]);
-    final daysSinceInstall = DateTime.now().difference(myInstallDate).inDays;
-    final inTrial = daysSinceInstall < myTrialDays;
+    final endOfTrial = myInstallDate.add(Duration(days: myTrialDays));
 
-    return inTrial;
+    return DateTime.now().isBefore(endOfTrial);
   }
 
   //Checking how many days are left for a user's trial:
@@ -88,9 +87,9 @@ class theTrialService{
     }
 
     final myInstallDate = DateTime.parse(myDoc.data()!["installDate"]);
-    final daysSinceInstall = DateTime.now().difference(myInstallDate).inDays;
-    final myDaysLeft = (myTrialDays - daysSinceInstall).clamp(0, myTrialDays);
+    final endOfTrial = myInstallDate.add(Duration(days: myTrialDays));
+    final myDifference = endOfTrial.difference(DateTime.now()).inDays;
 
-    return myDaysLeft;
+    return myDifference.clamp(0, myTrialDays);
   }
 }

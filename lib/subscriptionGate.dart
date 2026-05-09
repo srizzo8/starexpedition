@@ -41,6 +41,7 @@ class subscriptionGateState extends State<subscriptionGate>{
   final theTrialService myTrialService = theTrialService();
   bool userIsSubscribed = false;
   String? myActiveProductId;
+  Timer? myAccessTimer;
 
   @override
   void initState(){
@@ -78,6 +79,29 @@ class subscriptionGateState extends State<subscriptionGate>{
     if(!userIsSubscribed){
       setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
     }
+
+    startAccessMonitoring();
+  }
+
+  void startAccessMonitoring(){
+    myAccessTimer = Timer.periodic(const Duration(seconds: 1), (_) async{
+      final isInTrial = await myTrialService.isInTrial();
+
+      if(!userIsSubscribed && !isInTrial){
+        if(mounted){
+          setState((){
+            myAccess = myAccessState.blocked;
+          });
+        }
+      }
+      else{
+        if(mounted){
+          setState((){
+            myAccess = myAccessState.permitted;
+          });
+        }
+      }
+    });
   }
 
   @override
@@ -98,6 +122,7 @@ class subscriptionGateState extends State<subscriptionGate>{
 
   @override
   void dispose(){
+    myAccessTimer?.cancel();
     myBillingService.dispose();
     super.dispose();
   }

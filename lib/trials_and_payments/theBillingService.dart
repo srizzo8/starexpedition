@@ -63,7 +63,7 @@ class theBillingService{
       return;
     }
 
-    for(final myPurchase in myPurchases){
+    for(final myPurchase in myRelevantPurchases){
       print("The purchase status: ${myPurchase.status}");
       print("The purchase ID: ${myPurchase.productID}");
 
