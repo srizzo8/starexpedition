@@ -84,32 +84,17 @@ class subscriptionGateState extends State<subscriptionGate>{
   }
 
   void startAccessMonitoring(){
-    myAccessTimer = Timer.periodic(const Duration(seconds: 1), (_) async{
+    myAccessTimer = Timer.periodic(const Duration(seconds: 60), (_) async{
+      if(!mounted){
+        return;
+      }
+
       final isInTrial = await myTrialService.isInTrial();
 
       if(!userIsSubscribed && !isInTrial){
         if(mounted && myAccess != myAccessState.blocked){
           setState((){
             myAccess = myAccessState.blocked;
-          });
-
-          //Removes back history:
-          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (_) => paywallPage(
-                myBillingService: myBillingService,
-                isExpired: true,
-                activeProductId: myActiveProductId,
-              ),
-            ),
-            (route) => false,
-          );
-        }
-      }
-      else{
-        if(mounted){
-          setState((){
-            myAccess = myAccessState.permitted;
           });
         }
       }
@@ -134,7 +119,7 @@ class subscriptionGateState extends State<subscriptionGate>{
       //If the trial has expired or if one is not subscribed, the paywall should show:
       return WillPopScope(
         onWillPop: () async => false,
-        child: paywallPage(myBillingService: myBillingService, isExpired: true, activeProductId: myActiveProductId),
+        child: MaterialApp(debugShowCheckedModeBanner: false, home: paywallPage(myBillingService: myBillingService, isExpired: true, activeProductId: myActiveProductId)),
       );
     }
   }

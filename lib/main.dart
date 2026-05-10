@@ -840,7 +840,6 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
           ),
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
           progressIndicatorTheme: ProgressIndicatorThemeData(
             color: Colors.red,
           ),
