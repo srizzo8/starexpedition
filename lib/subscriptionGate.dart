@@ -84,8 +84,12 @@ class subscriptionGateState extends State<subscriptionGate>{
   }
 
   void startAccessMonitoring(){
-    myAccessTimer = Timer.periodic(const Duration(seconds: 60), (_) async{
+    myAccessTimer = Timer.periodic(const Duration(seconds: 10), (_) async{
       if(!mounted){
+        return;
+      }
+
+      if(userIsSubscribed){
         return;
       }
 
@@ -104,22 +108,42 @@ class subscriptionGateState extends State<subscriptionGate>{
   @override
   Widget build(BuildContext myContext){
     if(myAccess == myAccessState.loading){
-      //A brief loading moment on the launch:
-      return gateLoadingPage();
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.red,
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+          ),
+        ),
+        home: gateLoadingPage(),
+      );
     }
     else if(myAccess == myAccessState.permitted){
-      //If one is subscribed or if he or she has a trial that exists, the existing app shows as is:
       return WillPopScope(
-        //onWillPop here disables the system back button:
         onWillPop: () async => false,
         child: widget.myChild,
       );
     }
     else{
-      //If the trial has expired or if one is not subscribed, the paywall should show:
-      return WillPopScope(
-        onWillPop: () async => false,
-        child: MaterialApp(debugShowCheckedModeBanner: false, home: paywallPage(myBillingService: myBillingService, isExpired: true, activeProductId: myActiveProductId)),
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.red,
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+          ),
+        ),
+        home: WillPopScope(
+          onWillPop: () async => false,
+          child: paywallPage(
+            myBillingService: myBillingService,
+            isExpired: true,
+            activeProductId: myActiveProductId,
+          ),
+        ),
       );
     }
   }
