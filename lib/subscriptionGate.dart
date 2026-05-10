@@ -52,15 +52,22 @@ class subscriptionGateState extends State<subscriptionGate>{
       onSubscriptionChanged: (isSubscribed) async{
         userIsSubscribed = isSubscribed;
         if(isSubscribed){
-          setState(() => myAccess = myAccessState.permitted);
+          if(mounted){
+            setState(() => myAccess = myAccessState.permitted);
+          }
         }
         else{
           final inTrial = await myTrialService.isInTrial();
-          setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
+
+          if(mounted){
+            setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
+          }
         }
       },
       onProductIdChanged: (myProductId){
-        setState(() => myActiveProductId = myProductId);
+        if(mounted){
+          setState(() => myActiveProductId = myProductId);
+        }
       },
     );
 
@@ -102,13 +109,11 @@ class subscriptionGateState extends State<subscriptionGate>{
 
       final isInTrial = await myTrialService.isInTrial();
 
-      if(!userIsSubscribed && !isInTrial){
-        if(mounted && myAccess != myAccessState.blocked){
-          setState((){
-            myAccess = myAccessState.blocked;
-            myActiveProductId = null;
-          });
-        }
+      if(!userIsSubscribed && !isInTrial && mounted){
+        setState((){
+          myAccess = myAccessState.blocked;
+          myActiveProductId = null;
+        });
       }
     });
   }

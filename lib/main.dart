@@ -139,6 +139,8 @@ Map<String, String> planetsAndAmountOfTracks = {};
 
 bool fromProfileAndStar = false;
 
+final GlobalKey<NavigatorState> myNavigatorKey = GlobalKey<NavigatorState>();
+
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
 
@@ -832,6 +834,7 @@ class MyApp extends StatelessWidget {
     return subscriptionGate(
       myChild: MaterialApp(
         debugShowCheckedModeBanner: false,
+        navigatorKey: myNavigatorKey,
         navigatorObservers: [routesToOtherPages.myRouteObserver],
         title: 'Flutter Demo',
         theme: ThemeData(
