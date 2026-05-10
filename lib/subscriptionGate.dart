@@ -92,7 +92,7 @@ class subscriptionGateState extends State<subscriptionGate>{
   }
 
   void startAccessMonitoring(){
-    myAccessTimer = Timer.periodic(const Duration(seconds: 60), (_) async{
+    myAccessTimer = Timer.periodic(const Duration(seconds: 30), (_) async{
       if(!mounted){
         return;
       }
@@ -101,15 +101,13 @@ class subscriptionGateState extends State<subscriptionGate>{
         return;
       }
 
-      //Rechecking one's subscription status from Google Play:
-      await InAppPurchase.instance.restorePurchases();
-
-      //A small delay to make sure the update can be streamed:
-      await Future.delayed(Duration(seconds: 2));
-
       final isInTrial = await myTrialService.isInTrial();
 
-      if(!userIsSubscribed && !isInTrial && mounted){
+      if(!mounted){
+        return;
+      }
+
+      if(!isInTrial){
         setState((){
           myAccess = myAccessState.blocked;
           myActiveProductId = null;
@@ -121,17 +119,7 @@ class subscriptionGateState extends State<subscriptionGate>{
   @override
   Widget build(BuildContext myContext){
     if(myAccess == myAccessState.loading){
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.red,
-          appBarTheme: AppBarTheme(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-          ),
-        ),
-        home: gateLoadingPage(),
-      );
+      return gateLoadingPage();
     }
     else if(myAccess == myAccessState.permitted){
       return WillPopScope(
@@ -140,22 +128,12 @@ class subscriptionGateState extends State<subscriptionGate>{
       );
     }
     else{
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.red,
-          appBarTheme: AppBarTheme(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-          ),
-        ),
-        home: WillPopScope(
-          onWillPop: () async => false,
-          child: paywallPage(
-            myBillingService: myBillingService,
-            isExpired: true,
-            activeProductId: myActiveProductId,
-          ),
+      return WillPopScope(
+        onWillPop: () async => false,
+        child: paywallPage(
+          myBillingService: myBillingService,
+          isExpired: true,
+          activeProductId: myActiveProductId,
         ),
       );
     }

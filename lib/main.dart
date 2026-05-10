@@ -855,7 +855,9 @@ class MyApp extends StatelessWidget {
             builder: (_, __) => child!,
           );
         },
-        home: StarExpedition(),
+        home: subscriptionGate(
+          myChild: StarExpedition(),
+        ),
         routes:{
           routesToOtherPages.spectralClass: (context) => spectralClassPage(),
           routesToOtherPages.whyMade: (context) => whyStarExpeditionWasMadePage(),
@@ -1082,8 +1084,7 @@ class theStarExpeditionState extends State<StarExpedition> {
     //Maybe you can make an if statement that ensures that today's star name and image are not the same as yesterday's.
     print(timeNow);
 
-    return subscriptionGate(
-      myChild: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
@@ -1474,7 +1475,6 @@ class theStarExpeditionState extends State<StarExpedition> {
         ],
       ),
       drawer: starExpeditionNavigationDrawer(),
-    ),
     );
   }
 
