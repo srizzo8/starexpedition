@@ -831,10 +831,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return subscriptionGate(
       myChild: MaterialApp(
+        debugShowCheckedModeBanner: false,
         navigatorObservers: [routesToOtherPages.myRouteObserver],
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.red,//Colors.red,
+          primarySwatch: Colors.red,
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+          ),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+          progressIndicatorTheme: ProgressIndicatorThemeData(
+            color: Colors.red,
+          ),
         ),
         builder: (context, child){
           return ScreenUtilInit(

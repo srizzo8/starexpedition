@@ -88,10 +88,22 @@ class subscriptionGateState extends State<subscriptionGate>{
       final isInTrial = await myTrialService.isInTrial();
 
       if(!userIsSubscribed && !isInTrial){
-        if(mounted){
+        if(mounted && myAccess != myAccessState.blocked){
           setState((){
             myAccess = myAccessState.blocked;
           });
+
+          //Removes back history:
+          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (_) => paywallPage(
+                myBillingService: myBillingService,
+                isExpired: true,
+                activeProductId: myActiveProductId,
+              ),
+            ),
+            (route) => false,
+          );
         }
       }
       else{
@@ -108,15 +120,22 @@ class subscriptionGateState extends State<subscriptionGate>{
   Widget build(BuildContext myContext){
     if(myAccess == myAccessState.loading){
       //A brief loading moment on the launch:
-      return MaterialApp(debugShowCheckedModeBanner: false, home: gateLoadingPage());
+      return gateLoadingPage();
     }
     else if(myAccess == myAccessState.permitted){
       //If one is subscribed or if he or she has a trial that exists, the existing app shows as is:
-      return widget.myChild;
+      return WillPopScope(
+        //onWillPop here disables the system back button:
+        onWillPop: () async => false,
+        child: widget.myChild,
+      );
     }
     else{
       //If the trial has expired or if one is not subscribed, the paywall should show:
-      return MaterialApp(debugShowCheckedModeBanner: false, home: paywallPage(myBillingService: myBillingService, isExpired: true, activeProductId: myActiveProductId),);
+      return WillPopScope(
+        onWillPop: () async => false,
+        child: paywallPage(myBillingService: myBillingService, isExpired: true, activeProductId: myActiveProductId),
+      );
     }
   }
 

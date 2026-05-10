@@ -70,110 +70,115 @@ class paywallPageState extends State<paywallPage>{
     final monthly = getMyProduct(theBillingService.myMonthlyId);
     final yearly = getMyProduct(theBillingService.myYearlyId);
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Star Expedition"),
-        backgroundColor: Colors.red,
-      ),
-      body: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Text(
-            widget.isExpired? "Your free trial or subscription has unfortunately ended." : "Welcome to our free trial!",
-            style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.031250,
-          ),
-          Text(
-            widget.isExpired? "Subscribe to continue using Star Expedition." : "Choose your plan.",
-            style: TextStyle(color: Colors.black),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.031250,
-          ),
+    return WillPopScope(
+      //This blocks the back button:
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: Text("Star Expedition"),
+          backgroundColor: Colors.red,
+        ),
+        body: Column(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            Text(
+              widget.isExpired? "Your free trial or subscription has unfortunately ended." : "Welcome to our free trial!",
+              style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.031250,
+            ),
+            Text(
+              widget.isExpired? "Subscribe to continue using Star Expedition." : "Choose your plan.",
+              style: TextStyle(color: Colors.black),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.031250,
+            ),
 
-          //The subscription plan buttons:
-          if(isLoading)
-            const CircularProgressIndicator(color: Colors.red)
-          else ...[
-            if(monthly != null)...[
-              Container(
-                alignment: Alignment.topCenter,
-                child: const Text("Our monthly plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-              ),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    //When onPressed is null, this button is grey[500]:
-                    primary: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[500] : Colors.black,
-                    onPrimary: Colors.white,
-
-                    //Overriding the disabled opacity:
-                    elevation: 0,
-                  ).copyWith(
-                    backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                      (states) => widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[500] : Colors.black,
-                    ),
-                  ),
-                  child: Text(widget.activeProductId == theBillingService.myMonthlyId? "Your current plan" : widget.activeProductId == theBillingService.myYearlyId? "Switch to Monthly (${monthly?.price}/month)" : "${monthly?.price}/month", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                  //Does nothing if a user already has an active monthly plan:
-                  onPressed: widget.activeProductId == theBillingService.myMonthlyId? null : (){
-                    print("Paying for a monthly subscription");
-                    widget.myBillingService.subscribe(monthly!);
-                  }
+            //The subscription plan buttons:
+            if(isLoading)
+              const CircularProgressIndicator(color: Colors.red)
+            else ...[
+              if(monthly != null)...[
+                Container(
+                  alignment: Alignment.topCenter,
+                  child: const Text("Our monthly plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                 ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.015625,
-              ),
-            ],
-            if(yearly != null)...[
-              Container(
-                alignment: Alignment.topCenter,
-                child: const Text("Our yearly plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-              ),
-              Center(
-                child: ElevatedButton(
+                Center(
+                  child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       //When onPressed is null, this button is grey[500]:
-                      primary: widget.activeProductId == theBillingService.myYearlyId? Colors.grey[500] : Colors.black,
+                      primary: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[500] : Colors.black,
                       onPrimary: Colors.white,
 
                       //Overriding the disabled opacity:
                       elevation: 0,
                     ).copyWith(
                       backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                        (states) => widget.activeProductId == theBillingService.myYearlyId? Colors.grey[500] : Colors.black,
+                        (states) => widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[500] : Colors.black,
                       ),
                     ),
-                    child: Text(widget.activeProductId == theBillingService.myYearlyId? "Your current plan" : widget.activeProductId == theBillingService.myMonthlyId? "Switch to Yearly (${yearly?.price}/year)" : "${yearly?.price}/year", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                    //Does nothing if a user already has an active yearly plan:
-                    onPressed: widget.activeProductId == theBillingService.myYearlyId? null : (){
-                      print("Paying for a yearly subscription");
-                      widget.myBillingService.subscribe(yearly!);
+                    child: Text(widget.activeProductId == theBillingService.myMonthlyId? "Your current plan" : widget.activeProductId == theBillingService.myYearlyId? "Switch to Monthly (${monthly?.price}/month)" : "${monthly?.price}/month", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                    //Does nothing if a user already has an active monthly plan:
+                    onPressed: widget.activeProductId == theBillingService.myMonthlyId? null : (){
+                      print("Paying for a monthly subscription");
+                      widget.myBillingService.subscribe(monthly!);
                     }
+                  ),
                 ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015625,
+                ),
+              ],
+              if(yearly != null)...[
+                Container(
+                  alignment: Alignment.topCenter,
+                  child: const Text("Our yearly plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                ),
+                Center(
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        //When onPressed is null, this button is grey[500]:
+                        primary: widget.activeProductId == theBillingService.myYearlyId? Colors.grey[500] : Colors.black,
+                        onPrimary: Colors.white,
+
+                        //Overriding the disabled opacity:
+                        elevation: 0,
+                      ).copyWith(
+                        backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                          (states) => widget.activeProductId == theBillingService.myYearlyId? Colors.grey[500] : Colors.black,
+                        ),
+                      ),
+                      child: Text(widget.activeProductId == theBillingService.myYearlyId? "Your current plan" : widget.activeProductId == theBillingService.myMonthlyId? "Switch to Yearly (${yearly?.price}/year)" : "${yearly?.price}/year", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                      //Does nothing if a user already has an active yearly plan:
+                      onPressed: widget.activeProductId == theBillingService.myYearlyId? null : (){
+                        print("Paying for a yearly subscription");
+                        widget.myBillingService.subscribe(yearly!);
+                      }
+                  ),
+                ),
+              ],
+              //If neither the monthly nor yearly subscription products are available:
+              if(monthly == null && yearly == null)
+                Container(
+                  child: Text("\nThe subscription plans are currently unavailable. We are sorry for the inconvenience.", textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+                ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.031250,
               ),
             ],
-            //If neither the monthly nor yearly subscription products are available:
-            if(monthly == null && yearly == null)
-              Container(
-                child: Text("\nThe subscription plans are currently unavailable. We are sorry for the inconvenience.", textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
-              ),
             Container(
-              height: MediaQuery.of(context).size.height * 0.031250,
+              alignment: Alignment.topCenter,
+              child: const Text("You can cancel at any time on Google Play.\nThere are no charges during your free trial.", style: TextStyle(color: Colors.black)),
             ),
           ],
-          Container(
-            alignment: Alignment.topCenter,
-            child: const Text("You can cancel at any time on Google Play.\nThere are no charges during your free trial.", style: TextStyle(color: Colors.black)),
-          ),
-        ],
+        ),
       ),
     );
   }
