@@ -60,6 +60,7 @@ class theBillingService{
     if(myRelevantPurchases.isEmpty){
       print("No relevant purchases have been found");
       onSubscriptionChanged(false);
+      onProductIdChanged(null);
       return;
     }
 

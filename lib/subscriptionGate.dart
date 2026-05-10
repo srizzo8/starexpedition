@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
 
@@ -84,7 +85,7 @@ class subscriptionGateState extends State<subscriptionGate>{
   }
 
   void startAccessMonitoring(){
-    myAccessTimer = Timer.periodic(const Duration(seconds: 10), (_) async{
+    myAccessTimer = Timer.periodic(const Duration(seconds: 60), (_) async{
       if(!mounted){
         return;
       }
@@ -93,12 +94,19 @@ class subscriptionGateState extends State<subscriptionGate>{
         return;
       }
 
+      //Rechecking one's subscription status from Google Play:
+      await InAppPurchase.instance.restorePurchases();
+
+      //A small delay to make sure the update can be streamed:
+      await Future.delayed(Duration(seconds: 2));
+
       final isInTrial = await myTrialService.isInTrial();
 
       if(!userIsSubscribed && !isInTrial){
         if(mounted && myAccess != myAccessState.blocked){
           setState((){
             myAccess = myAccessState.blocked;
+            myActiveProductId = null;
           });
         }
       }
