@@ -99,11 +99,15 @@ class subscriptionGateState extends State<subscriptionGate>{
 
   void startAccessMonitoring(){
     myAccessTimer = Timer.periodic(const Duration(seconds: 30), (_) async{
+      print("Timer fired");
+
       if(!mounted){
+        print("Not mounting, so it is returning");
         return;
       }
 
       //Rechecking subscription from Google Play:
+      print("Calling for the restore of purchases");
       await InAppPurchase.instance.restorePurchases();
       await Future.delayed(Duration(seconds: 2));
 
@@ -112,6 +116,8 @@ class subscriptionGateState extends State<subscriptionGate>{
       }
 
       final isInTrial = await myTrialService.isInTrial();
+      print("This is isInTrial: ${isInTrial}");
+      print("This is userIsSubscribed: ${userIsSubscribed}");
 
       if(!mounted){
         return;
@@ -119,6 +125,8 @@ class subscriptionGateState extends State<subscriptionGate>{
 
       if(!isInTrial && !userIsSubscribed){
         //The state is updated (subscriptionGate is now on the top, and it rebuilds to the paywall page):
+        print("Showing the paywall page");
+
         setState((){
           myAccess = myAccessState.blocked;
           myActiveProductId = null;
@@ -131,25 +139,31 @@ class subscriptionGateState extends State<subscriptionGate>{
   }
 
   void showPaywallOverlay(){
-    //Removing any existing overlay if it is present:
-    removePaywallOverlay();
+    //Checking if the navigator key is ready:
+    if(myMain.myNavigatorKey.currentContext == null){
+      return;
+    }
 
-    myPaywallOverlay = OverlayEntry(
-      builder: (context) => WillPopScope(
-        onWillPop: () async => false,
-        child: Material(
-          child: paywallPage(
-            myBillingService: myBillingService,
-            isExpired: true,
-            activeProductId: null,
-            onSubscribed: () => removePaywallOverlay(),
+    print("Showing the paywall overlay");
+
+    showGeneralDialog(
+      context: myMain.myNavigatorKey.currentContext!,
+      barrierDismissible: false,
+      barrierColor: Colors.white,
+      transitionDuration: Duration(milliseconds: 300),
+      pageBuilder: (context, animation, secondaryAnimation){
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Scaffold(
+            body: paywallPage(
+              myBillingService: myBillingService,
+              isExpired: true,
+              activeProductId: null,
+            ),
           ),
-        ),
-      ),
+        );
+      }
     );
-
-    //Inserting an overlay on top of everything:
-    myMain.myNavigatorKey.currentState?.overlay?.insert(myPaywallOverlay!);
   }
 
   void removePaywallOverlay(){
