@@ -43,6 +43,7 @@ class subscriptionGateState extends State<subscriptionGate>{
   bool userIsSubscribed = false;
   String? myActiveProductId;
   Timer? myAccessTimer;
+  OverlayEntry? myPaywallOverlay;
 
   @override
   void initState(){
@@ -52,6 +53,7 @@ class subscriptionGateState extends State<subscriptionGate>{
       onSubscriptionChanged: (isSubscribed) async{
         userIsSubscribed = isSubscribed;
         if(isSubscribed){
+          removePaywallOverlay();
           if(mounted){
             setState(() => myAccess = myAccessState.permitted);
           }
@@ -60,12 +62,11 @@ class subscriptionGateState extends State<subscriptionGate>{
           final inTrial = await myTrialService.isInTrial();
 
           if(mounted){
-            if(!inTrial){
-              //Popping all of the routes back to subscriptionGate:
-              myMain.myNavigatorKey.currentState?.popUntil((route) => route.isFirst);
-            }
-
             setState(() => myAccess = inTrial ? myAccessState.permitted : myAccessState.blocked);
+
+            if(!inTrial){
+              showPaywallOverlay();
+            }
           }
         }
       },
@@ -121,16 +122,43 @@ class subscriptionGateState extends State<subscriptionGate>{
       }
 
       if(!isInTrial && !userIsSubscribed){
-        //Popping all of the routes back to subscriptionGate:
-        myMain.myNavigatorKey.currentState?.popUntil((route) => route.isFirst);
-
-        //Afterward, the state is updated (subscriptionGate is now on the top, and it rebuilds to the paywall page):
+        //The state is updated (subscriptionGate is now on the top, and it rebuilds to the paywall page):
         setState((){
           myAccess = myAccessState.blocked;
           myActiveProductId = null;
         });
+
+        //Showing paywall on top of everything:
+        showPaywallOverlay();
       }
     });
+  }
+
+  void showPaywallOverlay(){
+    //Removing any existing overlay if it is present:
+    removePaywallOverlay();
+
+    myPaywallOverlay = OverlayEntry(
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false,
+        child: Material(
+          child: paywallPage(
+            myBillingService: myBillingService,
+            isExpired: true,
+            activeProductId: null,
+            onSubscribed: () => removePaywallOverlay(),
+          ),
+        ),
+      ),
+    );
+
+    //Inserting an overlay on top of everything:
+    myMain.myNavigatorKey.currentState?.overlay?.insert(myPaywallOverlay!);
+  }
+
+  void removePaywallOverlay(){
+    myPaywallOverlay?.remove();
+    myPaywallOverlay = null;
   }
 
   @override
@@ -155,6 +183,7 @@ class subscriptionGateState extends State<subscriptionGate>{
 
   @override
   void dispose(){
+    removePaywallOverlay();
     myAccessTimer?.cancel();
     myBillingService.dispose();
     super.dispose();

@@ -25,8 +25,9 @@ class paywallPage extends StatefulWidget{
   final theBillingService myBillingService;
   final bool isExpired;
   final String? activeProductId;
+  final VoidCallback? onSubscribed;
 
-  const paywallPage({required this.myBillingService, this.isExpired = false, this.activeProductId, super.key});
+  const paywallPage({required this.myBillingService, this.isExpired = false, this.activeProductId, this.onSubscribed, super.key});
 
   @override
   paywallPageState createState() => paywallPageState();
