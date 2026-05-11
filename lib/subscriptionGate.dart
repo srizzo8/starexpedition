@@ -60,7 +60,12 @@ class subscriptionGateState extends State<subscriptionGate>{
           final inTrial = await myTrialService.isInTrial();
 
           if(mounted){
-            setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
+            if(!inTrial){
+              //Popping all of the routes back to subscriptionGate:
+              myMain.myNavigatorKey.currentState?.popUntil((route) => route.isFirst);
+            }
+
+            setState(() => myAccess = inTrial ? myAccessState.permitted : myAccessState.blocked);
           }
         }
       },
@@ -84,7 +89,7 @@ class subscriptionGateState extends State<subscriptionGate>{
     final inTrial = await myTrialService.isInTrial();
 
     //Updates here only happen if the billing has not unlocked yet:
-    if(!userIsSubscribed){
+    if(!userIsSubscribed && mounted){
       setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
     }
 
@@ -101,13 +106,25 @@ class subscriptionGateState extends State<subscriptionGate>{
         return;
       }
 
+      //Rechecking subscription from Google Play:
+      await InAppPurchase.instance.restorePurchases();
+      await Future.delayed(Duration(seconds: 2));
+
+      if(!mounted){
+        return;
+      }
+
       final isInTrial = await myTrialService.isInTrial();
 
       if(!mounted){
         return;
       }
 
-      if(!isInTrial){
+      if(!isInTrial && !userIsSubscribed){
+        //Popping all of the routes back to subscriptionGate:
+        myMain.myNavigatorKey.currentState?.popUntil((route) => route.isFirst);
+
+        //Afterward, the state is updated (subscriptionGate is now on the top, and it rebuilds to the paywall page):
         setState((){
           myAccess = myAccessState.blocked;
           myActiveProductId = null;
@@ -122,10 +139,7 @@ class subscriptionGateState extends State<subscriptionGate>{
       return gateLoadingPage();
     }
     else if(myAccess == myAccessState.permitted){
-      return WillPopScope(
-        onWillPop: () async => false,
-        child: widget.myChild,
-      );
+      return widget.myChild;
     }
     else{
       return WillPopScope(

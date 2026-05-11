@@ -831,8 +831,7 @@ class MyApp extends StatelessWidget {
   // of your application
   @override
   Widget build(BuildContext context) {
-    return subscriptionGate(
-      myChild: MaterialApp(
+    return MaterialApp(
         debugShowCheckedModeBanner: false,
         navigatorKey: myNavigatorKey,
         navigatorObservers: [routesToOtherPages.myRouteObserver],
@@ -874,7 +873,6 @@ class MyApp extends StatelessWidget {
           routesToOtherPages.nonexistentUserPage: (context) => nonexistentUser(),
           routesToOtherPages.mostTrackedStarsAndPlanetsPage: (context) => mostTrackedStarsAndPlanetsPage(),
         }
-      ),
     );
   }
 }
