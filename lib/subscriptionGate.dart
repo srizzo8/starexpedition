@@ -103,10 +103,6 @@ class subscriptionGateState extends State<subscriptionGate>{
         return;
       }
 
-      if(userIsSubscribed){
-        return;
-      }
-
       //Rechecking subscription from Google Play:
       await InAppPurchase.instance.restorePurchases();
       await Future.delayed(Duration(seconds: 2));
