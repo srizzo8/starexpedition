@@ -67,13 +67,21 @@ class theTrialService{
     final myDoc = await FirebaseFirestore.instance.collection("Trials").doc(myDeviceId).get();
 
     if(!myDoc.exists){
+      print("There is no trial record found");
       return false;
     }
 
-    final myInstallDate = DateTime.parse(myDoc.data()!["installDate"]);
+    //Reading directly from Firestore document rather than local cache:
+    final myInstallDateString = myDoc.data()!["installDate"] as String;
+    final myInstallDate = DateTime.parse(myInstallDateString);
     final endOfTrial = myInstallDate.add(Duration(days: myTrialDays));
+    final inTrial = DateTime.now().isBefore(endOfTrial);
 
-    return DateTime.now().isBefore(endOfTrial);
+    print("Install date according to Firestore: ${myInstallDate}");
+    print("The end of the trial: ${endOfTrial}");
+    print("In the trial? ${inTrial}");
+
+    return inTrial;
   }
 
   //Checking how many days are left for a user's trial:
@@ -86,9 +94,13 @@ class theTrialService{
       return 0;
     }
 
-    final myInstallDate = DateTime.parse(myDoc.data()!["installDate"]);
+    //Reading directly from Firestore document rather than local cache:
+    final myInstallDateString = myDoc.data()!["installDate"] as String;
+    final myInstallDate = DateTime.parse(myInstallDateString);
     final endOfTrial = myInstallDate.add(Duration(days: myTrialDays));
     final myDifference = endOfTrial.difference(DateTime.now()).inDays;
+
+    print("Days left in trial: ${myDifference.clamp(0, myTrialDays)}");
 
     return myDifference.clamp(0, myTrialDays);
   }

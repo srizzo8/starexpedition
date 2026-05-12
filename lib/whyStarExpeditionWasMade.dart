@@ -65,7 +65,7 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
           ),
           Container(
             padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
-            child: Text("I do not own any of the star and planet information (like the constellation that a star belongs to) and photos used in Star Expediiton." +
+            child: Text("I do not own any of the star and planet information (like the constellation that a star belongs to) and photos used in Star Expedition." +
             "The information about stars and planets and photos that I collected were based on the information about stars and planets and photos from various websites, " +
                 "such as The Worlds of David Darling, Sol Station, and Universe Today.", textAlign: TextAlign.center),
           ),

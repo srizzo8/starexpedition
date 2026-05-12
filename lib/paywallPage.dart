@@ -51,6 +51,10 @@ class paywallPageState extends State<paywallPage>{
       print("Product: ${myProduct.id}, ${myProduct.price}");
     }
 
+    if(!mounted){
+      return;
+    }
+
     setState((){
       myProducts = theProducts;
       isLoading = false;

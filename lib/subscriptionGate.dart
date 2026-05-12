@@ -4,6 +4,8 @@ import 'dart:io';
 import 'dart:math';
 //import 'dart:html';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -44,6 +46,7 @@ class subscriptionGateState extends State<subscriptionGate>{
   String? myActiveProductId;
   Timer? myAccessTimer;
   OverlayEntry? myPaywallOverlay;
+  bool paywallShowing = false;
 
   @override
   void initState(){
@@ -88,23 +91,67 @@ class subscriptionGateState extends State<subscriptionGate>{
     await myBillingService.initialize();
 
     final inTrial = await myTrialService.isInTrial();
+    print("init - inTrial: ${inTrial}");
+    print("init - userIsSubscribed: ${userIsSubscribed}");
 
     //Updates here only happen if the billing has not unlocked yet:
     if(!userIsSubscribed && mounted){
       setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
+      print("init - myAccess: ${myAccess}");
     }
 
     startAccessMonitoring();
   }
 
+  //Method to check if one's subscription is active in Firestore:
+  Future<bool> isSubscriptionActiveInFirestore() async{
+    try{
+      //Getting the device ID:
+      final myDeviceInfo = DeviceInfoPlugin();
+      final myAndroidInfo = await myDeviceInfo.androidInfo;
+      final myDeviceId = myAndroidInfo.id;
+
+      print("Checking Firestore for the device id: ${myDeviceId}");
+
+      //Getting subscriptions from a certain device:
+      final myDoc = await FirebaseFirestore.instance.collection("Subscriptions").where("deviceId", isEqualTo: myDeviceId).where("isActive", isEqualTo: true).orderBy("lastUpdated", descending: true).limit(1).get();
+
+      print("The documents found: ${myDoc.docs.length}");
+
+      if(myDoc.docs.isEmpty){
+        return false;
+      }
+
+      final myExpiryDateString = myDoc.docs.first.data()["expiryDate"] as String;
+      final myExpiryDate = DateTime.parse(myExpiryDateString);
+      final subscriptionIsActive = DateTime.now().isBefore(myExpiryDate);
+
+      print("Expiry date in Firestore: ${myExpiryDate}");
+      print("Today's date: ${DateTime.now()}");
+      print("subscriptionIsActive: ${subscriptionIsActive}");
+
+      return subscriptionIsActive;
+    }
+    catch(e){
+      print("There is an error catching the Firestore subscription. Here is the error: ${e}");
+      return false;
+    }
+  }
+
   void startAccessMonitoring(){
     myAccessTimer = Timer.periodic(const Duration(seconds: 30), (_) async{
-      print("Timer fired");
+      print("Timer started at: ${DateTime.now()}");
 
       if(!mounted){
         print("Not mounting, so it is returning");
         return;
       }
+
+      if(paywallShowing){
+        return;
+      }
+
+      print("Timer fired");
 
       //Rechecking subscription from Google Play:
       print("Calling for the restore of purchases");
@@ -117,34 +164,54 @@ class subscriptionGateState extends State<subscriptionGate>{
 
       final isInTrial = await myTrialService.isInTrial();
       print("This is isInTrial: ${isInTrial}");
-      print("This is userIsSubscribed: ${userIsSubscribed}");
 
-      if(!mounted){
+      //The user is still in his or her trial, so there is no need to check for his or her subscription:
+      if(isInTrial){
         return;
       }
 
-      if(!isInTrial && !userIsSubscribed){
-        //The state is updated (subscriptionGate is now on the top, and it rebuilds to the paywall page):
-        print("Showing the paywall page");
+      //Check Firestore only if Google Play also confirms a user is not subscribed:
+      if(!userIsSubscribed){
+        print("Google Play says you are not subscribed. Checking Firestore.");
+        final isSubscriptionActive = await isSubscriptionActiveInFirestore();
+        print("isSubscriptionActive: ${isSubscriptionActive}");
 
-        setState((){
-          myAccess = myAccessState.blocked;
-          myActiveProductId = null;
-        });
+        if(!isInTrial && !userIsSubscribed && mounted){
+          //The state is updated (subscriptionGate is now on the top, and it rebuilds to the paywall page):
+          print("Showing the paywall page");
 
-        //Showing paywall on top of everything:
-        showPaywallOverlay();
+          setState((){
+            myAccess = myAccessState.blocked;
+            myActiveProductId = null;
+          });
+
+          //Showing paywall on top of everything:
+          showPaywallOverlay();
+        }
+      }
+      else{
+        print("Since Google Play says you are subscribed, the paywall page will not be shown");
       }
     });
   }
 
   void showPaywallOverlay(){
-    //Checking if the navigator key is ready:
-    if(myMain.myNavigatorKey.currentContext == null){
+    if(paywallShowing == false){
+      print("The paywall page is already showing");
       return;
     }
 
+    //Waiting for the navigator key to be ready:
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      if(myMain.myNavigatorKey.currentContext == null){
+        print("Unfortunately, the navigator is still not ready");
+        return;
+      }
+    });
+
     print("Showing the paywall overlay");
+
+    paywallShowing = true;
 
     showGeneralDialog(
       context: myMain.myNavigatorKey.currentContext!,
@@ -163,10 +230,14 @@ class subscriptionGateState extends State<subscriptionGate>{
           ),
         );
       }
-    );
+    ).then((_){
+      //paywallShowing is back to false when the dialog is dismissed:
+      paywallShowing = false;
+    });
   }
 
   void removePaywallOverlay(){
+    paywallShowing = false;
     myPaywallOverlay?.remove();
     myPaywallOverlay = null;
   }
