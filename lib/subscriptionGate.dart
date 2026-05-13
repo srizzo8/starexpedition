@@ -196,6 +196,19 @@ class subscriptionGateState extends State<subscriptionGate>{
   }
 
   void showPaywallOverlay(){
+    if(paywallShowing == true){
+      print("The paywall is already showing, so therefore, the app is skipping");
+      return;
+    }
+
+    print("Is the Navigator context null? ${myMain.myNavigatorKey.currentContext == null}");
+    print("Is the Navigator state null? ${myMain.myNavigatorKey.currentState == null}");
+
+    if(myMain.myNavigatorKey.currentState == null){
+      print("The navigator is not ready, and as a result, the paywall cannot be shown");
+      return;
+    }
+
     if(paywallShowing == false){
       print("The paywall page is already showing");
       return;
