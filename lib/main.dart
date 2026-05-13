@@ -141,6 +141,8 @@ bool fromProfileAndStar = false;
 
 final GlobalKey<NavigatorState> myNavigatorKey = GlobalKey<NavigatorState>();
 
+final ValueNotifier<DateTime> myAccessCheckNotifier = ValueNotifier(DateTime.now());
+
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
 
@@ -894,6 +896,25 @@ class routesToOtherPages{
   static String mostTrackedStarsAndPlanetsPage = mostTrackedStarsAndPlanetsPageState.nameOfRoute;
 
   static final RouteObserver<ModalRoute<Object?>> myRouteObserver = RouteObserver<ModalRoute<void>>();
+}
+
+class myAppRouteObserver extends RouteObserver<PageRoute<dynamic>>{
+  @override
+  void didPush(Route myRoute, Route? myPreviousRoute){
+    super.didPush(myRoute, myPreviousRoute);
+    checkAccess();
+  }
+
+  @override
+  void didPop(Route myRoute, Route? myPreviousRoute){
+    super.didPop(myRoute, myPreviousRoute);
+    checkAccess();
+  }
+
+  void checkAccess(){
+    //Signaling the subscription gate to check access:
+    myAccessCheckNotifier.value = DateTime.now();
+  }
 }
 
 // This is the widget that will be shown

@@ -38,7 +38,7 @@ class subscriptionGate extends StatefulWidget{
   State<subscriptionGate> createState() => subscriptionGateState();
 }
 
-class subscriptionGateState extends State<subscriptionGate>{
+class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingObserver{
   myAccessState myAccess = myAccessState.loading;
   late theBillingService myBillingService;
   final theTrialService myTrialService = theTrialService();
@@ -51,6 +51,11 @@ class subscriptionGateState extends State<subscriptionGate>{
   @override
   void initState(){
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+
+    //Listening for navigation events that are occurring in the app:
+    myMain.myAccessCheckNotifier.addListener(onNavigationEvent);
 
     myBillingService = theBillingService(
       onSubscriptionChanged: (isSubscribed) async{
@@ -139,6 +144,7 @@ class subscriptionGateState extends State<subscriptionGate>{
   }
 
   void startAccessMonitoring(){
+    print("startAccessMonitoring started at: ${DateTime.now()}");
     myAccessTimer = Timer.periodic(const Duration(seconds: 30), (_) async{
       print("Timer started at: ${DateTime.now()}");
 
@@ -204,15 +210,13 @@ class subscriptionGateState extends State<subscriptionGate>{
     print("Is the Navigator context null? ${myMain.myNavigatorKey.currentContext == null}");
     print("Is the Navigator state null? ${myMain.myNavigatorKey.currentState == null}");
 
-    if(myMain.myNavigatorKey.currentState == null){
+    if(myMain.myNavigatorKey.currentContext == null){
       print("The navigator is not ready, and as a result, the paywall cannot be shown");
       return;
     }
 
-    if(paywallShowing == false){
-      print("The paywall page is already showing");
-      return;
-    }
+    paywallShowing = true;
+    print("Showing the paywall overlay");
 
     //Waiting for the navigator key to be ready:
     WidgetsBinding.instance.addPostFrameCallback((_){
@@ -221,10 +225,6 @@ class subscriptionGateState extends State<subscriptionGate>{
         return;
       }
     });
-
-    print("Showing the paywall overlay");
-
-    paywallShowing = true;
 
     showGeneralDialog(
       context: myMain.myNavigatorKey.currentContext!,
@@ -255,6 +255,36 @@ class subscriptionGateState extends State<subscriptionGate>{
     myPaywallOverlay = null;
   }
 
+  void onNavigationEvent(){
+    print("Navigation has been detected, so access will be checked");
+    checkingAccess();
+  }
+
+  Future<void> checkingAccess() async{
+    if(!mounted){
+      return;
+    }
+
+    if(paywallShowing){
+      return;
+    }
+
+    final isInTrial = await myTrialService.isInTrial();
+    print("Navigation check - isInTrial: ${isInTrial}");
+    print("Navigation check - userIsSubscribed: ${userIsSubscribed}");
+
+    if(!isInTrial && !userIsSubscribed && mounted){
+      print("Navigation check - showing the paywall page");
+
+      setState((){
+        myAccess = myAccessState.blocked;
+        myActiveProductId = null;
+      });
+
+      showPaywallOverlay();
+    }
+  }
+
   @override
   Widget build(BuildContext myContext){
     if(myAccess == myAccessState.loading){
@@ -277,10 +307,47 @@ class subscriptionGateState extends State<subscriptionGate>{
 
   @override
   void dispose(){
-    removePaywallOverlay();
+    myMain.myAccessCheckNotifier.removeListener(onNavigationEvent);
+    WidgetsBinding.instance.removeObserver(this);
     myAccessTimer?.cancel();
     myBillingService.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState myState){
+    if(myState == AppLifecycleState.resumed){
+      print("The app has resumed, and access will be checked");
+      checkAccessOnResume();
+    }
+  }
+
+  Future<void> checkAccessOnResume() async{
+    if(!mounted){
+      return;
+    }
+
+    await InAppPurchase.instance.restorePurchases();
+    await Future.delayed(Duration(seconds: 2));
+
+    if(!mounted){
+      return;
+    }
+
+    final isInTrial = await myTrialService.isInTrial();
+    print("On resume - isInTrial: ${isInTrial}");
+    print("On resume - userIsSubscribed: ${userIsSubscribed}");
+
+    if(!isInTrial && !userIsSubscribed && mounted){
+      print("On resume - showing the paywall page");
+
+      setState((){
+        myAccess = myAccessState.blocked;
+        myActiveProductId = null;
+      });
+
+      showPaywallOverlay();
+    }
   }
 }
 
