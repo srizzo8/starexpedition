@@ -61,7 +61,13 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
       onSubscriptionChanged: (isSubscribed) async{
         userIsSubscribed = isSubscribed;
         if(isSubscribed){
+          if(paywallShowing){
+            myMain.myNavigatorKey.currentState?.pop();
+            paywallShowing = false;
+          }
+
           removePaywallOverlay();
+
           if(mounted){
             setState(() => myAccess = myAccessState.permitted);
           }

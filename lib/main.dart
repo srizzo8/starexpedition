@@ -143,6 +143,9 @@ final GlobalKey<NavigatorState> myNavigatorKey = GlobalKey<NavigatorState>();
 
 final ValueNotifier<DateTime> myAccessCheckNotifier = ValueNotifier(DateTime.now());
 
+//An instance:
+final accessCheckObserver myAccessCheckObserver = accessCheckObserver();
+
 //List<String> userItemsNewUsers = ["My profile", "Settings", "Logout"];
 //List<String> userItemsExistingUsers = ["My profile", "Settings", "Logout"];
 
@@ -836,7 +839,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         navigatorKey: myNavigatorKey,
-        navigatorObservers: [routesToOtherPages.myRouteObserver],
+        navigatorObservers: [routesToOtherPages.myRouteObserver, myAccessCheckObserver],
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.red,
@@ -913,6 +916,26 @@ class myAppRouteObserver extends RouteObserver<PageRoute<dynamic>>{
 
   void checkAccess(){
     //Signaling the subscription gate to check access:
+    myAccessCheckNotifier.value = DateTime.now();
+  }
+}
+
+class accessCheckObserver extends NavigatorObserver{
+  @override
+  void didPush(Route myRoute, Route? myPreviousRoute){
+    super.didPush(myRoute, myPreviousRoute);
+    myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPop(Route myRoute, Route? myPreviousRoute){
+    super.didPop(myRoute, myPreviousRoute);
+    myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didReplace({Route? newRoute, Route? oldRoute}){
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
     myAccessCheckNotifier.value = DateTime.now();
   }
 }
