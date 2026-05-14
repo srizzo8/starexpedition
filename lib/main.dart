@@ -1041,7 +1041,7 @@ Future<Map<String, List>> getOtherNames() async{
   return otherNames;
 }
 
-class theStarExpeditionState extends State<StarExpedition> {
+class theStarExpeditionState extends State<StarExpedition> with RouteAware{
   static String nameOfRoute = '/StarExpedition';
   List<String> starInfo = [];
   theStarExpeditionState(this.starInfo);
@@ -1108,6 +1108,32 @@ class theStarExpeditionState extends State<StarExpedition> {
     );
   }
 
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myAccessCheckNotifier.value = DateTime.now();
+  }
+
   @override
   Widget build(BuildContext context) {
     print("discussionBoardLogin: ${discussionBoardLogin}");
@@ -1144,6 +1170,8 @@ class theStarExpeditionState extends State<StarExpedition> {
               alternateNames = otherNamesMap.values;
               print(alternateNames);
 
+              myAccessCheckNotifier.value = DateTime.now();
+
               //Dialog for users to select whether they want to search for stars or planets
               showDialog(
                   context: context,
@@ -1155,6 +1183,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                             child: Text("Stars"),
                             onPressed: (){
                               //showSearch
+                              myAccessCheckNotifier.value = DateTime.now();
                               showSearch(
                                   context: context,
                                   // delegate to customize the search bar
@@ -1165,6 +1194,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                         SimpleDialogOption(
                             child: Text("Planets"),
                             onPressed: (){
+                              myAccessCheckNotifier.value = DateTime.now();
                               showSearch(
                                   context: context,
                                   delegate: CustomSearchDelegateForPlanets()
@@ -1422,6 +1452,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                         }
                       }
 
+                      myAccessCheckNotifier.value = DateTime.now();
                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
                       // correctStar = starsForSearchBar[randomNumber].starName!;
                       //starInfo = await getStarInformation();
@@ -1502,6 +1533,7 @@ class theStarExpeditionState extends State<StarExpedition> {
                     }
                   }
 
+                  myAccessCheckNotifier.value = DateTime.now();
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: starsForSearchBar[randomNumber])));
                   // correctStar = starsForSearchBar[randomNumber].starName!;
                   //starInfo = await getStarInformation();
@@ -2263,6 +2295,7 @@ class CustomSearchDelegate extends SearchDelegate {
                   }
                 }
 
+                myAccessCheckNotifier.value = DateTime.now();
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
               },
               leading: Image.asset(myMatchQuery[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
@@ -2468,6 +2501,7 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
                   }
                 }
 
+                myAccessCheckNotifier.value = DateTime.now();
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
               },
               leading: Image.asset(myMatchQueryPlanets[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
@@ -2674,6 +2708,7 @@ class articlePage extends StatelessWidget{
                 }
               }
               else{
+                  myAccessCheckNotifier.value = DateTime.now(),
                   showSearch(
                     context: bc,
                     delegate: CustomSearchDelegate(),
@@ -2897,6 +2932,7 @@ class articlePage extends StatelessWidget{
                                               fromProfileAndStar = true;
                                             }
 
+                                            myAccessCheckNotifier.value = DateTime.now();
                                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
                                             //Navigator.push(context, new MaterialPageRoute(builder: (context) => articlePage(articlepage: ));
                                             //Navigator.push(context, new MaterialPageRoute(builder: (context) => new planetArticle(starAndPlanetInfo: new starAndPlanetInformation)));
@@ -3028,6 +3064,8 @@ class articlePage extends StatelessWidget{
 
                                               starPdfMessageForUser = starPdfDialogMessage(myResponse);
 
+                                              myAccessCheckNotifier.value = DateTime.now();
+
                                               showDialog(
                                                 context: bc,
                                                 builder: (myContent) => AlertDialog(
@@ -3107,6 +3145,8 @@ class articlePage extends StatelessWidget{
                                         }
 
                                         if(starsTracked.length < 3){
+                                          myAccessCheckNotifier.value = DateTime.now();
+
                                           showDialog(
                                               context: bc,
                                               builder: (BuildContext context){
@@ -3208,6 +3248,7 @@ class articlePage extends StatelessWidget{
                                                                 }
                                                               }
 
+                                                              myAccessCheckNotifier.value = DateTime.now();
                                                               Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
 
                                                               /*
@@ -3232,6 +3273,8 @@ class articlePage extends StatelessWidget{
                                           );
                                         }
                                         else{
+                                          myAccessCheckNotifier.value = DateTime.now();
+
                                           showDialog(
                                               context: bc,
                                               builder: (BuildContext context){
@@ -3286,6 +3329,7 @@ class articlePage extends StatelessWidget{
                                         }
 
                                         if(starsTracked.length < 3){
+                                          myAccessCheckNotifier.value = DateTime.now();
                                           showDialog(
                                               context: bc,
                                               builder: (BuildContext context){
@@ -3388,6 +3432,7 @@ class articlePage extends StatelessWidget{
                                                                 }
                                                               }
 
+                                                              myAccessCheckNotifier.value = DateTime.now();
                                                               Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
                                                               /*Navigator.pop(bc);
                                                       showSearch(
@@ -3410,6 +3455,7 @@ class articlePage extends StatelessWidget{
                                           );
                                         }
                                         else{
+                                          myAccessCheckNotifier.value = DateTime.now();
                                           showDialog(
                                               context: bc,
                                               builder: (BuildContext context){
@@ -3451,6 +3497,7 @@ class articlePage extends StatelessWidget{
                                   ),
                                 ),
                                 onPressed: () async{
+                                  myAccessCheckNotifier.value = DateTime.now();
                                   showDialog(
                                       context: bc,
                                       builder: (BuildContext context){
@@ -3563,6 +3610,7 @@ class articlePage extends StatelessWidget{
                                                       }
                                                     }
 
+                                                    myAccessCheckNotifier.value = DateTime.now();
                                                     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
 
                                                     /*Navigator.pop(context);
@@ -3671,6 +3719,7 @@ class articlePage extends StatelessWidget{
                                                       }
                                                     }
 
+                                                    myAccessCheckNotifier.value = DateTime.now();
                                                     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
 
                                                     /*Navigator.pop(context);
@@ -3764,6 +3813,7 @@ class planetArticle extends StatelessWidget{
           onPressed: () async {
             if(fromSearchBarToPlanetArticle == true){
               fromSearchBarToPlanetArticle = false;
+              myAccessCheckNotifier.value = DateTime.now();
               showSearch(
                 context: theContext,
                 delegate: CustomSearchDelegateForPlanets(),
@@ -3851,6 +3901,7 @@ class planetArticle extends StatelessWidget{
                 }
               };
 
+              myAccessCheckNotifier.value = DateTime.now();
               Navigator.of(theContext).push(MaterialPageRoute(builder: (theContext) => articlePage(hostStarInformation), settings: RouteSettings(arguments: myStars(starName: correctStar, imagePath: "assets/images"))));
             }
           },
@@ -3993,6 +4044,8 @@ class planetArticle extends StatelessWidget{
                                           }*/
                                               planetPdfMessageForUser = planetPdfDialogMessage(myResponse);
 
+                                              myAccessCheckNotifier.value = DateTime.now();
+
                                               showDialog(
                                                 context: theContext,
                                                 builder: (myContent) => AlertDialog(
@@ -4073,6 +4126,7 @@ class planetArticle extends StatelessWidget{
                                       }
 
                                       if(planetsTracked.length < 3){
+                                        myAccessCheckNotifier.value = DateTime.now();
                                         showDialog(
                                             context: theContext,
                                             builder: (BuildContext context){
@@ -4174,6 +4228,8 @@ class planetArticle extends StatelessWidget{
                                                                 print("planetTracked: ${planetTracked}");
                                                               }
                                                             }
+
+                                                            myAccessCheckNotifier.value = DateTime.now();
                                                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
                                                           }
                                                         }
@@ -4191,6 +4247,7 @@ class planetArticle extends StatelessWidget{
                                         );
                                       }
                                       else{
+                                        myAccessCheckNotifier.value = DateTime.now();
                                         showDialog(
                                             context: theContext,
                                             builder: (BuildContext context){
@@ -4245,6 +4302,7 @@ class planetArticle extends StatelessWidget{
                                       }
 
                                       if(planetsTracked.length < 3){
+                                        myAccessCheckNotifier.value = DateTime.now();
                                         showDialog(
                                             context: theContext,
                                             builder: (BuildContext context){
@@ -4347,6 +4405,8 @@ class planetArticle extends StatelessWidget{
                                                                 print("planetTracked: ${planetTracked}");
                                                               }
                                                             }
+
+                                                            myAccessCheckNotifier.value = DateTime.now();
                                                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
                                                           }
                                                         }
@@ -4364,6 +4424,7 @@ class planetArticle extends StatelessWidget{
                                         );
                                       }
                                       else{
+                                        myAccessCheckNotifier.value = DateTime.now();
                                         showDialog(
                                             context: theContext,
                                             builder: (BuildContext context){
@@ -4403,6 +4464,7 @@ class planetArticle extends StatelessWidget{
                                     ),
                                   ),
                                   onPressed: () async{
+                                    myAccessCheckNotifier.value = DateTime.now();
                                     showDialog(
                                         context: theContext,
                                         builder: (BuildContext context){
@@ -4518,6 +4580,7 @@ class planetArticle extends StatelessWidget{
                                                         }
                                                       }
 
+                                                      myAccessCheckNotifier.value = DateTime.now();
                                                       await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
 
                                                       /*hostStarInformation = await getStarInformation();
@@ -4625,6 +4688,7 @@ class planetArticle extends StatelessWidget{
                                                         }
                                                       }
 
+                                                      myAccessCheckNotifier.value = DateTime.now();
                                                       await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
 
                                                       /*hostStarInformation = await getStarInformation();

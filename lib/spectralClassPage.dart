@@ -24,7 +24,7 @@ class spectralClassPage extends StatefulWidget{
   spectralClassPageState createState() => spectralClassPageState();
 }
 
-class spectralClassPageState extends State<spectralClassPage>{
+class spectralClassPageState extends State<spectralClassPage> with RouteAware{
   static String nameOfRoute = '/spectralClassPage';
   //final spectralClassSnapshot = await spectralClassRef.get();
   List<String> spectralClassOfStars = [];
@@ -144,6 +144,32 @@ class spectralClassPageState extends State<spectralClassPage>{
     print('spectralClassOfStars in main method: ' + spectralClassOfStars.toString());
     print('spectralClassCount in main method: ' + spectralClassCount.toString());
   }*/
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
 
   @override
   Widget build(BuildContext bc) {
@@ -467,7 +493,7 @@ class listForSpectralClassesPage extends StatefulWidget{
   listForSpectralClassesPageState createState() => listForSpectralClassesPageState();
 }
 
-class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
+class listForSpectralClassesPageState extends State<listForSpectralClassesPage> with RouteAware{
 
   List<String> mStars = [];
   List<String> kStars = [];
@@ -569,6 +595,31 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
     super.initState();
   }
 
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
 
   @override
   Widget build(BuildContext context){
@@ -695,6 +746,7 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage>{
                         }
                       }
 
+                      myMain.myAccessCheckNotifier.value = DateTime.now();
                       Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
                     },
                     leading: Image.asset(myMain.starsForSearchBar[myMain.starsForSearchBar.indexWhere((star) => star.starName! == fullListOfStars[indexPlaceSpectralClass()][index])].imagePath!, fit: BoxFit.cover, height: 50, width: 50));

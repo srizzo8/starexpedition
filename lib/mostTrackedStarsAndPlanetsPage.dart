@@ -33,7 +33,7 @@ class mostTrackedStarsAndPlanetsPage extends StatefulWidget{
   mostTrackedStarsAndPlanetsPageState  createState() => mostTrackedStarsAndPlanetsPageState();
 }
 
-class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlanetsPage>{
+class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlanetsPage> with RouteAware{
   static String nameOfRoute = '/mostTrackedStarsAndPlanetsPage';
 
   late var topFiveTrackedStars;
@@ -121,6 +121,32 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
         isLoading = false;
       });
     }
+  }
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
   }
 
   Widget build(BuildContext context){
@@ -236,6 +262,8 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                           print("starTracked: ${myMain.starTracked}");
                         }
                       }
+
+                      myMain.myAccessCheckNotifier.value = DateTime.now();
                       Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: myClickedStar))).then((_) => updateTrackedStarsAndPlanetsData());
                     }
                   ),
@@ -357,6 +385,8 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                           print("planetTracked: ${myMain.planetTracked}");
                         }
                       }
+
+                      myMain.myAccessCheckNotifier.value = DateTime.now();
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(informationAboutClickedPlanet))).then((_) => updateTrackedStarsAndPlanetsData());
                     }
                   ),

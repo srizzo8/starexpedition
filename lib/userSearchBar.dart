@@ -177,10 +177,36 @@ class mySearch extends SearchDelegate{
   }
 }
 
-class userSearchBarPageState extends State<userSearchBarPage>{
+class userSearchBarPageState extends State<userSearchBarPage> with RouteAware{
   static String nameOfRoute = '/userSearchBarPage';
   TextEditingController query = TextEditingController();
   mySearch ms = new mySearch();
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
 
   Widget build(BuildContext context){
     return GestureDetector(
@@ -220,6 +246,7 @@ class userSearchBarPageState extends State<userSearchBarPage>{
                   readOnly: true,
                   focusNode: FocusNode(canRequestFocus: false),
                   onTap: (){
+                    myMain.myAccessCheckNotifier.value = DateTime.now();
                     showSearch(
                       context: context,
                       delegate: mySearch(),

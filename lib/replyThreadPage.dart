@@ -84,7 +84,7 @@ class replyThreadPage extends StatefulWidget{
   replyThreadPageState createState() => replyThreadPageState();
 }
 
-class replyThreadPageState extends State<replyThreadPage>{
+class replyThreadPageState extends State<replyThreadPage> with RouteAware{
   static String replyThread = '/replyThreadPage';
   final usernameReplyController = TextEditingController();
   final replyContentController = TextEditingController();
@@ -111,6 +111,32 @@ class replyThreadPageState extends State<replyThreadPage>{
     return messageForUserReplyToThread;
   }
 
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
   Widget build(BuildContext bc){
     return Listener(
       behavior: HitTestBehavior.translucent,
@@ -124,30 +150,36 @@ class replyThreadPageState extends State<replyThreadPage>{
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
-            onPressed: () => showDialog(
-                context: context,
-                builder: (BuildContext myReplyContext){
-                  return AlertDialog(
-                    title: const Text("Are you sure?"),
-                    content: const Text("Your reply will not be saved."),
-                    actions: [
-                      TextButton(
-                        onPressed: () => {
-                          Navigator.pop(context),
-                          Navigator.pop(context),
-                        },
-                        child: const Text("Yes"),
-                      ),
-                      TextButton(
-                        onPressed: () => {
-                          Navigator.pop(context),
-                        },
-                        child: const Text("No"),
-                      ),
-                    ],
-                  );
-                }
-            ),
+            onPressed: () =>
+            {
+              myMain.myAccessCheckNotifier.value = DateTime.now(),
+              showDialog(
+                  context: context,
+                  builder: (BuildContext myReplyContext) {
+                    return AlertDialog(
+                      title: const Text("Are you sure?"),
+                      content: const Text("Your reply will not be saved."),
+                      actions: [
+                        TextButton(
+                          onPressed: () =>
+                          {
+                            Navigator.pop(context),
+                            Navigator.pop(context),
+                          },
+                          child: const Text("Yes"),
+                        ),
+                        TextButton(
+                          onPressed: () =>
+                          {
+                            Navigator.pop(context),
+                          },
+                          child: const Text("No"),
+                        ),
+                      ],
+                    );
+                  }
+              ),
+            }
           ),
         ),
         body: SingleChildScrollView(
@@ -2604,6 +2636,8 @@ class replyThreadPageState extends State<replyThreadPage>{
                             replyInfo.add(replyContentController.text);
 
                             messageReplyThread = createReplyDialogMessage(replyInfo);
+
+                            myMain.myAccessCheckNotifier.value = DateTime.now();
 
                             showDialog(
                                 context: context,

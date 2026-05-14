@@ -67,7 +67,7 @@ class createThread extends StatefulWidget{
   createThreadState createState() => createThreadState();
 }
 
-class createThreadState extends State<createThread>{
+class createThreadState extends State<createThread> with RouteAware{
   static String threadCreator = '/createThread';
   final usernameController = TextEditingController();
   final threadNameController = TextEditingController();
@@ -123,6 +123,32 @@ class createThreadState extends State<createThread>{
     }
   }
 
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
   Widget build(BuildContext createThreadBuildContext){
     return Listener(
       behavior: HitTestBehavior.translucent,
@@ -136,7 +162,9 @@ class createThreadState extends State<createThread>{
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
-          onPressed: () => showDialog(
+          onPressed: () => {
+            myMain.myAccessCheckNotifier.value = DateTime.now(),
+            showDialog(
             context: context,
             builder: (BuildContext myContext) {
               return AlertDialog(
@@ -179,6 +207,7 @@ class createThreadState extends State<createThread>{
               //print("Are you sure?")
             },
           ),
+          }
         ),
       ),
       body: SingleChildScrollView(
@@ -1485,6 +1514,8 @@ class createThreadState extends State<createThread>{
                       threadInfo.add(threadContentController.text);
 
                       messageCreateThread = createThreadDialogMessage(threadInfo);
+
+                      myMain.myAccessCheckNotifier.value = DateTime.now();
 
                       showDialog(
                           context: context,

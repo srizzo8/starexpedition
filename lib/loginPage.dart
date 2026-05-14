@@ -63,12 +63,38 @@ class loginPageRoutes{
   static String discussionBoard = theDiscussionBoardPage.discussionBoardPageState.nameOfRoute;
 }
 
-class loginPageState extends State<loginPage>{
+class loginPageState extends State<loginPage> with RouteAware{
   static String nameOfRoute = '/loginPage';
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   final userInfo = Get.put(theUserInformation());
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
 
   Widget build(BuildContext bc){
     return Listener(
@@ -266,6 +292,7 @@ class loginPageState extends State<loginPage>{
                         //print("userDocument info: ${userDocument["usernameLowercased"]}, ${userDocument["password"]}");
                         //print("passwordDocument: $passwordDocument");
                         if(myServerCheck.docs.isNotEmpty){
+                          myMain.myAccessCheckNotifier.value = DateTime.now();
                           showDialog(
                               context: context,
                               builder: (BuildContext theContext){
@@ -288,6 +315,7 @@ class loginPageState extends State<loginPage>{
                         }
                         else if(myServerCheck.docs.isEmpty && passwordController.text != ""){
                           userDocument = null;
+                          myMain.myAccessCheckNotifier.value = DateTime.now();
                           showDialog(
                               context: context,
                               builder: (BuildContext theContext){
@@ -311,6 +339,7 @@ class loginPageState extends State<loginPage>{
                       }
                     }
                     else if(usernameController.text == "" && passwordController.text != ""){
+                      myMain.myAccessCheckNotifier.value = DateTime.now();
                       showDialog(
                           context: context,
                           builder: (BuildContext theContext){
@@ -332,6 +361,7 @@ class loginPageState extends State<loginPage>{
                       );
                     }
                     else if(usernameController.text != "" && myServerCheck.docs.isNotEmpty && passwordController.text == ""){
+                      myMain.myAccessCheckNotifier.value = DateTime.now();
                       showDialog(
                           context: context,
                           builder: (BuildContext theContext){
@@ -353,6 +383,7 @@ class loginPageState extends State<loginPage>{
                       );
                     }
                     else if(myServerCheck.docs.isEmpty && usernameController.text != "" && passwordController.text == ""){
+                      myMain.myAccessCheckNotifier.value = DateTime.now();
                       showDialog(
                           context: context,
                           builder: (BuildContext theContext){
@@ -374,6 +405,7 @@ class loginPageState extends State<loginPage>{
                       );
                     }
                     else if(usernameController.text == "" && passwordController.text == ""){
+                      myMain.myAccessCheckNotifier.value = DateTime.now();
                       showDialog(
                           context: context,
                           builder: (BuildContext theContext){

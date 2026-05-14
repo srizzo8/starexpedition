@@ -53,7 +53,7 @@ class pdfViewer extends StatefulWidget{
   pdfViewerState createState() => pdfViewerState();
 }
 
-class pdfViewerState extends State<pdfViewer>{
+class pdfViewerState extends State<pdfViewer> with RouteAware{
   TextEditingController starPdfPageController = TextEditingController();
   int myStarPdfPage = 0;
   int totalStarPdfPages = 0;
@@ -108,6 +108,32 @@ class pdfViewerState extends State<pdfViewer>{
       }
     }
     return messageForUser;
+  }
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
   }
 
   @override
@@ -222,6 +248,8 @@ class pdfViewerState extends State<pdfViewer>{
                             else{
                               myStarPdfMessage = pdfDialogMessage(pageUserIsOn.toString(), totalStarPdfPages.toString());
                             }
+
+                            myMain.myAccessCheckNotifier.value = DateTime.now();
 
                             showDialog(
                               context: bc,
@@ -409,6 +437,8 @@ class pdfViewerState extends State<pdfViewer>{
                         else{
                           myPlanetPdfMessage = pdfDialogMessage(pageUserIsOn.toString(), totalPlanetPdfPages.toString());
                         }
+
+                        myMain.myAccessCheckNotifier.value = DateTime.now();
 
                         showDialog(
                           context: bc,

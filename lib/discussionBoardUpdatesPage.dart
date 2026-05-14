@@ -95,7 +95,7 @@ class routeToReplyToThreadDiscussionBoardUpdates{
   static String replyThreadPage = replyThreadPageState.replyThread;
 }
 
-class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
+class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> with RouteAware{
   static String dBoardRoute = '/discussionBoardUpdatesPage';
   int numberOfPagesDbu = (((discussionBoardPage.discussionBoardUpdatesThreads.length)/10)).ceil();
   int theCurrentPageDbu = 0;
@@ -134,6 +134,32 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
 
       mySublistsDbuInformation = mySublistsDbu;
     }
+  }
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
   }
 
   /*Future<List<dynamic>> getDbuThreads() async{
@@ -437,7 +463,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage>{
   }
 }
 
-class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesThreadsPage>{
+class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesThreadsPage> with RouteAware{
   int numberOfPagesDbuThreadReplies = 0;
   int theCurrentPageDbuThreadReplies = 0;
 
@@ -447,6 +473,32 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
 
   int myPaginatorResetValue = 0;
   int previousDataLength = -1;
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
 
   @override
   Widget build(BuildContext context) {

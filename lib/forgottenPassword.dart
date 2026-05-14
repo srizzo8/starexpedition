@@ -53,7 +53,7 @@ class resetPassword extends StatefulWidget{
   resetPasswordState createState() => resetPasswordState();
 }
 
-class forgottenPasswordState extends State<forgottenPassword>{
+class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
   TextEditingController myUsernameController = TextEditingController();
   TextEditingController myEmailController = TextEditingController();
   List<Text> usersMessage = [];
@@ -169,6 +169,32 @@ class forgottenPasswordState extends State<forgottenPassword>{
     return messageForUser;
   }
 
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
   Widget build(BuildContext bc){
     return Listener(
       behavior: HitTestBehavior.translucent,
@@ -183,6 +209,8 @@ class forgottenPasswordState extends State<forgottenPassword>{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
+          myMain.myAccessCheckNotifier.value = DateTime.now(),
+
             showDialog(
               context: context,
               builder: (BuildContext myContext){
@@ -337,6 +365,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
                   usersMessage = await dialogMessageForgottenPassword([myUsernameController.text, myEmailController.text]);
 
                   if(usersMessage.isEmpty){
+                    myMain.myAccessCheckNotifier.value = DateTime.now();
                     showDialog(
                         context: context,
                         builder: (BuildContext myContext){
@@ -379,6 +408,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
                     );
                   }
                   else{
+                    myMain.myAccessCheckNotifier.value = DateTime.now();
                     showDialog(
                       context: context,
                       builder: (myContent) => AlertDialog(
@@ -415,7 +445,7 @@ class forgottenPasswordState extends State<forgottenPassword>{
   }
 }
 
-class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
+class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> with RouteAware{
   TextEditingController numberController = TextEditingController();
   List<Text> usersMessage = [];
 
@@ -435,6 +465,32 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
     return messageForUser;
   }
 
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
   Widget build(BuildContext bc){
     return Listener(
       behavior: HitTestBehavior.translucent,
@@ -449,6 +505,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
+              myMain.myAccessCheckNotifier.value = DateTime.now(),
               showDialog(
                   context: context,
                   builder: (BuildContext myContext){
@@ -554,6 +611,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
                   //Go to "changing password" screen
                   usersMessage = dialogMessageForgottenPasswordCode(numberController.text);
                   if(usersMessage.isEmpty){
+                    myMain.myAccessCheckNotifier.value = DateTime.now();
                     showDialog(
                         context: context,
                         builder: (BuildContext myContext){
@@ -574,6 +632,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
                     );
                   }
                   else{
+                    myMain.myAccessCheckNotifier.value = DateTime.now();
                     showDialog(
                       context: context,
                       builder: (myContent) => AlertDialog(
@@ -609,7 +668,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry>{
   }
 }
 
-class resetPasswordState extends State<resetPassword>{
+class resetPasswordState extends State<resetPassword> with RouteAware{
   TextEditingController newPassController = TextEditingController();
   TextEditingController confirmNewPassController = TextEditingController();
   List<Text> usersMessage = [];
@@ -681,6 +740,32 @@ class resetPasswordState extends State<resetPassword>{
     return messageForUser;
   }
 
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
   Widget build(BuildContext bc){
     return Listener(
       behavior: HitTestBehavior.translucent,
@@ -695,6 +780,7 @@ class resetPasswordState extends State<resetPassword>{
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () =>{
+              myMain.myAccessCheckNotifier.value = DateTime.now(),
               showDialog(
                   context: context,
                   builder: (BuildContext myContext){
@@ -874,6 +960,7 @@ class resetPasswordState extends State<resetPassword>{
                 onPressed: () async{
                   usersMessage = await dialogMessageForgottenPassword([newPassController.text, confirmNewPassController.text]);
                   if(usersMessage.isEmpty){
+                    myMain.myAccessCheckNotifier.value = DateTime.now();
                     showDialog(
                         context: context,
                         builder: (BuildContext myContext){
@@ -939,6 +1026,7 @@ class resetPasswordState extends State<resetPassword>{
                     );
                   }
                   else{
+                    myMain.myAccessCheckNotifier.value = DateTime.now();
                     showDialog(
                       context: context,
                       builder: (myContent) => AlertDialog(

@@ -159,8 +159,34 @@ class userProfilePage extends StatefulWidget{
   userProfilePageState createState() => userProfilePageState();
 }
 
-class userProfilePageState extends State<userProfilePage>{
+class userProfilePageState extends State<userProfilePage> with RouteAware{
   String nameOfRoute = '/userProfilePage';
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
 
   Widget build(BuildContext bc){
     return Scaffold(
@@ -222,7 +248,7 @@ class editingMyUserProfile extends StatefulWidget{
   editingMyUserProfileState createState() => editingMyUserProfileState();
 }
 
-class editingMyUserProfileState extends State<editingMyUserProfile>{
+class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAware{
   TextEditingController informationAboutMyselfController = TextEditingController();
   TextEditingController interestsController = TextEditingController();
   TextEditingController locationController = TextEditingController();
@@ -315,10 +341,31 @@ class editingMyUserProfileState extends State<editingMyUserProfile>{
     });
   }
 
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
   @override
   void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
     myFieldFocus.dispose();
     super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
   }
 
   Widget build(BuildContext context){
@@ -931,6 +978,7 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                                 }
                               }
 
+                              myMain.myAccessCheckNotifier.value = DateTime.now();
                               await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
 
                               setState((){
@@ -1058,6 +1106,8 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                                   print("planetTracked: ${myMain.planetTracked}");
                                 }
                               }
+
+                              myMain.myAccessCheckNotifier.value = DateTime.now();
                               await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(myMain.informationAboutPlanet)));
 
                               setState((){
@@ -1208,6 +1258,7 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const feedbackAndSuggestionsPage())),
                                               }
                                   else{
+                                      myMain.myAccessCheckNotifier.value = DateTime.now(),
                                       showSearch(
                                         context: bc,
                                         delegate: mySearch(),
@@ -1367,6 +1418,7 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                                 }
                               }
 
+                              myMain.myAccessCheckNotifier.value = DateTime.now();
                               await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
 
                               setState((){
@@ -1487,6 +1539,8 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                                   print("planetTracked: ${myMain.planetTracked}");
                                 }
                               }
+
+                              myMain.myAccessCheckNotifier.value = DateTime.now();
                               await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(myMain.informationAboutPlanet)));
 
                               setState((){

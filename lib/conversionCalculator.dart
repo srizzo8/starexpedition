@@ -55,7 +55,7 @@ List<String> lengthUnits = ["AU", "Kilometers", "Light-years", "Miles", "Parsecs
 double tempResults = 0.0;
 double lengthResults = 0.0;
 
-class conversionCalculatorPageState extends State<conversionCalculatorPage>{
+class conversionCalculatorPageState extends State<conversionCalculatorPage> with RouteAware{
   static String nameOfRoute = '/conversionCalculator';
 
   TextEditingController myTemperature = TextEditingController();
@@ -98,6 +98,32 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage>{
 
     dropdownLengthValue = lengthUnits[2];
     secondDropdownLengthValue = lengthUnits[3];
+  }
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
   }
 
   Widget build(BuildContext context){

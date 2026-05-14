@@ -84,8 +84,34 @@ class settingsPage extends StatefulWidget{
   settingsPageState createState() => settingsPageState();
 }
 
-class settingsPageState extends State<settingsPage>{
+class settingsPageState extends State<settingsPage> with RouteAware{
   static String nameOfRoute = '/settings';
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
 
   Widget build(BuildContext context){
     ScreenUtil.init(context);
@@ -227,7 +253,7 @@ class changePasswordPage extends StatefulWidget{
   changePasswordPageState createState() => changePasswordPageState();
 }
 
-class changePasswordPageState extends State<changePasswordPage>{
+class changePasswordPageState extends State<changePasswordPage> with RouteAware{
   TextEditingController currentPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController secondNewPasswordController = TextEditingController();
@@ -273,6 +299,32 @@ class changePasswordPageState extends State<changePasswordPage>{
       usersMessage.add(Text("Your new password must not contain any whitespace"));
     }
     return usersMessage;
+  }
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
   }
 
   Widget build(BuildContext context){
@@ -466,6 +518,8 @@ class changePasswordPageState extends State<changePasswordPage>{
 
                           print("This is new user password: ${userDoc["password"]}");
 
+                          myMain.myAccessCheckNotifier.value = DateTime.now();
+
                           showDialog(
                               context: context,
                               builder: (BuildContext bc){
@@ -493,6 +547,8 @@ class changePasswordPageState extends State<changePasswordPage>{
                           );
                         }
                         else{
+                          myMain.myAccessCheckNotifier.value = DateTime.now();
+
                           showDialog(
                             context: context,
                             builder: (myContent) => AlertDialog(
@@ -563,6 +619,8 @@ class changePasswordPageState extends State<changePasswordPage>{
 
                           print("This is new user password: ${userDoc["password"]}");
 
+                          myMain.myAccessCheckNotifier.value = DateTime.now();
+
                           showDialog(
                               context: context,
                               builder: (BuildContext bc){
@@ -590,6 +648,8 @@ class changePasswordPageState extends State<changePasswordPage>{
                           );
                         }
                         else{
+                          myMain.myAccessCheckNotifier.value = DateTime.now();
+
                           showDialog(
                             context: context,
                             builder: (myContent) => AlertDialog(
@@ -636,7 +696,7 @@ class changeEmailAddressPage extends StatefulWidget{
   changeEmailAddressPageState createState() => changeEmailAddressPageState();
 }
 
-class changeEmailAddressPageState extends State<changeEmailAddressPage>{
+class changeEmailAddressPageState extends State<changeEmailAddressPage> with RouteAware{
   TextEditingController currentEmailAddressController = TextEditingController();
   TextEditingController newEmailAddressController = TextEditingController();
   TextEditingController myPasswordController = TextEditingController();
@@ -678,6 +738,32 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
     }
 
     return usersMessage;
+  }
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
   }
 
   Widget build(BuildContext context){
@@ -935,6 +1021,8 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
 
                           print("This is new user email address: ${docForUsername["emailAddress"]}");
 
+                          myMain.myAccessCheckNotifier.value = DateTime.now();
+
                           showDialog(
                               context: context,
                               builder: (BuildContext bc){
@@ -967,6 +1055,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                           );
                         }
                         else{
+                          myMain.myAccessCheckNotifier.value = DateTime.now();
                           showDialog(
                             context: context,
                             builder: (myContent) => AlertDialog(
@@ -1051,6 +1140,8 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
 
                           print("This is new user email address: ${docForUsername["emailAddress"]}");
 
+                          myMain.myAccessCheckNotifier.value = DateTime.now();
+
                           showDialog(
                               context: context,
                               builder: (BuildContext bc){
@@ -1083,6 +1174,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage>{
                           );
                         }
                         else{
+                          myMain.myAccessCheckNotifier.value = DateTime.now();
                           showDialog(
                             context: context,
                             builder: (myContent) => AlertDialog(

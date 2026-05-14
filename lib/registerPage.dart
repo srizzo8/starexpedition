@@ -193,7 +193,7 @@ class registerPageRoutes{
   static String discussionBoard = theDiscussionBoardPage.discussionBoardPageState.nameOfRoute;
 }
 
-class registerPageState extends State<registerPage>{
+class registerPageState extends State<registerPage> with RouteAware{
   List userEmailPasswordList = [];
   static String nameOfRoute = '/registerPage';
   TextEditingController theUsername = TextEditingController();
@@ -250,6 +250,32 @@ class registerPageState extends State<registerPage>{
     }
 
     return messageForUser;
+  }
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context as BuildContext)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
   }
 
   Widget build(BuildContext buildContext){
@@ -582,6 +608,8 @@ class registerPageState extends State<registerPage>{
 
                       myMessage = dialogMessage(userCredentials);
                       print("myMessage.length: ${myMessage.length}");
+
+                      myMain.myAccessCheckNotifier.value = DateTime.now();
 
                       showDialog(
                         context: buildContext,
