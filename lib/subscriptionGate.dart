@@ -277,7 +277,23 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
     final isInTrial = await myTrialService.isInTrial();
     print("Navigation check - isInTrial: ${isInTrial}");
+
+    if(isInTrial){
+      return;
+    }
+
     print("Navigation check - userIsSubscribed: ${userIsSubscribed}");
+
+    //Asking Google Play if one's subscription is still active on every navigation:
+    await InAppPurchase.instance.restorePurchases();
+    await Future.delayed(Duration(seconds: 2));
+
+    if(!mounted){
+      return;
+    }
+
+    //Google Play updates the userIsSubscribed variable:
+    print("Navigation check - the userIsSubscribed variable: ${userIsSubscribed}");
 
     if(!isInTrial && !userIsSubscribed && mounted){
       print("Navigation check - showing the paywall page");
@@ -342,6 +358,11 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
     final isInTrial = await myTrialService.isInTrial();
     print("On resume - isInTrial: ${isInTrial}");
+
+    if(isInTrial){
+      return;
+    }
+
     print("On resume - userIsSubscribed: ${userIsSubscribed}");
 
     if(!isInTrial && !userIsSubscribed && mounted){
