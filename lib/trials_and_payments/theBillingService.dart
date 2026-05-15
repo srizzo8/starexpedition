@@ -61,9 +61,11 @@ class theBillingService{
 
     if(myRelevantPurchases.isEmpty){
       print("No relevant purchases have been found");
+
+      //Marking any active Firestore subscription as expired:
+      await markSubscriptionsAsExpiredInFirestore();
+
       onSubscriptionChanged(false);
-      onProductIdChanged(null);
-      return;
     }
 
     for(final myPurchase in myRelevantPurchases){
@@ -174,6 +176,26 @@ class theBillingService{
     }
     catch (e){
       print("Unfortunately, there is an error marking the subscription as expired. Error: ${e}");
+    }
+  }
+
+  Future<void> markSubscriptionsAsExpiredInFirestore() async{
+    try{
+      //Getting myDeviceId:
+      final myDeviceInfo = DeviceInfoPlugin();
+      final myAndroidInfo = await myDeviceInfo.androidInfo;
+      final myDeviceId = myAndroidInfo.id;
+
+      final QuerySnapshot mySnapshot = await FirebaseFirestore.instance.collection("Subscriptions").where("deviceId", isEqualTo: myDeviceId).where("isActive", isEqualTo: true).get();
+
+      for(final myDoc in mySnapshot.docs){
+        await myDoc.reference.update({"isActive": false, "expiryDate": DateTime.now().toIso8601String(), "lastUpdated": DateTime.now().toIso8601String()});
+
+        print("Subscription is expired in Firestore for: ${myDoc.id}");
+      }
+    }
+    catch(e){
+      print("Unfortunately, there is an error in making the subscription expired. Here is the error: ${e}");
     }
   }
 

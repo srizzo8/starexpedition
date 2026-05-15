@@ -114,41 +114,6 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
     startAccessMonitoring();
   }
 
-  //Method to check if one's subscription is active in Firestore:
-  Future<bool> isSubscriptionActiveInFirestore() async{
-    try{
-      //Getting the device ID:
-      final myDeviceInfo = DeviceInfoPlugin();
-      final myAndroidInfo = await myDeviceInfo.androidInfo;
-      final myDeviceId = myAndroidInfo.id;
-
-      print("Checking Firestore for the device id: ${myDeviceId}");
-
-      //Getting subscriptions from a certain device:
-      final myDoc = await FirebaseFirestore.instance.collection("Subscriptions").where("deviceId", isEqualTo: myDeviceId).where("isActive", isEqualTo: true).orderBy("lastUpdated", descending: true).limit(1).get();
-
-      print("The documents found: ${myDoc.docs.length}");
-
-      if(myDoc.docs.isEmpty){
-        return false;
-      }
-
-      final myExpiryDateString = myDoc.docs.first.data()["expiryDate"] as String;
-      final myExpiryDate = DateTime.parse(myExpiryDateString);
-      final subscriptionIsActive = DateTime.now().isBefore(myExpiryDate);
-
-      print("Expiry date in Firestore: ${myExpiryDate}");
-      print("Today's date: ${DateTime.now()}");
-      print("subscriptionIsActive: ${subscriptionIsActive}");
-
-      return subscriptionIsActive;
-    }
-    catch(e){
-      print("There is an error catching the Firestore subscription. Here is the error: ${e}");
-      return false;
-    }
-  }
-
   void startAccessMonitoring(){
     print("startAccessMonitoring started at: ${DateTime.now()}");
     myAccessTimer = Timer.periodic(const Duration(seconds: 30), (_) async{
@@ -184,10 +149,6 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
       //Check Firestore only if Google Play also confirms a user is not subscribed:
       if(!userIsSubscribed){
-        print("Google Play says you are not subscribed. Checking Firestore.");
-        final isSubscriptionActive = await isSubscriptionActiveInFirestore();
-        print("isSubscriptionActive: ${isSubscriptionActive}");
-
         if(!isInTrial && !userIsSubscribed && mounted){
           //The state is updated (subscriptionGate is now on the top, and it rebuilds to the paywall page):
           print("Showing the paywall page");
