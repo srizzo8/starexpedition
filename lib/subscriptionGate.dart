@@ -147,28 +147,21 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
         return;
       }
 
-      //Check Firestore only if Google Play also confirms a user is not subscribed:
-      if(!userIsSubscribed){
-        if(!isInTrial && !userIsSubscribed && mounted){
-          //The state is updated (subscriptionGate is now on the top, and it rebuilds to the paywall page):
-          print("Showing the paywall page");
+      //Determining whether or not the paywall page will show:
+      if(!isInTrial && mounted){
+        final bool isExpiredInFirestore = await isSubscriptionExpiredInFirestore();
 
+        if(isExpiredInFirestore){
+          print("According to Firestore, the subscription is expired. Therefore, the paywall page will show.");
           setState((){
             myAccess = myAccessState.blocked;
             myActiveProductId = null;
           });
 
-          //Showing paywall on top of everything:
           showPaywallOverlay();
         }
-      }
-      else if(userIsSubscribed){
-        //Google Play says that the user is subscribed, but this code also checks the Firestore expiry date of the subscription:
-        final isExpired = await isSubscriptionExpiredInFirestore();
-
-        if(!isInTrial && isExpired && mounted){
-          print("According to Firestore, the subscription is expired. Therefore, the paywall page will show.");
-
+        else if(!userIsSubscribed){
+          print("Since user is not subscribed, it will show the paywall page");
           setState((){
             myAccess = myAccessState.blocked;
             myActiveProductId = null;
@@ -177,7 +170,7 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
           showPaywallOverlay();
         }
         else{
-          print("Since you are subscribed according to Google Play, you will not be led to the paywall page");
+          print("Since user is subscribed according to Google Play, it will not show the paywall page");
         }
       }
     });
