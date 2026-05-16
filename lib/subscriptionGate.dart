@@ -162,8 +162,23 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
           showPaywallOverlay();
         }
       }
-      else{
-        print("Since Google Play says you are subscribed, the paywall page will not be shown");
+      else if(userIsSubscribed){
+        //Google Play says that the user is subscribed, but this code also checks the Firestore expiry date of the subscription:
+        final isExpired = await isSubscriptionExpiredInFirestore();
+
+        if(!isInTrial && isExpired && mounted){
+          print("According to Firestore, the subscription is expired. Therefore, the paywall page will show.");
+
+          setState((){
+            myAccess = myAccessState.blocked;
+            myActiveProductId = null;
+          });
+
+          showPaywallOverlay();
+        }
+        else{
+          print("Since you are subscribed according to Google Play, you will not be led to the paywall page");
+        }
       }
     });
   }
@@ -265,6 +280,31 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
       });
 
       showPaywallOverlay();
+    }
+  }
+
+  Future<bool> isSubscriptionExpiredInFirestore() async{
+    try{
+      final myDeviceInfo = DeviceInfoPlugin();
+      final myAndroidInfo = await myDeviceInfo.androidInfo;
+      final myDeviceId = myAndroidInfo.id;
+
+      final myDoc = await FirebaseFirestore.instance.collection("Subscriptions").where("deviceId", isEqualTo: myDeviceId).where("isActive", isEqualTo: true).orderBy("lastUpdated", descending: true).limit(1).get();
+
+      if(myDoc.docs.isEmpty){
+        //No active subscription has been found:
+        return true;
+      }
+
+      final myExpiryDateString = myDoc.docs.first.data()["expiryDate"] as String;
+      final myExpiryDate = DateTime.parse(myExpiryDateString);
+
+      return DateTime.now().isAfter(myExpiryDate);
+    }
+    catch (e){
+      //If this error occurs, it does not lock out a user:
+      print("Unfortunately, there was an error in checking the expiry on Firestore. Error: ${e}");
+      return false;
     }
   }
 
