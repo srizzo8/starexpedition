@@ -61,50 +61,52 @@ class whyStarExpeditionWasMadePageState extends State<whyStarExpeditionWasMadePa
         centerTitle: true,
         title: Text("Star Expedition"),
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Center(
-            child: Text("Why Star Expedition Was Made", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.015625,
-          ),
-          Container(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-            child: Text("I am Sam, the creator of this app. As a young child, I always had an interest in the Universe and all of its celestial bodies." +
-            "However, one thing that interested me the most was how stars and planets can be capable of supporting " +
-            "life for flora and fauna. This process can take millions or even billions of years, depending on " +
-            "the evolution of the star, planet, or both." + "\n" + "\n" +
-            "The formation of our Solar System was something that I especially found fascinating." +
-            "It is magnificient how the Sun was born, how it resulted in creating Earth, and how it ultimately made Earth evolve the way that it did. " +
-            "It is also intriguing to realize how far nature and civilization have progressed over the past 4.6 billion years."
-            "I truly wonder if there are other suns and other Earths out there." +
-            "I hope that Star Expedition can be helpful in providing people with information about " +
-            "nearby stars that have confirmed terrestrial planets that can potentially support life for the flora and fauna found on Earth.", textAlign: TextAlign.center),
-          ),
-          Center(
-            child: Text("\nDisclaimer",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          Container(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
-            child: Text("I do not own any of the star and planet information (like the constellation that a star belongs to) and photos used in Star Expedition." +
-            "The information about stars and planets and photos that I collected were based on the information about stars and planets and photos from various websites, " +
-                "such as The Worlds of David Darling, Sol Station, and Universe Today.", textAlign: TextAlign.center),
-          ),
-          /*Container(
-            child: InkWell(
-              child: Text("Hello"),
-              onTap: (){
-                List<String> expressions = [];
-                print("${expressions[1]}");
-              }
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
-          )*/
-        ]
+            Center(
+              child: Text("Why Star Expedition Was Made", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
+            ),
+            Container(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+              child: Text("I am Sam, the creator of this app. As a young child, I always had an interest in the Universe and all of its celestial bodies." +
+              "However, one thing that interested me the most was how stars and planets can be capable of supporting " +
+              "life for flora and fauna. This process can take millions or even billions of years, depending on " +
+              "the evolution of the star, planet, or both." + "\n" + "\n" +
+              "The formation of our Solar System was something that I especially found fascinating." +
+              "It is magnificient how the Sun was born, how it resulted in creating Earth, and how it ultimately made Earth evolve the way that it did. " +
+              "It is also intriguing to realize how far nature and civilization have progressed over the past 4.6 billion years."
+              "I truly wonder if there are other suns and other Earths out there." +
+              "I hope that Star Expedition can be helpful in providing people with information about " +
+              "nearby stars that have confirmed terrestrial planets that can potentially support life for the flora and fauna found on Earth.", textAlign: TextAlign.center),
+            ),
+            Center(
+              child: Text("\nDisclaimer",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+            ),
+            Container(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
+              child: Text("I do not own any of the star and planet information (like the constellation that a star belongs to) and photos used in Star Expedition." +
+              "The information about stars and planets and photos that I collected were based on the information about stars and planets and photos from various websites, " +
+                  "such as The Worlds of David Darling, Sol Station, and Universe Today.", textAlign: TextAlign.center),
+            ),
+            /*Container(
+              child: InkWell(
+                child: Text("Hello"),
+                onTap: (){
+                  List<String> expressions = [];
+                  print("${expressions[1]}");
+                }
+              ),
+            )*/
+          ]
+        ),
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
     );

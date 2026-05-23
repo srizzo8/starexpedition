@@ -9,8 +9,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get.dart' hide Context;
+import 'package:get/get_core/src/get_main.dart' hide Context;
 //import 'package:backendless_sdk/backendless_sdk.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'main.dart';
@@ -193,7 +193,7 @@ class registerPageRoutes{
   static String discussionBoard = theDiscussionBoardPage.discussionBoardPageState.nameOfRoute;
 }
 
-class registerPageState extends State<registerPage> with RouteAware{
+class registerPageState extends State<registerPage>{
   List userEmailPasswordList = [];
   static String nameOfRoute = '/registerPage';
   TextEditingController theUsername = TextEditingController();
@@ -250,32 +250,6 @@ class registerPageState extends State<registerPage> with RouteAware{
     }
 
     return messageForUser;
-  }
-
-  //Lifecycle methods (didChangeDependencies() and dispose()):
-  @override
-  void didChangeDependencies(){
-    super.didChangeDependencies();
-    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context as BuildContext)!);
-  }
-
-  @override
-  void dispose(){
-    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
-    super.dispose();
-  }
-
-  //RouteAware methods (didPopNext() and didPush()):
-  @override
-  void didPopNext(){
-    //Called when returning to this page:
-    myMain.myAccessCheckNotifier.value = DateTime.now();
-  }
-
-  @override
-  void didPush(){
-    //Called when the page is pushed:
-    myMain.myAccessCheckNotifier.value = DateTime.now();
   }
 
   Widget build(BuildContext buildContext){
