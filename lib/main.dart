@@ -1567,22 +1567,31 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
             padding: EdgeInsets.zero,
             children: [
               if(myNewUsername == "" && myUsername == "")
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text("Star Expedition Navigation Menu", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.red),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text("Star Expedition Navigation Menu", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                  ),
                 ),
               if(myNewUsername != "" && myUsername == "")
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text("Star Expedition Navigation Menu\n\nHi ${myNewUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.red),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text("Star Expedition Navigation Menu\n\nHi ${myNewUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                  ),
                 ),
               if(myNewUsername == "" && myUsername != "")
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text("Star Expedition Navigation Menu\n\nHi ${myUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.red),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text("Star Expedition Navigation Menu\n\nHi ${myUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
+                  ),
                 ),
               ListTile(
                   title: myNewUsername == "" && myUsername == ""? Text("Login") : Text("Logout"),
