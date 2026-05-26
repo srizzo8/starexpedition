@@ -33,6 +33,8 @@ class theBillingService{
 
   theBillingService({required this.onSubscriptionChanged, required this.onProductIdChanged});
 
+  bool userIsSubscribed = false;
+
   Future<void> initialize() async{
     final bool available = await InAppPurchase.instance.isAvailable();
     print("Is the billing available? ${available}");
@@ -63,9 +65,13 @@ class theBillingService{
       print("No relevant purchases have been found");
 
       //Marking any active Firestore subscription as expired:
-      await markSubscriptionsAsExpiredInFirestore();
+      if(userIsSubscribed){
+        userIsSubscribed = false;
+        onSubscriptionChanged(false);
+        await markSubscriptionsAsExpiredInFirestore();
+      }
 
-      onSubscriptionChanged(false);
+      return;
     }
 
     for(final myPurchase in myRelevantPurchases){
@@ -82,6 +88,7 @@ class theBillingService{
         if(isActive){
           print("Firestore confirms that there is an active subscription");
           completeMyPurchase(myPurchase);
+          userIsSubscribed = true;
           onSubscriptionChanged(true);
           onProductIdChanged(myPurchase.productID);
         }
@@ -90,12 +97,14 @@ class theBillingService{
           print("A new purchase has been made; saving it to Firestore");
           completeMyPurchase(myPurchase);
           await saveSubscriptionToFirestore(myPurchase);
+          userIsSubscribed = true;
           onSubscriptionChanged(true);
           onProductIdChanged(myPurchase.productID);
         }
         else{
           //Treat this as inactive because although it is restored, it is expired or not in Firestore:
           print("Since the restored purchase is not active on Firestore, it is being treated as expired");
+          userIsSubscribed = false;
           onSubscriptionChanged(false);
           onProductIdChanged(null);
         }
@@ -103,6 +112,7 @@ class theBillingService{
       else if(myPurchase.status == PurchaseStatus.error || myPurchase.status == PurchaseStatus.canceled){
         print("Either there is a subscription error or the subscription has been cancelled.");
 
+        userIsSubscribed = false;
         onSubscriptionChanged(false);
         onProductIdChanged(null);
       }
