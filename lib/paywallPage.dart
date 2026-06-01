@@ -44,8 +44,15 @@ class paywallPageState extends State<paywallPage>{
   }
 
   Future<void> loadMyProducts() async{
-    final theProducts = await widget.myBillingService.getMyProducts();
+    List<ProductDetails> theProducts = await widget.myBillingService.getMyProducts();
     print("The products loaded: ${theProducts.length}");
+
+    //If the billing client is not ready yet, wait and retry:
+    if(theProducts.isEmpty){
+      await Future.delayed(Duration(seconds: 3));
+      theProducts = await widget.myBillingService.getMyProducts();
+      print("The products loaded after the wait and retry: ${myProducts}");
+    }
 
     for(final myProduct in theProducts){
       print("Product: ${myProduct.id}, ${myProduct.price}");
