@@ -74,6 +74,10 @@ class theBillingService{
       return;
     }
 
+    //Collecting the result across every purchase before updating the state:
+    bool anyActivePurchase = false;
+    String? myActiveProductId;
+
     for(final myPurchase in myRelevantPurchases){
       print("The purchase status: ${myPurchase.status}");
       print("The purchase ID: ${myPurchase.productID}");
@@ -88,34 +92,37 @@ class theBillingService{
         if(isActive){
           print("Firestore confirms that there is an active subscription");
           completeMyPurchase(myPurchase);
-          userIsSubscribed = true;
-          onSubscriptionChanged(true);
-          onProductIdChanged(myPurchase.productID);
+          anyActivePurchase = true;
+          myActiveProductId = myPurchase.productID;
         }
         else if(myPurchase.status == PurchaseStatus.purchased){
           //A brand new purchase has been made; save it to Firestore:
           print("A new purchase has been made; saving it to Firestore");
           completeMyPurchase(myPurchase);
           await saveSubscriptionToFirestore(myPurchase);
-          userIsSubscribed = true;
-          onSubscriptionChanged(true);
-          onProductIdChanged(myPurchase.productID);
+          anyActivePurchase = true;
+          myActiveProductId = myPurchase.productID;
         }
         else{
           //Treat this as inactive because although it is restored, it is expired or not in Firestore:
           print("Since the restored purchase is not active on Firestore, it is being treated as expired");
-          userIsSubscribed = false;
-          onSubscriptionChanged(false);
-          onProductIdChanged(null);
         }
       }
       else if(myPurchase.status == PurchaseStatus.error || myPurchase.status == PurchaseStatus.canceled){
         print("Either there is a subscription error or the subscription has been cancelled.");
-
-        userIsSubscribed = false;
-        onSubscriptionChanged(false);
-        onProductIdChanged(null);
       }
+    }
+
+    //Making a single state update after processing every purchase:
+    if(anyActivePurchase){
+      userIsSubscribed = true;
+      onSubscriptionChanged(true);
+      onProductIdChanged(myActiveProductId);
+    }
+    else{
+      userIsSubscribed = false;
+      onSubscriptionChanged(false);
+      onProductIdChanged(null);
     }
   }
 
