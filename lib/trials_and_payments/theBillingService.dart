@@ -126,9 +126,26 @@ class theBillingService{
       onProductIdChanged(myActiveProductId);
     }
     else{
-      userIsSubscribed = false;
-      onSubscriptionChanged(false);
-      onProductIdChanged(null);
+      //Before revoking access, it should check Firestore in case Google Play returned tokens that are expired while an active subscription still exists in Firestore:
+      final isStillActiveInFirestore = await isAnySubscriptionActiveInFirestore();
+
+      if(isStillActiveInFirestore){
+        print("Google Play returned tokens that are expired, but Firestore showed that the subscription is still active. Therefore, there will still be access.");
+
+        if(!userIsSubscribed){
+          userIsSubscribed = true;
+          onSubscriptionChanged(true);
+        }
+      }
+      else{
+        if(userIsSubscribed){
+          await markSubscriptionsAsExpiredInFirestore();
+        }
+
+        userIsSubscribed = false;
+        onSubscriptionChanged(false);
+        onProductIdChanged(null);
+      }
     }
   }
 
