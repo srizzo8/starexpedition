@@ -64,11 +64,17 @@ class theBillingService{
     if(myRelevantPurchases.isEmpty){
       print("No relevant purchases have been found");
 
-      //Marking any active Firestore subscription as expired:
       if(userIsSubscribed){
-        userIsSubscribed = false;
-        onSubscriptionChanged(false);
-        await markSubscriptionsAsExpiredInFirestore();
+        final isStillActiveInFirestore = await isAnySubscriptionActiveInFirestore();
+
+        if(!isStillActiveInFirestore){
+          userIsSubscribed = false;
+          onSubscriptionChanged(false);
+          await markSubscriptionsAsExpiredInFirestore();
+        }
+        else{
+          print("Google Play has returned no purchases, but according to Firestore, the subscription is still active. A user can continue to use Star Expedition until his or her subscription expires.");
+        }
       }
 
       return;
@@ -213,6 +219,35 @@ class theBillingService{
     }
     catch(e){
       print("Unfortunately, there is an error in making the subscription expired. Here is the error: ${e}");
+    }
+  }
+
+  Future<bool> isAnySubscriptionActiveInFirestore() async{
+    try{
+      final myDeviceInfo = DeviceInfoPlugin();
+      final myAndroidInfo = await myDeviceInfo.androidInfo;
+      final myDeviceId = myAndroidInfo.id;
+
+      final mySnapshot = await FirebaseFirestore.instance.collection("Subscriptions").where("deviceId", isEqualTo: myDeviceId).where("isActive", isEqualTo: true).get();
+
+      if(mySnapshot.docs.isEmpty){
+        return false;
+      }
+
+      for(final myDoc in mySnapshot.docs){
+        final myExpiryDateString = myDoc.data()["expiryDate"] as String;
+        final myExpiryDate = DateTime.parse(myExpiryDateString);
+
+        if(DateTime.now().isBefore(myExpiryDate)){
+          return true;
+        }
+      }
+
+      return false;
+    }
+    catch(e){
+      print("Unfortunately, there was an error in checking Firestore for an active subscription. This is the error: ${e}");
+      return false;
     }
   }
 
