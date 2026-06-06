@@ -98,7 +98,7 @@ class theTrialService{
     final myInstallDateString = myDoc.data()!["installDate"] as String;
     final myInstallDate = DateTime.parse(myInstallDateString);
     final endOfTrial = myInstallDate.add(Duration(days: myTrialDays));
-    final myDifference = endOfTrial.difference(DateTime.now()).inDays;
+    final myDifference = (endOfTrial.difference(DateTime.now()).inHours / 24).ceil();
 
     print("Days left in trial: ${myDifference.clamp(0, myTrialDays)}");
 
