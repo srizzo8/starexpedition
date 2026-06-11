@@ -970,6 +970,7 @@ Future<List<String>> getStarInformation() async{
   final starDiscoverer;
   final starDiscoveryDate;
   final starTemperature;
+  final starJ2000Coordinates;
   final starImageSource;
 
   if(firebaseDesktopHelper.onDesktop){
@@ -985,9 +986,10 @@ Future<List<String>> getStarInformation() async{
     starDiscoverer = starReference["star_discoverer"];
     starDiscoveryDate = starReference["star_discovery_date"];
     starTemperature = starReference["star_temperature"];
+    starJ2000Coordinates = starReference["j2000_coordinates"];
     starImageSource = starReference["image_source"];
 
-    return [starConstellation.toString(), starDistance.toString(), starOtherNames.toString(), starSpectralClass.toString(), starAbsoluteMagnitude.toString(), starAge.toString(), starApparentMagnitude.toString(), starDiscoverer.toString(), starDiscoveryDate.toString(), starTemperature.toString(), starImageSource.toString()];
+    return [starConstellation.toString(), starDistance.toString(), starOtherNames.toString(), starSpectralClass.toString(), starAbsoluteMagnitude.toString(), starAge.toString(), starApparentMagnitude.toString(), starDiscoverer.toString(), starDiscoveryDate.toString(), starTemperature.toString(), starJ2000Coordinates.toString(), starImageSource.toString()];
   }
   else{
     starReference = FirebaseDatabase.instance.ref(correctStar);
@@ -1002,9 +1004,10 @@ Future<List<String>> getStarInformation() async{
     starDiscoverer = await starReference.child("star_discoverer").get();
     starDiscoveryDate = await starReference.child("star_discovery_date").get();
     starTemperature = await starReference.child("star_temperature").get();
+    starJ2000Coordinates = await starReference.child("j2000_coordinates").get();
     starImageSource = await starReference.child("image_source").get();
 
-    return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString(), starImageSource.value.toString()];
+    return [starConstellation.value.toString(), starDistance.value.toString(), starOtherNames.value.toString(), starSpectralClass.value.toString(), starAbsoluteMagnitude.value.toString(), starAge.value.toString(), starApparentMagnitude.value.toString(), starDiscoverer.value.toString(), starDiscoveryDate.value.toString(), starTemperature.value.toString(), starJ2000Coordinates.value.toString(), starImageSource.value.toString()];
   }
 }
 
@@ -2890,10 +2893,20 @@ class articlePage extends StatelessWidget{
                             RichText(
                               textAlign: TextAlign.left,
                               text: TextSpan(
-                                text: "Image source: ",
+                                text: "J2000 coordinates: ",
                                 style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                                 children: <TextSpan>[
                                   TextSpan(text: starInfo[10].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
+                            ),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Image source: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[11].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
                                 ],
                               ),
                             ),
