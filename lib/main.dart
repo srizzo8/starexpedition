@@ -2764,129 +2764,141 @@ class articlePage extends StatelessWidget{
                           fit: BoxFit.cover,
                         ),
                       ),
-                      Container(
+                      /*Container(
                         height: MediaQuery.of(bc).size.height * 0.015625,
-                      ),
-                      Center(
-                        child: Text("\nImage Source", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-                      ),
-                      Container(
-                        height: MediaQuery.of(bc).size.height * 0.015625,
-                      ),
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.015625, 0.0, MediaQuery.of(bc).size.width * 0.015625, 0.0),
-                          child: Text(starInfo[10].toString(), textAlign: TextAlign.center),
-                        ),
-                      ),
+                      ),*/
                       Center(
                         child: Text("\nStar Information", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
                       ),
                       Container(
                         height: MediaQuery.of(bc).size.height * 0.015625,
                       ),
-                      Column(
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              text: "Constellation: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: starInfo[0].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.width * 0.031250, 0.0, MediaQuery.of(bc).size.width * 0.031250, 0.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Constellation: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[0].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          //Text("\n"),
-                          RichText(
-                            text: TextSpan(
-                              text: "Distance (in light-years): ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: starInfo[1].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            //Text("\n"),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Distance (in light-years): ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[1].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          //Text("\n"),
-                          RichText(
-                            text: TextSpan(
-                              text: "Other names: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: starInfo[2].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            //Text("\n"),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Other names: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[2].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          //Text("\n"),
-                          RichText(
-                            text: TextSpan(
-                              text: "Spectral class: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: starInfo[3].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            //Text("\n"),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Spectral class: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[3].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          //Text("\n"),
-                          RichText(
-                            text: TextSpan(
-                              text: "Absolute magnitude: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: starInfo[4].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            //Text("\n"),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Absolute magnitude: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[4].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          //Text("\n"),
-                          RichText(
-                            text: TextSpan(
-                              text: "Age of star: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: starInfo[5].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            //Text("\n"),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Age of star: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[5].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          //Text("\n"),
-                          RichText(
-                            text: TextSpan(
-                              text: "Apparent magnitude: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: starInfo[6].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            //Text("\n"),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Apparent magnitude: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[6].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          //Text("\n"),
-                          RichText(
-                            text: TextSpan(
-                              text: "Discoverer of star: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: starInfo[7].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            //Text("\n"),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Discoverer of star: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[7].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          //Text("\n"),
-                          RichText(
-                            text: TextSpan(
-                              text: "Discovery date of star: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: starInfo[8].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            //Text("\n"),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Discovery date of star: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[8].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          //Text("\n"),
-                          RichText(
-                            text: TextSpan(
-                              text: "Temperature (in Kelvin): ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: starInfo[9].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            //Text("\n"),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Temperature (in Kelvin): ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[9].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Image source: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: starInfo[10].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Center(
                         child: Text("\nConfirmed Terrestrial Planets",
@@ -3933,61 +3945,70 @@ class planetArticle extends StatelessWidget{
                       Container(
                         height: MediaQuery.of(theContext).size.height * 0.015625,
                       ),
-                      Column(
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              text: "Discovery date of planet: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: informationAboutPlanet[0].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(MediaQuery.of(theContext).size.width * 0.031250, 0.0, MediaQuery.of(theContext).size.width * 0.031250, 0.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Discovery date of planet: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: informationAboutPlanet[0].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              text: "Distance from star: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: informationAboutPlanet[1].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Distance from star: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: informationAboutPlanet[1].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              text: "Earth masses: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: informationAboutPlanet[2].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Earth masses: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: informationAboutPlanet[2].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              text: "Known gases: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: informationAboutPlanet[3].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Known gases: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: informationAboutPlanet[3].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              text: "Orbital period: ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: informationAboutPlanet[4].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Orbital period: ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: informationAboutPlanet[4].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                             ),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              text: "Temperature (in Kelvin): ",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(text: informationAboutPlanet[5].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
-                              ],
-                            ),
+                            RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                text: "Temperature (in Kelvin): ",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                                children: <TextSpan>[
+                                  TextSpan(text: informationAboutPlanet[5].toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                                ],
+                              ),
                           ),
                           Center(
                             child: Text("\nOnline Articles about ${correctPlanet}",
@@ -4718,7 +4739,8 @@ class planetArticle extends StatelessWidget{
                                   }
                               ),
                             ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
