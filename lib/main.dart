@@ -63,6 +63,8 @@ import 'package:starexpedition4/trials_and_payments/theTrialService.dart';
 import 'package:starexpedition4/paywallPage.dart';
 import 'package:starexpedition4/subscriptionGate.dart';
 
+import 'package:starexpedition4/data_collection_information/dataCollectionSetting.dart';
+
 /*import 'webErrorStub.dart'
   if(dart.library.html) 'forWebErrors.dart';*/
 
@@ -504,10 +506,24 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? the
 
   print("These are the outgoing headers: $myHeaders");
 
+  //Determining if "device_info" should be myDeviceInfo or N/A:
+  final myDeviceId = await dataCollectionSetting.getMyDeviceId();
+  final myDoc = await FirebaseFirestore.instance.collection("Data_Collection_Settings").doc(myDeviceId).get();
+
+  var dataCollectionOn;
+  var myValue = myDoc.data()!["dataCollectionOn"];
+
+  if(myValue == null){
+    dataCollectionOn = true;
+  }
+  else{
+    dataCollectionOn = myValue as bool;
+  }
+
   final body = jsonEncode({
     "message": myMessage,
     "stacktrace": myFullStackString,
-    "device_info": myDeviceInfo,
+    "device_info": dataCollectionOn? myDeviceInfo : "N/A",
     "file_name": myParsedStack["file_name"],
     "line": myParsedStack["line"],
     "column_number": myParsedStack["column"],
@@ -772,6 +788,9 @@ Future<void> main() async {
     print("starsForSearchBar: ${starsForSearchBar}");
     print("The snapshot: ${allPlanets}");
   }
+
+  //This tracks one's data collection setting. It runs every time one opens up the app:
+  await dataCollectionSetting.getDataCollectionOn();
 
   print("The Supabase Function URL: ${dotenv.env["MY_SUPABASE_URL"]}");
 
@@ -1042,6 +1061,70 @@ Future<Map<String, List>> getOtherNames() async{
   }
 
   return otherNames;
+}
+
+//Getting data collection information from Firestore and then opening up a dialog:
+Future<void> showMyDataCollectionDialog(BuildContext bc) async{
+  //Getting the device ID and the Firestore value of dataCollectionOn:
+  final myDeviceId = await dataCollectionSetting.getMyDeviceId();
+  final myDoc = await FirebaseFirestore.instance.collection("Data_Collection_Settings").doc(myDeviceId).get();
+
+  //Reading the value of dataCollectionOn from Firestore; it defaults to true when it is not there:
+  final bool myCurrentSetting = myDoc.exists? (myDoc.data()!["dataCollectionOn"] as bool? ?? true) : true;
+
+  //Variable used for selecting "Yes" or "No":
+  String mySelectedValue = myCurrentSetting? "Yes" : "No";
+
+  showDialog(
+    context: bc,
+    builder: (myContent) => StatefulBuilder(
+      builder: (bc, setState) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text("The collection of your data can be used to help improve this app. The data that will be collected is your device information, and it will not be sold to or shared with anyone. However, you are welcome to turn off this setting."),
+            SizedBox(
+              height: 20,
+            ),
+            DropdownButton<String>(
+              value: mySelectedValue,
+              items: [
+                DropdownMenuItem(value: "Yes", child: Text("Yes")),
+                DropdownMenuItem(value: "No", child: Text("No")),
+              ],
+              onChanged: (myNewValue){
+                setState((){
+                  mySelectedValue = myNewValue!;
+                });
+              },
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () async{
+              //mySelectedValue determines whether isEnabled should be true or false:
+              var isEnabled;
+
+              if(mySelectedValue == "Yes"){
+                isEnabled = true;
+              }
+              else{
+                isEnabled = false;
+              }
+
+              //The value of isEnabled gets sent to Firestore:
+              await dataCollectionSetting.setEnabled(isEnabled);
+
+              //Dialog closes:
+              Navigator.of(myContent).pop();
+            },
+            child: Text("Ok"),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class theStarExpeditionState extends State<StarExpedition> with RouteAware{
@@ -1847,6 +1930,12 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                     }
                     print("theListOfUsers: ${theListOfUsers}");
                     Navigator.pushReplacementNamed(context, routesToOtherPages.userSearchBarPage);
+                  }
+              ),
+              ListTile(
+                  title: Text("Data Collection Settings"),
+                  onTap: (){
+                    showMyDataCollectionDialog(context);
                   }
               )
             ]
