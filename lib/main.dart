@@ -141,6 +141,14 @@ Map<String, String> planetsAndAmountOfTracks = {};
 
 bool fromProfileAndStar = false;
 
+Map<String, double> myStarDistanceInLightYearsMap = {};
+Map<String, double> myStarTemperatureInKelvinMap = {};
+Map<String, double> myPlanetDistanceFromStarInAUMap = {};
+Map<String, double> myPlanetTemperatureInKelvinMap = {};
+
+enum myStarSortingCriteria { alphabetical, distance, temperature }
+enum myPlanetSortingCriteria { alphabetical, distance, temperature }
+
 final GlobalKey<NavigatorState> myNavigatorKey = GlobalKey<NavigatorState>();
 
 final ValueNotifier<DateTime> myAccessCheckNotifier = ValueNotifier(DateTime.now());
@@ -848,6 +856,8 @@ List<myStars> starsForSearchBar = [
   myStars(starName: "GJ 1061", imagePath: "assets/images/gj_1061.JPG", articlePath: "assets/text_files/star_files/gj_1061.txt")
 ];
 
+
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -1127,6 +1137,71 @@ Future<void> showMyDataCollectionDialog(BuildContext bc) async{
   );
 }
 
+double rangeAverage(String myValue){
+  String myString = myValue.trim();
+
+  var myLow;
+  var myHigh;
+
+  if(myString == "N/A"){
+    return double.infinity;
+  }
+
+  if(myString.contains("light-years")){
+    myString = myString.replaceAll("light-years", "").trim();
+  }
+  else if(myString.contains("K")){
+    myString = myString.replaceAll("K", "").trim();
+  }
+
+  if(myString.contains('-')){
+    final mySplit = myString.split('-');
+
+    myLow = double.tryParse(mySplit[0].trim());
+    myHigh = double.tryParse(mySplit[1].trim());
+  }
+
+  if(myLow != null && myHigh != null){
+    return (myLow + myHigh) / 2;
+  }
+
+  return double.tryParse(myString) ?? double.infinity;
+}
+
+Future<void> addingToStarMaps() async{
+  print("This is the addingToStarMaps method");
+
+  for(var myStar in starsForSearchBar){
+    String starsName = myStar.starName!;
+
+    print("Getting data for this star: ${starsName}");
+
+    if(firebaseDesktopHelper.onDesktop){
+      var myData = await firebaseDesktopHelper.getFirebaseData(starsName);
+
+      print("The star's distance in light-years: ${myData["distance"]}");
+      print("The star's temperature in Kelvin: ${myData["star_temperature"]}");
+
+      myStarDistanceInLightYearsMap[starsName] = rangeAverage(myData["distance"].toString());
+      myStarTemperatureInKelvinMap[starsName] = rangeAverage(myData["star_temperature"].toString());
+    }
+    else{
+      final myRef = FirebaseDatabase.instance.ref(starsName);
+      final myDistance = await myRef.child("distance").get();
+      final myTemperature = await myRef.child("star_temperature").get();
+
+      print("The star's distance in light-years: ${myDistance.value}");
+      print("The star's temperature in Kelvin: ${myTemperature.value}");
+
+      myStarDistanceInLightYearsMap[starsName] = rangeAverage(myDistance.value.toString());
+      myStarTemperatureInKelvinMap[starsName] = rangeAverage(myTemperature.value.toString());
+    }
+  }
+
+  print("The map for the distances of stars: ${myStarDistanceInLightYearsMap}");
+  print("The map for the temperatures of stars: ${myStarTemperatureInKelvinMap}");
+}
+
 class theStarExpeditionState extends State<StarExpedition> with RouteAware{
   static String nameOfRoute = '/StarExpedition';
   List<String> starInfo = [];
@@ -1149,7 +1224,8 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
   void initState(){
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      await addingToStarMaps();
       showTrialDialog();
     });
   }
@@ -1956,6 +2032,22 @@ class CustomSearchDelegate extends SearchDelegate {
   List<String> starInfo = [];
   final ScrollController myScrollController = ScrollController();
 
+  final ValueNotifier<myStarSortingCriteria> myStarSortingCriteriaNotifier = ValueNotifier(myStarSortingCriteria.alphabetical);
+
+  void mySortMatchQuery(List<myStars> myMatchQuery){
+    switch(myStarSortingCriteriaNotifier.value){
+      case myStarSortingCriteria.alphabetical:
+        myMatchQuery.sort((a, b) => a.starName!.compareTo(b.starName!));
+        break;
+      case myStarSortingCriteria.distance:
+        myMatchQuery.sort((a, b) => (myStarDistanceInLightYearsMap[a.starName!] ?? double.infinity).compareTo(myStarDistanceInLightYearsMap[b.starName!] ?? double.infinity));
+        break;
+      case myStarSortingCriteria.temperature:
+        myMatchQuery.sort((a, b) => (myStarTemperatureInKelvinMap[a.starName!] ?? double.infinity).compareTo(myStarTemperatureInKelvinMap[b.starName!] ?? double.infinity));
+        break;
+    }
+  }
+
   @override
   TextInputAction get textInputAction => TextInputAction.search;
 
@@ -1963,6 +2055,60 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
+      IconButton(
+        icon: Icon(Icons.sort),
+        tooltip: "Sort star by",
+        onPressed: (){
+          //Temporary variable to hold a user's selection inside the dialog:
+          myStarSortingCriteria myTemporaryCriteria = myStarSortingCriteriaNotifier.value;
+
+          showDialog(
+            context: context,
+            builder: (BuildContext bc){
+              return StatefulBuilder(
+                builder: (context, setDialogState){
+                  return AlertDialog(
+                    title: Text("Sort stars by"),
+                    content: DropdownButton<myStarSortingCriteria>(
+                      value: myTemporaryCriteria,
+                      isExpanded: true,
+                      items: [
+                        DropdownMenuItem(
+                          value: myStarSortingCriteria.alphabetical,
+                          child: Text("Alphabetical (default)"),
+                        ),
+                        DropdownMenuItem(
+                          value: myStarSortingCriteria.distance,
+                          child: Text("Distance (in light-years)"),
+                        ),
+                        DropdownMenuItem(
+                          value: myStarSortingCriteria.temperature,
+                          child: Text("Temperature (in Kelvin)"),
+                        ),
+                      ],
+                      onChanged: (myValue){
+                        if(myValue != null){
+                          setDialogState(() => myTemporaryCriteria = myValue);
+                        }
+                      },
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: (){
+                          myStarSortingCriteriaNotifier.value = myTemporaryCriteria;
+                          query = query;
+                          Navigator.of(bc).pop();
+                        },
+                        child: Text("Ok"),
+                      ),
+                    ],
+                  );
+                }
+              );
+            }
+          );
+        }
+      ),
       IconButton(
         onPressed: () {
           query = '';
@@ -1988,418 +2134,432 @@ class CustomSearchDelegate extends SearchDelegate {
   // This is the third overwrite to show query result
   @override
   Widget buildResults(BuildContext context) {
-    List<myStars> myMatchQuery = [];
+    return ValueListenableBuilder<myStarSortingCriteria>(
+      valueListenable: myStarSortingCriteriaNotifier,
+      builder: (context, mySortingCriteria, _){
+        List<myStars> myMatchQuery = [];
 
-    if(!myScrollController.hasListeners){
-      myScrollController.addListener((){
+        if(!myScrollController.hasListeners){
+          myScrollController.addListener((){
+            SystemChannels.textInput.invokeMethod("TextInput.hide");
+          });
+        }
+
         SystemChannels.textInput.invokeMethod("TextInput.hide");
-      });
-    }
 
-    SystemChannels.textInput.invokeMethod("TextInput.hide");
+        WidgetsBinding.instance.addPostFrameCallback((_){
+          SystemChannels.textInput.invokeMethod("TextInput.hide");
+          FocusScope.of(context).requestFocus(FocusNode());}
+        );
 
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      SystemChannels.textInput.invokeMethod("TextInput.hide");
-      FocusScope.of(context).requestFocus(FocusNode());}
-    );
-
-    Future.delayed(Duration(milliseconds: 50), (){
-      SystemChannels.textInput.invokeMethod("TextInput.hide");
-    });
-
-    Future.delayed(Duration(milliseconds: 100), (){
-      SystemChannels.textInput.invokeMethod("TextInput.hide");
-    });
-
-    Future.delayed(Duration(milliseconds: 250), (){
-      SystemChannels.textInput.invokeMethod("TextInput.hide");
-    });
-
-    Future.delayed(Duration(milliseconds: 500), (){
-      SystemChannels.textInput.invokeMethod("TextInput.hide");
-    });
-
-    for(var star in starsForSearchBar) {
-      if (star.starName!.toLowerCase().contains(query)) {
-        myMatchQuery.add(star!);
-      }
-    }
-
-    otherNamesMap.forEach((key, value){
-      for(var v in value){
-        if(v != "N/A"){
-          if(myMatchQuery.indexWhere((sa) => sa.starName == key) == -1){ //if the star is not in myMatchQuery
-            if(v!.toLowerCase().contains(query)){ //if the value contains query
-              int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
-              myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
-            }
-            else{
-              //continue
-            }
-          }
-          else{
-            //continue
-          }
-        }
-        else{
-          //continue
-        }
-      }
-    });
-    /*
-      int indexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == key);
-      if(myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
-        print("Continue");
-      }
-      else{
-        for(var v in value){
-          if(v.toLowerCase().contains(query) && !myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
-            myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath));
-          }
-          else{
-            print("Continuing");
-          }
-        }
-      }*/
-    //myStars starInMatchQuery = myStars(starName: "", imagePath: "");
-    /*for (var star in starsForSearchBar) {
-      if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
-        myMatchQuery.add(star!);
-        //starInMatchQuery = myStars(starName: star!.starName, imagePath: star!.imagePath);
-      }
-      else{
-        otherNamesMap.forEach((key, value){
-          if(!value.contains("N/A")){
-            for(var other in value){
-              if((other.toLowerCase().contains(query.toLowerCase())) && !myMatchQuery.contains(myStars(starName: key, imagePath: star.imagePath))){
-                myMatchQuery.add(star!);
-              }
-            }
-          }
-          else{
-            print("Continue");
-          }
+        Future.delayed(Duration(milliseconds: 50), (){
+          SystemChannels.textInput.invokeMethod("TextInput.hide");
         });
-      }
-    }*/
 
-    /*
-    otherNamesMap.forEach((key, value){
-      if(!value.contains("N/A")){
-        for(var s in value){
-          print("The key: ${key}. The value: ${value}. The other name: ${s}");
-          if(s.toLowerCase().contains(query.toLowerCase())){
-            String myImagePath = "";
-            for(var i in starsForSearchBar){
-              if(i.starName == key){
-                myImagePath = i.imagePath!;
+        Future.delayed(Duration(milliseconds: 100), (){
+          SystemChannels.textInput.invokeMethod("TextInput.hide");
+        });
+
+        Future.delayed(Duration(milliseconds: 250), (){
+          SystemChannels.textInput.invokeMethod("TextInput.hide");
+        });
+
+        Future.delayed(Duration(milliseconds: 500), (){
+          SystemChannels.textInput.invokeMethod("TextInput.hide");
+        });
+
+        for(var star in starsForSearchBar) {
+          if (star.starName!.toLowerCase().contains(query)) {
+            myMatchQuery.add(star!);
+          }
+        }
+
+        otherNamesMap.forEach((key, value){
+          for(var v in value){
+            if(v != "N/A"){
+              if(myMatchQuery.indexWhere((sa) => sa.starName == key) == -1){ //if the star is not in myMatchQuery
+                if(v!.toLowerCase().contains(query)){ //if the value contains query
+                  int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
+                  myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
+                }
+                else{
+                  //continue
+                }
               }
               else{
                 //continue
               }
             }
-            if(myMatchQuery.contains(myStars(starName: key, imagePath: myImagePath))){
-              print("Continue");
-            }
             else{
-              myStars st = myStars(starName: "", imagePath: "");
-              st.starName = key;
-              int myIndexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == st.starName);
-              st.imagePath = starsForSearchBar[myIndexPlace].imagePath;
-              myMatchQuery.add(st!);
+              //continue
             }
           }
-        }
-      }
-      else{
-        //continue
-        print("Value is N/A.");
-      }
-    });*/
-
-    /*for(List starOther in alternateNames){
-      for(var s in starOther){
-        if(s.toLowerCase().contains(query.toLowerCase())){
-          //otherNamesMatchQuery.add(theStar!);
-        }
-      }
-    }*/
-    /*
-    for(var myStar in myMatchQuery){
-      for(List starOther in alternateNames){
-        //otherNamesMatchQuery.addEntries({myStar: starOther}.entries);
-        for(String otherStarName in starOther){
-          otherNamesMatchQuery.addEntries({myStar.starName: otherStarName}.entries);
-          if(otherStarName.toLowerCase().contains(query.toLowerCase()) && !myMatchQuery.contains(myStar!)){
-            myMatchQuery.add(myStar!);
+        });
+        /*
+          int indexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == key);
+          if(myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
+            print("Continue");
           }
-        }
-      }
-    }*/
-    /*
-    for(List starOther in alternateNames) {
-      for(var starsName in starOther){
-        myStars theStar = myStars(starName: "", imagePath: "assets/images");
-        theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
-        int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
-        theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
-        if(starsName.toLowerCase().contains(query.toLowerCase())){
-          otherNamesMatchQuery.add(theStar!);
-        }
-      }
-    }*/
-
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: (){
-        SystemChannels.textInput.invokeMethod("TextInput.hide");
-      },
-      onPanDown: (_){
-        SystemChannels.textInput.invokeMethod("TextInput.hide");
-      },
-      child: ListView.builder(
-        controller: myScrollController,
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        itemCount: myMatchQuery.length,
-        itemBuilder: (context, index) {
-          var result = myMatchQuery[index]; //If user enters in a key, the result is the key.
-          /*for(var s in otherNamesMatchQuery.values){
-            if((otherNamesMatchQuery.entries.firstWhere((element) => element.value == s)) == myMatchQuery[index]){
-              result = myMatchQuery[index]; //If user enters in a value, it will find the value's key and the result will be the key.
+          else{
+            for(var v in value){
+              if(v.toLowerCase().contains(query) && !myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
+                myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath));
+              }
+              else{
+                print("Continuing");
+              }
             }
           }*/
-          //otherNamesMatchQuery.keys.elementAt(index);
-          return ListTile(
-            title: Text(result.starName!), // The ! is there so that it can prevent errors, especially for variables that are set to null
-          );
-        },
-      ),
+        //myStars starInMatchQuery = myStars(starName: "", imagePath: "");
+        /*for (var star in starsForSearchBar) {
+          if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
+            myMatchQuery.add(star!);
+            //starInMatchQuery = myStars(starName: star!.starName, imagePath: star!.imagePath);
+          }
+          else{
+            otherNamesMap.forEach((key, value){
+              if(!value.contains("N/A")){
+                for(var other in value){
+                  if((other.toLowerCase().contains(query.toLowerCase())) && !myMatchQuery.contains(myStars(starName: key, imagePath: star.imagePath))){
+                    myMatchQuery.add(star!);
+                  }
+                }
+              }
+              else{
+                print("Continue");
+              }
+            });
+          }
+        }*/
+
+        /*
+        otherNamesMap.forEach((key, value){
+          if(!value.contains("N/A")){
+            for(var s in value){
+              print("The key: ${key}. The value: ${value}. The other name: ${s}");
+              if(s.toLowerCase().contains(query.toLowerCase())){
+                String myImagePath = "";
+                for(var i in starsForSearchBar){
+                  if(i.starName == key){
+                    myImagePath = i.imagePath!;
+                  }
+                  else{
+                    //continue
+                  }
+                }
+                if(myMatchQuery.contains(myStars(starName: key, imagePath: myImagePath))){
+                  print("Continue");
+                }
+                else{
+                  myStars st = myStars(starName: "", imagePath: "");
+                  st.starName = key;
+                  int myIndexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == st.starName);
+                  st.imagePath = starsForSearchBar[myIndexPlace].imagePath;
+                  myMatchQuery.add(st!);
+                }
+              }
+            }
+          }
+          else{
+            //continue
+            print("Value is N/A.");
+          }
+        });*/
+
+        /*for(List starOther in alternateNames){
+          for(var s in starOther){
+            if(s.toLowerCase().contains(query.toLowerCase())){
+              //otherNamesMatchQuery.add(theStar!);
+            }
+          }
+        }*/
+        /*
+        for(var myStar in myMatchQuery){
+          for(List starOther in alternateNames){
+            //otherNamesMatchQuery.addEntries({myStar: starOther}.entries);
+            for(String otherStarName in starOther){
+              otherNamesMatchQuery.addEntries({myStar.starName: otherStarName}.entries);
+              if(otherStarName.toLowerCase().contains(query.toLowerCase()) && !myMatchQuery.contains(myStar!)){
+                myMatchQuery.add(myStar!);
+              }
+            }
+          }
+        }*/
+        /*
+        for(List starOther in alternateNames) {
+          for(var starsName in starOther){
+            myStars theStar = myStars(starName: "", imagePath: "assets/images");
+            theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
+            int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
+            theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
+            if(starsName.toLowerCase().contains(query.toLowerCase())){
+              otherNamesMatchQuery.add(theStar!);
+            }
+          }
+        }*/
+
+        mySortMatchQuery(myMatchQuery);
+
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: (){
+            SystemChannels.textInput.invokeMethod("TextInput.hide");
+          },
+          onPanDown: (_){
+            SystemChannels.textInput.invokeMethod("TextInput.hide");
+          },
+          child: ListView.builder(
+            controller: myScrollController,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            itemCount: myMatchQuery.length,
+            itemBuilder: (context, index) {
+              var result = myMatchQuery[index]; //If user enters in a key, the result is the key.
+              /*for(var s in otherNamesMatchQuery.values){
+                if((otherNamesMatchQuery.entries.firstWhere((element) => element.value == s)) == myMatchQuery[index]){
+                  result = myMatchQuery[index]; //If user enters in a value, it will find the value's key and the result will be the key.
+                }
+              }*/
+              //otherNamesMatchQuery.keys.elementAt(index);
+              return ListTile(
+                title: Text(result.starName!), // The ! is there so that it can prevent errors, especially for variables that are set to null
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
   // This is the last overwrite (to show the querying process at the runtime)
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<myStars> myMatchQuery = [];
+    return ValueListenableBuilder<myStarSortingCriteria>(
+      valueListenable: myStarSortingCriteriaNotifier,
+      builder: (context, mySortingCriteria, _){
+        List<myStars> myMatchQuery = [];
 
-    for(var star in starsForSearchBar) {
-      if (star.starName!.toLowerCase().contains(query)) {
-        myMatchQuery.add(star!);
-      }
-    }
-
-    //IMPORTANT:
-    otherNamesMap.forEach((key, value){
-      for(var v in value){
-        if(v != "N/A"){
-          if(myMatchQuery.indexWhere((sa) => sa.starName == key) == -1){ //if the star is not in myMatchQuery
-            if(v!.toLowerCase().contains(query)){ //if the value contains query
-              int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
-              myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
-            }
-            else{
-              //continue
-            }
-          }
-          else{
-            //continue
+        for(var star in starsForSearchBar) {
+          if (star.starName!.toLowerCase().contains(query)) {
+            myMatchQuery.add(star!);
           }
         }
-        else{
-          //continue
-        }
-      }
-    });
-    //
 
-    /*
-    for(var star in starsForSearchBar) {
-      if (star.starName!.toLowerCase().contains(query)) {
-        myMatchQuery.add(star!);
-        print("This is in myMatchQuery: ${myMatchQuery}");
-      }
-    }
-    otherNamesMap.forEach((key, value){
-      print("Key: $key. Value: $value.");
-      int indexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == key);
-      if(myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
-        print("Continue");
-      }
-      else{
-        for(var v in value){
-          if(v.toLowerCase().contains(query) && !myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
-            myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath));
-            print("This is in myMatchQuery: ${myMatchQuery}");
-          }
-          else{
-            print("Key: $key. Value: $v. Continuing");
-          }
-        }
-      }
-    });*/
-
-    //THIS STARTS SOMETHING IMPORTANT
-    /*for (var star in starsForSearchBar) {
-      if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
-        myMatchQuery.add(star!);
-        print("myMatchQuery size: ${myMatchQuery.length}");
-        //starInMatchQuery = myStars(starName: star!.starName, imagePath: star!.imagePath);
-      }
-    }*/
-    //IMPORTANT CONTENT ENDS
-
-    /*for(var myStar in myMatchQuery){
-      for(List starOther in alternateNames){
-        //otherNamesMatchQuery.addEntries({myStar: starOther}.entries);
-        for(String otherStarName in starOther){
-          otherNamesMatchQuery.addEntries({myStar.starName: otherStarName}.entries);
-          print(otherNamesMatchQuery);
-          if(otherStarName.toLowerCase().contains(query.toLowerCase()) && !myMatchQuery.contains(myStar!)){
-            myMatchQuery.add(myStar!);
-          }
-        }
-      }
-    }*/
-    /*otherNamesMap.forEach((key, value){
-      if(!value.contains("N/A")){
-        for(var s in value){
-          print("The key: ${key}. The value: ${value}. The other name: ${s}");
-          if(s.toLowerCase().contains(query.toLowerCase())){
-            String myImagePath = "";
-            for(var i in starsForSearchBar){
-              if(i.starName == key){
-                myImagePath = i.imagePath!;
+        //IMPORTANT:
+        otherNamesMap.forEach((key, value){
+          for(var v in value){
+            if(v != "N/A"){
+              if(myMatchQuery.indexWhere((sa) => sa.starName == key) == -1){ //if the star is not in myMatchQuery
+                if(v!.toLowerCase().contains(query)){ //if the value contains query
+                  int indexPlaceKey = starsForSearchBar.indexWhere((sa) => sa.starName == key);
+                  myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlaceKey].imagePath));
+                }
+                else{
+                  //continue
+                }
               }
               else{
                 //continue
               }
             }
-            if(myMatchQuery.contains(myStars(starName: key, imagePath: myImagePath))){
-              print("Continue");
-            }
             else{
-              myStars st = myStars(starName: "", imagePath: "");
-              st.starName = key;
-              int myIndexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == st.starName);
-              st.imagePath = starsForSearchBar[myIndexPlace].imagePath;
-              myMatchQuery.add(st!);
+              //continue
             }
           }
-        }
-      }
-      else{
-        //continue
-        print("Value is N/A.");
-      }
-    });*/
+        });
+        //
 
-    /*
-    for(List starOther in alternateNames) {
-      for(var starsName in starOther){
-        myStars theStar = myStars(starName: "", imagePath: "assets/images");
-        theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
-        int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
-        theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
-        if(starsName.toLowerCase().contains(query.toLowerCase())){
-          otherNamesMatchQuery.add(theStar!);
-          print("otherNamesMatchQuery size: ${otherNamesMatchQuery.length}");
-        }
-      }
-    }*/
-    /*for(List starOther in alternateNames) {
-      for(var starsName in starOther){
-        myStars theStar = myStars(starName: "", imagePath: "assets/images");
-        theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
-        int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
-        theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
-          if(starsName.toLowerCase().contains(query.toLowerCase())){
-            myMatchQuery.add(theStar!);
-            print("myMatchQuery size: ${myMatchQuery.length}");
+        /*
+        for(var star in starsForSearchBar) {
+          if (star.starName!.toLowerCase().contains(query)) {
+            myMatchQuery.add(star!);
+            print("This is in myMatchQuery: ${myMatchQuery}");
           }
-      }
-    }*/
+        }
+        otherNamesMap.forEach((key, value){
+          print("Key: $key. Value: $value.");
+          int indexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == key);
+          if(myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
+            print("Continue");
+          }
+          else{
+            for(var v in value){
+              if(v.toLowerCase().contains(query) && !myMatchQuery.contains(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath))){
+                myMatchQuery.add(myStars(starName: key, imagePath: starsForSearchBar[indexPlace].imagePath));
+                print("This is in myMatchQuery: ${myMatchQuery}");
+              }
+              else{
+                print("Key: $key. Value: $v. Continuing");
+              }
+            }
+          }
+        });*/
 
-    myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+        //THIS STARTS SOMETHING IMPORTANT
+        /*for (var star in starsForSearchBar) {
+          if (star.starName!.toLowerCase().contains(query.toLowerCase())) {
+            myMatchQuery.add(star!);
+            print("myMatchQuery size: ${myMatchQuery.length}");
+            //starInMatchQuery = myStars(starName: star!.starName, imagePath: star!.imagePath);
+          }
+        }*/
+        //IMPORTANT CONTENT ENDS
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      behavior: HitTestBehavior.opaque,
-      child: ListView.builder(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        itemCount: myMatchQuery.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-              title: Text(myMatchQuery[index].starName!,//Text(otherNamesMatchQuery.keys.elementAt(index).starName!,
-                  style: TextStyle(
-                      color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
-              onTap: () async{
-                //SystemChannels.textInput.invokeMethod("TextInput.hide");
-                FocusScope.of(context).unfocus();
-
-                correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
-                print(correctStar);
-                starInfo = await getStarInformation();
-                starFileContent = await readStarFile();
-                listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
-
-                listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
-
-                if(myNewUsername != "" && myUsername == ""){
-                  if(firebaseDesktopHelper.onDesktop){
-                    var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                    var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                    //Getting the current profile info of the user:
-                    Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
-                    starTracked = currentInfoOfNewUser["starsTracked"].containsKey(myMatchQuery[index].starName!);
-                    print("starTracked: ${starTracked}");
+        /*for(var myStar in myMatchQuery){
+          for(List starOther in alternateNames){
+            //otherNamesMatchQuery.addEntries({myStar: starOther}.entries);
+            for(String otherStarName in starOther){
+              otherNamesMatchQuery.addEntries({myStar.starName: otherStarName}.entries);
+              print(otherNamesMatchQuery);
+              if(otherStarName.toLowerCase().contains(query.toLowerCase()) && !myMatchQuery.contains(myStar!)){
+                myMatchQuery.add(myStar!);
+              }
+            }
+          }
+        }*/
+        /*otherNamesMap.forEach((key, value){
+          if(!value.contains("N/A")){
+            for(var s in value){
+              print("The key: ${key}. The value: ${value}. The other name: ${s}");
+              if(s.toLowerCase().contains(query.toLowerCase())){
+                String myImagePath = "";
+                for(var i in starsForSearchBar){
+                  if(i.starName == key){
+                    myImagePath = i.imagePath!;
                   }
                   else{
-                    var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                    var docNameForNewUsers;
-                    theNewUser.docs.forEach((result){
-                      docNameForNewUsers = result.id;
-                    });
-
-                    DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
-                    Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
-
-                    starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
-                    print("starTracked: ${starTracked}");
+                    //continue
                   }
                 }
-                else if(myNewUsername == "" && myUsername != ""){
-                  if(firebaseDesktopHelper.onDesktop){
-                    var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                    var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                    //Getting the current profile info of the user:
-                    Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
-                    starTracked = currentInfoOfExistingUser["starsTracked"].containsKey(myMatchQuery[index].starName!);
-                    print("starTracked: ${starTracked}");
-                  }
-                  else{
-                    var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                    var docNameForExistingUsers;
-                    theExistingUser.docs.forEach((result){
-                      docNameForExistingUsers = result.id;
-                    });
-
-                    DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
-                    Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
-
-                    starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
-                    print("starTracked: ${starTracked}");
-                  }
+                if(myMatchQuery.contains(myStars(starName: key, imagePath: myImagePath))){
+                  print("Continue");
                 }
+                else{
+                  myStars st = myStars(starName: "", imagePath: "");
+                  st.starName = key;
+                  int myIndexPlace = starsForSearchBar.indexWhere((sa) => sa.starName == st.starName);
+                  st.imagePath = starsForSearchBar[myIndexPlace].imagePath;
+                  myMatchQuery.add(st!);
+                }
+              }
+            }
+          }
+          else{
+            //continue
+            print("Value is N/A.");
+          }
+        });*/
 
-                myAccessCheckNotifier.value = DateTime.now();
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
-              },
-              leading: Image.asset(myMatchQuery[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
-          //trailing: Icon(Icons.whatshot_rounded));
-        },
-      ),
+        /*
+        for(List starOther in alternateNames) {
+          for(var starsName in starOther){
+            myStars theStar = myStars(starName: "", imagePath: "assets/images");
+            theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
+            int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
+            theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
+            if(starsName.toLowerCase().contains(query.toLowerCase())){
+              otherNamesMatchQuery.add(theStar!);
+              print("otherNamesMatchQuery size: ${otherNamesMatchQuery.length}");
+            }
+          }
+        }*/
+        /*for(List starOther in alternateNames) {
+          for(var starsName in starOther){
+            myStars theStar = myStars(starName: "", imagePath: "assets/images");
+            theStar.starName = otherNamesMap.keys.firstWhere((k) => otherNamesMap[k] == starOther);
+            int myIndexPlace = starsForSearchBar.indexWhere((s) => s.starName == theStar.starName);
+            theStar.imagePath = starsForSearchBar[myIndexPlace].imagePath;
+              if(starsName.toLowerCase().contains(query.toLowerCase())){
+                myMatchQuery.add(theStar!);
+                print("myMatchQuery size: ${myMatchQuery.length}");
+              }
+          }
+        }*/
+
+        //myMatchQuery.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+
+        mySortMatchQuery(myMatchQuery);
+
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.opaque,
+          child: ListView.builder(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            itemCount: myMatchQuery.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                  title: Text(myMatchQuery[index].starName!,//Text(otherNamesMatchQuery.keys.elementAt(index).starName!,
+                      style: TextStyle(
+                          color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
+                  onTap: () async{
+                    //SystemChannels.textInput.invokeMethod("TextInput.hide");
+                    FocusScope.of(context).unfocus();
+
+                    correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
+                    print(correctStar);
+                    starInfo = await getStarInformation();
+                    starFileContent = await readStarFile();
+                    listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
+
+                    listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+
+                    if(myNewUsername != "" && myUsername == ""){
+                      if(firebaseDesktopHelper.onDesktop){
+                        var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                        //Getting the current profile info of the user:
+                        Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
+                        starTracked = currentInfoOfNewUser["starsTracked"].containsKey(myMatchQuery[index].starName!);
+                        print("starTracked: ${starTracked}");
+                      }
+                      else{
+                        var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                        var docNameForNewUsers;
+                        theNewUser.docs.forEach((result){
+                          docNameForNewUsers = result.id;
+                        });
+
+                        DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
+                        Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
+
+                        starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
+                        print("starTracked: ${starTracked}");
+                      }
+                    }
+                    else if(myNewUsername == "" && myUsername != ""){
+                      if(firebaseDesktopHelper.onDesktop){
+                        var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                        //Getting the current profile info of the user:
+                        Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
+                        starTracked = currentInfoOfExistingUser["starsTracked"].containsKey(myMatchQuery[index].starName!);
+                        print("starTracked: ${starTracked}");
+                      }
+                      else{
+                        var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                        var docNameForExistingUsers;
+                        theExistingUser.docs.forEach((result){
+                          docNameForExistingUsers = result.id;
+                        });
+
+                        DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
+                        Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+
+                        starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
+                        print("starTracked: ${starTracked}");
+                      }
+                    }
+
+                    myAccessCheckNotifier.value = DateTime.now();
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
+                  },
+                  leading: Image.asset(myMatchQuery[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
+              //trailing: Icon(Icons.whatshot_rounded));
+            },
+          ),
+        );
+      },
     );
   }
 }
