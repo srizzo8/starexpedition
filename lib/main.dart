@@ -146,8 +146,8 @@ Map<String, double> myStarTemperatureInKelvinMap = {};
 Map<String, double> myPlanetDistanceFromStarInAUMap = {};
 Map<String, double> myPlanetTemperatureInKelvinMap = {};
 
-enum myStarSortingCriteria { alphabetical, distance, temperature }
-enum myPlanetSortingCriteria { alphabetical, distance, temperature }
+enum myStarSortingCriteria { alphabeticalAToZ, alphabeticalZToA, distanceClosestToFurthest, distanceFurthestToClosest, temperatureCoolestToHottest, temperatureHottestToCoolest }
+enum myPlanetSortingCriteria { alphabeticalAToZ, alphabeticalZToA, distanceClosestToFurthest, distanceFurthestToClosest, temperatureCoolestToHottest, temperatureHottestToCoolest }
 
 final GlobalKey<NavigatorState> myNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -2120,18 +2120,27 @@ class CustomSearchDelegate extends SearchDelegate {
   List<String> starInfo = [];
   final ScrollController myScrollController = ScrollController();
 
-  final ValueNotifier<myStarSortingCriteria> myStarSortingCriteriaNotifier = ValueNotifier(myStarSortingCriteria.alphabetical);
+  final ValueNotifier<myStarSortingCriteria> myStarSortingCriteriaNotifier = ValueNotifier(myStarSortingCriteria.alphabeticalAToZ);
 
   void mySortMatchQuery(List<myStars> myMatchQuery){
     switch(myStarSortingCriteriaNotifier.value){
-      case myStarSortingCriteria.alphabetical:
+      case myStarSortingCriteria.alphabeticalAToZ:
         myMatchQuery.sort((a, b) => a.starName!.compareTo(b.starName!));
         break;
-      case myStarSortingCriteria.distance:
+      case myStarSortingCriteria.alphabeticalZToA:
+        myMatchQuery.sort((a, b) => b.starName!.compareTo(a.starName!));
+        break;
+      case myStarSortingCriteria.distanceClosestToFurthest:
         myMatchQuery.sort((a, b) => (myStarDistanceInLightYearsMap[a.starName!] ?? double.infinity).compareTo(myStarDistanceInLightYearsMap[b.starName!] ?? double.infinity));
         break;
-      case myStarSortingCriteria.temperature:
+      case myStarSortingCriteria.distanceFurthestToClosest:
+        myMatchQuery.sort((a, b) => (myStarDistanceInLightYearsMap[b.starName!] ?? double.infinity).compareTo(myStarDistanceInLightYearsMap[a.starName!] ?? double.infinity));
+        break;
+      case myStarSortingCriteria.temperatureCoolestToHottest:
         myMatchQuery.sort((a, b) => (myStarTemperatureInKelvinMap[a.starName!] ?? double.infinity).compareTo(myStarTemperatureInKelvinMap[b.starName!] ?? double.infinity));
+        break;
+      case myStarSortingCriteria.temperatureHottestToCoolest:
+        myMatchQuery.sort((a, b) => (myStarTemperatureInKelvinMap[b.starName!] ?? double.infinity).compareTo(myStarTemperatureInKelvinMap[a.starName!] ?? double.infinity));
         break;
     }
   }
@@ -2162,16 +2171,28 @@ class CustomSearchDelegate extends SearchDelegate {
                       isExpanded: true,
                       items: [
                         DropdownMenuItem(
-                          value: myStarSortingCriteria.alphabetical,
-                          child: Text("Alphabetical (default)"),
+                          value: myStarSortingCriteria.alphabeticalAToZ,
+                          child: Text("Alphabetical A to Z (default)"),
                         ),
                         DropdownMenuItem(
-                          value: myStarSortingCriteria.distance,
-                          child: Text("Distance (in light-years)"),
+                          value: myStarSortingCriteria.alphabeticalZToA,
+                          child: Text("Alphabetical Z to A"),
                         ),
                         DropdownMenuItem(
-                          value: myStarSortingCriteria.temperature,
-                          child: Text("Temperature (in Kelvin)"),
+                          value: myStarSortingCriteria.distanceClosestToFurthest,
+                          child: Text("Distance (from closest to furthest in light-years)"),
+                        ),
+                        DropdownMenuItem(
+                          value: myStarSortingCriteria.distanceFurthestToClosest,
+                          child: Text("Distance (from furthest to closest in light-years)"),
+                        ),
+                        DropdownMenuItem(
+                          value: myStarSortingCriteria.temperatureCoolestToHottest,
+                          child: Text("Temperature (from coolest to hottest in Kelvin)"),
+                        ),
+                        DropdownMenuItem(
+                          value: myStarSortingCriteria.temperatureHottestToCoolest,
+                          child: Text("Temperature (from hottest to coolest in Kelvin)"),
                         ),
                       ],
                       onChanged: (myValue){
@@ -2656,18 +2677,27 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
   List<String> planetInfo = [];
   final ScrollController myScrollController = ScrollController();
 
-  final ValueNotifier<myPlanetSortingCriteria> myPlanetSortingCriteriaNotifier = ValueNotifier(myPlanetSortingCriteria.alphabetical);
+  final ValueNotifier<myPlanetSortingCriteria> myPlanetSortingCriteriaNotifier = ValueNotifier(myPlanetSortingCriteria.alphabeticalAToZ);
 
   void mySortMatchQuery(List<myStars> myPlanetMatchQuery){
     switch(myPlanetSortingCriteriaNotifier.value){
-      case myPlanetSortingCriteria.alphabetical:
+      case myPlanetSortingCriteria.alphabeticalAToZ:
         myPlanetMatchQuery.sort((a, b) => a.starName!.compareTo(b.starName!));
         break;
-      case myPlanetSortingCriteria.distance:
+      case myPlanetSortingCriteria.alphabeticalZToA:
+        myPlanetMatchQuery.sort((a, b) => b.starName!.compareTo(a.starName!));
+        break;
+      case myPlanetSortingCriteria.distanceClosestToFurthest:
         myPlanetMatchQuery.sort((a, b) => (myPlanetDistanceFromStarInAUMap[a.starName!] ?? double.infinity).compareTo(myPlanetDistanceFromStarInAUMap[b.starName!] ?? double.infinity));
         break;
-      case myPlanetSortingCriteria.temperature:
+      case myPlanetSortingCriteria.distanceFurthestToClosest:
+        myPlanetMatchQuery.sort((a, b) => (myPlanetDistanceFromStarInAUMap[b.starName!] ?? double.infinity).compareTo(myPlanetDistanceFromStarInAUMap[a.starName!] ?? double.infinity));
+        break;
+      case myPlanetSortingCriteria.temperatureCoolestToHottest:
         myPlanetMatchQuery.sort((a, b) => (myPlanetTemperatureInKelvinMap[a.starName!] ?? double.infinity).compareTo(myPlanetTemperatureInKelvinMap[b.starName!] ?? double.infinity));
+        break;
+      case myPlanetSortingCriteria.temperatureHottestToCoolest:
+        myPlanetMatchQuery.sort((a, b) => (myPlanetTemperatureInKelvinMap[b.starName!] ?? double.infinity).compareTo(myPlanetTemperatureInKelvinMap[a.starName!] ?? double.infinity));
         break;
     }
   }
@@ -2698,16 +2728,28 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
                       isExpanded: true,
                       items: [
                         DropdownMenuItem(
-                          value: myPlanetSortingCriteria.alphabetical,
-                          child: Text("Alphabetical (default)"),
+                          value: myPlanetSortingCriteria.alphabeticalAToZ,
+                          child: Text("Alphabetical from A to Z (default)"),
                         ),
                         DropdownMenuItem(
-                          value: myPlanetSortingCriteria.distance,
-                          child: Text("Distance from Star (in AU)"),
+                          value: myPlanetSortingCriteria.alphabeticalZToA,
+                          child: Text("Alphabetical from Z to A"),
                         ),
                         DropdownMenuItem(
-                          value: myPlanetSortingCriteria.temperature,
-                          child: Text("Temperature (in Kelvin)"),
+                          value: myPlanetSortingCriteria.distanceClosestToFurthest,
+                          child: Text("Distance from Star (from closest to furthest in AU)"),
+                        ),
+                        DropdownMenuItem(
+                          value: myPlanetSortingCriteria.distanceFurthestToClosest,
+                          child: Text("Distance from Star (from furthest to closest in AU)"),
+                        ),
+                        DropdownMenuItem(
+                          value: myPlanetSortingCriteria.temperatureCoolestToHottest,
+                          child: Text("Temperature (from coolest to hottest in Kelvin)"),
+                        ),
+                        DropdownMenuItem(
+                          value: myPlanetSortingCriteria.temperatureHottestToCoolest,
+                          child: Text("Temperature (from hottest to coolest in Kelvin)"),
                         ),
                       ],
                       onChanged: (myValue){
