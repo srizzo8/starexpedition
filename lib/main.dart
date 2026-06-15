@@ -1137,7 +1137,7 @@ Future<void> showMyDataCollectionDialog(BuildContext bc) async{
   );
 }
 
-double rangeAverage(String myValue){
+double rangeAverageForStars(String myValue){
   String myString = myValue.trim();
 
   var myLow;
@@ -1182,8 +1182,8 @@ Future<void> addingToStarMaps() async{
       print("The star's distance in light-years: ${myData["distance"]}");
       print("The star's temperature in Kelvin: ${myData["star_temperature"]}");
 
-      myStarDistanceInLightYearsMap[starsName] = rangeAverage(myData["distance"].toString());
-      myStarTemperatureInKelvinMap[starsName] = rangeAverage(myData["star_temperature"].toString());
+      myStarDistanceInLightYearsMap[starsName] = rangeAverageForStars(myData["distance"].toString());
+      myStarTemperatureInKelvinMap[starsName] = rangeAverageForStars(myData["star_temperature"].toString());
     }
     else{
       final myRef = FirebaseDatabase.instance.ref(starsName);
@@ -1193,13 +1193,100 @@ Future<void> addingToStarMaps() async{
       print("The star's distance in light-years: ${myDistance.value}");
       print("The star's temperature in Kelvin: ${myTemperature.value}");
 
-      myStarDistanceInLightYearsMap[starsName] = rangeAverage(myDistance.value.toString());
-      myStarTemperatureInKelvinMap[starsName] = rangeAverage(myTemperature.value.toString());
+      myStarDistanceInLightYearsMap[starsName] = rangeAverageForStars(myDistance.value.toString());
+      myStarTemperatureInKelvinMap[starsName] = rangeAverageForStars(myTemperature.value.toString());
     }
   }
 
   print("The map for the distances of stars: ${myStarDistanceInLightYearsMap}");
   print("The map for the temperatures of stars: ${myStarTemperatureInKelvinMap}");
+}
+
+double rangeAverageForPlanets(String myValue){
+  String myString = myValue.trim();
+
+  var myLow;
+  var myHigh;
+
+  if(myString == "N/A"){
+    return double.infinity;
+  }
+
+  if(myString.contains("AU")){
+    myString = myString.replaceAll("AU", "").trim();
+  }
+  else if(myString.contains("K")){
+    myString = myString.replaceAll("K", "").trim();
+  }
+
+  if(myString.contains('-')){
+    final mySplit = myString.split('-');
+
+    myLow = double.tryParse(mySplit[0].trim());
+    myHigh = double.tryParse(mySplit[1].trim());
+  }
+
+  if(myLow != null && myHigh != null){
+    return (myLow + myHigh) / 2;
+  }
+
+  return double.tryParse(myString) ?? double.infinity;
+}
+
+Future<void> addingToPlanetMaps() async{
+  print("This is the addingToPlanetMaps method");
+
+  var myStarName;
+
+  /*
+    var theStarInfo = await getStarInformation();
+    informationAboutPlanet = await articlePage(theStarInfo).getPlanetData();
+  */
+
+  for(var myPlanet in allPlanets){
+    String planetsName = myPlanet;
+
+    print("Getting data for this planet: ${planetsName}");
+
+    starsAndTheirPlanets.forEach((key, value){
+      print("key: ${key}, value: ${value}");
+      for(var v in value){
+        if(v == planetsName){
+          myStarName = key;
+          break;
+        }
+        else{
+          //continue
+        }
+      }
+    });
+
+    print("The star's name: ${myStarName}");
+
+    if(firebaseDesktopHelper.onDesktop){
+      var myData = await firebaseDesktopHelper.getFirebaseData("${myStarName}/Planets/${planetsName}");
+
+      print("The planet's distance from its host star in AU: ${myData["distance_from_star"]}");
+      print("The planet's temperature in Kelvin: ${myData["planet_temperature"]}");
+
+      myPlanetDistanceFromStarInAUMap[planetsName] = rangeAverageForPlanets(myData["distance_from_star"].toString());
+      myPlanetTemperatureInKelvinMap[planetsName] = rangeAverageForPlanets(myData["planet_temperature"].toString());
+    }
+    else{
+      final myRef = FirebaseDatabase.instance.ref("${myStarName}/Planets/${planetsName}");
+      final myDistance = await myRef.child("distance_from_star").get();
+      final myTemperature = await myRef.child("planet_temperature").get();
+
+      print("The planet's distance from its host star in AU: ${myDistance.value}");
+      print("The planet's temperature in Kelvin: ${myTemperature.value}");
+
+      myPlanetDistanceFromStarInAUMap[planetsName] = rangeAverageForPlanets(myDistance.value.toString());
+      myPlanetTemperatureInKelvinMap[planetsName] = rangeAverageForPlanets(myTemperature.value.toString());
+    }
+  }
+
+  print("The map for the distances of planets from their host stars: ${myPlanetDistanceFromStarInAUMap}");
+  print("The map for the temperatures of planets: ${myPlanetTemperatureInKelvinMap}");
 }
 
 class theStarExpeditionState extends State<StarExpedition> with RouteAware{
@@ -1226,6 +1313,7 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
 
     WidgetsBinding.instance.addPostFrameCallback((_) async{
       await addingToStarMaps();
+      await addingToPlanetMaps();
       showTrialDialog();
     });
   }
@@ -2568,6 +2656,22 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
   List<String> planetInfo = [];
   final ScrollController myScrollController = ScrollController();
 
+  final ValueNotifier<myPlanetSortingCriteria> myPlanetSortingCriteriaNotifier = ValueNotifier(myPlanetSortingCriteria.alphabetical);
+
+  void mySortMatchQuery(List<myStars> myPlanetMatchQuery){
+    switch(myPlanetSortingCriteriaNotifier.value){
+      case myPlanetSortingCriteria.alphabetical:
+        myPlanetMatchQuery.sort((a, b) => a.starName!.compareTo(b.starName!));
+        break;
+      case myPlanetSortingCriteria.distance:
+        myPlanetMatchQuery.sort((a, b) => (myPlanetDistanceFromStarInAUMap[a.starName!] ?? double.infinity).compareTo(myPlanetDistanceFromStarInAUMap[b.starName!] ?? double.infinity));
+        break;
+      case myPlanetSortingCriteria.temperature:
+        myPlanetMatchQuery.sort((a, b) => (myPlanetTemperatureInKelvinMap[a.starName!] ?? double.infinity).compareTo(myPlanetTemperatureInKelvinMap[b.starName!] ?? double.infinity));
+        break;
+    }
+  }
+
   @override
   TextInputAction get textInputAction => TextInputAction.search;
 
@@ -2575,6 +2679,60 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
+      IconButton(
+        icon: Icon(Icons.sort),
+        tooltip: "Sort planet by",
+        onPressed: (){
+          //Temporary variable to hold a user's selection inside the dialog:
+          myPlanetSortingCriteria myTemporaryCriteria = myPlanetSortingCriteriaNotifier.value;
+
+          showDialog(
+            context: context,
+            builder: (BuildContext bc){
+              return StatefulBuilder(
+                builder: (context, setDialogState){
+                  return AlertDialog(
+                    title: Text("Sort planets by"),
+                    content: DropdownButton<myPlanetSortingCriteria>(
+                      value: myTemporaryCriteria,
+                      isExpanded: true,
+                      items: [
+                        DropdownMenuItem(
+                          value: myPlanetSortingCriteria.alphabetical,
+                          child: Text("Alphabetical (default)"),
+                        ),
+                        DropdownMenuItem(
+                          value: myPlanetSortingCriteria.distance,
+                          child: Text("Distance from Star (in AU)"),
+                        ),
+                        DropdownMenuItem(
+                          value: myPlanetSortingCriteria.temperature,
+                          child: Text("Temperature (in Kelvin)"),
+                        ),
+                      ],
+                      onChanged: (myValue){
+                        if(myValue != null){
+                          setDialogState(() => myTemporaryCriteria = myValue);
+                        }
+                      },
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: (){
+                          myPlanetSortingCriteriaNotifier.value = myTemporaryCriteria;
+                          query = query;
+                          Navigator.of(bc).pop();
+                        },
+                        child: Text("Ok"),
+                      ),
+                    ],
+                  );
+                }
+              );
+            }
+          );
+        }
+      ),
       IconButton(
         onPressed: () {
           query = '';
@@ -2599,172 +2757,184 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
   // This is the third overwrite to show query result
   @override
   Widget buildResults(BuildContext context) {
-    List<myStars> myMatchQueryPlanets = [];
+    return ValueListenableBuilder<myPlanetSortingCriteria>(
+      valueListenable: myPlanetSortingCriteriaNotifier,
+      builder: (context, mySortingCriteria, _){
+        List<myStars> myMatchQueryPlanets = [];
+        if(!myScrollController.hasListeners){
+          myScrollController.addListener((){
+            SystemChannels.textInput.invokeMethod("TextInput.hide");
+          });
+        }
 
-    if(!myScrollController.hasListeners){
-      myScrollController.addListener((){
         SystemChannels.textInput.invokeMethod("TextInput.hide");
-      });
-    }
 
-    SystemChannels.textInput.invokeMethod("TextInput.hide");
+        WidgetsBinding.instance.addPostFrameCallback((_){
+          SystemChannels.textInput.invokeMethod("TextInput.hide");
+          FocusScope.of(context).requestFocus(FocusNode());}
+        );
 
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      SystemChannels.textInput.invokeMethod("TextInput.hide");
-      FocusScope.of(context).requestFocus(FocusNode());}
-    );
+        Future.delayed(Duration(milliseconds: 50), (){
+          SystemChannels.textInput.invokeMethod("TextInput.hide");
+        });
 
-    Future.delayed(Duration(milliseconds: 50), (){
-      SystemChannels.textInput.invokeMethod("TextInput.hide");
-    });
+        Future.delayed(Duration(milliseconds: 100), (){
+          SystemChannels.textInput.invokeMethod("TextInput.hide");
+        });
 
-    Future.delayed(Duration(milliseconds: 100), (){
-      SystemChannels.textInput.invokeMethod("TextInput.hide");
-    });
+        Future.delayed(Duration(milliseconds: 250), (){
+          SystemChannels.textInput.invokeMethod("TextInput.hide");
+        });
 
-    Future.delayed(Duration(milliseconds: 250), (){
-      SystemChannels.textInput.invokeMethod("TextInput.hide");
-    });
+        Future.delayed(Duration(milliseconds: 500), (){
+          SystemChannels.textInput.invokeMethod("TextInput.hide");
+        });
 
-    Future.delayed(Duration(milliseconds: 500), (){
-      SystemChannels.textInput.invokeMethod("TextInput.hide");
-    });
+        for(var planet in allPlanets){
+          if(planet.toLowerCase().contains(query)){
+            myMatchQueryPlanets.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
+          }
+        }
 
-    for(var planet in allPlanets){
-      if(planet.toLowerCase().contains(query)){
-        myMatchQueryPlanets.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
-      }
-    }
+        mySortMatchQuery(myMatchQueryPlanets);
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: (){
-        SystemChannels.textInput.invokeMethod("TextInput.hide");
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: (){
+            SystemChannels.textInput.invokeMethod("TextInput.hide");
+          },
+          onPanDown: (_){
+            SystemChannels.textInput.invokeMethod("TextInput.hide");
+          },
+          child: ListView.builder(
+            controller: myScrollController,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            itemCount: myMatchQueryPlanets.length,
+            itemBuilder: (context, index) {
+              var result = myMatchQueryPlanets[index]; //If user enters in a key, the result is the key.
+
+              return ListTile(
+                title: Text(result.starName!),
+              );
+            },
+          ),
+        );
       },
-      onPanDown: (_){
-        SystemChannels.textInput.invokeMethod("TextInput.hide");
-      },
-      child: ListView.builder(
-        controller: myScrollController,
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        itemCount: myMatchQueryPlanets.length,
-        itemBuilder: (context, index) {
-          var result = myMatchQueryPlanets[index]; //If user enters in a key, the result is the key.
-
-          return ListTile(
-            title: Text(result.starName!),
-          );
-        },
-      ),
     );
   }
 
   // This is the last overwrite (to show the querying process at the runtime)
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<myStars> myMatchQueryPlanets = [];
+    return ValueListenableBuilder<myPlanetSortingCriteria>(
+      valueListenable: myPlanetSortingCriteriaNotifier,
+      builder: (context, mySortingCriteria, _){
+        List<myStars> myMatchQueryPlanets = [];
 
-    for(var planet in allPlanets){
-      if(planet.toLowerCase().contains(query)){
-        myMatchQueryPlanets.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
-      }
-    }
+        for(var planet in allPlanets){
+          if(planet.toLowerCase().contains(query)){
+            myMatchQueryPlanets.add(myStars(starName: planet, imagePath: "assets/images/not_available.png"));
+          }
+        }
 
-    myMatchQueryPlanets.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+        //myMatchQueryPlanets.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+        mySortMatchQuery(myMatchQueryPlanets);
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      behavior: HitTestBehavior.opaque,
-      child: ListView.builder(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        itemCount: myMatchQueryPlanets.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-              title: Text(myMatchQueryPlanets[index].starName!, style: TextStyle(color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
-              onTap: () async{
-                //SystemChannels.textInput.invokeMethod("TextInput.hide");
-                FocusScope.of(context).unfocus();
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.opaque,
+          child: ListView.builder(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            itemCount: myMatchQueryPlanets.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                  title: Text(myMatchQueryPlanets[index].starName!, style: TextStyle(color: Colors.deepPurpleAccent, fontFamily: 'Raleway')),
+                  onTap: () async{
+                    //SystemChannels.textInput.invokeMethod("TextInput.hide");
+                    FocusScope.of(context).unfocus();
 
-                fromSearchBarToPlanetArticle = true;
-                correctPlanet = myMatchQueryPlanets[index].starName!;
+                    fromSearchBarToPlanetArticle = true;
+                    correctPlanet = myMatchQueryPlanets[index].starName!;
 
-                starsAndTheirPlanets.forEach((key, value){
-                  print("key: ${key}, value: ${value}");
-                  for(var v in value){
-                    if(v == correctPlanet){
-                      correctStar = key;
-                      break;
-                    }
-                    else{
-                      //continue
-                    }
-                  }
-                });
-
-                var theStarInfo = await getStarInformation();
-                informationAboutPlanet = await articlePage(theStarInfo).getPlanetData();
-
-                planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
-                listOfPlanetUrls = planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
-
-                listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
-
-                //Is the planet tracked by a user?
-                if(myNewUsername != "" && myUsername == ""){
-                  if(firebaseDesktopHelper.onDesktop){
-                    var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                    var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                    //Getting the current profile info of the user:
-                    Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
-                    planetTracked = currentInfoOfNewUser["planetsTracked"].containsKey(correctPlanet);
-                    print("planetTracked: ${planetTracked}");
-                  }
-                  else{
-                    var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                    var theDocNameForNewUsers;
-                    theNewUser.docs.forEach((result){
-                      theDocNameForNewUsers = result.id;
+                    starsAndTheirPlanets.forEach((key, value){
+                      print("key: ${key}, value: ${value}");
+                      for(var v in value){
+                        if(v == correctPlanet){
+                          correctStar = key;
+                          break;
+                        }
+                        else{
+                          //continue
+                        }
+                      }
                     });
 
-                    DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
-                    Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+                    var theStarInfo = await getStarInformation();
+                    informationAboutPlanet = await articlePage(theStarInfo).getPlanetData();
 
-                    planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
-                    print("planetTracked: ${planetTracked}");
-                  }
-                }
-                else if(myNewUsername == "" && myUsername != ""){
-                  if(firebaseDesktopHelper.onDesktop){
-                    var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                    var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                    planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
+                    listOfPlanetUrls = planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
-                    //Getting the current profile info of the user:
-                    Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
-                    planetTracked = currentInfoOfExistingUser["planetsTracked"].containsKey(correctPlanet);
-                    print("planetTracked: ${planetTracked}");
-                  }
-                  else{
-                    var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                    var theDocNameForExistingUsers;
-                    theExistingUser.docs.forEach((result){
-                      theDocNameForExistingUsers = result.id;
-                    });
+                    listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
-                    DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
-                    Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+                    //Is the planet tracked by a user?
+                    if(myNewUsername != "" && myUsername == ""){
+                      if(firebaseDesktopHelper.onDesktop){
+                        var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        var newUsersDoc = newUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
 
-                    planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
-                    print("planetTracked: ${planetTracked}");
-                  }
-                }
+                        //Getting the current profile info of the user:
+                        Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(newUsersDoc["usernameProfileInformation"] ?? {});
+                        planetTracked = currentInfoOfNewUser["planetsTracked"].containsKey(correctPlanet);
+                        print("planetTracked: ${planetTracked}");
+                      }
+                      else{
+                        var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
+                        var theDocNameForNewUsers;
+                        theNewUser.docs.forEach((result){
+                          theDocNameForNewUsers = result.id;
+                        });
 
-                myAccessCheckNotifier.value = DateTime.now();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
-              },
-              leading: Image.asset(myMatchQueryPlanets[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
-        },
-      ),
+                        DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForNewUsers).get();
+                        Map<dynamic, dynamic>? individual = theSnapshotNewUsers.data();
+
+                        planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                        print("planetTracked: ${planetTracked}");
+                      }
+                    }
+                    else if(myNewUsername == "" && myUsername != ""){
+                      if(firebaseDesktopHelper.onDesktop){
+                        var existingUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        var existingUsersDoc = existingUserNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+
+                        //Getting the current profile info of the user:
+                        Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(existingUsersDoc["usernameProfileInformation"] ?? {});
+                        planetTracked = currentInfoOfExistingUser["planetsTracked"].containsKey(correctPlanet);
+                        print("planetTracked: ${planetTracked}");
+                      }
+                      else{
+                        var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                        var theDocNameForExistingUsers;
+                        theExistingUser.docs.forEach((result){
+                          theDocNameForExistingUsers = result.id;
+                        });
+
+                        DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForExistingUsers).get();
+                        Map<dynamic, dynamic>? individual = theSnapshotExistingUsers.data();
+
+                        planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                        print("planetTracked: ${planetTracked}");
+                      }
+                    }
+
+                    myAccessCheckNotifier.value = DateTime.now();
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                  },
+                  leading: Image.asset(myMatchQueryPlanets[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50)); //height: 50, width: 50, scale: 1.5));
+            },
+          ),
+        );
+      },
     );
   }
 }
