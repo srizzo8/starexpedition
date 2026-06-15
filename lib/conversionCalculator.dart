@@ -48,6 +48,19 @@ class decimalAndMinusExpectedFormat extends TextInputFormatter{
   }
 }
 
+String fromNumberToScientificNotation(double myNumber){
+  if(myNumber == 0.0){
+    return "0.0";
+  }
+
+  final scientificNotationParts = myNumber.toStringAsExponential(5).split("e");
+
+  final myCoefficient = scientificNotationParts[0];
+  final myExponent = int.parse(scientificNotationParts[1]);
+
+  return "${myCoefficient} x 10^${myExponent}";
+}
+
 List<String> temperatureUnits = ["Celsius", "Fahrenheit", "Kelvin"];
 
 List<String> lengthUnits = ["AU", "Kilometers", "Light-years", "Miles", "Parsecs"];
@@ -290,9 +303,13 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
                 alignment: Alignment.center,
                 child: Text("Result: ${tempResults.toString()}"),
               ),
+              Container(
+                alignment: Alignment.center,
+                child: Text("\nScientific Notation Result: ${fromNumberToScientificNotation(tempResults)}"),
+              ),
               Center(
                 child: Container(
-                  child: Text("\nConverting Length", style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
+                  child: Text("\n\nConverting Length", style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
                 ),
               ),
               /*Container(
@@ -469,6 +486,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
               Container(
                 alignment: Alignment.center,
                 child: Text("Result: ${lengthResults.toString()}"),
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: Text("\nScientific Notation Result: ${fromNumberToScientificNotation(lengthResults)}"),
               ),
               /*Center(
                 child: InkWell(
