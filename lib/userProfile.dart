@@ -922,6 +922,8 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
 
                               myMain.listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
+                              myMain.urlTitlesForStars = await Future.wait(myMain.listOfStarUrls.map((url) => myMain.getTitleOfPage(url)).toList());
+
                               //Is a user tracking this star?
                               if(myNewUsername != "" && myUsername == ""){
                                 if(firebaseDesktopHelper.onDesktop){
@@ -1051,6 +1053,8 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                               myMain.listOfPlanetUrls = myMain.planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
                               myMain.listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+
+                              myMain.urlTitlesForPlanets = await Future.wait(myMain.listOfPlanetUrls.map((url) => myMain.getTitleOfPage(url)).toList());
 
                               print("listOfPlanetUrls: ${myMain.listOfPlanetUrls}");
 
@@ -1362,6 +1366,8 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
 
                               myMain.listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
+                              myMain.urlTitlesForStars = await Future.wait(myMain.listOfStarUrls.map((url) => myMain.getTitleOfPage(url)).toList());
+
                               //Is a user tracking this star?
                               if(myNewUsername != "" && myUsername == ""){
                                 if(firebaseDesktopHelper.onDesktop){
@@ -1484,6 +1490,8 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                               myMain.listOfPlanetUrls = myMain.planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
                               myMain.listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+
+                              myMain.urlTitlesForPlanets = await Future.wait(myMain.listOfPlanetUrls.map((url) => myMain.getTitleOfPage(url)).toList());
 
                               print("listOfPlanetUrls: ${myMain.listOfPlanetUrls}");
 

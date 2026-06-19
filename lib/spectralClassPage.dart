@@ -691,6 +691,8 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
 
                         myMain.listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
+                        myMain.urlTitlesForStars = await Future.wait(myMain.listOfStarUrls.map((url) => myMain.getTitleOfPage(url)).toList());
+
                         //Is a user tracking this star?
                         if(myNewUsername != "" && myUsername == ""){
                           if(firebaseDesktopHelper.onDesktop){

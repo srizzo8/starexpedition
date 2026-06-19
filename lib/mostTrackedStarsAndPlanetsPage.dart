@@ -211,6 +211,8 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
 
                       myMain.listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
+                      myMain.urlTitlesForStars = await Future.wait(myMain.listOfStarUrls.map((url) => myMain.getTitleOfPage(url)).toList());
+
                       //Is a user tracking this star?
                       if(myNewUsername != "" && myUsername == ""){
                         if(firebaseDesktopHelper.onDesktop){
@@ -335,6 +337,8 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                       myMain.listOfPlanetUrls = myMain.planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
                       myMain.listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+
+                      myMain.urlTitlesForPlanets = await Future.wait(myMain.listOfPlanetUrls.map((url) => myMain.getTitleOfPage(url)).toList());
 
                       //Is the planet tracked by a user?
                       if(myNewUsername != "" && myUsername == ""){

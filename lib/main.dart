@@ -153,6 +153,9 @@ final GlobalKey<NavigatorState> myNavigatorKey = GlobalKey<NavigatorState>();
 
 final ValueNotifier<DateTime> myAccessCheckNotifier = ValueNotifier(DateTime.now());
 
+List<String> urlTitlesForStars = [];
+List<String> urlTitlesForPlanets = [];
+
 //An instance:
 final accessCheckObserver myAccessCheckObserver = accessCheckObserver();
 
@@ -1179,8 +1182,8 @@ Future<void> addingToStarMaps() async{
     if(firebaseDesktopHelper.onDesktop){
       var myData = await firebaseDesktopHelper.getFirebaseData(starsName);
 
-      print("The star's distance in light-years: ${myData["distance"]}");
-      print("The star's temperature in Kelvin: ${myData["star_temperature"]}");
+      //print("The star's distance in light-years: ${myData["distance"]}");
+      //print("The star's temperature in Kelvin: ${myData["star_temperature"]}");
 
       myStarDistanceInLightYearsMap[starsName] = rangeAverageForStars(myData["distance"].toString());
       myStarTemperatureInKelvinMap[starsName] = rangeAverageForStars(myData["star_temperature"].toString());
@@ -1190,16 +1193,16 @@ Future<void> addingToStarMaps() async{
       final myDistance = await myRef.child("distance").get();
       final myTemperature = await myRef.child("star_temperature").get();
 
-      print("The star's distance in light-years: ${myDistance.value}");
-      print("The star's temperature in Kelvin: ${myTemperature.value}");
+      //print("The star's distance in light-years: ${myDistance.value}");
+      //print("The star's temperature in Kelvin: ${myTemperature.value}");
 
       myStarDistanceInLightYearsMap[starsName] = rangeAverageForStars(myDistance.value.toString());
       myStarTemperatureInKelvinMap[starsName] = rangeAverageForStars(myTemperature.value.toString());
     }
   }
 
-  print("The map for the distances of stars: ${myStarDistanceInLightYearsMap}");
-  print("The map for the temperatures of stars: ${myStarTemperatureInKelvinMap}");
+  //print("The map for the distances of stars: ${myStarDistanceInLightYearsMap}");
+  //print("The map for the temperatures of stars: ${myStarTemperatureInKelvinMap}");
 }
 
 double rangeAverageForPlanets(String myValue){
@@ -1249,7 +1252,7 @@ Future<void> addingToPlanetMaps() async{
     print("Getting data for this planet: ${planetsName}");
 
     starsAndTheirPlanets.forEach((key, value){
-      print("key: ${key}, value: ${value}");
+      //print("key: ${key}, value: ${value}");
       for(var v in value){
         if(v == planetsName){
           myStarName = key;
@@ -1266,8 +1269,8 @@ Future<void> addingToPlanetMaps() async{
     if(firebaseDesktopHelper.onDesktop){
       var myData = await firebaseDesktopHelper.getFirebaseData("${myStarName}/Planets/${planetsName}");
 
-      print("The planet's distance from its host star in AU: ${myData["distance_from_star"]}");
-      print("The planet's temperature in Kelvin: ${myData["planet_temperature"]}");
+      //print("The planet's distance from its host star in AU: ${myData["distance_from_star"]}");
+      //print("The planet's temperature in Kelvin: ${myData["planet_temperature"]}");
 
       myPlanetDistanceFromStarInAUMap[planetsName] = rangeAverageForPlanets(myData["distance_from_star"].toString());
       myPlanetTemperatureInKelvinMap[planetsName] = rangeAverageForPlanets(myData["planet_temperature"].toString());
@@ -1277,16 +1280,120 @@ Future<void> addingToPlanetMaps() async{
       final myDistance = await myRef.child("distance_from_star").get();
       final myTemperature = await myRef.child("planet_temperature").get();
 
-      print("The planet's distance from its host star in AU: ${myDistance.value}");
-      print("The planet's temperature in Kelvin: ${myTemperature.value}");
+      //print("The planet's distance from its host star in AU: ${myDistance.value}");
+      //print("The planet's temperature in Kelvin: ${myTemperature.value}");
 
       myPlanetDistanceFromStarInAUMap[planetsName] = rangeAverageForPlanets(myDistance.value.toString());
       myPlanetTemperatureInKelvinMap[planetsName] = rangeAverageForPlanets(myTemperature.value.toString());
     }
   }
 
-  print("The map for the distances of planets from their host stars: ${myPlanetDistanceFromStarInAUMap}");
-  print("The map for the temperatures of planets: ${myPlanetTemperatureInKelvinMap}");
+  //print("The map for the distances of planets from their host stars: ${myPlanetDistanceFromStarInAUMap}");
+  //print("The map for the temperatures of planets: ${myPlanetTemperatureInKelvinMap}");
+}
+
+String forPdfUrls(String myPdfUrl){
+  try{
+    final myUri = Uri.parse(myPdfUrl);
+    final myHost = myUri.host.replaceAll("www.", "");
+
+    //Ignoring generic file names:
+    const genericFileNames = ["document", "download", "file", "FULLTEXT01", "fulltext01", "FullText01", "paper"];
+
+    final myFilteredSegments = myUri.pathSegments.reversed.where((mySegment) =>
+      mySegment.isNotEmpty && !genericFileNames.any((file) => mySegment.toLowerCase().contains(file.toLowerCase())) && !RegExp(r'^[a-z]+\d*:\d+$').hasMatch(mySegment)).map((mySegment) =>
+      mySegment.replaceAll(RegExp(r'\.pdf$', caseSensitive: false), '').replaceAll('-', ' ').replaceAll('_', ' ')).toList();
+
+    final myImportantSegment = myFilteredSegments.isNotEmpty? myFilteredSegments.first : null;
+
+    if(myImportantSegment != null && myImportantSegment.length > 3){
+      return "${myHost}: ${myImportantSegment}";
+    }
+
+    //If nothing notable is found, just return the domain:
+    return myHost;
+  }
+  catch (e){
+    print("Unfortunately, there was an error: ${e}");
+    return myPdfUrl;
+  }
+}
+
+//Method to only replace the last instance of a ' - ' and any instance of a ' | ' in an article link:
+String myNewTitle(String myTitle){
+  //Replacing all instances of ' | ':
+  myTitle = myTitle.replaceAll(' | ', ': ');
+
+  //Only replacing the last instance of a ' - ' so that titles with '-' will not be affected:
+  final myLastDashIndex = myTitle.lastIndexOf(' - ');
+
+  if(myLastDashIndex != -1){
+    myTitle = myTitle.substring(0, myLastDashIndex) + ': ' + myTitle.substring(myLastDashIndex + 3);
+  }
+
+  return myTitle;
+}
+
+Future<String> getTitleOfPage(String myUrl) async{
+  //For arxiv.org PDFs:
+  if(myUrl.contains("arxiv.org/pdf/")){
+    myUrl = myUrl.replaceAll("arxiv.org/pdf/", "arxiv.org/abs/").replaceAll(".pdf", "");
+  }
+
+  try{
+    //Doing a HEAD request to check the content type:
+    final myHeadResponse = await http.head(Uri.parse(myUrl), headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'});
+
+    final myContentType = myHeadResponse.headers["content-type"] ?? "";
+
+    //print("The status code for the URL: ${myResponse.statusCode}");
+    //print("The body snippet: ${myResponse.body.substring(0, 200)}");
+
+    if(myContentType.contains("application/pdf") || myUrl.endsWith(".pdf")){
+      print("A PDF has been detected.");
+      return forPdfUrls(myUrl);
+    }
+
+    final myResponse = await http.get(Uri.parse(myUrl), headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'});
+
+    if(myResponse.statusCode == 200){
+      final myHtml = myResponse.body;
+      final myTitleMatch = RegExp(r'<title[^>]*>(.*?)</title>', caseSensitive: false, dotAll: true).firstMatch(myHtml);
+
+      print("The title match: ${myTitleMatch}");
+
+      if(myTitleMatch != null){
+        //Decoding HTML entities and removing whitespace:
+        String myTitle = myTitleMatch.group(1)!.replaceAll('&#39;', "'").replaceAll('&amp;', '&').replaceAll('&gt;', '>').replaceAll('&lt;', '<').replaceAll('&nbsp;', ' ').replaceAll('&quot;', '"').replaceAllMapped(RegExp(r'&#(\d+);'), (myMatch){
+          return String.fromCharCode(int.parse(myMatch.group(1)!));
+        }).replaceAllMapped(RegExp(r'&#x([0-9a-fA-F]+);'), (myMatch){
+          return String.fromCharCode(int.parse(myMatch.group(1)!, radix: 16));
+        }).trim();
+
+        //Making all separators of website names and article names become ':':
+        myTitle = myTitle.replaceAll(' | ', ': ').replaceAll(' - ', ': ');
+
+        myTitle = myNewTitle(myTitle);
+
+        print("Title: ${myTitle}; URL: ${myUrl}");
+
+        return myTitle;
+      }
+      else{
+        print("Unfortunately, there is no title found for ${myUrl}");
+      }
+    }
+    else{
+      print("This is the status code for ${myUrl}: ${myResponse.statusCode}");
+    }
+  }
+  catch (e){
+    print("Unfortunately, there was an error trying to get the title of the website. Here is the error: ${e}");
+  }
+
+  print("Falling back to this URL: ${myUrl}");
+
+  return myUrl;
 }
 
 class theStarExpeditionState extends State<StarExpedition> with RouteAware{
@@ -1652,6 +1759,10 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
                       print("listofstarurls: ${listOfStarUrls.toString()}");
                       print("size of listofstarurls: ${listOfStarUrls.length}");
 
+                      urlTitlesForStars = await Future.wait(listOfStarUrls.map((url) => getTitleOfPage(url)).toList());
+
+                      print("urlTitlesForStars: ${urlTitlesForStars}");
+
                       //Is the star tracked by a user?
                       if(myNewUsername != "" && myUsername == ""){
                         if(firebaseDesktopHelper.onDesktop){
@@ -1732,6 +1843,8 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
                   listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
                   listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+
+                  urlTitlesForStars = await Future.wait(listOfStarUrls.map((url) => getTitleOfPage(url)).toList());
 
                   //Is the star tracked by a user?
                   if(myNewUsername != "" && myUsername == ""){
@@ -2611,6 +2724,8 @@ class CustomSearchDelegate extends SearchDelegate {
 
                     listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
+                    urlTitlesForStars = await Future.wait(listOfStarUrls.map((url) => getTitleOfPage(url)).toList());
+
                     if(myNewUsername != "" && myUsername == ""){
                       if(firebaseDesktopHelper.onDesktop){
                         var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
@@ -2899,7 +3014,7 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
                     correctPlanet = myMatchQueryPlanets[index].starName!;
 
                     starsAndTheirPlanets.forEach((key, value){
-                      print("key: ${key}, value: ${value}");
+                      //print("key: ${key}, value: ${value}");
                       for(var v in value){
                         if(v == correctPlanet){
                           correctStar = key;
@@ -2918,6 +3033,8 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
                     listOfPlanetUrls = planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
                     listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+
+                    urlTitlesForPlanets = await Future.wait(listOfPlanetUrls.map((url) => getTitleOfPage(url)).toList());
 
                     //Is the planet tracked by a user?
                     if(myNewUsername != "" && myUsername == ""){
@@ -3418,6 +3535,8 @@ class articlePage extends StatelessWidget{
 
                                             listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
+                                            urlTitlesForPlanets = await Future.wait(listOfPlanetUrls.map((url) => getTitleOfPage(url)).toList());
+
                                             print("listOfPlanetUrls: ${listOfPlanetUrls}");
 
                                             if(fromUserProfileInUserPerspective == true || fromUserProfileInOtherUsersPerspective == true){
@@ -3499,7 +3618,7 @@ class articlePage extends StatelessWidget{
                                   child: Padding(
                                     padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.height * 0.015625, 0.0, MediaQuery.of(bc).size.height * 0.015625, 0.0),
                                     child: InkWell(
-                                        child: Text("${listOfStarUrls[indexPlace]}\n", textAlign: TextAlign.center),
+                                        child: Text("${urlTitlesForStars[indexPlace]}\n", textAlign: TextAlign.center),
                                         onTap: () async{
                                           starListUrlIndex = indexPlace;
                                           if(!(listOfStarUrls[indexPlace].contains("pdf"))){
@@ -4344,6 +4463,8 @@ class planetArticle extends StatelessWidget{
 
               listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
 
+              urlTitlesForStars = await Future.wait(listOfStarUrls.map((url) => getTitleOfPage(url)).toList());
+
               if(myNewUsername != "" && myUsername == ""){
                 if(firebaseDesktopHelper.onDesktop){
                   var newUserNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
@@ -4498,7 +4619,7 @@ class planetArticle extends StatelessWidget{
                                   child: Padding(
                                     padding: EdgeInsets.fromLTRB(MediaQuery.of(theContext).size.height * 0.015625, 0.0, MediaQuery.of(theContext).size.height * 0.015625, 0.0),
                                     child: InkWell(
-                                        child: Text("${listOfPlanetUrls[indexPlace]}\n", textAlign: TextAlign.center),
+                                        child: Text("${urlTitlesForPlanets[indexPlace]}\n", textAlign: TextAlign.center),
                                         onTap: () async{
                                           planetListUrlIndex = indexPlace;
                                           if(!(listOfPlanetUrls[indexPlace].contains("pdf"))){
