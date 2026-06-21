@@ -1292,17 +1292,53 @@ Future<void> addingToPlanetMaps() async{
   //print("The map for the temperatures of planets: ${myPlanetTemperatureInKelvinMap}");
 }
 
-String forPdfUrls(String myPdfUrl){
+Future<String> forPdfUrls(String myPdfUrl) async{
   try{
     final myUri = Uri.parse(myPdfUrl);
     final myHost = myUri.host.replaceAll("www.", "");
 
+    //Fetching the "parent" page, which may have a title:
+    final myParentUrl = myUri.resolve("..").toString();
+
+    if(myParentUrl != myPdfUrl){
+      try{
+        final myParentResponse = await http.get(Uri.parse(myParentUrl), headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'});
+
+        if(myParentResponse.statusCode == 200){
+          final myHtml = myParentResponse.body;
+          final myTitleMatch = RegExp(r'<title[^>]*>(.*?)</title>', caseSensitive: false, dotAll: true).firstMatch(myHtml);
+
+          print("The title match: ${myTitleMatch}");
+
+          if(myTitleMatch != null){
+            //Decoding HTML entities and removing whitespace:
+            String myTitle = myTitleMatch.group(1)!.replaceAll('&#39;', "'").replaceAll('&amp;', '&').replaceAll('&gt;', '>').replaceAll('&lt;', '<').replaceAll('&nbsp;', ' ').replaceAll('&quot;', '"').replaceAllMapped(RegExp(r'&#(\d+);'), (myMatch){
+              return String.fromCharCode(int.parse(myMatch.group(1)!));
+            }).replaceAllMapped(RegExp(r'&#x([0-9a-fA-F]+);'), (myMatch){
+              return String.fromCharCode(int.parse(myMatch.group(1)!, radix: 16));
+            }).replaceAll("\u201C", '"').replaceAll("\u201D", '"').replaceAll("\u2018", "'").replaceAll("\u2019", "'").trim();
+
+            //Making all separators of website names and article names become ':':
+            myTitle = myTitle.replaceAll(' | ', ': ');
+
+            myTitle = myNewTitle(myTitle);
+
+            print("Title: ${myTitle}");
+
+            return myTitle;
+          }
+        }
+      }
+      catch (e){
+        print("The fetching of the parent page has failed. Here is the error: ${e}");
+      }
+    }
     //Ignoring generic file names:
     const genericFileNames = ["document", "download", "file", "FULLTEXT01", "fulltext01", "FullText01", "paper"];
 
     final myFilteredSegments = myUri.pathSegments.reversed.where((mySegment) =>
-      mySegment.isNotEmpty && !genericFileNames.any((file) => mySegment.toLowerCase().contains(file.toLowerCase())) && !RegExp(r'^[a-z]+\d*:\d+$').hasMatch(mySegment)).map((mySegment) =>
-      mySegment.replaceAll(RegExp(r'\.pdf$', caseSensitive: false), '').replaceAll('-', ' ').replaceAll('_', ' ')).toList();
+    mySegment.isNotEmpty && !genericFileNames.any((file) => mySegment.toLowerCase().contains(file.toLowerCase())) && !RegExp(r'^[a-z]+\d*:\d+$').hasMatch(mySegment)).map((mySegment) =>
+        mySegment.replaceAll(RegExp(r'\.pdf$', caseSensitive: false), '').replaceAll('-', ' ').replaceAll('_', ' ')).toList();
 
     final myImportantSegment = myFilteredSegments.isNotEmpty? myFilteredSegments.first : null;
 
@@ -1321,15 +1357,8 @@ String forPdfUrls(String myPdfUrl){
 
 //Method to only replace the last instance of a ' - ' and any instance of a ' | ' in an article link:
 String myNewTitle(String myTitle){
-  //Replacing all instances of ' | ':
+  //Replacing all instances of ' | ' with ': ':
   myTitle = myTitle.replaceAll(' | ', ': ');
-
-  //Only replacing the last instance of a ' - ' so that titles with '-' will not be affected:
-  final myLastDashIndex = myTitle.lastIndexOf(' - ');
-
-  if(myLastDashIndex != -1){
-    myTitle = myTitle.substring(0, myLastDashIndex) + ': ' + myTitle.substring(myLastDashIndex + 3);
-  }
 
   return myTitle;
 }
@@ -1339,6 +1368,22 @@ Future<String> getTitleOfPage(String myUrl) async{
   if(myUrl.contains("arxiv.org/pdf/")){
     myUrl = myUrl.replaceAll("arxiv.org/pdf/", "arxiv.org/abs/").replaceAll(".pdf", "");
   }
+
+  //For diva-portal.org PDFs:
+  /*if(myUrl.contains("diva-portal.org")){
+    try{
+      final myUri = Uri.parse(myUrl);
+      final myDivaPortalSegment = myUri.pathSegments.where((mySegment) => RegExp(r'^diva\d+:\d+$').hasMatch(mySegment)).toList();
+
+      if(myDivaPortalSegment.isNotEmpty){
+        myUrl = "https://www.diva-portal.org/smash/record.jsf?pid=${myDivaPortalSegment.first}";
+        print("Successfully converted the diva-portal URL to: ${myUrl}");
+      }
+    }
+    catch (e){
+      print("The conversion of the diva-portal URL has failed. Here is the error: ${e}");
+    }
+  }*/
 
   try{
     //Doing a HEAD request to check the content type:
@@ -1350,8 +1395,8 @@ Future<String> getTitleOfPage(String myUrl) async{
     //print("The body snippet: ${myResponse.body.substring(0, 200)}");
 
     if(myContentType.contains("application/pdf") || myUrl.endsWith(".pdf")){
-      print("A PDF has been detected.");
-      return forPdfUrls(myUrl);
+      print("A PDF has been detected: ${myUrl}");
+      return await forPdfUrls(myUrl);
     }
 
     final myResponse = await http.get(Uri.parse(myUrl), headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'});
@@ -1368,10 +1413,10 @@ Future<String> getTitleOfPage(String myUrl) async{
           return String.fromCharCode(int.parse(myMatch.group(1)!));
         }).replaceAllMapped(RegExp(r'&#x([0-9a-fA-F]+);'), (myMatch){
           return String.fromCharCode(int.parse(myMatch.group(1)!, radix: 16));
-        }).trim();
+        }).replaceAll("\u201C", '"').replaceAll("\u201D", '"').replaceAll("\u2018", "'").replaceAll("\u2019", "'").trim();
 
         //Making all separators of website names and article names become ':':
-        myTitle = myTitle.replaceAll(' | ', ': ').replaceAll(' - ', ': ');
+        myTitle = myTitle.replaceAll(' | ', ': ');
 
         myTitle = myNewTitle(myTitle);
 
@@ -1752,16 +1797,31 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
                       starInfo = await getStarInformation();
                       featuredStarOfTheDayBool = true;
                       starFileContent = await readStarFile();
-                      listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
-                      listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+                      listOfStarUrls = [];
 
-                      print("listofstarurls: ${listOfStarUrls.toString()}");
-                      print("size of listofstarurls: ${listOfStarUrls.length}");
+                      final myLines = starFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((s) => s.isNotEmpty && s != " ").toList();
 
-                      urlTitlesForStars = await Future.wait(listOfStarUrls.map((url) => getTitleOfPage(url)).toList());
+                      Map<int, String> myTitles = {};
 
-                      print("urlTitlesForStars: ${urlTitlesForStars}");
+                      for(int i = 0; i < myLines.length; i++){
+                        if(myLines[i].contains("||")){
+                          final parts = myLines[i].split("||");
+                          listOfStarUrls.add(parts[0].trim());
+                          myTitles[i] = parts[1].trim();
+                        }
+                        else{
+                          listOfStarUrls.add(myLines[i]);
+                        }
+                      }
+
+                      urlTitlesForStars = await Future.wait(List.generate(listOfStarUrls.length, (i){
+                          if(myTitles.containsKey(i)){
+                            return Future.value(myTitles[i]);
+                          }
+                          return getTitleOfPage(listOfStarUrls[i]);
+                        })
+                      );
 
                       //Is the star tracked by a user?
                       if(myNewUsername != "" && myUsername == ""){
@@ -1840,11 +1900,31 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
                   starInfo = await getStarInformation();
                   featuredStarOfTheDayBool = true;
                   starFileContent = await readStarFile();
-                  listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
-                  listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+                  listOfStarUrls = [];
 
-                  urlTitlesForStars = await Future.wait(listOfStarUrls.map((url) => getTitleOfPage(url)).toList());
+                  final myLines = starFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((s) => s.isNotEmpty && s != " ").toList();
+
+                  Map<int, String> myTitles = {};
+
+                  for(int i = 0; i < myLines.length; i++){
+                    if(myLines[i].contains("||")){
+                      final parts = myLines[i].split("||");
+                      listOfStarUrls.add(parts[0].trim());
+                      myTitles[i] = parts[1].trim();
+                    }
+                    else{
+                      listOfStarUrls.add(myLines[i]);
+                    }
+                  }
+
+                  urlTitlesForStars = await Future.wait(List.generate(listOfStarUrls.length, (i){
+                      if(myTitles.containsKey(i)){
+                        return Future.value(myTitles[i]);
+                      }
+                      return getTitleOfPage(listOfStarUrls[i]);
+                    })
+                  );
 
                   //Is the star tracked by a user?
                   if(myNewUsername != "" && myUsername == ""){
@@ -2720,11 +2800,31 @@ class CustomSearchDelegate extends SearchDelegate {
                     print(correctStar);
                     starInfo = await getStarInformation();
                     starFileContent = await readStarFile();
-                    listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
-                    listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+                    listOfStarUrls = [];
 
-                    urlTitlesForStars = await Future.wait(listOfStarUrls.map((url) => getTitleOfPage(url)).toList());
+                    final myLines = starFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((s) => s.isNotEmpty && s != " ").toList();
+
+                    Map<int, String> myTitles = {};
+
+                    for(int i = 0; i < myLines.length; i++){
+                      if(myLines[i].contains("||")){
+                        final parts = myLines[i].split("||");
+                        listOfStarUrls.add(parts[0].trim());
+                        myTitles[i] = parts[1].trim();
+                      }
+                      else{
+                        listOfStarUrls.add(myLines[i]);
+                      }
+                    }
+
+                    urlTitlesForStars = await Future.wait(List.generate(listOfStarUrls.length, (i){
+                        if(myTitles.containsKey(i)){
+                          return Future.value(myTitles[i]);
+                        }
+                        return getTitleOfPage(listOfStarUrls[i]);
+                      })
+                    );
 
                     if(myNewUsername != "" && myUsername == ""){
                       if(firebaseDesktopHelper.onDesktop){
@@ -3030,11 +3130,31 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
                     informationAboutPlanet = await articlePage(theStarInfo).getPlanetData();
 
                     planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
-                    listOfPlanetUrls = planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
-                    listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+                    listOfPlanetUrls = [];
 
-                    urlTitlesForPlanets = await Future.wait(listOfPlanetUrls.map((url) => getTitleOfPage(url)).toList());
+                    final myLines = planetFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((p) => p.isNotEmpty && p != " ").toList();
+
+                    Map<int, String> myTitles = {};
+
+                    for(int i = 0; i < myLines.length; i++){
+                      if(myLines[i].contains("||")){
+                        final parts = myLines[i].split("||");
+                        listOfPlanetUrls.add(parts[0].trim());
+                        myTitles[i] = parts[1].trim();
+                      }
+                      else{
+                        listOfPlanetUrls.add(myLines[i]);
+                      }
+                    }
+
+                    urlTitlesForPlanets = await Future.wait(List.generate(listOfPlanetUrls.length, (i){
+                        if(myTitles.containsKey(i)){
+                          return Future.value(myTitles[i]);
+                        }
+                        return getTitleOfPage(listOfPlanetUrls[i]);
+                      })
+                    );
 
                     //Is the planet tracked by a user?
                     if(myNewUsername != "" && myUsername == ""){
@@ -3531,11 +3651,31 @@ class articlePage extends StatelessWidget{
                                             informationAboutPlanet = await getPlanetData();
 
                                             planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
-                                            listOfPlanetUrls = planetFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
-                                            listOfPlanetUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+                                            listOfPlanetUrls = [];
 
-                                            urlTitlesForPlanets = await Future.wait(listOfPlanetUrls.map((url) => getTitleOfPage(url)).toList());
+                                            final myLines = planetFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((p) => p.isNotEmpty && p != " ").toList();
+
+                                            Map<int, String> myTitles = {};
+
+                                            for(int i = 0; i < myLines.length; i++){
+                                              if(myLines[i].contains("||")){
+                                                final parts = myLines[i].split("||");
+                                                listOfPlanetUrls.add(parts[0].trim());
+                                                myTitles[i] = parts[1].trim();
+                                              }
+                                              else{
+                                                listOfPlanetUrls.add(myLines[i]);
+                                              }
+                                            }
+
+                                            urlTitlesForPlanets = await Future.wait(List.generate(listOfPlanetUrls.length, (i){
+                                                if(myTitles.containsKey(i)){
+                                                  return Future.value(myTitles[i]);
+                                                }
+                                                return getTitleOfPage(listOfPlanetUrls[i]);
+                                              })
+                                            );
 
                                             print("listOfPlanetUrls: ${listOfPlanetUrls}");
 
@@ -4459,11 +4599,31 @@ class planetArticle extends StatelessWidget{
               print("The host star information: $hostStarInformation");
 
               starFileContent = await readStarFile();
-              listOfStarUrls = starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
-              listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+              listOfStarUrls = [];
 
-              urlTitlesForStars = await Future.wait(listOfStarUrls.map((url) => getTitleOfPage(url)).toList());
+              final myLines = starFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((s) => s.isNotEmpty && s != " ").toList();
+
+              Map<int, String> myTitles = {};
+
+              for(int i = 0; i < myLines.length; i++){
+                if(myLines[i].contains("||")){
+                  final parts = myLines[i].split("||");
+                  listOfStarUrls.add(parts[0].trim());
+                  myTitles[i] = parts[1].trim();
+                }
+                else{
+                  listOfStarUrls.add(myLines[i]);
+                }
+              }
+
+              urlTitlesForStars = await Future.wait(List.generate(listOfStarUrls.length, (i){
+                  if(myTitles.containsKey(i)){
+                    return Future.value(myTitles[i]);
+                  }
+                  return getTitleOfPage(listOfStarUrls[i]);
+                })
+              );
 
               if(myNewUsername != "" && myUsername == ""){
                 if(firebaseDesktopHelper.onDesktop){

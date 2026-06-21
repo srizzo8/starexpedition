@@ -687,11 +687,31 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
                         fromSpectralClassPage = true;
 
                         myMain.starFileContent = await myMain.readStarFile();
-                        myMain.listOfStarUrls = myMain.starFileContent.replaceAll("\n", "").replaceAll("\r", "|").split("|");
 
-                        myMain.listOfStarUrls.removeWhere((myUrl) => myUrl == "" || myUrl == " ");
+                        myMain.listOfStarUrls = [];
 
-                        myMain.urlTitlesForStars = await Future.wait(myMain.listOfStarUrls.map((url) => myMain.getTitleOfPage(url)).toList());
+                        final myLines = myMain.starFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((s) => s.isNotEmpty && s != " ").toList();
+
+                        Map<int, String> myTitles = {};
+
+                        for(int i = 0; i < myLines.length; i++){
+                          if(myLines[i].contains("||")){
+                            final parts = myLines[i].split("||");
+                            myMain.listOfStarUrls.add(parts[0].trim());
+                            myTitles[i] = parts[1].trim();
+                          }
+                          else{
+                            myMain.listOfStarUrls.add(myLines[i]);
+                          }
+                        }
+
+                        myMain.urlTitlesForStars = await Future.wait(List.generate(myMain.listOfStarUrls.length, (i){
+                            if(myTitles.containsKey(i)){
+                              return Future.value(myTitles[i]);
+                            }
+                            return myMain.getTitleOfPage(myMain.listOfStarUrls[i]);
+                          })
+                        );
 
                         //Is a user tracking this star?
                         if(myNewUsername != "" && myUsername == ""){
