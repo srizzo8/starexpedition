@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/services.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:starexpedition4/replyThreadPage.dart';
 import 'package:starexpedition4/userProfile.dart';
@@ -58,6 +59,10 @@ int dbuNavigationDepth = 0;
 bool fromDbuThread = false;
 bool fromDbuPage = false;
 
+var theDbuThreadResult;
+var dbuThreadClickedData;
+var specificDbuThreadData;
+
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
 
@@ -87,6 +92,211 @@ class MyDiscussionBoardUpdatesPage extends StatelessWidget{
   }
 }
 
+class myDbuSearch extends SearchDelegate{
+  List<dynamic> listOfDbuThreads = discussionBoardPage.discussionBoardUpdatesThreads;
+
+  final ScrollController myScrollController = ScrollController();
+
+  @override
+  TextInputAction get textInputAction => TextInputAction.search;
+
+  @override
+  List<Widget>? buildActions(BuildContext bc){
+    return [
+      IconButton(
+        onPressed: (){
+          query = "";
+        },
+        icon: Icon(Icons.clear),
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext bc2){
+    return IconButton(
+      onPressed: (){
+        //close(bc2, null);
+        Navigator.push(bc2, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesPage()));
+      },
+      icon: Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext bc3){
+    List<String> myMatchQuery = [];
+
+    if(!myScrollController.hasListeners){
+      myScrollController.addListener((){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      });
+    }
+
+    SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+      FocusScope.of(bc3).requestFocus(FocusNode());}
+    );
+
+    Future.delayed(Duration(milliseconds: 50), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 100), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 250), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 500), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    for(var dbuThread in listOfDbuThreads){
+      if(dbuThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add(dbuThread["threadTitle"]);
+      }
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      onPanDown: (_){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      child: ListView.builder(
+          controller: myScrollController,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc3, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+              title: Text(myResult),
+            );
+          }
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext bc4){
+    List<String> myMatchQuery = [];
+    for(var dbuThread in listOfDbuThreads){
+      if(dbuThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add(dbuThread["threadTitle"]);
+      }
+    }
+
+    myMatchQuery.sort((dbu1, dbu2) => dbu1.compareTo(dbu2));
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(bc4).unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: ListView.builder(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc4, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+                title: Text(myResult),
+                onTap: () async{
+                  SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+                  theDbuThreadResult = myResult;
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    dbuThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
+                    specificDbuThreadData = dbuThreadClickedData.firstWhere((myDbuThread) => myDbuThread["threadTitle"].toString().toLowerCase() == myResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                    print("dbuThreadClickedData: ${dbuThreadClickedData}");
+                    print("specifcDbuThreadData: ${specificDbuThreadData}");
+
+                    threadAuthorDbu = specificDbuThreadData["poster"].toString();
+                    threadTitleDbu = specificDbuThreadData["threadTitle"].toString();
+                    threadContentDbu = specificDbuThreadData["threadContent"].toString();
+                    threadID = specificDbuThreadData["threadId"].toString();
+
+                    //Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadsPage()));
+                  }
+                  else{
+                    dbuThreadClickedData = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadTitle", isEqualTo: myResult.toLowerCase()).get();
+                    dbuThreadClickedData.docs.forEach((myThread){
+                      specificDbuThreadData = myThread.data();
+                    });
+
+                    threadAuthorDbu = specificDbuThreadData["poster"].toString();
+                    threadTitleDbu = specificDbuThreadData["threadTitle"].toString();
+                    threadContentDbu = specificDbuThreadData["threadContent"].toString();
+                    threadID = specificDbuThreadData["threadId"].toString();
+
+                    print("You clicked on a thread title: ${myResult}");
+                    print("The DBU thread data: ${specificDbuThreadData}");
+                    print("Content of the DBU thread: ${specificDbuThreadData["threadContent"]}");
+                    print("Thread ID of the DBU thread: ${specificDbuThreadData["threadId"]}");
+                    //Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadsPage()));
+                  }
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
+                    var matchingThread = theDbuThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+
+                    if(matchingThread.isNotEmpty){
+                      //Getting the document ID:
+                      myDocDbu = matchingThread["docId"];
+                      print("This is myDocDbu: ${myDocDbu}");
+                    }
+                    else{
+                      print("Sorry; the thread was not found");
+                    }
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                      myDocDbu = d.docs.first.id;
+                      print("This is myDocDbu: ${myDocDbu}");
+                    });
+                  }
+
+                  //Getting the replies of a thread
+                  if(firebaseDesktopHelper.onDesktop){
+                    theDbuThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
+
+                    print(theDbuThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    theDbuThreadReplies.sort((b, a){
+                      DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                      DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                      return dta.compareTo(dtb);
+                    });
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies");//.add(oneReply);
+
+                    QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                    theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                    print(theDbuThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    (theDbuThreadReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
+                  }
+                  print("Number of theDbuThreadReplies: ${theDbuThreadReplies.length}");
+
+                  Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadsPage()));
+                }
+            );
+          }
+      ),
+    );
+  }
+}
+
 class routeToCreateThread{
   static String createThreadPage = createThreadState.threadCreator;
 }
@@ -106,6 +316,9 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
   var portionSizeDbu = 10;
 
   int previousThreadsLength = -1;
+
+  TextEditingController dbuQuery = TextEditingController();
+  myDbuSearch mdbus = new myDbuSearch();
 
   @override
   void initState(){
@@ -369,6 +582,26 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
           ),
           Container(
             child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+            child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  icon: Icon(Icons.search),
+                ),
+                controller: dbuQuery,
+                readOnly: true,
+                focusNode: FocusNode(canRequestFocus: false),
+                onTap: (){
+                  print("List of dbu threads: ${listOfDbuThreads}");
+                  myMain.myAccessCheckNotifier.value = DateTime.now();
+                  showSearch(
+                    context: context,
+                    delegate: myDbuSearch(),
+                  );
+                }
+            ),
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,
