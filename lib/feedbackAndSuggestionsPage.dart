@@ -17,6 +17,7 @@ import 'discussion_board_updates_firestore_database_information/discussionBoardU
 import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
+import 'package:flutter/services.dart';
 
 bool fasBool = false;
 bool fasReplyBool = false;
@@ -58,6 +59,10 @@ int fasNavigationDepth = 0;
 bool fromFasThread = false;
 bool fromFasPage = false;
 
+var theFasThreadResult;
+var fasThreadClickedData;
+var specificFasThreadData;
+
 class feedbackAndSuggestionsPage extends StatefulWidget{
   const feedbackAndSuggestionsPage ({Key? key}) : super(key: key);
 
@@ -87,6 +92,208 @@ class MyFeedbackAndSuggestionsPage extends StatelessWidget{
   }
 }
 
+class myFasSearch extends SearchDelegate{
+  List<dynamic> listOfFasThreads = discussionBoardPage.feedbackAndSuggestionsThreads;
+
+  final ScrollController myScrollController = ScrollController();
+
+  @override
+  TextInputAction get textInputAction => TextInputAction.search;
+
+  @override
+  List<Widget>? buildActions(BuildContext bc){
+    return [
+      IconButton(
+        onPressed: (){
+          query = "";
+        },
+        icon: Icon(Icons.clear),
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext bc2){
+    return IconButton(
+      onPressed: (){
+        //close(bc2, null);
+        Navigator.push(bc2, MaterialPageRoute(builder: (BuildContext context) => feedbackAndSuggestionsPage()));
+      },
+      icon: Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext bc3){
+    List<dynamic> myMatchQuery = [];
+
+    if(!myScrollController.hasListeners){
+      myScrollController.addListener((){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      });
+    }
+
+    SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+      FocusScope.of(bc3).requestFocus(FocusNode());}
+    );
+
+    Future.delayed(Duration(milliseconds: 50), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 100), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 250), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 500), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    for(var fasThread in listOfFasThreads){
+      if(fasThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add([fasThread["threadTitle"], fasThread["poster"]]);
+      }
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      onPanDown: (_){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      child: ListView.builder(
+          controller: myScrollController,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc3, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+              title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+            );
+          }
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext bc4){
+    List<dynamic> myMatchQuery = [];
+    for(var fasThread in listOfFasThreads){
+      if(fasThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add([fasThread["threadTitle"], fasThread["poster"]]);
+      }
+    }
+
+    myMatchQuery.sort((fas1, fas2) => fas1[0].compareTo(fas2[0]));
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(bc4).unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: ListView.builder(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc4, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+                title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+                onTap: () async{
+                  SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+                  theFasThreadResult = myResult[0];
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    fasThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
+                    specificFasThreadData = fasThreadClickedData.firstWhere((myFasThread) => myFasThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                    print("fasThreadClickedData: ${fasThreadClickedData}");
+                    print("specifcFasThreadData: ${specificFasThreadData}");
+
+                    threadAuthorFas = specificFasThreadData["poster"].toString();
+                    threadTitleFas = specificFasThreadData["threadTitle"].toString();
+                    threadContentFas = specificFasThreadData["threadContent"].toString();
+                    threadID = specificFasThreadData["threadId"].toString();
+                  }
+                  else{
+                    fasThreadClickedData = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadTitle", isEqualTo: myResult[0].toLowerCase()).get();
+                    fasThreadClickedData.docs.forEach((myThread){
+                      specificFasThreadData = myThread.data();
+                    });
+
+                    threadAuthorFas = specificFasThreadData["poster"].toString();
+                    threadTitleFas = specificFasThreadData["threadTitle"].toString();
+                    threadContentFas = specificFasThreadData["threadContent"].toString();
+                    threadID = specificFasThreadData["threadId"].toString();
+
+                    print("You clicked on a thread title: ${myResult}");
+                    print("The FaS thread data: ${specificFasThreadData}");
+                    print("Content of the FaS thread: ${specificFasThreadData["threadContent"]}");
+                    print("Thread ID of the FaS thread: ${specificFasThreadData["threadId"]}");
+                  }
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    var theFasThreads = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
+                    var matchingThread = theFasThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+
+                    if(matchingThread.isNotEmpty){
+                      //Getting the document ID:
+                      myDocFas = matchingThread["docId"];
+                      print("This is myDocFas: ${myDocFas}");
+                    }
+                    else{
+                      print("Sorry; the thread was not found");
+                    }
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                      myDocFas = d.docs.first.id;
+                      print("This is myDocFas: ${myDocFas}");
+                    });
+                  }
+
+                  //Getting the replies of a thread
+                  if(firebaseDesktopHelper.onDesktop){
+                    theFasThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Feedback_And_Suggestions", myDocFas, "Replies");
+
+                    print(theFasThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    theFasThreadReplies.sort((b, a){
+                      DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                      DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                      return dta.compareTo(dtb);
+                    });
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies");//.add(oneReply);
+
+                    QuerySnapshot fasRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Feedback_And_Suggestions").doc(myDocFas).collection("Replies").get();
+                    theFasThreadReplies = fasRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                    print(theFasThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    (theFasThreadReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
+                  }
+                  print("Number of theFasThreadReplies: ${theFasThreadReplies.length}");
+
+                  Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => feedbackAndSuggestionsThreadsPage()));
+                }
+            );
+          }
+      ),
+    );
+  }
+}
+
 class routeToCreateThread{
   static String createThreadPage = createThreadState.threadCreator;
 }
@@ -105,6 +312,9 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage> 
   var portionSizeFas = 10;
 
   int previousThreadsLength = -1;
+
+  TextEditingController fasQuery = TextEditingController();
+  myFasSearch fass = new myFasSearch();
 
   @override
   void initState(){
@@ -339,6 +549,26 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage> 
           ),
           Container(
             child: Text("Feedback and Suggestions Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+            child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  icon: Icon(Icons.search),
+                ),
+                controller: fasQuery,
+                readOnly: true,
+                focusNode: FocusNode(canRequestFocus: false),
+                onTap: (){
+                  print("List of fas threads: ${listOfFasThreads}");
+                  myMain.myAccessCheckNotifier.value = DateTime.now();
+                  showSearch(
+                    context: context,
+                    delegate: myFasSearch(),
+                  );
+                }
+            ),
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,
