@@ -125,7 +125,7 @@ class myDbuSearch extends SearchDelegate{
 
   @override
   Widget buildResults(BuildContext bc3){
-    List<String> myMatchQuery = [];
+    List<dynamic> myMatchQuery = [];
 
     if(!myScrollController.hasListeners){
       myScrollController.addListener((){
@@ -158,7 +158,7 @@ class myDbuSearch extends SearchDelegate{
 
     for(var dbuThread in listOfDbuThreads){
       if(dbuThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
-        myMatchQuery.add(dbuThread["threadTitle"]);
+        myMatchQuery.add([dbuThread["threadTitle"], dbuThread["poster"]]);
       }
     }
     return GestureDetector(
@@ -176,7 +176,7 @@ class myDbuSearch extends SearchDelegate{
           itemBuilder: (bc3, index){
             var myResult = myMatchQuery[index];
             return ListTile(
-              title: Text(myResult),
+              title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
             );
           }
       ),
@@ -185,14 +185,14 @@ class myDbuSearch extends SearchDelegate{
 
   @override
   Widget buildSuggestions(BuildContext bc4){
-    List<String> myMatchQuery = [];
+    List<dynamic> myMatchQuery = [];
     for(var dbuThread in listOfDbuThreads){
       if(dbuThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
-        myMatchQuery.add(dbuThread["threadTitle"]);
+        myMatchQuery.add([dbuThread["threadTitle"], dbuThread["poster"]]);
       }
     }
 
-    myMatchQuery.sort((dbu1, dbu2) => dbu1.compareTo(dbu2));
+    myMatchQuery.sort((dbu1, dbu2) => dbu1[0].compareTo(dbu2[0]));
 
     return GestureDetector(
       onTap: () => FocusScope.of(bc4).unfocus(),
@@ -203,15 +203,15 @@ class myDbuSearch extends SearchDelegate{
           itemBuilder: (bc4, index){
             var myResult = myMatchQuery[index];
             return ListTile(
-                title: Text(myResult),
+                title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
                 onTap: () async{
                   SystemChannels.textInput.invokeMethod("TextInput.hide");
 
-                  theDbuThreadResult = myResult;
+                  theDbuThreadResult = myResult[0];
 
                   if(firebaseDesktopHelper.onDesktop){
                     dbuThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
-                    specificDbuThreadData = dbuThreadClickedData.firstWhere((myDbuThread) => myDbuThread["threadTitle"].toString().toLowerCase() == myResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                    specificDbuThreadData = dbuThreadClickedData.firstWhere((myDbuThread) => myDbuThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);
                     print("dbuThreadClickedData: ${dbuThreadClickedData}");
                     print("specifcDbuThreadData: ${specificDbuThreadData}");
 
@@ -223,7 +223,7 @@ class myDbuSearch extends SearchDelegate{
                     //Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadsPage()));
                   }
                   else{
-                    dbuThreadClickedData = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadTitle", isEqualTo: myResult.toLowerCase()).get();
+                    dbuThreadClickedData = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadTitle", isEqualTo: myResult[0].toLowerCase()).get();
                     dbuThreadClickedData.docs.forEach((myThread){
                       specificDbuThreadData = myThread.data();
                     });
