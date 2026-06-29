@@ -15,6 +15,7 @@ import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 import 'discussionBoardPage.dart' as discussionBoardPage;
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
+import 'package:flutter/services.dart';
 
 bool newDiscoveriesBool = false;
 bool newDiscoveriesReplyBool = false;
@@ -53,6 +54,10 @@ int ndNavigationDepth = 0;
 bool fromNdThread = false;
 bool fromNdPage = false;
 
+var theNdThreadResult;
+var ndThreadClickedData;
+var specificNdThreadData;
+
 class newDiscoveriesPage extends StatefulWidget{
   const newDiscoveriesPage ({Key? key}) : super(key: key);
 
@@ -82,6 +87,208 @@ class MyNewDiscoveriesPage extends StatelessWidget{
   }
 }
 
+class myNdSearch extends SearchDelegate{
+  List<dynamic> listOfNdThreads = discussionBoardPage.newDiscoveriesThreads;
+
+  final ScrollController myScrollController = ScrollController();
+
+  @override
+  TextInputAction get textInputAction => TextInputAction.search;
+
+  @override
+  List<Widget>? buildActions(BuildContext bc){
+    return [
+      IconButton(
+        onPressed: (){
+          query = "";
+        },
+        icon: Icon(Icons.clear),
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext bc2){
+    return IconButton(
+      onPressed: (){
+        //close(bc2, null);
+        Navigator.push(bc2, MaterialPageRoute(builder: (BuildContext context) => newDiscoveriesPage()));
+      },
+      icon: Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext bc3){
+    List<dynamic> myMatchQuery = [];
+
+    if(!myScrollController.hasListeners){
+      myScrollController.addListener((){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      });
+    }
+
+    SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+      FocusScope.of(bc3).requestFocus(FocusNode());}
+    );
+
+    Future.delayed(Duration(milliseconds: 50), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 100), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 250), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 500), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    for(var ndThread in listOfNdThreads){
+      if(ndThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add([ndThread["threadTitle"], ndThread["poster"]]);
+      }
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      onPanDown: (_){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      child: ListView.builder(
+          controller: myScrollController,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc3, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+              title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+            );
+          }
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext bc4){
+    List<dynamic> myMatchQuery = [];
+    for(var ndThread in listOfNdThreads){
+      if(ndThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add([ndThread["threadTitle"], ndThread["poster"]]);
+      }
+    }
+
+    myMatchQuery.sort((nd1, nd2) => nd1[0].compareTo(nd2[0]));
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(bc4).unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: ListView.builder(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc4, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+                title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+                onTap: () async{
+                  SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+                  theNdThreadResult = myResult[0];
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    ndThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("New_Discoveries");
+                    specificNdThreadData = ndThreadClickedData.firstWhere((myNdThread) => myNdThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                    print("ndThreadClickedData: ${ndThreadClickedData}");
+                    print("specifcNdThreadData: ${specificNdThreadData}");
+
+                    threadAuthorNd = specificNdThreadData["poster"].toString();
+                    threadTitleNd = specificNdThreadData["threadTitle"].toString();
+                    threadContentNd = specificNdThreadData["threadContent"].toString();
+                    threadID = specificNdThreadData["threadId"].toString();
+                  }
+                  else{
+                    ndThreadClickedData = await FirebaseFirestore.instance.collection("New_Discoveries").where("threadTitle", isEqualTo: myResult[0].toLowerCase()).get();
+                    ndThreadClickedData.docs.forEach((myThread){
+                      specificNdThreadData = myThread.data();
+                    });
+
+                    threadAuthorNd = specificNdThreadData["poster"].toString();
+                    threadTitleNd = specificNdThreadData["threadTitle"].toString();
+                    threadContentNd = specificNdThreadData["threadContent"].toString();
+                    threadID = specificNdThreadData["threadId"].toString();
+
+                    print("You clicked on a thread title: ${myResult}");
+                    print("The ND thread data: ${specificNdThreadData}");
+                    print("Content of the ND thread: ${specificNdThreadData["threadContent"]}");
+                    print("Thread ID of the ND thread: ${specificNdThreadData["threadId"]}");
+                  }
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    var theNdThreads = await firebaseDesktopHelper.getFirestoreCollection("New_Discoveries");
+                    var matchingThread = theNdThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+
+                    if(matchingThread.isNotEmpty){
+                      //Getting the document ID:
+                      myDocNd = matchingThread["docId"];
+                      print("This is myDocNd: ${myDocNd}");
+                    }
+                    else{
+                      print("Sorry; the thread was not found");
+                    }
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("New_Discoveries").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                      myDocNd = d.docs.first.id;
+                      print("This is myDocNd: ${myDocNd}");
+                    });
+                  }
+
+                  //Getting the replies of a thread
+                  if(firebaseDesktopHelper.onDesktop){
+                    theNdThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("New_Discoveries", myDocNd, "Replies");
+
+                    print(theNdThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    theNdThreadReplies.sort((b, a){
+                      DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                      DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                      return dta.compareTo(dtb);
+                    });
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies");//.add(oneReply);
+
+                    QuerySnapshot ndRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("New_Discoveries").doc(myDocNd).collection("Replies").get();
+                    theNdThreadReplies = ndRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                    print(theNdThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    (theNdThreadReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
+                  }
+                  print("Number of theNdThreadReplies: ${theNdThreadReplies.length}");
+
+                  Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => newDiscoveriesThreadsPage()));
+                }
+            );
+          }
+      ),
+    );
+  }
+}
+
 class routeToCreateThreadNewDiscoveriesPage{
   static String createThreadPage = createThreadState.threadCreator;
 }
@@ -100,6 +307,9 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage> with RouteAware{
   var portionSizeNd = 10;
 
   int previousThreadsLength = -1;
+
+  TextEditingController ndQuery = TextEditingController();
+  myNdSearch nds = new myNdSearch();
 
   @override
   void initState(){
@@ -334,6 +544,26 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage> with RouteAware{
           ),
           Container(
             child: Text("New Discoveries Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+            child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  icon: Icon(Icons.search),
+                ),
+                controller: ndQuery,
+                readOnly: true,
+                focusNode: FocusNode(canRequestFocus: false),
+                onTap: (){
+                  print("List of nd threads: ${listOfNdThreads}");
+                  myMain.myAccessCheckNotifier.value = DateTime.now();
+                  showSearch(
+                    context: context,
+                    delegate: myNdSearch(),
+                  );
+                }
+            ),
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,

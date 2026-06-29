@@ -16,6 +16,7 @@ import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 import 'discussionBoardPage.dart' as discussionBoardPage;
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
+import 'package:flutter/services.dart';
 
 bool projectsBool = false;
 bool projectsReplyBool = false;
@@ -54,6 +55,10 @@ int projectsNavigationDepth = 0;
 bool fromPThread = false;
 bool fromPPage = false;
 
+var thePThreadResult;
+var pThreadClickedData;
+var specificPThreadData;
+
 class projectsPage extends StatefulWidget{
   const projectsPage ({Key? key}) : super(key: key);
 
@@ -83,6 +88,208 @@ class MyProjectsPage extends StatelessWidget{
   }
 }
 
+class myPSearch extends SearchDelegate{
+  List<dynamic> listOfPThreads = discussionBoardPage.projectsThreads;
+
+  final ScrollController myScrollController = ScrollController();
+
+  @override
+  TextInputAction get textInputAction => TextInputAction.search;
+
+  @override
+  List<Widget>? buildActions(BuildContext bc){
+    return [
+      IconButton(
+        onPressed: (){
+          query = "";
+        },
+        icon: Icon(Icons.clear),
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext bc2){
+    return IconButton(
+      onPressed: (){
+        //close(bc2, null);
+        Navigator.push(bc2, MaterialPageRoute(builder: (BuildContext context) => projectsPage()));
+      },
+      icon: Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext bc3){
+    List<dynamic> myMatchQuery = [];
+
+    if(!myScrollController.hasListeners){
+      myScrollController.addListener((){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      });
+    }
+
+    SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+      FocusScope.of(bc3).requestFocus(FocusNode());}
+    );
+
+    Future.delayed(Duration(milliseconds: 50), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 100), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 250), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 500), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    for(var pThread in listOfPThreads){
+      if(pThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add([pThread["threadTitle"], pThread["poster"]]);
+      }
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      onPanDown: (_){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      child: ListView.builder(
+          controller: myScrollController,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc3, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+              title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+            );
+          }
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext bc4){
+    List<dynamic> myMatchQuery = [];
+    for(var pThread in listOfPThreads){
+      if(pThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add([pThread["threadTitle"], pThread["poster"]]);
+      }
+    }
+
+    myMatchQuery.sort((fas1, fas2) => fas1[0].compareTo(fas2[0]));
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(bc4).unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: ListView.builder(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc4, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+                title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+                onTap: () async{
+                  SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+                  thePThreadResult = myResult[0];
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    pThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Projects");
+                    specificPThreadData = pThreadClickedData.firstWhere((myPThread) => myPThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                    print("pThreadClickedData: ${pThreadClickedData}");
+                    print("specifcPThreadData: ${specificPThreadData}");
+
+                    threadAuthorP = specificPThreadData["poster"].toString();
+                    threadTitleP = specificPThreadData["threadTitle"].toString();
+                    threadContentP = specificPThreadData["threadContent"].toString();
+                    threadID = specificPThreadData["threadId"].toString();
+                  }
+                  else{
+                    pThreadClickedData = await FirebaseFirestore.instance.collection("Projects").where("threadTitle", isEqualTo: myResult[0].toLowerCase()).get();
+                    pThreadClickedData.docs.forEach((myThread){
+                      specificPThreadData = myThread.data();
+                    });
+
+                    threadAuthorP = specificPThreadData["poster"].toString();
+                    threadTitleP = specificPThreadData["threadTitle"].toString();
+                    threadContentP = specificPThreadData["threadContent"].toString();
+                    threadID = specificPThreadData["threadId"].toString();
+
+                    print("You clicked on a thread title: ${myResult}");
+                    print("The P thread data: ${specificPThreadData}");
+                    print("Content of the P thread: ${specificPThreadData["threadContent"]}");
+                    print("Thread ID of the P thread: ${specificPThreadData["threadId"]}");
+                  }
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    var thePThreads = await firebaseDesktopHelper.getFirestoreCollection("Projects");
+                    var matchingThread = thePThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+
+                    if(matchingThread.isNotEmpty){
+                      //Getting the document ID:
+                      myDocP = matchingThread["docId"];
+                      print("This is myDocP: ${myDocP}");
+                    }
+                    else{
+                      print("Sorry; the thread was not found");
+                    }
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("Projects").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                      myDocP = d.docs.first.id;
+                      print("This is myDocP: ${myDocP}");
+                    });
+                  }
+
+                  //Getting the replies of a thread
+                  if(firebaseDesktopHelper.onDesktop){
+                    thePThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Projects", myDocP, "Replies");
+
+                    print(thePThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    thePThreadReplies.sort((b, a){
+                      DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                      DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                      return dta.compareTo(dtb);
+                    });
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies");//.add(oneReply);
+
+                    QuerySnapshot pRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Projects").doc(myDocP).collection("Replies").get();
+                    thePThreadReplies = pRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                    print(thePThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    (thePThreadReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
+                  }
+                  print("Number of thePThreadReplies: ${thePThreadReplies.length}");
+
+                  Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => projectsThreadsPage()));
+                }
+            );
+          }
+      ),
+    );
+  }
+}
+
 class routeToCreateThreadProjectsPage{
   static String createThreadPage = createThreadState.threadCreator;
 }
@@ -102,6 +309,9 @@ class projectsPageState extends State<projectsPage> with RouteAware{
   var portionSize = 10;
 
   int previousThreadsLength = -1;
+
+  TextEditingController pQuery = TextEditingController();
+  myPSearch ps = new myPSearch();
 
   @override
   void initState(){
@@ -339,6 +549,26 @@ class projectsPageState extends State<projectsPage> with RouteAware{
           ),
           Container(
             child: Text("Projects Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+            child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  icon: Icon(Icons.search),
+                ),
+                controller: pQuery,
+                readOnly: true,
+                focusNode: FocusNode(canRequestFocus: false),
+                onTap: (){
+                  print("List of p threads: ${listOfProjectsThreads}");
+                  myMain.myAccessCheckNotifier.value = DateTime.now();
+                  showSearch(
+                    context: context,
+                    delegate: myPSearch(),
+                  );
+                }
+            ),
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,

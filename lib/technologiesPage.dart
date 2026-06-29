@@ -15,6 +15,7 @@ import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 import 'discussionBoardPage.dart' as discussionBoardPage;
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
+import 'package:flutter/services.dart';
 
 bool technologiesBool = false;
 bool technologiesReplyBool = false;
@@ -53,6 +54,10 @@ int technologiesNavigationDepth = 0;
 bool fromTThread = false;
 bool fromTPage = false;
 
+var theTThreadResult;
+var tThreadClickedData;
+var specificTThreadData;
+
 class technologiesPage extends StatefulWidget{
   const technologiesPage ({Key? key}) : super(key: key);
 
@@ -82,6 +87,208 @@ class MyTechnologiesPage extends StatelessWidget{
   }
 }
 
+class myTSearch extends SearchDelegate{
+  List<dynamic> listOfTThreads = discussionBoardPage.technologiesThreads;
+
+  final ScrollController myScrollController = ScrollController();
+
+  @override
+  TextInputAction get textInputAction => TextInputAction.search;
+
+  @override
+  List<Widget>? buildActions(BuildContext bc){
+    return [
+      IconButton(
+        onPressed: (){
+          query = "";
+        },
+        icon: Icon(Icons.clear),
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext bc2){
+    return IconButton(
+      onPressed: (){
+        //close(bc2, null);
+        Navigator.push(bc2, MaterialPageRoute(builder: (BuildContext context) => technologiesPage()));
+      },
+      icon: Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext bc3){
+    List<dynamic> myMatchQuery = [];
+
+    if(!myScrollController.hasListeners){
+      myScrollController.addListener((){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      });
+    }
+
+    SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+      FocusScope.of(bc3).requestFocus(FocusNode());}
+    );
+
+    Future.delayed(Duration(milliseconds: 50), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 100), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 250), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 500), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    for(var tThread in listOfTThreads){
+      if(tThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add([tThread["threadTitle"], tThread["poster"]]);
+      }
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      onPanDown: (_){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      child: ListView.builder(
+          controller: myScrollController,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc3, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+              title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+            );
+          }
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext bc4){
+    List<dynamic> myMatchQuery = [];
+    for(var tThread in listOfTThreads){
+      if(tThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add([tThread["threadTitle"], tThread["poster"]]);
+      }
+    }
+
+    myMatchQuery.sort((t1, t2) => t1[0].compareTo(t2[0]));
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(bc4).unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: ListView.builder(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc4, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+                title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+                onTap: () async{
+                  SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+                  theTThreadResult = myResult[0];
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    tThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
+                    specificTThreadData = tThreadClickedData.firstWhere((myTThread) => myTThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                    print("tThreadClickedData: ${tThreadClickedData}");
+                    print("specifcTThreadData: ${specificTThreadData}");
+
+                    threadAuthorT = specificTThreadData["poster"].toString();
+                    threadTitleT = specificTThreadData["threadTitle"].toString();
+                    threadContentT = specificTThreadData["threadContent"].toString();
+                    threadID = specificTThreadData["threadId"].toString();
+                  }
+                  else{
+                    tThreadClickedData = await FirebaseFirestore.instance.collection("Technologies").where("threadTitle", isEqualTo: myResult[0].toLowerCase()).get();
+                    tThreadClickedData.docs.forEach((myThread){
+                      specificTThreadData = myThread.data();
+                    });
+
+                    threadAuthorT = specificTThreadData["poster"].toString();
+                    threadTitleT = specificTThreadData["threadTitle"].toString();
+                    threadContentT = specificTThreadData["threadContent"].toString();
+                    threadID = specificTThreadData["threadId"].toString();
+
+                    print("You clicked on a thread title: ${myResult}");
+                    print("The T thread data: ${specificTThreadData}");
+                    print("Content of the T thread: ${specificTThreadData["threadContent"]}");
+                    print("Thread ID of the T thread: ${specificTThreadData["threadId"]}");
+                  }
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    var theTThreads = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
+                    var matchingThread = theTThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+
+                    if(matchingThread.isNotEmpty){
+                      //Getting the document ID:
+                      myDocT = matchingThread["docId"];
+                      print("This is myDocT: ${myDocT}");
+                    }
+                    else{
+                      print("Sorry; the thread was not found");
+                    }
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                      myDocT = d.docs.first.id;
+                      print("This is myDocT: ${myDocT}");
+                    });
+                  }
+
+                  //Getting the replies of a thread
+                  if(firebaseDesktopHelper.onDesktop){
+                    theTThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Technologies", myDocT, "Replies");
+
+                    print(theTThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    theTThreadReplies.sort((b, a){
+                      DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                      DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                      return dta.compareTo(dtb);
+                    });
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies");//.add(oneReply);
+
+                    QuerySnapshot tRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Technologies").doc(myDocT).collection("Replies").get();
+                    theTThreadReplies = tRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                    print(theTThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    (theTThreadReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
+                  }
+                  print("Number of theTThreadReplies: ${theTThreadReplies.length}");
+
+                  Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => technologiesThreadsPage()));
+                }
+            );
+          }
+      ),
+    );
+  }
+}
+
 class routeToCreateThreadTechnologiesPage{
   static String createThreadPage = createThreadState.threadCreator;
 }
@@ -100,6 +307,9 @@ class technologiesPageState extends State<technologiesPage> with RouteAware{
   var portionSizeTechnologies = 10;
 
   int previousThreadsLength = -1;
+
+  TextEditingController tQuery = TextEditingController();
+  myTSearch ts = new myTSearch();
 
   @override
   void initState(){
@@ -334,6 +544,26 @@ class technologiesPageState extends State<technologiesPage> with RouteAware{
           ),
           Container(
             child: Text("Technologies Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+            child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  icon: Icon(Icons.search),
+                ),
+                controller: tQuery,
+                readOnly: true,
+                focusNode: FocusNode(canRequestFocus: false),
+                onTap: (){
+                  print("List of t threads: ${listOfTechnologiesThreads}");
+                  myMain.myAccessCheckNotifier.value = DateTime.now();
+                  showSearch(
+                    context: context,
+                    delegate: myTSearch(),
+                  );
+                }
+            ),
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,

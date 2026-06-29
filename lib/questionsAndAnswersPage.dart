@@ -15,6 +15,7 @@ import 'createThread.dart';
 import 'replyThreadPage.dart';
 import 'main.dart' as myMain;
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
+import 'package:flutter/services.dart';
 
 bool questionsAndAnswersBool = false;
 bool questionsAndAnswersReplyBool = false;
@@ -53,6 +54,10 @@ int qaaNavigationDepth = 0;
 bool fromQaaThread = false;
 bool fromQaaPage = false;
 
+var theQaaThreadResult;
+var qaaThreadClickedData;
+var specificQaaThreadData;
+
 class questionsAndAnswersPage extends StatefulWidget{
   const questionsAndAnswersPage ({Key? key}) : super(key: key);
 
@@ -82,6 +87,208 @@ class MyQuestionsAndAnswersPage extends StatelessWidget{
   }
 }
 
+class myQaaSearch extends SearchDelegate{
+  List<dynamic> listOfQaaThreads = discussionBoardPage.questionsAndAnswersThreads;
+
+  final ScrollController myScrollController = ScrollController();
+
+  @override
+  TextInputAction get textInputAction => TextInputAction.search;
+
+  @override
+  List<Widget>? buildActions(BuildContext bc){
+    return [
+      IconButton(
+        onPressed: (){
+          query = "";
+        },
+        icon: Icon(Icons.clear),
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext bc2){
+    return IconButton(
+      onPressed: (){
+        //close(bc2, null);
+        Navigator.push(bc2, MaterialPageRoute(builder: (BuildContext context) => questionsAndAnswersPage()));
+      },
+      icon: Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext bc3){
+    List<dynamic> myMatchQuery = [];
+
+    if(!myScrollController.hasListeners){
+      myScrollController.addListener((){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      });
+    }
+
+    SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+      FocusScope.of(bc3).requestFocus(FocusNode());}
+    );
+
+    Future.delayed(Duration(milliseconds: 50), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 100), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 250), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    Future.delayed(Duration(milliseconds: 500), (){
+      SystemChannels.textInput.invokeMethod("TextInput.hide");
+    });
+
+    for(var qaaThread in listOfQaaThreads){
+      if(qaaThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add([qaaThread["threadTitle"], qaaThread["poster"]]);
+      }
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      onPanDown: (_){
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
+      },
+      child: ListView.builder(
+          controller: myScrollController,
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc3, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+              title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+            );
+          }
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext bc4){
+    List<dynamic> myMatchQuery = [];
+    for(var qaaThread in listOfQaaThreads){
+      if(qaaThread["threadTitle"].toLowerCase().contains(query.toLowerCase())){
+        myMatchQuery.add([qaaThread["threadTitle"], qaaThread["poster"]]);
+      }
+    }
+
+    myMatchQuery.sort((qaa1, qaa2) => qaa1[0].compareTo(qaa2[0]));
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(bc4).unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: ListView.builder(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: myMatchQuery.length,
+          itemBuilder: (bc4, index){
+            var myResult = myMatchQuery[index];
+            return ListTile(
+                title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+                onTap: () async{
+                  SystemChannels.textInput.invokeMethod("TextInput.hide");
+
+                  theQaaThreadResult = myResult[0];
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    qaaThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Questions_And_Answers");
+                    specificQaaThreadData = qaaThreadClickedData.firstWhere((myQaaThread) => myQaaThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                    print("qaaThreadClickedData: ${qaaThreadClickedData}");
+                    print("specifcQaaThreadData: ${specificQaaThreadData}");
+
+                    threadAuthorQaa = specificQaaThreadData["poster"].toString();
+                    threadTitleQaa = specificQaaThreadData["threadTitle"].toString();
+                    threadContentQaa = specificQaaThreadData["threadContent"].toString();
+                    threadID = specificQaaThreadData["threadId"].toString();
+                  }
+                  else{
+                    qaaThreadClickedData = await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadTitle", isEqualTo: myResult[0].toLowerCase()).get();
+                    qaaThreadClickedData.docs.forEach((myThread){
+                      specificQaaThreadData = myThread.data();
+                    });
+
+                    threadAuthorQaa = specificQaaThreadData["poster"].toString();
+                    threadTitleQaa = specificQaaThreadData["threadTitle"].toString();
+                    threadContentQaa = specificQaaThreadData["threadContent"].toString();
+                    threadID = specificQaaThreadData["threadId"].toString();
+
+                    print("You clicked on a thread title: ${myResult}");
+                    print("The QaA thread data: ${specificQaaThreadData}");
+                    print("Content of the QaA thread: ${specificQaaThreadData["threadContent"]}");
+                    print("Thread ID of the QaA thread: ${specificQaaThreadData["threadId"]}");
+                  }
+
+                  if(firebaseDesktopHelper.onDesktop){
+                    var theQaaThreads = await firebaseDesktopHelper.getFirestoreCollection("Questions_And_Answers");
+                    var matchingThread = theQaaThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+
+                    if(matchingThread.isNotEmpty){
+                      //Getting the document ID:
+                      myDocQaa = matchingThread["docId"];
+                      print("This is myDocQaa: ${myDocQaa}");
+                    }
+                    else{
+                      print("Sorry; the thread was not found");
+                    }
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("Questions_And_Answers").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                      myDocQaa = d.docs.first.id;
+                      print("This is myDocQaa: ${myDocQaa}");
+                    });
+                  }
+
+                  //Getting the replies of a thread
+                  if(firebaseDesktopHelper.onDesktop){
+                    theQaaThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Questions_And_Answers", myDocQaa, "Replies");
+
+                    print(theQaaThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    theQaaThreadReplies.sort((b, a){
+                      DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                      DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                      return dta.compareTo(dtb);
+                    });
+                  }
+                  else{
+                    await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies");//.add(oneReply);
+
+                    QuerySnapshot qaaRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Questions_And_Answers").doc(myDocQaa).collection("Replies").get();
+                    theQaaThreadReplies = qaaRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                    print(theQaaThreadReplies.runtimeType);
+
+                    print(DateTime.now().runtimeType);
+
+                    (theQaaThreadReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
+                  }
+                  print("Number of theQaaThreadReplies: ${theQaaThreadReplies.length}");
+
+                  Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => questionsAndAnswersThreadsPage()));
+                }
+            );
+          }
+      ),
+    );
+  }
+}
+
 class routeToCreateThreadQuestionsAndAnswersPage{
   static String createThreadPage = createThreadState.threadCreator;
 }
@@ -100,6 +307,9 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
   var portionSizeQaa = 10;
 
   int previousThreadsLength = -1;
+
+  TextEditingController qaaQuery = TextEditingController();
+  myQaaSearch qaas = new myQaaSearch();
 
   @override
   void initState(){
@@ -335,6 +545,26 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
           ),
           Container(
             child: Text("Questions and Answers Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+          ),
+          Container(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+            child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  icon: Icon(Icons.search),
+                ),
+                controller: qaaQuery,
+                readOnly: true,
+                focusNode: FocusNode(canRequestFocus: false),
+                onTap: (){
+                  print("List of qaa threads: ${listOfQaaThreads}");
+                  myMain.myAccessCheckNotifier.value = DateTime.now();
+                  showSearch(
+                    context: context,
+                    delegate: myQaaSearch(),
+                  );
+                }
+            ),
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,
