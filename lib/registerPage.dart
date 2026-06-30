@@ -9,6 +9,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide Context;
 import 'package:get/get_core/src/get_main.dart' hide Context;
 //import 'package:backendless_sdk/backendless_sdk.dart';
@@ -49,6 +50,16 @@ List<String> possibleUsernameChars = numRegExp + letterRegExp + ['_', '.'];
 final myKey = "Sixteen char key";
 
 List<String> registrationRequirements = ["Usernames must not be used by anyone else, contain anywhere between 3 and 25 characters, and only consist of letters, numbers, _, and/or .", "Email addresses must not have any spaces and have the (name)@(website) format.", "Passwords must contain at least one letter, one number, and one special character, be at least 8 characters long, and not have any whitespace."];
+
+String mySixDigitRegistrationCode = "";
+
+List userEmailPasswordList = [];
+
+final userInfo = Get.put(theUserInformation());
+
+Future<void> createUser(User u) async{
+  await userInfo.createMyUser(u);
+}
 
 bool whitespaceChecker(String? myString){
   if(myString == null){
@@ -177,6 +188,13 @@ class registerPage extends StatefulWidget{
   registerPageState createState() => registerPageState();
 }
 
+class registerSixDigitCodePage extends StatefulWidget{
+  const registerSixDigitCodePage ({Key? key}) : super(key: key);
+
+  @override
+  registerSixDigitCodePageState createState() => registerSixDigitCodePageState();
+}
+
 class MyRegisterPage extends StatelessWidget{
   const MyRegisterPage ({Key? key}) : super(key: key);
 
@@ -194,7 +212,6 @@ class registerPageRoutes{
 }
 
 class registerPageState extends State<registerPage>{
-  List userEmailPasswordList = [];
   static String nameOfRoute = '/registerPage';
   TextEditingController theUsername = TextEditingController();
   TextEditingController email = TextEditingController();
@@ -203,12 +220,6 @@ class registerPageState extends State<registerPage>{
 
   List<String> userCredentials = [];
   List<Text> myMessage = [];
-
-  final userInfo = Get.put(theUserInformation());
-
-  Future<void> createUser(User u) async{
-      await userInfo.createMyUser(u);
-  }
 
   List<Text> dialogMessage(List<String> c){
     List<Text> messageForUser = [];
@@ -418,161 +429,51 @@ class registerPageState extends State<registerPage>{
                     print("theUsers: ${myMain.theUsers}");
                     //If there are no users:
                     if(theUsername.text != "" && myMain.theUsers!.isEmpty && checkUsernameValidity(theUsername.text) == true && email.text != "" && checkEmailValidity(email.text) == true && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
-                      if(myMain.discussionBoardLogin == true){
-                        userId = 0;
-                        myNewUsername = theUsername.text;
-                        myNewEmail = email.text;
-                        myNewPassword = eBaseSixtyFour;//password.text;
-                        Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
-                        var theNewUser = User(
-                          id: userId,
-                          username: theUsername.text,
-                          emailAddress: email.text,
-                          password: eBaseSixtyFour,
-                          usernameLowercased: theUsername.text.toLowerCase(),
-                          usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
-                        );
-                        createUser(theNewUser);
-                        userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
-                        myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
-                        myMain.theUsers!.add(dasUser);
-                        print(myMain.theUsers);
-                        myMain.discussionBoardLogin = false;
-                        registerBool = true;
-                        print("Registering successfully as: " + userEmailPasswordList.toString());
-                        //emailNotifications.registrationConfirmationEmail();
-                        emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
-                      }
-                      else{
-                        userId = 0;
-                        myNewUsername = theUsername.text;
-                        myNewEmail = email.text;
-                        myNewPassword = eBaseSixtyFour;
-                        Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
-                        var theNewUser = User(
-                          id: userId,
-                          username: theUsername.text,
-                          emailAddress: email.text,
-                          password: eBaseSixtyFour,
-                          usernameLowercased: theUsername.text.toLowerCase(),
-                          usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
-                        );
-                        createUser(theNewUser);
-                        //dbService.addUser(theNewUser);
-                        //dbService.getUsers();
-                        userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
-                        myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
-                        myMain.theUsers!.add(dasUser);
-                        print(myMain.theUsers);
-                        myMain.discussionBoardLogin = false;
-                        registerBool = true;
-                        print("Registering successfully as: " + userEmailPasswordList.toString());
-                        //emailNotifications.registrationConfirmationEmail();
-                        emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
-                      }
+                      userId = 0;
+                      myNewUsername = theUsername.text;
+                      myNewEmail = email.text;
+                      myNewPassword = eBaseSixtyFour;
+
+                      Navigator.of(buildContext).push(MaterialPageRoute(builder: (BuildContext context) => registerSixDigitCodePage()));
+
+                      mySixDigitRegistrationCode = await emailNotifications.sixDigitCode();
+
+                      emailNotifications.sendAnEmail(myNewEmail, "Registration Code", "Hi ${myNewUsername},\n\nHere is the six-digit code you need to complete your registration to Star Expedition.\n\n${mySixDigitRegistrationCode}.\n\nBest,\nStar Expedition");
                     }
                     //If there is at least one user on Star Expedition:
                     else if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && checkUsernameValidity(theUsername.text) == true && email.text != "" && checkEmailValidity(email.text) == true && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
-                      if(myMain.discussionBoardLogin == true){
-                        //userId = userId + 1;
-                        if(firebaseDesktopHelper.onDesktop){
-                          var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                          print("userIdResult: ${userIdResult}");
-                          var userIdFound;
+                      if(firebaseDesktopHelper.onDesktop){
+                        var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        print("userIdResult: ${userIdResult}");
+                        var userIdFound;
 
-                          if(userIdResult.isEmpty){
-                            userIdFound = 1;
-                          }
-                          else{
-                            userIdResult.sort((myUserA, myUserB) => (myUserA["id"] as int).compareTo(myUserB["id"] as int));
-                            userIdFound = ((userIdResult.last["id"]) as int) + 1;
-                          }
-                          //var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
-                          print("userIdFound: ${userIdFound}");
-                          userId = userIdFound;
-                          print("This is the userId: $userId");
+                        if(userIdResult.isEmpty){
+                          userIdFound = 1;
                         }
                         else{
-                          await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
-                            userId = myNumber.docs.first.data()["id"] + 1;
-                          });
+                          userIdResult.sort((myUserA, myUserB) => (myUserA["id"] as int).compareTo(myUserB["id"] as int));
+                          userIdFound = ((userIdResult.last["id"]) as int) + 1;
                         }
-
-                        myNewUsername = theUsername.text;
-                        myNewEmail = email.text;
-                        myNewPassword = eBaseSixtyFour;
-                        Navigator.pushReplacementNamed(buildContext, registerPageRoutes.discussionBoard);
-                        var theNewUser = User(
-                            id: userId,
-                            username: theUsername.text,
-                            emailAddress: email.text,
-                            password: eBaseSixtyFour,
-                            usernameLowercased: theUsername.text.toLowerCase(),
-                            usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
-                        );
-                        createUser(theNewUser);
-                        //dbService.addUser(theNewUser);
-                        //dbService.getUsers();
-                        userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
-                        myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
-                        myMain.theUsers!.add(dasUser);
-                        print(myMain.theUsers);
-                        myMain.discussionBoardLogin = false;
-                        registerBool = true;
-                        print("Registering successfully as: " + userEmailPasswordList.toString());
-                        //emailNotifications.registrationConfirmationEmail();
-                        emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
+                        //var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
+                        print("userIdFound: ${userIdFound}");
+                        userId = userIdFound;
+                        print("This is the userId: $userId");
                       }
                       else{
-                        if(firebaseDesktopHelper.onDesktop){
-                          var userIdResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                          print("userIdResult: ${userIdResult}");
-                          var userIdFound;
-
-                          if(userIdResult.isEmpty){
-                            userIdFound = 1;
-                          }
-                          else{
-                            userIdResult.sort((myUserA, myUserB) => (myUserA["id"] as int).compareTo(myUserB["id"] as int));
-                            print("This is userIdResult.last: ${userIdResult.last["id"]}");
-                            userIdFound = ((userIdResult.last["id"]) as int) + 1;
-                          }
-                          //var userIdFound = userIdResult.firstWhere((myUser) => myUser["id"]  == (userIdResult.length - 1), orElse: () => <String, dynamic>{});
-                          print("userIdFound: ${userIdFound}");
-                          userId = userIdFound;
-                          print("This is the userId: $userId");
-                        }
-                        else{
-                          await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
-                            userId = myNumber.docs.first.data()["id"] + 1;
-                          });
-                        }
-
-                        myNewUsername = theUsername.text;
-                        myNewEmail = email.text;
-                        myNewPassword = eBaseSixtyFour;
-                        Navigator.pushReplacementNamed(buildContext, registerPageRoutes.homePage);
-                        var theNewUser = User(
-                            id: userId,
-                            username: theUsername.text,
-                            emailAddress: email.text,
-                            password: eBaseSixtyFour,
-                            usernameLowercased: theUsername.text.toLowerCase(),
-                            usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
-                        );
-                        createUser(theNewUser);
-                        //dbService.addUser(theNewUser);
-                        //dbService.getUsers();
-                        userEmailPasswordList.add([theUsername.text, email.text, eBaseSixtyFour]);
-                        myMain.Users dasUser = new Users(username: theUsername.text, email: email.text, password: eBaseSixtyFour);
-                        myMain.theUsers!.add(dasUser);
-                        print(myMain.theUsers);
-                        myMain.discussionBoardLogin = false;
-                        registerBool = true;
-                        print("Registering successfully as: " + userEmailPasswordList.toString());
-                        //emailNotifications.registrationConfirmationEmail();
-                        emailNotifications.sendAnEmail(email.text, "Welcome to Star Expedition!", "Hi ${theUsername.text},<br><br>We hope you enjoy your time on here.<br>If you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.<br><br>Best,<br>Star Expedition");
+                        await FirebaseFirestore.instance.collection("User").orderBy("id", descending: true).limit(1).get().then((myNumber){
+                          userId = myNumber.docs.first.data()["id"] + 1;
+                        });
                       }
+
+                      myNewUsername = theUsername.text;
+                      myNewEmail = email.text;
+                      myNewPassword = eBaseSixtyFour;
+
+                      Navigator.of(buildContext).push(MaterialPageRoute(builder: (BuildContext context) => registerSixDigitCodePage()));
+
+                      mySixDigitRegistrationCode = await emailNotifications.sixDigitCode();
+
+                      emailNotifications.sendAnEmail(myNewEmail, "Registration Code", "Hi ${myNewUsername},\n\nHere is the six-digit code you need to complete your registration to Star Expedition.\n\n${mySixDigitRegistrationCode}.\n\nBest,\nStar Expedition");
                     }
                     else{
                       print(myMain.theUsers!.indexWhere((person) => person.username == theUsername.text));
@@ -623,6 +524,186 @@ class registerPageState extends State<registerPage>{
           ]
         ),
       ),
+      ),
+    );
+  }
+}
+
+class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
+  TextEditingController numberControllerForRegistration = TextEditingController();
+  List<Text> usersMessage = [];
+
+  List<Text> dialogMessageRegistrationCode(String enteredRegistrationCode){
+    List<Text> messageForUser = [];
+
+    if(numberControllerForRegistration.text == ""){
+      messageForUser.add(Text("Registration code is empty"));
+    }
+    if(enteredRegistrationCode != mySixDigitRegistrationCode && numberControllerForRegistration.text != "" && (numberControllerForRegistration.text).length >= 6){
+      messageForUser.add(Text("The code that you have entered in is not correct"));
+    }
+    if((numberControllerForRegistration.text).length < 6 && numberControllerForRegistration.text != ""){
+      messageForUser.add(Text("The code that you have entered in has less than six digits"));
+    }
+
+    return messageForUser;
+  }
+
+  Widget build(BuildContext bc){
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Star Expedition"),
+      ),
+      body: Wrap(
+        children: <Widget>[
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Flexible(
+                    child: Center(
+                        child: Container(
+                          padding: EdgeInsets.only(left: MediaQuery.of(bc).size.width * 0.031250, top: MediaQuery.of(bc).size.height * 0.031250, right: MediaQuery.of(bc).size.width * 0.031250),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(bc).size.width * 0.375000 : 320,
+                            ),
+                            child: Scrollbar(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                reverse: true,
+                                child: SizedBox(
+                                  child: TextField(
+                                    minLines: 1,
+                                    maxLines: 1,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: "Six-digit registration code",
+                                    ),
+                                    maxLength: 6,
+                                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                    controller: numberControllerForRegistration,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ),
+                ),
+              ],
+            ),
+          ),
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+              ),
+              child: InkWell(
+                child: Ink(
+                  color: Colors.black,
+                  child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                ),
+              ),
+              onPressed: (){
+                usersMessage = dialogMessageRegistrationCode(numberControllerForRegistration.text);
+
+                if(usersMessage.isEmpty){
+                  myMain.myAccessCheckNotifier.value = DateTime.now();
+                  showDialog(
+                    context: bc,
+                    builder: (BuildContext context){
+                      return AlertDialog(
+                        title: const Text("Successful"),
+                        content: const Text("Welcome to Star Expedition!"),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              //Navigator.of(bc).push(MaterialPageRoute(builder: (BuildContext context) => StarExpedition())),
+                              if(myMain.discussionBoardLogin == true){
+                                Navigator.pushReplacementNamed(bc, registerPageRoutes.discussionBoard);
+                                var theNewUser = User(
+                                  id: userId,
+                                  username: myNewUsername,
+                                  emailAddress: myNewEmail,
+                                  password: myNewPassword,
+                                  usernameLowercased: myNewUsername.toLowerCase(),
+                                  usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
+                                );
+                                createUser(theNewUser);
+                                userEmailPasswordList.add([myNewUsername, myNewEmail, myNewPassword]);
+                                myMain.Users dasUser = new Users(username: myNewUsername, email: myNewEmail, password: myNewPassword);
+                                myMain.theUsers!.add(dasUser);
+                                print(myMain.theUsers);
+                                myMain.discussionBoardLogin = false;
+                                registerBool = true;
+                                print("Registering successfully as: " + userEmailPasswordList.toString());
+                                //emailNotifications.registrationConfirmationEmail();
+                                emailNotifications.sendAnEmail(myNewEmail, "Welcome to Star Expedition!", "Hi ${myNewUsername},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
+                              }
+                              else{
+                                Navigator.pushReplacementNamed(bc, registerPageRoutes.homePage);
+                                var theNewUser = User(
+                                  id: userId,
+                                  username: myNewUsername,
+                                  emailAddress: myNewEmail,
+                                  password: myNewPassword,
+                                  usernameLowercased: myNewUsername.toLowerCase(),
+                                  usernameProfileInformation: {"userInformation": "", "userInterests": "", "userLocation": "", "numberOfPosts": 0, "starsTracked": {}, "planetsTracked": {}, "userProfilePicture": ""},
+                                );
+                                createUser(theNewUser);
+                                //dbService.addUser(theNewUser);
+                                //dbService.getUsers();
+                                userEmailPasswordList.add([myNewUsername, myNewEmail, myNewPassword]);
+                                myMain.Users dasUser = new Users(username: myNewUsername, email: myNewEmail, password: myNewPassword);
+                                myMain.theUsers!.add(dasUser);
+                                print(myMain.theUsers);
+                                myMain.discussionBoardLogin = false;
+                                registerBool = true;
+                                print("Registering successfully as: " + userEmailPasswordList.toString());
+                                //emailNotifications.registrationConfirmationEmail();
+                                emailNotifications.sendAnEmail(myNewEmail, "Welcome to Star Expedition!", "Hi ${myNewUsername},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
+                              }
+                            },
+                            child: const Text("Ok"),
+                          ),
+                        ],
+                      );
+                    }
+                  );
+                }
+                else{
+                  myMain.myAccessCheckNotifier.value = DateTime.now();
+                  showDialog(
+                    context: bc,
+                    builder: (content) => AlertDialog(
+                      title: Text("Unsuccessful"),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: List.generate(usersMessage.length, (i){
+                          return usersMessage[i];
+                        }),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: (){
+                            Navigator.pop(bc);
+                            numberControllerForRegistration.text = "";
+                          },
+                          child: Container(
+                            child: const Text("Ok"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              }
+            ),
+          ),
+        ],
       ),
     );
   }
