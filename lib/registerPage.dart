@@ -581,6 +581,10 @@ class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
                                       border: OutlineInputBorder(),
                                       labelText: "Six-digit registration code",
                                     ),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                    ],
                                     maxLength: 6,
                                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                     controller: numberControllerForRegistration,

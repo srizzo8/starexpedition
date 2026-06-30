@@ -19,7 +19,7 @@ import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:starexpedition4/emailNotifications.dart' as emailNotifications;
 import 'package:starexpedition4/userProfile.dart';
-import 'package:flutter/services.dart' show MaxLengthEnforcement, rootBundle;
+import 'package:flutter/services.dart' show FilteringTextInputFormatter, MaxLengthEnforcement, rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 
@@ -569,6 +569,10 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
                                         border: OutlineInputBorder(),
                                         labelText: "Six-digit code",
                                       ),
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                      ],
                                       maxLength: 6,
                                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                       controller: numberController,
