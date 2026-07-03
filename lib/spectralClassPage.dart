@@ -17,6 +17,8 @@ import 'main.dart' as myMain;
 String mySpectralClass = "";
 bool fromSpectralClassPage = false;
 
+enum mySpectralClassStarSortingCriteria { alphabeticalAToZ, alphabeticalZToA, distanceClosestToFurthest, distanceFurthestToClosest, temperatureCoolestToHottest, temperatureHottestToCoolest }
+
 class spectralClassPage extends StatefulWidget{
   const spectralClassPage({Key? key}) : super(key: key);
 
@@ -125,6 +127,7 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
       spectralClassCount = await generateSpectralClasses();
       print('This is spectralClassCount: ' + spectralClassCount.toString());
     });*/
+
     getDataForMyLists();
     super.initState();
 
@@ -495,26 +498,29 @@ class listForSpectralClassesPage extends StatefulWidget{
 
 class listForSpectralClassesPageState extends State<listForSpectralClassesPage> with RouteAware{
 
-  List<String> mStars = [];
-  List<String> kStars = [];
-  List<String> gStars = [];
-  List<String> fStars = [];
-  List<String> aStars = [];
-  List<String> bStars = [];
-  List<String> oStars = [];
-  List<List> fullListOfStars = [];
+  List<myMain.myStars> mStars = [];
+  List<myMain.myStars> kStars = [];
+  List<myMain.myStars> gStars = [];
+  List<myMain.myStars> fStars = [];
+  List<myMain.myStars> aStars = [];
+  List<myMain.myStars> bStars = [];
+  List<myMain.myStars> oStars = [];
+  List<List<myMain.myStars>> fullListOfStars = [];
   bool switchOn = false;
   myMain.myStars clickedStar = myMain.myStars(starName: "not available");
+  //List<myMain.myStars> myStarListForASpectralClass = [];
+
+  ValueNotifier<mySpectralClassStarSortingCriteria> mySpectralClassStarSortingCriteriaNotifier = ValueNotifier(mySpectralClassStarSortingCriteria.alphabeticalAToZ);
 
   @override
-  Future<List<List>> getStars() async{
-    List<String> getMStars = [];
-    List<String> getKStars = [];
-    List<String> getGStars = [];
-    List<String> getFStars = [];
-    List<String> getAStars = [];
-    List<String> getBStars = [];
-    List<String> getOStars = [];
+  Future<List<List<myMain.myStars>>> getStars() async{
+    List<myMain.myStars> getMStars = [];
+    List<myMain.myStars> getKStars = [];
+    List<myMain.myStars> getGStars = [];
+    List<myMain.myStars> getFStars = [];
+    List<myMain.myStars> getAStars = [];
+    List<myMain.myStars> getBStars = [];
+    List<myMain.myStars> getOStars = [];
 
     for(int i = 0; i < myMain.starsForSearchBar.length; i++) {
       print('Current star: ' + myMain.starsForSearchBar[i].starName!.toString());
@@ -539,47 +545,70 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
       //print('This is starSnapshotSpectralClass: ' + starSnapshotSpectralClass);
       switch(starSnapshotSpectralClass){
         case "M":
-          getMStars.add(myMain.starsForSearchBar[i].starName!);
+          getMStars.add(myMain.starsForSearchBar[i]);
           break;
         case "K":
-          getKStars.add(myMain.starsForSearchBar[i].starName!);
+          getKStars.add(myMain.starsForSearchBar[i]);
           break;
         case "G":
-          getGStars.add(myMain.starsForSearchBar[i].starName!);
+          getGStars.add(myMain.starsForSearchBar[i]);
           break;
         case "F":
-          getFStars.add(myMain.starsForSearchBar[i].starName!);
+          getFStars.add(myMain.starsForSearchBar[i]);
           break;
         case "A":
-          getAStars.add(myMain.starsForSearchBar[i].starName!);
+          getAStars.add(myMain.starsForSearchBar[i]);
           break;
         case "B":
-          getBStars.add(myMain.starsForSearchBar[i].starName!);
+          getBStars.add(myMain.starsForSearchBar[i]);
           break;
         case "O":
-          getOStars.add(myMain.starsForSearchBar[i].starName!);
+          getOStars.add(myMain.starsForSearchBar[i]);
           break;
       }
     }
 
     //Sorting stars of each spectral class alphabetically
-    getMStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
-    getKStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
-    getGStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
-    getFStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
-    getAStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
-    getBStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
-    getOStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+    getMStars.sort((s1, s2) => s1.starName!.toLowerCase().compareTo(s2.starName!.toLowerCase()));
+    getKStars.sort((s1, s2) => s1.starName!.toLowerCase().compareTo(s2.starName!.toLowerCase()));
+    getGStars.sort((s1, s2) => s1.starName!.toLowerCase().compareTo(s2.starName!.toLowerCase()));
+    getFStars.sort((s1, s2) => s1.starName!.toLowerCase().compareTo(s2.starName!.toLowerCase()));
+    getAStars.sort((s1, s2) => s1.starName!.toLowerCase().compareTo(s2.starName!.toLowerCase()));
+    getBStars.sort((s1, s2) => s1.starName!.toLowerCase().compareTo(s2.starName!.toLowerCase()));
+    getOStars.sort((s1, s2) => s1.starName!.toLowerCase().compareTo(s2.starName!.toLowerCase()));
 
-    print("List of M-type stars: " + mStars.toString());
+    /*print("List of M-type stars: " + mStars.toString());
     print("List of K-type stars: " + kStars.toString());
     print("List of G-type stars: " + gStars.toString());
     print("List of F-type stars: " + fStars.toString());
     print("List of A-type stars: " + aStars.toString());
     print("List of B-type stars: " + bStars.toString());
-    print("List of O-type stars: " + oStars.toString());
+    print("List of O-type stars: " + oStars.toString());*/
     //return "myFutureString";
     return [getMStars, getKStars, getGStars, getFStars, getAStars, getBStars, getOStars];
+  }
+
+  void mySortMatchQuery(List<myMain.myStars> mySpectralClassMatchQuery){
+    switch(mySpectralClassStarSortingCriteriaNotifier.value){
+      case mySpectralClassStarSortingCriteria.alphabeticalAToZ:
+        mySpectralClassMatchQuery.sort((a, b) => a.starName!.compareTo(b.starName!));
+        break;
+      case mySpectralClassStarSortingCriteria.alphabeticalZToA:
+        mySpectralClassMatchQuery.sort((a, b) => b.starName!.compareTo(a.starName!));
+        break;
+      case mySpectralClassStarSortingCriteria.distanceClosestToFurthest:
+        mySpectralClassMatchQuery.sort((a, b) => (myMain.myStarDistanceInLightYearsMap[a.starName!] ?? double.infinity).compareTo(myMain.myStarDistanceInLightYearsMap[b.starName!] ?? double.infinity));
+        break;
+      case mySpectralClassStarSortingCriteria.distanceFurthestToClosest:
+        mySpectralClassMatchQuery.sort((a, b) => (myMain.myStarDistanceInLightYearsMap[b.starName!] ?? double.infinity).compareTo(myMain.myStarDistanceInLightYearsMap[a.starName!] ?? double.infinity));
+        break;
+      case mySpectralClassStarSortingCriteria.temperatureCoolestToHottest:
+        mySpectralClassMatchQuery.sort((a, b) => (myMain.myStarTemperatureInKelvinMap[a.starName!] ?? double.infinity).compareTo(myMain.myStarTemperatureInKelvinMap[b.starName!] ?? double.infinity));
+        break;
+      case mySpectralClassStarSortingCriteria.temperatureHottestToCoolest:
+        mySpectralClassMatchQuery.sort((a, b) => (myMain.myStarTemperatureInKelvinMap[b.starName!] ?? double.infinity).compareTo(myMain.myStarTemperatureInKelvinMap[a.starName!] ?? double.infinity));
+        break;
+    }
   }
 
   void getListOfStars() async{
@@ -592,6 +621,11 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
   @override
   void initState(){
     getListOfStars();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      await myMain.addingToStarMaps();
+    });
+
     super.initState();
   }
 
@@ -632,6 +666,11 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
       //print('An M star: ' + fullListOfStars[0][1].toString());
       //buildMethodStarList = spectralClassListInformation() as List<String>;
       //print(buildMethodStarList);
+      //print("The list: ${fullListOfStars[indexPlaceSpectralClass()].toString()}");
+
+      print("Method being utilized: ${fullListOfStars[indexPlaceSpectralClass()]}");
+      //mySortMatchQuery(fullListOfStars[indexPlaceSpectralClass()] as List<myMain.myStars>);
+      //print("Result: ${(mySortMatchQuery(fullListOfStars[indexPlaceSpectralClass()] as List<myMain.myStars>)) as String}");
     }
     List<String> informationAboutClickedStar = [];
     return Scaffold(
@@ -657,6 +696,120 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
             padding: EdgeInsets.all(10.0),
             child: Text("List of stars with articles that belong to the " + mySpectralClass + " spectral class", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
+          /*Padding(
+            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.025, 0.0, 0.0, 0.0),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.0333,
+              width: MediaQuery.of(context).size.width * 0.275,
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton(
+                    isExpanded: true,
+                    value: mySpectralClassTemporaryCriteria,
+                    icon: Icon(Icons.keyboard_arrow_down),
+                    items: [
+                      DropdownMenuItem(
+                        value: mySpectralClassStarSortingCriteria.alphabeticalAToZ,
+                        child: Text("Alphabetical A to Z (default)"),
+                      ),
+                      DropdownMenuItem(
+                        value: mySpectralClassStarSortingCriteria.alphabeticalZToA,
+                        child: Text("Alphabetical Z to A"),
+                      ),
+                      DropdownMenuItem(
+                        value: mySpectralClassStarSortingCriteria.distanceClosestToFurthest,
+                        child: Text("Distance (from closest to furthest in light-years)"),
+                      ),
+                      DropdownMenuItem(
+                        value: mySpectralClassStarSortingCriteria.distanceFurthestToClosest,
+                        child: Text("Distance (from furthest to closest in light-years)"),
+                      ),
+                      DropdownMenuItem(
+                        value: mySpectralClassStarSortingCriteria.temperatureCoolestToHottest,
+                        child: Text("Temperature (from coolest to hottest in Kelvin)"),
+                      ),
+                      DropdownMenuItem(
+                        value: mySpectralClassStarSortingCriteria.temperatureHottestToCoolest,
+                        child: Text("Temperature (from hottest to coolest in Kelvin)"),
+                      ),
+                    ],
+                    onChanged: (mySpectralClassStarSortingCriteria? myValue){
+                      setState((){
+                        if(myValue != null){
+                          mySpectralClassTemporaryCriteria = myValue;
+                        }
+                      });
+                    }
+                ),
+              ),
+            ),
+          ),*/
+          IconButton(
+              icon: Icon(Icons.sort),
+              tooltip: "Sort star by",
+              onPressed: (){
+                //Temporary variable to hold a user's selection inside the dialog:
+                mySpectralClassStarSortingCriteria mySpectralClassTemporaryCriteria = mySpectralClassStarSortingCriteriaNotifier.value;
+
+                showDialog(
+                    context: context,
+                    builder: (BuildContext bc){
+                      return StatefulBuilder(
+                          builder: (context, setDialogState){
+                            return AlertDialog(
+                              title: Text("Sort stars by"),
+                              content: DropdownButton<mySpectralClassStarSortingCriteria>(
+                                value: mySpectralClassTemporaryCriteria,
+                                isExpanded: true,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: mySpectralClassStarSortingCriteria.alphabeticalAToZ,
+                                    child: Text("Alphabetical A to Z (default)"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: mySpectralClassStarSortingCriteria.alphabeticalZToA,
+                                    child: Text("Alphabetical Z to A"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: mySpectralClassStarSortingCriteria.distanceClosestToFurthest,
+                                    child: Text("Distance (from closest to furthest in light-years)"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: mySpectralClassStarSortingCriteria.distanceFurthestToClosest,
+                                    child: Text("Distance (from furthest to closest in light-years)"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: mySpectralClassStarSortingCriteria.temperatureCoolestToHottest,
+                                    child: Text("Temperature (from coolest to hottest in Kelvin)"),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: mySpectralClassStarSortingCriteria.temperatureHottestToCoolest,
+                                    child: Text("Temperature (from hottest to coolest in Kelvin)"),
+                                  ),
+                                ],
+                                onChanged: (myValue){
+                                  if(myValue != null){
+                                    setDialogState(() => mySpectralClassTemporaryCriteria = myValue);
+                                  }
+                                },
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: (){
+                                    mySpectralClassStarSortingCriteriaNotifier.value = mySpectralClassTemporaryCriteria;
+                                    print("This is mySpectralClassStarSortingCriteriaNotifier.value: ${mySpectralClassStarSortingCriteriaNotifier.value}");
+                                    Navigator.of(bc).pop();
+                                    //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                                  },
+                                  child: Text("Ok"),
+                                ),
+                              ],
+                            );
+                          }
+                      );
+                    }
+                );
+              }
+          ),
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
@@ -671,13 +824,17 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
             )*/
           switchOn?
             (fullListOfStars[indexPlaceSpectralClass()].length > 0? Expanded(
-              child: ListView.builder(
-                itemCount: fullListOfStars[indexPlaceSpectralClass()].length,
-                itemBuilder: (context, index){
-                  return ListTile(
-                      title: Text(fullListOfStars[indexPlaceSpectralClass()][index], textAlign: TextAlign.center),
+              child: ValueListenableBuilder<mySpectralClassStarSortingCriteria>(
+                valueListenable: mySpectralClassStarSortingCriteriaNotifier,
+                builder: (context, mySpectralClassStarSortingCriteria, _){
+                  return ListView.builder(
+                    itemCount: fullListOfStars[indexPlaceSpectralClass()].length,
+                    itemBuilder: (context, index){
+                      mySortMatchQuery(fullListOfStars[indexPlaceSpectralClass()]);
+                    return ListTile(
+                      title: Text(fullListOfStars[indexPlaceSpectralClass()][index].starName!, textAlign: TextAlign.center),
                       onTap: () async{
-                        myMain.correctStar = fullListOfStars[indexPlaceSpectralClass()][index];
+                        myMain.correctStar = fullListOfStars[indexPlaceSpectralClass()][index].starName!;
                         print(myMain.correctStar);
                         clickedStar.starName = myMain.correctStar;
                         print(clickedStar.starName);
@@ -772,8 +929,10 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
                         myMain.myAccessCheckNotifier.value = DateTime.now();
                         Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
                       },
-                      leading: Image.asset(myMain.starsForSearchBar[myMain.starsForSearchBar.indexWhere((star) => star.starName! == fullListOfStars[indexPlaceSpectralClass()][index])].imagePath!, fit: BoxFit.cover, height: 50, width: 50));
-                },
+                      leading: Image.asset(myMain.starsForSearchBar[myMain.starsForSearchBar.indexWhere((star) => star.starName! == fullListOfStars[indexPlaceSpectralClass()][index].starName!)].imagePath!, fit: BoxFit.cover, height: 50, width: 50));
+                    },
+                  );
+                }
               ),
             ): Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, 0.0, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Container(child: Text("Unfortunately, there are no stars with articles that belong to the ${mySpectralClass} spectral class.", textAlign: TextAlign.center,)))
           ): Container(),
