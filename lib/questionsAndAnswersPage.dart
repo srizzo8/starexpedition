@@ -204,6 +204,16 @@ class myQaaSearch extends SearchDelegate{
 
                   theQaaThreadResult = myResult[0];
 
+                  //Finding the thread from listOfQaaThreads:
+                  final myMatch = listOfQaaThreads.firstWhere((myQaaThread) => myQaaThread["threadTitle"] == myResult[0], orElse: () => null);
+
+                  if(myMatch == null){
+                    print("Unfortunately, the thread data for ${myResult[0]} cannot be found");
+                    return;
+                  }
+
+                  specificQaaThreadData = myMatch;
+
                   if(firebaseDesktopHelper.onDesktop){
                     qaaThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Questions_And_Answers");
                     specificQaaThreadData = qaaThreadClickedData.firstWhere((myQaaThread) => myQaaThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);
