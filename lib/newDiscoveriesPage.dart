@@ -204,6 +204,16 @@ class myNdSearch extends SearchDelegate{
 
                   theNdThreadResult = myResult[0];
 
+                  //Finding the thread from listOfNdThreads:
+                  final myMatch = listOfNdThreads.firstWhere((myNdThread) => myNdThread["threadTitle"] == myResult[0], orElse: () => null);
+
+                  if(myMatch == null){
+                    print("Unfortunately, the thread data for ${myResult[0]} cannot be found");
+                    return;
+                  }
+
+                  specificNdThreadData = myMatch;
+
                   if(firebaseDesktopHelper.onDesktop){
                     ndThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("New_Discoveries");
                     specificNdThreadData = ndThreadClickedData.firstWhere((myNdThread) => myNdThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);

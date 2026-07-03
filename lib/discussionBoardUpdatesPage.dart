@@ -209,6 +209,16 @@ class myDbuSearch extends SearchDelegate{
 
                   theDbuThreadResult = myResult[0];
 
+                  //Finding the thread from listOfDbuThreads:
+                  final myMatch = listOfDbuThreads.firstWhere((myDbuThread) => myDbuThread["threadTitle"] == myResult[0], orElse: () => null);
+
+                  if(myMatch == null){
+                    print("Unfortunately, the thread data for ${myResult[0]} cannot be found");
+                    return;
+                  }
+
+                  specificDbuThreadData = myMatch;
+
                   if(firebaseDesktopHelper.onDesktop){
                     dbuThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
                     specificDbuThreadData = dbuThreadClickedData.firstWhere((myDbuThread) => myDbuThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);

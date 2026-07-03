@@ -204,6 +204,16 @@ class myTSearch extends SearchDelegate{
 
                   theTThreadResult = myResult[0];
 
+                  //Finding the thread from listOfTThreads:
+                  final myMatch = listOfTThreads.firstWhere((myTThread) => myTThread["threadTitle"] == myResult[0], orElse: () => null);
+
+                  if(myMatch == null){
+                    print("Unfortunately, the thread data for ${myResult[0]} cannot be found");
+                    return;
+                  }
+
+                  specificTThreadData = myMatch;
+
                   if(firebaseDesktopHelper.onDesktop){
                     tThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Technologies");
                     specificTThreadData = tThreadClickedData.firstWhere((myTThread) => myTThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);

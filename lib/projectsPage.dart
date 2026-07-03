@@ -205,6 +205,16 @@ class myPSearch extends SearchDelegate{
 
                   thePThreadResult = myResult[0];
 
+                  //Finding the thread from listOfPThreads:
+                  final myMatch = listOfPThreads.firstWhere((myPThread) => myPThread["threadTitle"] == myResult[0], orElse: () => null);
+
+                  if(myMatch == null){
+                    print("Unfortunately, the thread data for ${myResult[0]} cannot be found");
+                    return;
+                  }
+
+                  specificPThreadData = myMatch;
+
                   if(firebaseDesktopHelper.onDesktop){
                     pThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Projects");
                     specificPThreadData = pThreadClickedData.firstWhere((myPThread) => myPThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);

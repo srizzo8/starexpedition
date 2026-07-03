@@ -209,6 +209,16 @@ class myFasSearch extends SearchDelegate{
 
                   theFasThreadResult = myResult[0];
 
+                  //Finding the thread from listOfFasThreads:
+                  final myMatch = listOfFasThreads.firstWhere((myFasThread) => myFasThread["threadTitle"] == myResult[0], orElse: () => null);
+
+                  if(myMatch == null){
+                    print("Unfortunately, the thread data for ${myResult[0]} cannot be found");
+                    return;
+                  }
+
+                  specificFasThreadData = myMatch;
+
                   if(firebaseDesktopHelper.onDesktop){
                     fasThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Feedback_And_Suggestions");
                     specificFasThreadData = fasThreadClickedData.firstWhere((myFasThread) => myFasThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);
