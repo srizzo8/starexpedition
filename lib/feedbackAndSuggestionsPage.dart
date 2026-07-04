@@ -616,6 +616,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage> 
             child: listOfFasThreads.length != 0? myPagesFas[theCurrentPageFas] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
+              initialPage: theCurrentPageFas,
               height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfFasThreads.length != 0? numberOfPagesFas : 1,
               onPageChange: (myIndexFas){

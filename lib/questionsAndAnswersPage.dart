@@ -611,6 +611,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
             child: listOfQaaThreads.length != 0? myPagesQaa[theCurrentPageQaa] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),//myPagesQaa[theCurrentPageQaa],
           ),
           NumberPaginator(
+              initialPage: theCurrentPageQaa,
               height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfQaaThreads.length != 0? numberOfPagesQaa : 1,
               onPageChange: (myIndexQaa){

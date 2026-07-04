@@ -610,6 +610,7 @@ class technologiesPageState extends State<technologiesPage> with RouteAware{
             child: listOfTechnologiesThreads.length != 0? myPagesTechnologies[theCurrentPageTechnologies] : Padding(padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.031250, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.031250, 0.0), child: Text("There are no threads in this subforum yet. Be the first to post a thread!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
+            initialPage: theCurrentPageTechnologies,
             height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfTechnologiesThreads.length != 0? numberOfPagesTechnologies : 1,
             onPageChange: (myIndexTechnologies){
