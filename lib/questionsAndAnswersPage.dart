@@ -557,6 +557,12 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
             child: Text("Questions and Answers Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
           Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
+          Container(
+            child: Text("Looking for a specific thread? Use the search bar below.", textAlign: TextAlign.center),
+          ),
+          Container(
             padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
             child: TextField(
                 decoration: InputDecoration(
