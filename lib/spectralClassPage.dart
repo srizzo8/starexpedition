@@ -757,40 +757,42 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
                           builder: (context, setDialogState){
                             return AlertDialog(
                               title: Text("Sort stars by"),
-                              content: DropdownButton<mySpectralClassStarSortingCriteria>(
-                                value: mySpectralClassTemporaryCriteria,
-                                isExpanded: true,
-                                items: [
-                                  DropdownMenuItem(
-                                    value: mySpectralClassStarSortingCriteria.alphabeticalAToZ,
-                                    child: Text("Alphabetical A to Z (default)"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: mySpectralClassStarSortingCriteria.alphabeticalZToA,
-                                    child: Text("Alphabetical Z to A"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: mySpectralClassStarSortingCriteria.distanceClosestToFurthest,
-                                    child: Text("Distance (from closest to furthest in light-years)"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: mySpectralClassStarSortingCriteria.distanceFurthestToClosest,
-                                    child: Text("Distance (from furthest to closest in light-years)"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: mySpectralClassStarSortingCriteria.temperatureCoolestToHottest,
-                                    child: Text("Temperature (from coolest to hottest in Kelvin)"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: mySpectralClassStarSortingCriteria.temperatureHottestToCoolest,
-                                    child: Text("Temperature (from hottest to coolest in Kelvin)"),
-                                  ),
-                                ],
-                                onChanged: (myValue){
-                                  if(myValue != null){
-                                    setDialogState(() => mySpectralClassTemporaryCriteria = myValue);
-                                  }
-                                },
+                              content: DropdownButtonHideUnderline(
+                                child: DropdownButton<mySpectralClassStarSortingCriteria>(
+                                  value: mySpectralClassTemporaryCriteria,
+                                  isExpanded: true,
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: mySpectralClassStarSortingCriteria.alphabeticalAToZ,
+                                      child: Text("Alphabetical A to Z (default)"),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: mySpectralClassStarSortingCriteria.alphabeticalZToA,
+                                      child: Text("Alphabetical Z to A"),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: mySpectralClassStarSortingCriteria.distanceClosestToFurthest,
+                                      child: Text("Distance (from closest to furthest in light-years)"),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: mySpectralClassStarSortingCriteria.distanceFurthestToClosest,
+                                      child: Text("Distance (from furthest to closest in light-years)"),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: mySpectralClassStarSortingCriteria.temperatureCoolestToHottest,
+                                      child: Text("Temperature (from coolest to hottest in Kelvin)"),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: mySpectralClassStarSortingCriteria.temperatureHottestToCoolest,
+                                      child: Text("Temperature (from hottest to coolest in Kelvin)"),
+                                    ),
+                                  ],
+                                  onChanged: (myValue){
+                                    if(myValue != null){
+                                      setDialogState(() => mySpectralClassTemporaryCriteria = myValue);
+                                    }
+                                  },
+                                ),
                               ),
                               actions: [
                                 TextButton(

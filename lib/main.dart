@@ -2387,40 +2387,42 @@ class CustomSearchDelegate extends SearchDelegate {
                 builder: (context, setDialogState){
                   return AlertDialog(
                     title: Text("Sort stars by"),
-                    content: DropdownButton<myStarSortingCriteria>(
-                      value: myTemporaryCriteria,
-                      isExpanded: true,
-                      items: [
-                        DropdownMenuItem(
-                          value: myStarSortingCriteria.alphabeticalAToZ,
-                          child: Text("Alphabetical A to Z (default)"),
-                        ),
-                        DropdownMenuItem(
-                          value: myStarSortingCriteria.alphabeticalZToA,
-                          child: Text("Alphabetical Z to A"),
-                        ),
-                        DropdownMenuItem(
-                          value: myStarSortingCriteria.distanceClosestToFurthest,
-                          child: Text("Distance (from closest to furthest in light-years)"),
-                        ),
-                        DropdownMenuItem(
-                          value: myStarSortingCriteria.distanceFurthestToClosest,
-                          child: Text("Distance (from furthest to closest in light-years)"),
-                        ),
-                        DropdownMenuItem(
-                          value: myStarSortingCriteria.temperatureCoolestToHottest,
-                          child: Text("Temperature (from coolest to hottest in Kelvin)"),
-                        ),
-                        DropdownMenuItem(
-                          value: myStarSortingCriteria.temperatureHottestToCoolest,
-                          child: Text("Temperature (from hottest to coolest in Kelvin)"),
-                        ),
-                      ],
-                      onChanged: (myValue){
-                        if(myValue != null){
-                          setDialogState(() => myTemporaryCriteria = myValue);
-                        }
-                      },
+                    content: DropdownButtonHideUnderline(
+                      child: DropdownButton<myStarSortingCriteria>(
+                        value: myTemporaryCriteria,
+                        isExpanded: true,
+                        items: [
+                          DropdownMenuItem(
+                            value: myStarSortingCriteria.alphabeticalAToZ,
+                            child: Text("Alphabetical A to Z (default)"),
+                          ),
+                          DropdownMenuItem(
+                            value: myStarSortingCriteria.alphabeticalZToA,
+                            child: Text("Alphabetical Z to A"),
+                          ),
+                          DropdownMenuItem(
+                            value: myStarSortingCriteria.distanceClosestToFurthest,
+                            child: Text("Distance (from closest to furthest in light-years)"),
+                          ),
+                          DropdownMenuItem(
+                            value: myStarSortingCriteria.distanceFurthestToClosest,
+                            child: Text("Distance (from furthest to closest in light-years)"),
+                          ),
+                          DropdownMenuItem(
+                            value: myStarSortingCriteria.temperatureCoolestToHottest,
+                            child: Text("Temperature (from coolest to hottest in Kelvin)"),
+                          ),
+                          DropdownMenuItem(
+                            value: myStarSortingCriteria.temperatureHottestToCoolest,
+                            child: Text("Temperature (from hottest to coolest in Kelvin)"),
+                          ),
+                        ],
+                        onChanged: (myValue){
+                          if(myValue != null){
+                            setDialogState(() => myTemporaryCriteria = myValue);
+                          }
+                        },
+                      ),
                     ),
                     actions: [
                       TextButton(
@@ -2966,40 +2968,42 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
                 builder: (context, setDialogState){
                   return AlertDialog(
                     title: Text("Sort planets by"),
-                    content: DropdownButton<myPlanetSortingCriteria>(
-                      value: myTemporaryCriteria,
-                      isExpanded: true,
-                      items: [
-                        DropdownMenuItem(
-                          value: myPlanetSortingCriteria.alphabeticalAToZ,
-                          child: Text("Alphabetical from A to Z (default)"),
-                        ),
-                        DropdownMenuItem(
-                          value: myPlanetSortingCriteria.alphabeticalZToA,
-                          child: Text("Alphabetical from Z to A"),
-                        ),
-                        DropdownMenuItem(
-                          value: myPlanetSortingCriteria.distanceClosestToFurthest,
-                          child: Text("Distance from Star (from closest to furthest in AU)"),
-                        ),
-                        DropdownMenuItem(
-                          value: myPlanetSortingCriteria.distanceFurthestToClosest,
-                          child: Text("Distance from Star (from furthest to closest in AU)"),
-                        ),
-                        DropdownMenuItem(
-                          value: myPlanetSortingCriteria.temperatureCoolestToHottest,
-                          child: Text("Temperature (from coolest to hottest in Kelvin)"),
-                        ),
-                        DropdownMenuItem(
-                          value: myPlanetSortingCriteria.temperatureHottestToCoolest,
-                          child: Text("Temperature (from hottest to coolest in Kelvin)"),
-                        ),
-                      ],
-                      onChanged: (myValue){
-                        if(myValue != null){
-                          setDialogState(() => myTemporaryCriteria = myValue);
-                        }
-                      },
+                    content: DropdownButtonHideUnderline(
+                      child: DropdownButton<myPlanetSortingCriteria>(
+                        value: myTemporaryCriteria,
+                        isExpanded: true,
+                        items: [
+                          DropdownMenuItem(
+                            value: myPlanetSortingCriteria.alphabeticalAToZ,
+                            child: Text("Alphabetical from A to Z (default)"),
+                          ),
+                          DropdownMenuItem(
+                            value: myPlanetSortingCriteria.alphabeticalZToA,
+                            child: Text("Alphabetical from Z to A"),
+                          ),
+                          DropdownMenuItem(
+                            value: myPlanetSortingCriteria.distanceClosestToFurthest,
+                            child: Text("Distance from Star (from closest to furthest in AU)"),
+                          ),
+                          DropdownMenuItem(
+                            value: myPlanetSortingCriteria.distanceFurthestToClosest,
+                            child: Text("Distance from Star (from furthest to closest in AU)"),
+                          ),
+                          DropdownMenuItem(
+                            value: myPlanetSortingCriteria.temperatureCoolestToHottest,
+                            child: Text("Temperature (from coolest to hottest in Kelvin)"),
+                          ),
+                          DropdownMenuItem(
+                            value: myPlanetSortingCriteria.temperatureHottestToCoolest,
+                            child: Text("Temperature (from hottest to coolest in Kelvin)"),
+                          ),
+                        ],
+                        onChanged: (myValue){
+                          if(myValue != null){
+                            setDialogState(() => myTemporaryCriteria = myValue);
+                          }
+                        },
+                      ),
                     ),
                     actions: [
                       TextButton(
