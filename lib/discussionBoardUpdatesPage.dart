@@ -318,7 +318,7 @@ class routeToReplyToThreadDiscussionBoardUpdates{
 class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> with RouteAware{
   static String dBoardRoute = '/discussionBoardUpdatesPage';
   int numberOfPagesDbu = (((discussionBoardPage.discussionBoardUpdatesThreads.length)/10)).ceil();
-  int theCurrentPageDbu = 0;
+  //int theCurrentPageDbu = 0;
 
   //Getting the threads that will appear in a page
   var listOfDbuThreads = [];
