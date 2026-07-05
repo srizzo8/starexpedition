@@ -1465,7 +1465,19 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
 
     WidgetsBinding.instance.addPostFrameCallback((_) async{
       await addingToStarMaps();
+
+      if(!mounted){
+        print("The widget was unmounted");
+        return;
+      }
+
       await addingToPlanetMaps();
+
+      if(!mounted){
+        print("The widget was unmounted");
+        return;
+      }
+
       showTrialDialog();
     });
   }
@@ -1473,12 +1485,23 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
   Future<void> showTrialDialog() async{
     final myDays = await myTrialService.daysLeftOfTrial();
 
+    if(!mounted){
+      print("The widget was unmounted");
+      return;
+    }
+
     if(myDays <= 0){
       return;
     }
 
     //Check if the trial dialog has already been shown today:
     final myPrefs = await SharedPreferences.getInstance();
+
+    if(!mounted){
+      print("The widget was unmounted");
+      return;
+    }
+
     final lastShown = myPrefs.getString("freeTrialDialogLastShown");
     final todaysDate = DateTime.now().toIso8601String().substring(0, 10);
 
@@ -1489,6 +1512,11 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
 
     //Saving today's date:
     await myPrefs.setString("freeTrialDialogLastShown", todaysDate);
+
+    if(!mounted){
+      print("The widget was unmounted");
+      return;
+    }
 
     //The trial dialog:
     showDialog(
