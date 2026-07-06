@@ -438,7 +438,7 @@ class registerPageState extends State<registerPage>{
 
                       mySixDigitRegistrationCode = await emailNotifications.sixDigitCode();
 
-                      emailNotifications.sendAnEmail(myNewEmail, "Registration Code", "Hi ${myNewUsername},\n\nHere is the six-digit code you need to complete your registration to Star Expedition.\n\n${mySixDigitRegistrationCode}.\n\nBest,\nStar Expedition");
+                      emailNotifications.sendAnEmail(myNewEmail, "Registration Code", "Hi ${myNewUsername},<br><br>Here is the six-digit code you need to complete your registration to Star Expedition:<br><br>${mySixDigitRegistrationCode}<br><br>Best,<br>Star Expedition");
                     }
                     //If there is at least one user on Star Expedition:
                     else if(theUsername.text != "" && (myMain.theUsers!.indexWhere((person) => person.username?.toLowerCase() == theUsername.text.toLowerCase())) == -1 && checkUsernameValidity(theUsername.text) == true && email.text != "" && checkEmailValidity(email.text) == true && password.text != "" && checkSpecialCharacters(password.text) == true && checkNumbers(password.text) == true && (password.text).length >= 8){
@@ -473,7 +473,7 @@ class registerPageState extends State<registerPage>{
 
                       mySixDigitRegistrationCode = await emailNotifications.sixDigitCode();
 
-                      emailNotifications.sendAnEmail(myNewEmail, "Registration Code", "Hi ${myNewUsername},\n\nHere is the six-digit code you need to complete your registration to Star Expedition.\n\n${mySixDigitRegistrationCode}.\n\nBest,\nStar Expedition");
+                      emailNotifications.sendAnEmail(myNewEmail, "Registration Code", "Hi ${myNewUsername},<br><br>Here is the six-digit code you need to complete your registration to Star Expedition:<br><br>${mySixDigitRegistrationCode}<br><br>Best,<br>Star Expedition");
                     }
                     else{
                       print(myMain.theUsers!.indexWhere((person) => person.username == theUsername.text));
@@ -644,7 +644,7 @@ class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
                                 registerBool = true;
                                 print("Registering successfully as: " + userEmailPasswordList.toString());
                                 //emailNotifications.registrationConfirmationEmail();
-                                emailNotifications.sendAnEmail(myNewEmail, "Welcome to Star Expedition!", "Hi ${myNewUsername},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
+                                emailNotifications.sendAnEmail(myNewEmail, "Welcome to Star Expedition!", "Hi ${myNewUsername},<br><br>We hope you enjoy your time on here.<br><br>If you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.<br><br>Best,<br>Star Expedition");
                               }
                               else{
                                 Navigator.pushReplacementNamed(bc, registerPageRoutes.homePage);
@@ -667,7 +667,7 @@ class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
                                 registerBool = true;
                                 print("Registering successfully as: " + userEmailPasswordList.toString());
                                 //emailNotifications.registrationConfirmationEmail();
-                                emailNotifications.sendAnEmail(myNewEmail, "Welcome to Star Expedition!", "Hi ${myNewUsername},\n\nWe hope you enjoy your time on here.\n\nIf you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.\n\nBest,\nStar Expedition");
+                                emailNotifications.sendAnEmail(myNewEmail, "Welcome to Star Expedition!", "Hi ${myNewUsername},<br><br>We hope you enjoy your time on here.<br><br>If you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.<br><br>Best,<br>Star Expedition");
                               }
                             },
                             child: const Text("Ok"),
