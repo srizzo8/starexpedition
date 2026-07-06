@@ -272,7 +272,6 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           primary: Colors.black,
-                          onPrimary: Colors.white,
                         ),
                         child: InkWell(
                           child: Ink(
