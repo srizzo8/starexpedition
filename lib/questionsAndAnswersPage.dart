@@ -567,7 +567,6 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
             child: TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  icon: Icon(Icons.search),
                 ),
                 controller: qaaQuery,
                 readOnly: true,

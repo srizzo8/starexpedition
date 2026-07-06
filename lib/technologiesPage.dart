@@ -566,7 +566,6 @@ class technologiesPageState extends State<technologiesPage> with RouteAware{
             child: TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  icon: Icon(Icons.search),
                 ),
                 controller: tQuery,
                 readOnly: true,

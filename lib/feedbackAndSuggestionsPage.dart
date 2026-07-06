@@ -571,7 +571,6 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage> 
             child: TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  icon: Icon(Icons.search),
                 ),
                 controller: fasQuery,
                 readOnly: true,

@@ -566,7 +566,6 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage> with RouteAware{
             child: TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  icon: Icon(Icons.search),
                 ),
                 controller: ndQuery,
                 readOnly: true,

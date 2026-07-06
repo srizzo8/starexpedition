@@ -604,7 +604,6 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
             child: TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  icon: Icon(Icons.search),
                 ),
                 controller: dbuQuery,
                 readOnly: true,

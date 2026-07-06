@@ -240,7 +240,6 @@ class userSearchBarPageState extends State<userSearchBarPage> with RouteAware{
                 child: TextField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    icon: Icon(Icons.search),
                   ),
                   controller: query,
                   readOnly: true,

@@ -571,7 +571,6 @@ class projectsPageState extends State<projectsPage> with RouteAware{
             child: TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  icon: Icon(Icons.search),
                 ),
                 controller: pQuery,
                 readOnly: true,
