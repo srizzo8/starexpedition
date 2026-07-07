@@ -717,9 +717,12 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                             height: MediaQuery.of(context).size.height * 0.015625,
                           ),
                           ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.blueGrey[300],
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(Colors.blueGrey[300]),
+                                overlayColor: MaterialStateProperty.all(Colors.transparent),
+                                splashFactory: NoSplash.splashFactory,
+                                elevation: MaterialStateProperty.all(0),
+                                shadowColor: MaterialStateProperty.all(Colors.transparent),
                               ),
                               child: Container(
                                 child: Text.rich(
@@ -770,9 +773,12 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                               }
                           ),
                           ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[300],
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(Colors.grey[300]),
+                                overlayColor: MaterialStateProperty.all(Colors.transparent),
+                                splashFactory: NoSplash.splashFactory,
+                                elevation: MaterialStateProperty.all(0),
+                                shadowColor: MaterialStateProperty.all(Colors.transparent),
                               ),
                               child: Container(
                                 child: Text.rich(
@@ -944,9 +950,12 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                             height: MediaQuery.of(context).size.height * 0.015625,
                           ),
                           ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[300],
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(Colors.grey[300]),
+                                overlayColor: MaterialStateProperty.all(Colors.transparent),
+                                splashFactory: NoSplash.splashFactory,
+                                elevation: MaterialStateProperty.all(0),
+                                shadowColor: MaterialStateProperty.all(Colors.transparent),
                               ),
                               child: Container(
                                 child: Text.rich(
