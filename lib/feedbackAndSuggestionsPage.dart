@@ -723,6 +723,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 child: Text.rich(
@@ -779,6 +781,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 child: Text.rich(
@@ -956,6 +960,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 child: Text.rich(

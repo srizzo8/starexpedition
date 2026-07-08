@@ -718,6 +718,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 //child: Text("Reply to: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
@@ -774,6 +776,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 //child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),
@@ -952,6 +956,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 //child: Text("Posted on: " + theQaaThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theQaaThreadReplies[index]["replier"].toString() + "\n" + theQaaThreadReplies[index]["replyContent"].toString()),

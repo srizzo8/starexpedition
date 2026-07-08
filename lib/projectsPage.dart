@@ -722,6 +722,8 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 //child: Text("Reply to: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + thePThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
@@ -778,6 +780,8 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),
@@ -953,6 +957,8 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 //child: Text("Posted on: " + thePThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + thePThreadReplies[index]["replier"].toString() + "\n" + thePThreadReplies[index]["replyContent"].toString()),

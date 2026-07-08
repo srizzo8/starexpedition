@@ -717,6 +717,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 //child: Text("Reply to: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
@@ -773,6 +775,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 //child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),
@@ -951,6 +955,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 //child: Text("Posted on: " + theNdThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theNdThreadReplies[index]["replier"].toString() + "\n" + theNdThreadReplies[index]["replyContent"].toString()),

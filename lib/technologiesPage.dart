@@ -718,6 +718,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                               splashFactory: NoSplash.splashFactory,
                               elevation: MaterialStateProperty.all(0),
                               shadowColor: MaterialStateProperty.all(Colors.transparent),
+                              minimumSize: MaterialStateProperty.all(Size.zero),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                             child: Container(
                               //child: Text("Reply to: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theTThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
@@ -774,6 +776,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                               splashFactory: NoSplash.splashFactory,
                               elevation: MaterialStateProperty.all(0),
                               shadowColor: MaterialStateProperty.all(Colors.transparent),
+                              minimumSize: MaterialStateProperty.all(Size.zero),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                             child: Container(
                               //child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
@@ -950,6 +954,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
                                 shadowColor: MaterialStateProperty.all(Colors.transparent),
+                                minimumSize: MaterialStateProperty.all(Size.zero),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
                                 //child: Text("Posted on: " + theTThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theTThreadReplies[index]["replier"].toString() + "\n" + theTThreadReplies[index]["replyContent"].toString()),
