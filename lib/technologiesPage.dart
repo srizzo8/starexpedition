@@ -713,7 +713,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                           ),
                           ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(Colors.blueGrey[300]),
+                              backgroundColor: MaterialStateProperty.all(Colors.tealAccent),
                               overlayColor: MaterialStateProperty.all(Colors.transparent),
                               splashFactory: NoSplash.splashFactory,
                               elevation: MaterialStateProperty.all(0),
@@ -760,7 +760,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                                   ],
                                 )
                               ),
-                              color: Colors.blueGrey[300],
+                              color: Colors.tealAccent,
                               width: MediaQuery.of(context).size.width * 0.5,
                             ),
                             onPressed: (){

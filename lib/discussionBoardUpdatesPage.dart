@@ -793,7 +793,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                           ),
                           ElevatedButton(
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(Colors.blueGrey[300]),
+                                backgroundColor: MaterialStateProperty.all(Colors.tealAccent),
                                 overlayColor: MaterialStateProperty.all(Colors.transparent),
                                 splashFactory: NoSplash.splashFactory,
                                 elevation: MaterialStateProperty.all(0),
@@ -804,7 +804,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 //child: Text("Reply to: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
                                 child: Text.rich(
                                   TextSpan(
-                                    style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                     text: "Reply to: ${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}",
                                     children: <TextSpan>[
                                       TextSpan(
@@ -845,7 +845,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                     ],
                                   ),
                                 ),
-                                color: Colors.blueGrey[300], //theDbuThreadReplies[index]["theOriginalReplyInfo"].toString(), theDbuThreadReplies[index]["theOriginalReplyInfo"].toString()
+                                color: Colors.tealAccent, //theDbuThreadReplies[index]["theOriginalReplyInfo"].toString(), theDbuThreadReplies[index]["theOriginalReplyInfo"].toString()
                                 width: MediaQuery.of(context).size.width * 0.5,
                               ),
                               onPressed: (){
