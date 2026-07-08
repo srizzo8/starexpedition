@@ -418,7 +418,7 @@ class technologiesPageState extends State<technologiesPage> with RouteAware{
                                           children: [
                                             TextSpan(
                                                 text: "${mySublistsTechnologies[theCurrentPageTechnologies][index]["poster"].toString()}",
-                                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal, height: 1.1),
                                                 recognizer: TapGestureRecognizer()..onTap = () async =>{
                                                   technologiesClickedOnUser = true,
 
@@ -727,7 +727,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                                   text: "Reply to: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
                                   children: <TextSpan>[
                                     TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                       text: "${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         technologiesClickedOnUser = true,
@@ -783,7 +783,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                                   text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"].toString())}\nPosted by: ",
                                   children: <TextSpan>[
                                     TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                       text: "${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString()}",
                                       recognizer: TapGestureRecognizer()..onTap = () async =>{
                                         technologiesClickedOnUser = true,
@@ -959,7 +959,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                                     text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"].toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                         text: "${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString()}",
                                         recognizer: TapGestureRecognizer()..onTap = () async =>{
                                           technologiesClickedOnUser = true,
@@ -1177,7 +1177,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                       text: "Thread title: ${threadTitleT}\nPosted by: ",
                       children: <TextSpan>[
                         TextSpan(
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                           text: "${threadAuthorT}",
                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                             technologiesClickedOnUser = true,

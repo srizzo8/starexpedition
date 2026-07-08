@@ -193,7 +193,7 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                   ),
                   DataCell(
                     Center(
-                      child: Text(myStar.key, style: TextStyle(fontSize: 10.0.sp)),
+                      child: Text(myStar.key, style: TextStyle(fontSize: 10.0.sp, color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                     ),
                     onTap: () async{
                       myMain.correctStar = myStar.key;
@@ -330,7 +330,7 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                   ),
                   DataCell(
                     Center(
-                      child: Text(myPlanet.key, style: TextStyle(fontSize: 10.0.sp)),
+                      child: Text(myPlanet.key, style: TextStyle(fontSize: 10.0.sp, color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                     ),
                     onTap: () async{
                       myMain.correctPlanet = myPlanet.key;

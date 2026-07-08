@@ -421,7 +421,7 @@ class projectsPageState extends State<projectsPage> with RouteAware{
                                         children: [
                                           TextSpan(
                                               text: "${mySublistsProjects[theCurrentPage][index]["poster"].toString()}",
-                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                              style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal, height: 1.1),
                                               recognizer: TapGestureRecognizer()..onTap = () async =>{
                                                 projectsClickedOnUser = true,
 
@@ -731,7 +731,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                     text: "Reply to: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             projectsClickedOnUser = true,
@@ -787,7 +787,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                     text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             projectsClickedOnUser = true,
@@ -962,7 +962,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                     text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             projectsClickedOnUser = true,
@@ -1180,7 +1180,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                             text: "Thread title: ${threadTitleP}\nPosted by: ",
                             children: <TextSpan>[
                               TextSpan(
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                  style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                   text: "${threadAuthorP}",
                                   recognizer: TapGestureRecognizer()..onTap = () async =>{
                                     projectsClickedOnUser = true,

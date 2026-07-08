@@ -1921,7 +1921,7 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
               //height: 20,
               //alignment: Alignment.topCenter,
                 child: Ink(
-                  child: Text(starsForSearchBar[randomNumber].starName!),
+                  child: Text(starsForSearchBar[randomNumber].starName!, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                 ),
                 onTap: () async{
                   correctStar = starsForSearchBar[randomNumber].starName!;
@@ -3790,7 +3790,7 @@ class articlePage extends StatelessWidget{
                                   child: Padding(
                                     padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.height * 0.015625, 0.0, MediaQuery.of(bc).size.height * 0.015625, 0.0),
                                     child: InkWell(
-                                        child: Text("${urlTitlesForStars[indexPlace]}\n", textAlign: TextAlign.center),
+                                        child: Text("${urlTitlesForStars[indexPlace]}\n", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                                         onTap: () async{
                                           starListUrlIndex = indexPlace;
                                           if(!(listOfStarUrls[indexPlace].contains("pdf"))){
@@ -4811,7 +4811,7 @@ class planetArticle extends StatelessWidget{
                                   child: Padding(
                                     padding: EdgeInsets.fromLTRB(MediaQuery.of(theContext).size.height * 0.015625, 0.0, MediaQuery.of(theContext).size.height * 0.015625, 0.0),
                                     child: InkWell(
-                                        child: Text("${urlTitlesForPlanets[indexPlace]}\n", textAlign: TextAlign.center),
+                                        child: Text("${urlTitlesForPlanets[indexPlace]}\n", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                                         onTap: () async{
                                           planetListUrlIndex = indexPlace;
                                           if(!(listOfPlanetUrls[indexPlace].contains("pdf"))){

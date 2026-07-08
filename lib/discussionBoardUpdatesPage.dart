@@ -455,7 +455,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
                                         children: [
                                           TextSpan(
                                               text: "${mySublistsDbu[theCurrentPageDbu][index]["poster"].toString()}",
-                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                              style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal, height: 1.1),
                                               recognizer: TapGestureRecognizer()..onTap = () async =>{
                                                 dbuClickedOnUser = true,
 
@@ -804,7 +804,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 //child: Text("Reply to: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
                                 child: Text.rich(
                                   TextSpan(
-                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                    style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                     text: "Reply to: ${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}",
                                     children: <TextSpan>[
                                       TextSpan(
@@ -812,7 +812,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                         text: "\nPosted by: ",
                                       ),
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             dbuClickedOnUser = true,
@@ -874,7 +874,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                         text: "\nPosted by: ",
                                       ),
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             dbuClickedOnUser = true,
@@ -1084,7 +1084,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                         text: "\nPosted by: ",
                                       ),
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             dbuClickedOnUser = true,
@@ -1373,7 +1373,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               text: "Posted by: ",
                             ),
                             TextSpan(
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                 text: "${threadAuthorDbu}",
                                 recognizer: TapGestureRecognizer()..onTap = () async =>{
                                   dbuClickedOnUser = true,

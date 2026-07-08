@@ -418,7 +418,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage> with RouteAware{
                                         children: [
                                           TextSpan(
                                               text: "${mySublistsNd[theCurrentPageNd][index]["poster"].toString()}",
-                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                              style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal, height: 1.1),
                                               recognizer: TapGestureRecognizer()..onTap = () async =>{
                                                 ndClickedOnUser = true,
 
@@ -726,7 +726,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                     text: "Reply to: ${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             ndClickedOnUser = true,
@@ -782,7 +782,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                     text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             ndClickedOnUser = true,
@@ -960,7 +960,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                     text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             ndClickedOnUser = true,
@@ -1179,7 +1179,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                           text: "Thread title: ${threadTitleNd}\nPosted by: ",
                           children: <TextSpan>[
                             TextSpan(
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                 text: "${threadAuthorNd}",
                                 recognizer: TapGestureRecognizer()..onTap = () async =>{
                                   ndClickedOnUser = true,

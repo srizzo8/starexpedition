@@ -273,7 +273,7 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: InkWell(
-                      child: Text(spectralClassCount[0].toString(), style: TextStyle(color: Colors.black)),
+                      child: Text(spectralClassCount[0].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                       onTap: (){
                         print("You clicked me!");
                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
@@ -301,7 +301,7 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: InkWell(
-                      child: Text(spectralClassCount[1].toString(), style: TextStyle(color: Colors.black)),
+                      child: Text(spectralClassCount[1].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                       onTap: (){
                         print('You clicked me!');
                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
@@ -329,7 +329,7 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: InkWell(
-                      child: Text(spectralClassCount[2].toString(), style: TextStyle(color: Colors.black)),
+                      child: Text(spectralClassCount[2].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                         mySpectralClass = "G";
@@ -356,7 +356,7 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: InkWell(
-                      child: Text(spectralClassCount[3].toString(), style: TextStyle(color: Colors.black)),
+                      child: Text(spectralClassCount[3].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                         mySpectralClass = "F";
@@ -383,7 +383,7 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: InkWell(
-                      child: Text(spectralClassCount[4].toString(), style: TextStyle(color: Colors.black)),
+                      child: Text(spectralClassCount[4].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                         mySpectralClass = "A";
@@ -410,7 +410,7 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: InkWell(
-                      child: Text(spectralClassCount[5].toString(), style: TextStyle(color: Colors.black)),
+                      child: Text(spectralClassCount[5].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                         mySpectralClass = "B";
@@ -437,7 +437,7 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: InkWell(
-                      child: Text(spectralClassCount[6].toString(), style: TextStyle(color: Colors.black)),
+                      child: Text(spectralClassCount[6].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                         mySpectralClass = "O";

@@ -423,7 +423,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage> 
                                         children: [
                                           TextSpan(
                                               text: "${mySublistsFas[theCurrentPageFas][index]["poster"].toString()}",
-                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                              style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal, height: 1.1),
                                               recognizer: TapGestureRecognizer()..onTap = () async =>{
                                                 fasClickedOnUser = true,
 
@@ -731,7 +731,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                     text: "Reply to: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             fasClickedOnUser = true,
@@ -787,7 +787,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                     text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             fasClickedOnUser = true,
@@ -964,7 +964,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                     text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             fasClickedOnUser = true,
@@ -1184,7 +1184,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                           text: "Thread title: ${threadTitleFas}\nPosted by: ",
                           children: <TextSpan>[
                             TextSpan(
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                 text: "${threadAuthorFas}",
                                 recognizer: TapGestureRecognizer()..onTap = () async =>{
                                   fasClickedOnUser = true,

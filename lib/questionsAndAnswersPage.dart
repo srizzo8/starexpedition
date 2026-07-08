@@ -418,7 +418,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
                                         children: [
                                           TextSpan(
                                               text: "${mySublistsQaa[theCurrentPageQaa][index]["poster"].toString()}",
-                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                              style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal, height: 1.1),
                                               recognizer: TapGestureRecognizer()..onTap = () async =>{
                                                 qaaClickedOnUser = true,
 
@@ -727,7 +727,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                     text: "Reply to: ${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             qaaClickedOnUser = true,
@@ -783,7 +783,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                     text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             qaaClickedOnUser = true,
@@ -961,7 +961,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                     text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toString())}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString()}",
                                           recognizer: TapGestureRecognizer()..onTap = () async =>{
                                             qaaClickedOnUser = true,
@@ -1182,7 +1182,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                           text: "Thread title: ${threadTitleQaa}\nPosted by: ",
                           children: <TextSpan>[
                             TextSpan(
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                 text: "${threadAuthorQaa}",
                                 recognizer: TapGestureRecognizer()..onTap = () async =>{
                                   qaaClickedOnUser = true,
