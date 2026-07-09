@@ -905,7 +905,7 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                     Column(
                       children: <Widget>[
                         Center(
-                          child: InkWell(
+                          child: GestureDetector(
                             child: Text("${myMain.starsUserTracked.keys.toList()[s]}", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                             onTap: () async{
                               myMain.correctStar = myMain.starsUserTracked.keys.toList()[s];
@@ -1045,7 +1045,7 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                     Column(
                       children: <Widget>[
                         Center(
-                          child: InkWell(
+                          child: GestureDetector(
                             child: Text("${myMain.planetsUserTracked.keys.toList()[p]}", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                             onTap: () async{
                               myMain.correctPlanet = myMain.planetsUserTracked.keys.toList()[p];
@@ -1387,7 +1387,7 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                     Column(
                       children: <Widget>[
                         Center(
-                          child: InkWell(
+                          child: GestureDetector(
                             child: Text("${theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s]}", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                             onTap: () async{
                               myMain.correctStar = theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s];
@@ -1520,7 +1520,7 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                     Column(
                       children: <Widget>[
                         Center(
-                          child: InkWell(
+                          child: GestureDetector(
                             child: Text("${theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p]}", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                             onTap: () async{
                               myMain.correctPlanet = theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p];

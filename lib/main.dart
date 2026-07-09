@@ -1917,10 +1917,10 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
           //),
 
           Center(
-            child: InkWell(
+            child: GestureDetector(
               //height: 20,
               //alignment: Alignment.topCenter,
-                child: Ink(
+                child: Container(
                   child: Text(starsForSearchBar[randomNumber].starName!, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                 ),
                 onTap: () async{
@@ -3789,7 +3789,7 @@ class articlePage extends StatelessWidget{
                                 Center(
                                   child: Padding(
                                     padding: EdgeInsets.fromLTRB(MediaQuery.of(bc).size.height * 0.015625, 0.0, MediaQuery.of(bc).size.height * 0.015625, 0.0),
-                                    child: InkWell(
+                                    child: GestureDetector(
                                         child: Text("${urlTitlesForStars[indexPlace]}\n", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                                         onTap: () async{
                                           starListUrlIndex = indexPlace;
@@ -4810,7 +4810,7 @@ class planetArticle extends StatelessWidget{
                                 Center(
                                   child: Padding(
                                     padding: EdgeInsets.fromLTRB(MediaQuery.of(theContext).size.height * 0.015625, 0.0, MediaQuery.of(theContext).size.height * 0.015625, 0.0),
-                                    child: InkWell(
+                                    child: GestureDetector(
                                         child: Text("${urlTitlesForPlanets[indexPlace]}\n", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                                         onTap: () async{
                                           planetListUrlIndex = indexPlace;
