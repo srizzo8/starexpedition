@@ -5,6 +5,7 @@ import 'dart:math';
 //import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -169,22 +170,33 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
             Container(
               height: MediaQuery.of(context).size.height * 0.015625,
             ),
-            Theme(
+            Center(
+            child: Theme(
               data: Theme.of(context).copyWith(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 splashFactory: NoSplash.splashFactory,
               ),
               child: DataTable(
+                columnSpacing: 30.0,
                 columns: [
                   DataColumn(
-                    label: Text("Rank", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                    label: Center(
+                      child: Text("Rank", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                    ),
                   ),
                   DataColumn(
-                    label: Text("Star Name", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                    label: SizedBox(
+                      width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
+                      child: Center(
+                        child: Text("Star Name", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                      ),
+                    ),
                   ),
                   DataColumn(
-                    label: Text("Users Tracking", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                    label: Center(
+                      child: Text("Users Tracking", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                    ),
                   ),
                 ],
                 rows: topFiveTrackedStars.asMap().entries.map<DataRow>((myEntry){
@@ -198,8 +210,11 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                       ),
                     ),
                     DataCell(
-                      Center(
-                        child: Text(myStar.key, style: TextStyle(fontSize: 10.0.sp, color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                      SizedBox(
+                        width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
+                        child: Center(
+                          child: Text(myStar.key, style: TextStyle(fontSize: 10.0.sp, color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                        ),
                       ),
                       onTap: () async{
                         myMain.correctStar = myStar.key;
@@ -304,6 +319,7 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                 }).toList(),
               ),
             ),
+            ),
             Container(
               height: MediaQuery.of(context).size.height * 0.015625,
             ),
@@ -313,22 +329,33 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
             Container(
               height: MediaQuery.of(context).size.height * 0.015625,
             ),
-            Theme(
+            Center(
+            child: Theme(
               data: Theme.of(context).copyWith(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 splashFactory: NoSplash.splashFactory,
               ),
               child: DataTable(
+                columnSpacing: 30.0,
                 columns: [
                   DataColumn(
-                    label: Text("Rank", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                    label: Center(
+                      child: Text("Rank", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                    ),
                   ),
                   DataColumn(
-                    label: Text("Planet Name", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                    label: SizedBox(
+                      width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
+                      child: Center(
+                        child: Text("Planet Name", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                      ),
+                    ),
                   ),
                   DataColumn(
-                    label: Text("Users Tracking", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                    label: Center(
+                      child: Text("Users Tracking", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp)),
+                    ),
                   ),
                 ],
                 rows: topFiveTrackedPlanets.asMap().entries.map<DataRow>((myEntry){
@@ -342,8 +369,11 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                       ),
                     ),
                     DataCell(
-                      Center(
-                        child: Text(myPlanet.key, style: TextStyle(fontSize: 10.0.sp, color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                      SizedBox(
+                        width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
+                        child: Center(
+                          child: Text(myPlanet.key, style: TextStyle(fontSize: 10.0.sp, color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                        ),
                       ),
                       onTap: () async{
                         myMain.correctPlanet = myPlanet.key;
@@ -455,6 +485,7 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                   ]);
                 }).toList(),
               ),
+            ),
             ),
           ]
         ),
