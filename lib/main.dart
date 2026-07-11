@@ -856,7 +856,8 @@ List<myStars> starsForSearchBar = [
   myStars(starName: "Ross 508", imagePath: "assets/images/ross_508.JPG", articlePath: "assets/text_files/star_files/ross_508.txt"),
   myStars(starName: "GJ 251", imagePath: "assets/images/gj_251.JPG", articlePath: "assets/text_files/star_files/gj_251.txt"),
   myStars(starName: "GJ 1002", imagePath: "assets/images/gj_1002.JPG", articlePath: "assets/text_files/star_files/gj_1002.txt"),
-  myStars(starName: "GJ 1061", imagePath: "assets/images/gj_1061.JPG", articlePath: "assets/text_files/star_files/gj_1061.txt")
+  myStars(starName: "GJ 1061", imagePath: "assets/images/gj_1061.JPG", articlePath: "assets/text_files/star_files/gj_1061.txt"),
+  myStars(starName: "GJ 3378", imagePath: "assets/images/gj_3378.png", articlePath: "assets/text_files/star_files/gj_3378.txt")
 ];
 
 
