@@ -726,7 +726,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Reply to: ${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                    text: "Reply to:\n${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
@@ -784,8 +784,12 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    text: "${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replyContent"].toString()}\n",
                                     children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                      ),
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString()}",
@@ -813,14 +817,10 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                             }
                                           }
                                       ),
-                                      TextSpan(
+                                      /*TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replyContent"].toString()}",
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -964,8 +964,12 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    text: "${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replyContent"].toString()}\n",
                                     children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                      ),
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString()}",
@@ -994,14 +998,10 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                             }
                                           }
                                       ),
-                                      TextSpan(
+                                      /*TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replyContent"].toString()}",
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -1184,9 +1184,13 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                       //child: Text("Thread title: " + threadTitleQaa + "\n" + "Posted by: " + threadAuthorQaa + "\n" + threadContentQaa),
                       child: Text.rich(
                         TextSpan(
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                          text: "Thread title: ${threadTitleQaa}\nPosted by: ",
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          text: "${threadTitleQaa}\n",
                           children: <TextSpan>[
+                            TextSpan(
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                              text: "${threadContentQaa}\nPosted by: ",
+                            ),
                             TextSpan(
                                 style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                 text: "${threadAuthorQaa}",
@@ -1214,14 +1218,10 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                   }
                                 }
                             ),
-                            TextSpan(
+                            /*TextSpan(
                               style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                               text: " ",
-                            ),
-                            TextSpan(
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                              text: "\n${threadContentQaa}",
-                            ),
+                            ),*/
                           ],
                         ),
                       ),

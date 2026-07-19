@@ -730,7 +730,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Reply to: ${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                    text: "Reply to:\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
@@ -788,8 +788,12 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}\n",
                                     children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                      ),
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
@@ -818,14 +822,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                             }
                                           }
                                       ),
-                                      TextSpan(
+                                      /*TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}",
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -967,8 +967,12 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}\n",
                                     children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                      ),
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString()}",
@@ -998,14 +1002,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                             }
                                           }
                                       ),
-                                      TextSpan(
+                                      /*TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString()}",
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -1186,9 +1186,13 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                       padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                       child: Text.rich(
                         TextSpan(
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                          text: "Thread title: ${threadTitleFas}\nPosted by: ",
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          text: "${threadTitleFas}\n",
                           children: <TextSpan>[
+                            TextSpan(
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                              text: "${threadContentFas}\nPosted by: ",
+                            ),
                             TextSpan(
                                 style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                 text: "${threadAuthorFas}",
@@ -1216,14 +1220,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                   }
                                 }
                             ),
-                            TextSpan(
+                            /*TextSpan(
                               style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                               text: " ",
-                            ),
-                            TextSpan(
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                              text: "\n${threadContentFas}",
-                            )
+                            ),*/
                           ],
                         ),
                       ),

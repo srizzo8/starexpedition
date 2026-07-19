@@ -730,7 +730,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Reply to: ${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                    text: "Reply to:\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
@@ -788,8 +788,12 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}\n",
                                     children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                      ),
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
@@ -817,14 +821,10 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                             }
                                           }
                                       ),
-                                      TextSpan(
+                                      /*TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}",
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -965,8 +965,12 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}\n",
                                     children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                      ),
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
@@ -995,14 +999,10 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                             }
                                           }
                                       ),
-                                      TextSpan(
+                                      /*TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}",
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -1182,9 +1182,13 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                       //child: Text("Thread title: " + threadTitleP + "\n" + "Posted by: " + threadAuthorP + "\n" + threadContentP),
                       child: Text.rich(
                           TextSpan(
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                            text: "Thread title: ${threadTitleP}\nPosted by: ",
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                            text: "${threadTitleP}\n",
                             children: <TextSpan>[
+                              TextSpan(
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                text: "${threadContentP}\nPosted by: ",
+                              ),
                               TextSpan(
                                   style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                   text: "${threadAuthorP}",
@@ -1212,14 +1216,10 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                     }
                                   }
                               ),
-                              TextSpan(
+                              /*TextSpan(
                                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                 text: " ",
-                              ),
-                              TextSpan(
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                text: "\n${threadContentP}",
-                              ),
+                              ),*/
                             ],
                           )
                       ),

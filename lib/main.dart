@@ -3650,6 +3650,7 @@ class articlePage extends StatelessWidget{
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
                       ),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           ListView.builder(
                               padding: EdgeInsets.zero,

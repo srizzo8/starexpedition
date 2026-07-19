@@ -807,7 +807,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Reply to: ${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}",
+                                    text: "Reply to:\n${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}",
                                     children: <TextSpan>[
                                       TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -871,11 +871,11 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}",
+                                    text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}\n",
                                     children: <TextSpan>[
                                       TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\nPosted by: ",
+                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}\nPosted by: ",
                                       ),
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
@@ -903,14 +903,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                             }
                                           }
                                       ),
-                                      TextSpan(
+                                      /*TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}",
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -1083,11 +1079,11 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}",
+                                    text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}\n",
                                     children: <TextSpan>[
                                       TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\nPosted by: ",
+                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}\nPosted by: ",
                                       ),
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
@@ -1117,14 +1113,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                             }
                                           }
                                       ),
-                                      TextSpan(
+                                      /*TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}",
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -1371,12 +1363,12 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                       padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                       child: Text.rich(
                         TextSpan(
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                          text: "Thread title: ${threadTitleDbu}\n",
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          text: "${threadTitleDbu}\n",
                           children: <TextSpan>[
                             TextSpan(
                               style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                              text: "Posted by: ",
+                              text: "${threadContentDbu}\nPosted by: ",
                             ),
                             TextSpan(
                                 style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
@@ -1405,14 +1397,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                   }
                                 }
                             ),
-                            TextSpan(
+                            /*TextSpan(
                               style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                              text: " \n",
-                            ),
-                            TextSpan(
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                              text: "${threadContentDbu}",
-                            ),
+                              text: " ",
+                            ),*/
                           ],
                         ),
                       ),

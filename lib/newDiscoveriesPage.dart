@@ -725,7 +725,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Reply to: ${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
+                                    text: "Reply to:\n${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
                                     children: <TextSpan>[
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
@@ -783,8 +783,12 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()}\n",
                                     children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                      ),
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString()}",
@@ -812,14 +816,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                             }
                                           }
                                       ),
-                                      TextSpan(
+                                      /*TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()}",
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -963,8 +963,12 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                    text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()}\n",
                                     children: <TextSpan>[
+                                      TextSpan(
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                      ),
                                       TextSpan(
                                           style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                           text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString()}",
@@ -993,14 +997,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                             }
                                           }
                                       ),
-                                      TextSpan(
+                                      /*TextSpan(
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                         text: " ",
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\n${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()}",
-                                      ),
+                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -1181,9 +1181,13 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                       padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                       child: Text.rich(
                         TextSpan(
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                          text: "Thread title: ${threadTitleNd}\nPosted by: ",
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          text: "${threadTitleNd}\n",
                           children: <TextSpan>[
+                            TextSpan(
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                              text: "${threadContentNd}\nPosted by: ",
+                            ),
                             TextSpan(
                                 style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                 text: "${threadAuthorNd}",
@@ -1211,14 +1215,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                   }
                                 }
                             ),
-                            TextSpan(
+                            /*TextSpan(
                               style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                               text: " ",
-                            ),
-                            TextSpan(
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                              text: "\n${threadContentNd}",
-                            )
+                            ),*/
                           ],
                         ),
                       ),
