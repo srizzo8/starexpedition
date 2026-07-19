@@ -1,16 +1,27 @@
-# starexpedition4
+# Star Expedition
 
-A new Flutter project.
+Star Expedition is an application that allows users to learn about nearby stars with confirmed terrestrial planets in their habitable zones and the confirmed terrestrial planets that orbit them and are potentially habitable as well as communicate with others about topics concerning the search for extraterrestrial life in exoplanets.
 
-## Getting Started
+## Features
+Some features include:
+- Star and Planet Articles
+- Conversion Calculator
+- Discussion Board
+- Star/Planet Tracker
+- Featured Star of the Day
+- Information about the Spectral Classes of Stars
 
-This project is a starting point for a Flutter application.
+## Tech Stack
+- Dart/Flutter
+- Firebase/Firestore
+- Supabase
+- Vercel
 
-A few resources to get you started if this is your first Flutter project:
+## Status
+Star Expedition is currently going through closed testing. Its release is coming soon!
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## License
+(c)2026 Rentebu Technologies. All rights reserved.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Contact
+Email address: starexpedition.theapp@gmail.com
