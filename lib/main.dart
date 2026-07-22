@@ -875,6 +875,7 @@ class MyApp extends StatelessWidget {
         navigatorObservers: [routesToOtherPages.myRouteObserver, myAccessCheckObserver],
         title: 'Flutter Demo',
         theme: ThemeData(
+          useMaterial3: false,
           primarySwatch: Colors.red,
           appBarTheme: AppBarTheme(
             backgroundColor: Colors.red,

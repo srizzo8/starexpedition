@@ -35,7 +35,8 @@ if(keystorePropertiesFile.exists()){
 }
 
 android {
-    compileSdkVersion 34 //flutter.compileSdkVersion
+    namespace "com.starexpedition"
+    compileSdkVersion 36 //flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -56,9 +57,9 @@ android {
         applicationId "com.starexpedition"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 21
+        minSdkVersion 23
         multiDexEnabled true
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -89,11 +90,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.android.billingclient:billing:6.2.1'
+    implementation 'com.android.billingclient:billing:9.0.0'
 }
 
 configurations.all{
     resolutionStrategy{
-        force 'com.android.billingclient:billing:6.2.1'
+        force 'com.android.billingclient:billing:9.0.0'
     }
 }
