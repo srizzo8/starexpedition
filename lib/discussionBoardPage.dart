@@ -123,7 +123,7 @@ class discussionBoardPageState extends State<discussionBoardPage> with RouteAwar
                       Center(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.grey[300],
+                            backgroundColor: Colors.grey[300],
                           ),
                           child: InkWell(
                             child: Ink(
@@ -249,7 +249,7 @@ class discussionBoardPageState extends State<discussionBoardPage> with RouteAwar
                     child: Center(
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.black,
+                            backgroundColor: Colors.black,
                           ),
                           child: InkWell(
                             child: Ink(

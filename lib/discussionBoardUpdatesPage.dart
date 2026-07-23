@@ -436,7 +436,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
                       height: MediaQuery.of(context).size.height * 0.08,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.grey[300],
+                            backgroundColor: Colors.grey[300],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
@@ -626,7 +626,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
             //alignment: Alignment.center,
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
@@ -656,7 +656,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
           ),
           NumberPaginator(
               initialPage: theCurrentPageDbu,
-              height: MediaQuery.of(context).size.height * 0.0782125,
+              //height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfDbuThreads.length != 0? numberOfPagesDbu : 1,//numberOfPagesDbu,
               onPageChange: (myIndexDbu){
                 setState((){
@@ -919,7 +919,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                           ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1129,7 +1129,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                           ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1353,7 +1353,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
           children: <Widget>[
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey[300],
+                  backgroundColor: Colors.grey[300],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: Align(
@@ -1415,7 +1415,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey[500],
+                  backgroundColor: Colors.grey[500],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: InkWell(
@@ -1461,7 +1461,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
             ),
             NumberPaginator(
               key: ValueKey(myPaginatorResetValue),
-              height: MediaQuery.of(context).size.height * 0.0782125,
+              //height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfDbuThreadReplies.length != 0? numberOfPagesDbuThreadReplies : 1,
               onPageChange: (myIndexDbuThreadReplies){
                 setState((){

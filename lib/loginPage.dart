@@ -193,7 +193,7 @@ class loginPageState extends State<loginPage> with RouteAware{
             Center(
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
+                    backgroundColor: Colors.black,
                   ),
                   child: InkWell(
                     child: Ink(
@@ -448,7 +448,7 @@ class loginPageState extends State<loginPage> with RouteAware{
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
@@ -480,7 +480,7 @@ class loginPageState extends State<loginPage> with RouteAware{
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(

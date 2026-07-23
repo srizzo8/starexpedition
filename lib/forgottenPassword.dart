@@ -351,7 +351,7 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
@@ -602,7 +602,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
@@ -952,7 +952,7 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(

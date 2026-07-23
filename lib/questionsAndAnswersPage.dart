@@ -399,7 +399,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
                       height: MediaQuery.of(context).size.height * 0.08,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.grey[300],
+                            backgroundColor: Colors.grey[300],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
@@ -589,7 +589,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
             //alignment: Alignment.center,
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
@@ -617,7 +617,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
           ),
           NumberPaginator(
               initialPage: theCurrentPageQaa,
-              height: MediaQuery.of(context).size.height * 0.0782125,
+              //height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfQaaThreads.length != 0? numberOfPagesQaa : 1,
               onPageChange: (myIndexQaa){
                 setState((){
@@ -833,7 +833,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                           ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1014,7 +1014,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                           ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1173,7 +1173,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
           children: <Widget>[
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey[300],
+                  backgroundColor: Colors.grey[300],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: Align(
@@ -1236,7 +1236,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey[500],
+                  backgroundColor: Colors.grey[500],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: InkWell(
@@ -1279,7 +1279,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
             ),
             NumberPaginator(
               key: ValueKey(myPaginatorResetValue),
-              height: MediaQuery.of(context).size.height * 0.0782125,
+              //height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfQaaThreadReplies.length != 0? numberOfPagesQaaThreadReplies : 1,
               onPageChange: (myIndexQaaThreadReplies){
                 setState((){

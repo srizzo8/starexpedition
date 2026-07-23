@@ -47,22 +47,21 @@ dependencies:
   flutter_dotenv: ^5.1.0
   sqflite: ^2.0.3+1
   sqflite_common_ffi: ^2.1.1+1
-  path: 1.8.1
+  path: 1.9.1
   cloud_firestore: ^4.2.0
-  get: ^4.6.0
-  number_paginator: 0.0.2
+  get: ^4.7.2
+  number_paginator: ^1.1.2
   email_sender: ^1.1.6
   encrypt: ^5.0.1
   url_launcher: ^6.1.10
   webview_flutter: ^4.0.7
-  advance_pdf_viewer_fork: ^2.0.0
   http: ^0.13.5
-  pdfx: ^2.0.1+2
+  pdfx: ^2.9.2
   js: ^0.6.4
   image_picker: ^0.8.7+1
   file_selector: ^0.9.2+5
   firebase_storage: ^11.0.16
-  flutter_screenutil: ^5.7.0
+  flutter_screenutil: ^5.9.3
   in_app_purchase: ^3.1.5
   shared_preferences: ^2.1.1
   device_info_plus: ^3.2.1

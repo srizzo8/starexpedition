@@ -3674,7 +3674,7 @@ class articlePage extends StatelessWidget{
                                       child: Center(
                                         child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                            primary: Colors.black,
+                                            backgroundColor: Colors.black,
                                           ),
                                           child: UnconstrainedBox(
                                             child: Ink(
@@ -3893,7 +3893,7 @@ class articlePage extends StatelessWidget{
                               child: Center(
                                 child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      primary: Colors.black,
+                                      backgroundColor: Colors.black,
                                     ),
                                     child: Ink(
                                       color: Colors.black,
@@ -4277,7 +4277,7 @@ class articlePage extends StatelessWidget{
                               child: Center(
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    primary: Colors.black,
+                                    backgroundColor: Colors.black,
                                   ),
                                   child: Ink(
                                     color: Colors.black,
@@ -4909,7 +4909,7 @@ class planetArticle extends StatelessWidget{
                               child: Center(
                                 child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      primary: Colors.black,
+                                      backgroundColor: Colors.black,
                                     ),
                                     child: Ink(
                                       color: Colors.black,
@@ -5280,7 +5280,7 @@ class planetArticle extends StatelessWidget{
                               child: Center(
                                 child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      primary: Colors.black,
+                                      backgroundColor: Colors.black,
                                     ),
                                     child: Ink(
                                       color: Colors.black,

@@ -527,7 +527,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
+                        backgroundColor: Colors.black,
                       ),
                       child: InkWell(
                         child: Ink(
@@ -549,7 +549,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
+                        backgroundColor: Colors.black,
                       ),
                       child: InkWell(
                         child: Ink(
@@ -571,7 +571,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
+                        backgroundColor: Colors.black,
                       ),
                       child: InkWell(
                         child: Ink(

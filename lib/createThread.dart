@@ -340,7 +340,7 @@ class createThreadState extends State<createThread> with RouteAware{
                   //padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
+                    backgroundColor: Colors.black,
                   ),
                   child: InkWell(
                     child: Ink(

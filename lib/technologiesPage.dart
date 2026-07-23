@@ -399,7 +399,7 @@ class technologiesPageState extends State<technologiesPage> with RouteAware{
                         height: MediaQuery.of(context).size.height * 0.08,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.grey[300],
+                              backgroundColor: Colors.grey[300],
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
@@ -588,7 +588,7 @@ class technologiesPageState extends State<technologiesPage> with RouteAware{
             //alignment: Alignment.center,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.black,
+                backgroundColor: Colors.black,
               ),
               child: InkWell(
                 child: Ink(
@@ -616,7 +616,7 @@ class technologiesPageState extends State<technologiesPage> with RouteAware{
           ),
           NumberPaginator(
             initialPage: theCurrentPageTechnologies,
-            height: MediaQuery.of(context).size.height * 0.0782125,
+            //height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfTechnologiesThreads.length != 0? numberOfPagesTechnologies : 1,
             onPageChange: (myIndexTechnologies){
               setState((){
@@ -833,7 +833,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.grey[500],
+                              backgroundColor: Colors.grey[500],
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                             child: InkWell(
@@ -1012,7 +1012,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1168,7 +1168,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
         children: <Widget>[
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.grey[300],
+              backgroundColor: Colors.grey[300],
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Align(
@@ -1231,7 +1231,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.grey[500],
+              backgroundColor: Colors.grey[500],
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: InkWell(
@@ -1273,7 +1273,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
           ),
           NumberPaginator(
             key: ValueKey(myPaginatorResetValue),
-            height: MediaQuery.of(context).size.height * 0.0782125,
+            //height: MediaQuery.of(context).size.height * 0.0782125,
             numberPages: listOfTechnologiesThreadReplies.length != 0? numberOfPagesTechnologiesThreadReplies : 1,
             onPageChange: (myIndexTechnologiesThreadReplies){
               setState((){

@@ -410,7 +410,7 @@ class registerPageState extends State<registerPage>{
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
@@ -602,7 +602,7 @@ class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
           Center(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.black,
+                backgroundColor: Colors.black,
               ),
               child: InkWell(
                 child: Ink(

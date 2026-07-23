@@ -399,7 +399,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage> with RouteAware{
                       height: MediaQuery.of(context).size.height * 0.08,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.grey[300],
+                            backgroundColor: Colors.grey[300],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
@@ -588,7 +588,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage> with RouteAware{
             //alignment: Alignment.center,
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
@@ -616,7 +616,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage> with RouteAware{
           ),
           NumberPaginator(
               initialPage: theCurrentPageNd,
-              height: MediaQuery.of(context).size.height * 0.0782125,
+              //height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfNdThreads.length != 0? numberOfPagesNd : 1,
               onPageChange: (myIndexNd){
                 setState((){
@@ -832,7 +832,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                           ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1013,7 +1013,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                           ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1171,7 +1171,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
           children: <Widget>[
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey[300],
+                  backgroundColor: Colors.grey[300],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: Align(
@@ -1233,7 +1233,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey[500],
+                  backgroundColor: Colors.grey[500],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: InkWell(
@@ -1275,7 +1275,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
             ),
             NumberPaginator(
               key: ValueKey(myPaginatorResetValue),
-              height: MediaQuery.of(context).size.height * 0.0782125,
+              //height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfNdThreadReplies.length != 0? numberOfPagesNdThreadReplies : 1,
               onPageChange: (myIndexNdThreadReplies){
                 setState((){

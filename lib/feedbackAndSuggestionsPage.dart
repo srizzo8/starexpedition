@@ -404,7 +404,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage> 
                       height: MediaQuery.of(context).size.height * 0.08,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.grey[300],
+                            backgroundColor: Colors.grey[300],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
@@ -594,7 +594,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage> 
             //alignment: Alignment.center,
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
@@ -622,7 +622,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage> 
           ),
           NumberPaginator(
               initialPage: theCurrentPageFas,
-              height: MediaQuery.of(context).size.height * 0.0782125,
+              //height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfFasThreads.length != 0? numberOfPagesFas : 1,
               onPageChange: (myIndexFas){
                 setState((){
@@ -838,7 +838,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                           ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1018,7 +1018,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                           ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1176,7 +1176,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
           children: <Widget>[
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey[300],
+                  backgroundColor: Colors.grey[300],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: Align(
@@ -1238,7 +1238,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey[500],
+                  backgroundColor: Colors.grey[500],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: InkWell(
@@ -1280,7 +1280,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
             ),
             NumberPaginator(
               key: ValueKey(myPaginatorResetValue),
-              height: MediaQuery.of(context).size.height * 0.0782125,
+              //height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfFasThreadReplies.length != 0? numberOfPagesFasThreadReplies : 1,
               onPageChange: (myIndexFasThreadReplies){
                 setState((){

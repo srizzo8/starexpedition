@@ -402,7 +402,7 @@ class projectsPageState extends State<projectsPage> with RouteAware{
                       height: MediaQuery.of(context).size.height * 0.08,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.grey[300],
+                            backgroundColor: Colors.grey[300],
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
@@ -593,7 +593,7 @@ class projectsPageState extends State<projectsPage> with RouteAware{
             //alignment: Alignment.center,
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+                  backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
@@ -621,7 +621,7 @@ class projectsPageState extends State<projectsPage> with RouteAware{
           ),
           NumberPaginator(
               initialPage: theCurrentPage,
-              height: MediaQuery.of(context).size.height * 0.0782125,
+              //height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfProjectsThreads.length != 0? numberOfPages : 1,
               onPageChange: (myIndex){
                 setState((){
@@ -837,7 +837,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                           ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1015,7 +1015,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                           ),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey[500],
+                                backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: InkWell(
@@ -1171,7 +1171,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
           children: <Widget>[
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey[300],
+                  backgroundColor: Colors.grey[300],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: Align(
@@ -1234,7 +1234,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.grey[500],
+                  backgroundColor: Colors.grey[500],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: InkWell(
@@ -1276,7 +1276,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
             ),
             NumberPaginator(
               key: ValueKey(myPaginatorResetValue),
-              height: MediaQuery.of(context).size.height * 0.0782125,
+              //height: MediaQuery.of(context).size.height * 0.0782125,
               numberPages: listOfProjectsThreadReplies.length != 0? numberOfPagesProjectsThreadReplies : 1,
               onPageChange: (myIndexProjectsThreadReplies){
                 setState((){

@@ -271,7 +271,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                     //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.black,
+                          backgroundColor: Colors.black,
                         ),
                         child: InkWell(
                           child: Ink(

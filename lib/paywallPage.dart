@@ -126,8 +126,8 @@ class paywallPageState extends State<paywallPage>{
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       //When onPressed is null, this button is grey[500]:
-                      primary: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[500] : Colors.black,
-                      onPrimary: Colors.white,
+                      backgroundColor: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[500] : Colors.black,
+                      foregroundColor: Colors.white,
 
                       //Overriding the disabled opacity:
                       elevation: 0,
@@ -157,8 +157,8 @@ class paywallPageState extends State<paywallPage>{
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         //When onPressed is null, this button is grey[500]:
-                        primary: widget.activeProductId == theBillingService.myYearlyId? Colors.grey[500] : Colors.black,
-                        onPrimary: Colors.white,
+                        backgroundColor: widget.activeProductId == theBillingService.myYearlyId? Colors.grey[500] : Colors.black,
+                        foregroundColor: Colors.white,
 
                         //Overriding the disabled opacity:
                         elevation: 0,

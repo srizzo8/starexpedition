@@ -142,7 +142,7 @@ class settingsPageState extends State<settingsPage> with RouteAware{
             style: ElevatedButton.styleFrom(
               minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
               maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
-              primary: Colors.black,
+              backgroundColor: Colors.black,
             ),
             child: InkWell(
               child: Ink(
@@ -160,7 +160,7 @@ class settingsPageState extends State<settingsPage> with RouteAware{
             style: ElevatedButton.styleFrom(
               minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
               maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
-              primary: Colors.black,
+              backgroundColor: Colors.black,
             ),
             child: InkWell(
               child: Ink(
@@ -178,7 +178,7 @@ class settingsPageState extends State<settingsPage> with RouteAware{
             style: ElevatedButton.styleFrom(
               minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
               maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
-              primary: Colors.black,
+              backgroundColor: Colors.black,
             ),
             child: InkWell(
               child: Ink(
@@ -462,7 +462,7 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
+                    backgroundColor: Colors.black,
                   ),
                   child: InkWell(
                     child: Ink(
@@ -954,7 +954,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
+                    backgroundColor: Colors.black,
                   ),
                   child: InkWell(
                     child: Ink(
