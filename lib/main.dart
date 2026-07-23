@@ -65,6 +65,8 @@ import 'package:starexpedition4/subscriptionGate.dart';
 
 import 'package:starexpedition4/data_collection_information/dataCollectionSetting.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 /*import 'webErrorStub.dart'
   if(dart.library.html) 'forWebErrors.dart';*/
 
@@ -740,7 +742,16 @@ Future<void> main() async {
     }
   }
   else{
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: dotenv.env["FIREBASE_API_KEY"] as String,
+        appId: dotenv.env["FIREBASE_APP_ID"] as String,
+        messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"] as String,
+        projectId: dotenv.env["FIREBASE_PROJECT_ID"] as String,
+        storageBucket: dotenv.env["FIREBASE_STORAGE_BUCKET"] as String,
+        databaseURL: dotenv.env["FIREBASE_DATABASE_URL"] as String,
+      ),
+    );
 
     try{
       await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.server)).then((snapshot){
