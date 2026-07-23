@@ -635,192 +635,192 @@ void setupMyErrorHandlers(){
 }*/
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  //Loading the .env file:
-  await dotenv.load(fileName: "assets/dotenv.env");
-
-  //Initializing firebaseDesktopHelper:
-  firebaseDesktopHelper.myDatabaseUrl = dotenv.env["FIREBASE_DATABASE_URL"]!;
-  firebaseDesktopHelper.myApiKey = dotenv.env["FIREBASE_API_KEY"]!;
-  firebaseDesktopHelper.myProjectId = dotenv.env["FIREBASE_PROJECT_ID"]!;
-
-  List usersOnStarExpeditionDocs = [];
-
-  if(kIsWeb){
-    await Firebase.initializeApp(options: FirebaseOptions(
-      apiKey: dotenv.env["FIREBASE_API_KEY"]!,
-      appId: dotenv.env["FIREBASE_APP_ID"]!,
-      databaseURL: dotenv.env["FIREBASE_DATABASE_URL"]!,
-      messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"]!,
-      projectId: dotenv.env["FIREBASE_PROJECT_ID"]!
-    ));
-
-    try{
-      await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.server)).then((snapshot){
-        snapshot.docs.forEach((item){
-          usersOnStarExpeditionDocs.add(item.data());
-        });
-      });
-    }
-    catch (e){
-      //Going to cache if the server is unavailable
-      print("The server is unavailable. Error: ${e}");
-      await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.cache)).then((snapshot){
-        snapshot.docs.forEach((item){
-          usersOnStarExpeditionDocs.add(item.data());
-        });
-      });
-    }
-    print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
-
-    starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
-
-    for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
-      Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
-      theUsers!.add(u);
-    }
-
-    //List of stars in Star Expedition
-    for(var s in starsForSearchBar){
-      var star = s.starName!;
-      allStars.add(star);
-    }
-
-    allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
-
-    print("All stars: ${allStars}");
-
-    //List of planets each star has
-    for(var v in starsForSearchBar){
-      var ref = FirebaseDatabase.instance.ref(v.starName!);
-      var mySnapshot = await ref.child("Planets").get();
-      var info = mySnapshot.value as Map;
-      for(var i in info.keys){
-        allPlanets.add(i);
-      }
-
-      //All stars and their planets
-      starsAndTheirPlanets[v.starName!] = info.keys;
-    }
-
-    allPlanets.sort((p1, p2) => p1.toLowerCase().compareTo(p2.toLowerCase()));
-
-    print("stars and their planets: ${starsAndTheirPlanets}");
-
-    print("starsForSearchBar: ${starsForSearchBar}");
-    print("The snapshot: ${allPlanets}");
-  }
-  else if(firebaseDesktopHelper.onDesktop){
-    print("This is the desktop version of Star Expedition");
-
-    usersOnStarExpeditionDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-    starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
-
-    for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
-      Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
-      theUsers!.add(u);
-    }
-
-    for(var s in starsForSearchBar){
-      var star = s.starName!;
-      allStars.add(star);
-    }
-
-    allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
-
-    print("All stars: ${allStars}");
-
-    for(var v in starsForSearchBar){
-      final myData = await firebaseDesktopHelper.getFirebaseData("${v.starName}/Planets");
-      var info = myData as Map;
-      for(var i in info.keys){
-        allPlanets.add(i);
-      }
-      starsAndTheirPlanets[v.starName!] = info.keys;
-    }
-  }
-  else{
-    await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: dotenv.env["FIREBASE_API_KEY"] as String,
-        appId: dotenv.env["FIREBASE_APP_ID"] as String,
-        messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"] as String,
-        projectId: dotenv.env["FIREBASE_PROJECT_ID"] as String,
-        storageBucket: dotenv.env["FIREBASE_STORAGE_BUCKET"] as String,
-        databaseURL: dotenv.env["FIREBASE_DATABASE_URL"] as String,
-      ),
-    );
-
-    try{
-      await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.server)).then((snapshot){
-        snapshot.docs.forEach((item){
-          usersOnStarExpeditionDocs.add(item.data());
-        });
-      });
-    }
-    catch (e){
-      //Going to cache if the server is unavailable
-      print("The server is unavailable. Error: ${e}");
-
-      await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.cache)).then((snapshot){
-        snapshot.docs.forEach((item){
-          usersOnStarExpeditionDocs.add(item.data());
-        });
-      });
-    }
-
-    print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
-
-    starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
-
-    for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
-      Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
-      theUsers!.add(u);
-    }
-
-    //List of stars in Star Expedition
-    for(var s in starsForSearchBar){
-      var star = s.starName!;
-      allStars.add(star);
-    }
-
-    allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
-
-    print("All stars: ${allStars}");
-
-    //List of planets each star has
-    for(var v in starsForSearchBar){
-      var ref = FirebaseDatabase.instance.ref(v.starName!);
-      var mySnapshot = await ref.child("Planets").get();
-      var info = mySnapshot.value as Map;
-      for(var i in info.keys){
-        allPlanets.add(i);
-      }
-
-      //All stars and their planets
-      starsAndTheirPlanets[v.starName!] = info.keys;
-    }
-
-    allPlanets.sort((p1, p2) => p1.toLowerCase().compareTo(p2.toLowerCase()));
-
-    print("stars and their planets: ${starsAndTheirPlanets}");
-
-    print("starsForSearchBar: ${starsForSearchBar}");
-    print("The snapshot: ${allPlanets}");
-  }
-
-  //This tracks one's data collection setting. It runs every time one opens up the app:
-  await dataCollectionSetting.getDataCollectionOn();
-
-  print("The Supabase Function URL: ${dotenv.env["MY_SUPABASE_URL"]}");
-
-  //Registering every error before runApp is run:
-  setupMyErrorHandlers();
-
   //runZonedGuarded, which catches desktop and mobile asynchronous errors:
-  runZonedGuarded((){
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    //Loading the .env file:
+    await dotenv.load(fileName: "assets/dotenv.env");
+
+    //Initializing firebaseDesktopHelper:
+    firebaseDesktopHelper.myDatabaseUrl = dotenv.env["FIREBASE_DATABASE_URL"]!;
+    firebaseDesktopHelper.myApiKey = dotenv.env["FIREBASE_API_KEY"]!;
+    firebaseDesktopHelper.myProjectId = dotenv.env["FIREBASE_PROJECT_ID"]!;
+
+    List usersOnStarExpeditionDocs = [];
+
+    if(kIsWeb){
+      await Firebase.initializeApp(options: FirebaseOptions(
+        apiKey: dotenv.env["FIREBASE_API_KEY"]!,
+        appId: dotenv.env["FIREBASE_APP_ID"]!,
+        databaseURL: dotenv.env["FIREBASE_DATABASE_URL"]!,
+        messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"]!,
+        projectId: dotenv.env["FIREBASE_PROJECT_ID"]!
+      ));
+
+      try{
+        await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.server)).then((snapshot){
+          snapshot.docs.forEach((item){
+            usersOnStarExpeditionDocs.add(item.data());
+          });
+        });
+      }
+      catch (e){
+        //Going to cache if the server is unavailable
+        print("The server is unavailable. Error: ${e}");
+        await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.cache)).then((snapshot){
+          snapshot.docs.forEach((item){
+            usersOnStarExpeditionDocs.add(item.data());
+          });
+        });
+      }
+      print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
+
+      starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+
+      for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
+        Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
+        theUsers!.add(u);
+      }
+
+      //List of stars in Star Expedition
+      for(var s in starsForSearchBar){
+        var star = s.starName!;
+        allStars.add(star);
+      }
+
+      allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+
+      print("All stars: ${allStars}");
+
+      //List of planets each star has
+      for(var v in starsForSearchBar){
+        var ref = FirebaseDatabase.instance.ref(v.starName!);
+        var mySnapshot = await ref.child("Planets").get();
+        var info = mySnapshot.value as Map;
+        for(var i in info.keys){
+          allPlanets.add(i);
+        }
+
+        //All stars and their planets
+        starsAndTheirPlanets[v.starName!] = info.keys;
+      }
+
+      allPlanets.sort((p1, p2) => p1.toLowerCase().compareTo(p2.toLowerCase()));
+
+      print("stars and their planets: ${starsAndTheirPlanets}");
+
+      print("starsForSearchBar: ${starsForSearchBar}");
+      print("The snapshot: ${allPlanets}");
+    }
+    else if(firebaseDesktopHelper.onDesktop){
+      print("This is the desktop version of Star Expedition");
+
+      usersOnStarExpeditionDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+      starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+
+      for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
+        Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
+        theUsers!.add(u);
+      }
+
+      for(var s in starsForSearchBar){
+        var star = s.starName!;
+        allStars.add(star);
+      }
+
+      allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+
+      print("All stars: ${allStars}");
+
+      for(var v in starsForSearchBar){
+        final myData = await firebaseDesktopHelper.getFirebaseData("${v.starName}/Planets");
+        var info = myData as Map;
+        for(var i in info.keys){
+          allPlanets.add(i);
+        }
+        starsAndTheirPlanets[v.starName!] = info.keys;
+      }
+    }
+    else{
+      await Firebase.initializeApp(
+        options: FirebaseOptions(
+          apiKey: dotenv.env["FIREBASE_API_KEY"] as String,
+          appId: dotenv.env["FIREBASE_APP_ID"] as String,
+          messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"] as String,
+          projectId: dotenv.env["FIREBASE_PROJECT_ID"] as String,
+          storageBucket: dotenv.env["FIREBASE_STORAGE_BUCKET"] as String,
+          databaseURL: dotenv.env["FIREBASE_DATABASE_URL"] as String,
+        ),
+      );
+
+      try{
+        await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.server)).then((snapshot){
+          snapshot.docs.forEach((item){
+            usersOnStarExpeditionDocs.add(item.data());
+          });
+        });
+      }
+      catch (e){
+        //Going to cache if the server is unavailable
+        print("The server is unavailable. Error: ${e}");
+
+        await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.cache)).then((snapshot){
+          snapshot.docs.forEach((item){
+            usersOnStarExpeditionDocs.add(item.data());
+          });
+        });
+      }
+
+      print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
+
+      starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
+
+      for(int n = 0; n < usersOnStarExpeditionDocs.length; n++){
+        Users u = new Users(username: usersOnStarExpeditionDocs[n]["username"], email: usersOnStarExpeditionDocs[n]["emailAddress"], password: usersOnStarExpeditionDocs[n]["password"]);
+        theUsers!.add(u);
+      }
+
+      //List of stars in Star Expedition
+      for(var s in starsForSearchBar){
+        var star = s.starName!;
+        allStars.add(star);
+      }
+
+      allStars.sort((s1, s2) => s1.toLowerCase().compareTo(s2.toLowerCase()));
+
+      print("All stars: ${allStars}");
+
+      //List of planets each star has
+      for(var v in starsForSearchBar){
+        var ref = FirebaseDatabase.instance.ref(v.starName!);
+        var mySnapshot = await ref.child("Planets").get();
+        var info = mySnapshot.value as Map;
+        for(var i in info.keys){
+          allPlanets.add(i);
+        }
+
+        //All stars and their planets
+        starsAndTheirPlanets[v.starName!] = info.keys;
+      }
+
+      allPlanets.sort((p1, p2) => p1.toLowerCase().compareTo(p2.toLowerCase()));
+
+      print("stars and their planets: ${starsAndTheirPlanets}");
+
+      print("starsForSearchBar: ${starsForSearchBar}");
+      print("The snapshot: ${allPlanets}");
+    }
+
+    //This tracks one's data collection setting. It runs every time one opens up the app:
+    await dataCollectionSetting.getDataCollectionOn();
+
+    print("The Supabase Function URL: ${dotenv.env["MY_SUPABASE_URL"]}");
+
+    //Registering every error before runApp is run:
+    setupMyErrorHandlers();
+
     runApp(const MyApp());
   }, (error, stack){
     print("Zone caught error");
@@ -1190,7 +1190,7 @@ Future<void> addingToStarMaps() async{
   for(var myStar in starsForSearchBar){
     String starsName = myStar.starName!;
 
-    print("Getting data for this star: ${starsName}");
+    //print("Getting data for this star: ${starsName}");
 
     if(firebaseDesktopHelper.onDesktop){
       var myData = await firebaseDesktopHelper.getFirebaseData(starsName);
@@ -1262,7 +1262,7 @@ Future<void> addingToPlanetMaps() async{
   for(var myPlanet in allPlanets){
     String planetsName = myPlanet;
 
-    print("Getting data for this planet: ${planetsName}");
+    //print("Getting data for this planet: ${planetsName}");
 
     starsAndTheirPlanets.forEach((key, value){
       //print("key: ${key}, value: ${value}");
@@ -1277,7 +1277,7 @@ Future<void> addingToPlanetMaps() async{
       }
     });
 
-    print("The star's name: ${myStarName}");
+    //print("The star's name: ${myStarName}");
 
     if(firebaseDesktopHelper.onDesktop){
       var myData = await firebaseDesktopHelper.getFirebaseData("${myStarName}/Planets/${planetsName}");
