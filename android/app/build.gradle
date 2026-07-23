@@ -84,7 +84,7 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.2.20"
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.android.billingclient:billing:9.0.0'
