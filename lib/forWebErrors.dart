@@ -1,6 +1,6 @@
 import 'dart:html' as html;
 import 'dart:html';
-import 'dart:js_util';
+import 'dart:js_interop_unsafe';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'main.dart' as myMain;

@@ -1,5 +1,6 @@
 import 'dart:html' as html;
-import 'dart:js_util' as jsUtil;
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe' as jsInterop;
 
 import '../main.dart';
 import 'webErrorHandlers.dart';
@@ -9,7 +10,7 @@ void setupWebErrorHandlers(){
   html.window.addEventListener("error", (myEvent){
     final myJsError = myEvent as html.ErrorEvent;
 
-    final myStack = jsUtil.getProperty(myJsError.error ?? {}, "stack") as String?;
+    final myStack = (myJsError.error as JSObject?)?.getProperty("stack".toJS)?.toString();
 
     loggingError(myJsError.message ?? "Unknown JS-related error", StackTrace.fromString(myStack ?? ""), determiningUsername(), myExtraInfo: {'origin': 'js_error', 'file_name': myJsError.filename, 'line': myJsError.lineno, 'column': myJsError.colno});
   });
@@ -20,7 +21,7 @@ void setupWebErrorHandlers(){
 
     final myReason = myRejection.reason;
 
-    final myStack = jsUtil.getProperty(myReason ?? {}, "stack") as String?;
+    final myStack = (myReason as JSObject?)?.getProperty("stack".toJS)?.toString();
 
     loggingError(myReason.toString(), StackTrace.fromString(myStack ?? ""), determiningUsername(), myExtraInfo: {'origin': 'js_promise'});
   });
