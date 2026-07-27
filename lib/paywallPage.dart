@@ -49,7 +49,7 @@ class paywallPageState extends State<paywallPage>{
 
     //If the billing client is not ready yet, wait and retry:
     if(theProducts.isEmpty){
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 1));
       theProducts = await widget.myBillingService.getMyProducts();
       print("The products loaded after the wait and retry: ${myProducts}");
     }

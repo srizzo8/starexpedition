@@ -47,7 +47,7 @@ class theBillingService{
     );
 
     //Waiting some time to ensure that the stream is ready:
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
 
     //Asking Google Play if the device has an active subscription:
     await InAppPurchase.instance.restorePurchases();

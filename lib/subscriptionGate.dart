@@ -98,7 +98,7 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
     await myTrialService.getInstallationDate();
 
     //Giving some billing time to restore purchases:
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 1));
     await myBillingService.initialize();
 
     final inTrial = await myTrialService.isInTrial();
@@ -133,7 +133,7 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
       //Rechecking subscription from Google Play:
       print("Calling for the restore of purchases");
       await InAppPurchase.instance.restorePurchases();
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 1));
 
       if(!mounted){
         return;
@@ -255,7 +255,7 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
     //Asking Google Play if one's subscription is still active on every navigation:
     await InAppPurchase.instance.restorePurchases();
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
 
     if(!mounted){
       return;
@@ -344,7 +344,7 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
     }
 
     await InAppPurchase.instance.restorePurchases();
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
 
     if(!mounted){
       return;
