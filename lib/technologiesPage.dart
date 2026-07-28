@@ -48,6 +48,7 @@ var myIndexPlaceTechnologies;
 var myLocation;
 
 int theCurrentPageTechnologies = 0;
+int theCurrentPageTechnologiesThreadReplies = 0;
 
 int technologiesNavigationDepth = 0;
 
@@ -633,7 +634,7 @@ class technologiesPageState extends State<technologiesPage> with RouteAware{
 
 class technologiesThreadContent extends State<technologiesThreadsPage> with RouteAware{
   int numberOfPagesTechnologiesThreadReplies = 0;
-  int theCurrentPageTechnologiesThreadReplies = 0;
+  //int theCurrentPageTechnologiesThreadReplies = 0;
 
   var listOfTechnologiesThreadReplies;
   var mySublistsTechnologiesThreadReplies = [];
@@ -1160,6 +1161,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
             },
 
             technologiesNavigationDepth = 0,
+            theCurrentPageTechnologiesThreadReplies = 0,
           }
         ),
       ),
@@ -1272,8 +1274,7 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
             child: (myPagesTechnologiesThreadReplies.isNotEmpty && theCurrentPageTechnologiesThreadReplies < myPagesTechnologiesThreadReplies.length && mySublistsTechnologiesThreadReplies.isNotEmpty)? myPagesTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
           ),
           NumberPaginator(
-            key: ValueKey(myPaginatorResetValue),
-            //height: MediaQuery.of(context).size.height * 0.0782125,
+            initialPage: theCurrentPageTechnologiesThreadReplies,
             numberPages: listOfTechnologiesThreadReplies.length != 0? numberOfPagesTechnologiesThreadReplies : 1,
             onPageChange: (myIndexTechnologiesThreadReplies){
               setState((){

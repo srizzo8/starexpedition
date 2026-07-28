@@ -53,6 +53,7 @@ var myIndexPlaceDbu;
 var myLocation;
 
 int theCurrentPageDbu = 0;
+int theCurrentPageDbuThreadReplies = 0;
 
 int dbuNavigationDepth = 0;
 
@@ -714,7 +715,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
 
 class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesThreadsPage> with RouteAware{
   int numberOfPagesDbuThreadReplies = 0;
-  int theCurrentPageDbuThreadReplies = 0;
+  //int theCurrentPageDbuThreadReplies = 0;
 
   var listOfDbuThreadReplies;
   var mySublistsDbuThreadReplies = [];
@@ -1344,6 +1345,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage())),
               },
 
+              theCurrentPageDbuThreadReplies = 0,
               dbuNavigationDepth = 0,
             }
         ),
@@ -1460,8 +1462,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
               child: (myPagesDbuThreadReplies.isNotEmpty && theCurrentPageDbuThreadReplies < myPagesDbuThreadReplies.length && mySublistsDbuThreadReplies.isNotEmpty)? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-              key: ValueKey(myPaginatorResetValue),
-              //height: MediaQuery.of(context).size.height * 0.0782125,
+              initialPage: theCurrentPageDbuThreadReplies,
               numberPages: listOfDbuThreadReplies.length != 0? numberOfPagesDbuThreadReplies : 1,
               onPageChange: (myIndexDbuThreadReplies){
                 setState((){

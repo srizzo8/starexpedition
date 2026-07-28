@@ -1253,33 +1253,27 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                       }
                       else if(fromDbuThread == true && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == false){
                           fromDbuThread = false,
-                          Navigator.pop(context),
-                          //Navigator.push(context, MaterialPageRoute(builder: (context) => discussionBoardUpdatesThreadsPage())),
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => discussionBoardUpdatesThreadsPage())),
                         }
                         else if(fromDbuThread == false && fromNdThread == true && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == false){
                             fromNdThread = false,
-                            Navigator.pop(context),
-                            //Navigator.push(context, MaterialPageRoute(builder: (context) => newDiscoveriesThreadsPage())),
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => newDiscoveriesThreadsPage())),
                           }
                           else if(fromDbuThread == false && fromNdThread == false && fromPThread == true && fromQaaThread == false && fromTThread == false && fromFasThread == false){
                               fromPThread = false,
-                              Navigator.pop(context),
-                              //Navigator.push(context, MaterialPageRoute(builder: (context) => projectsThreadsPage())),
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => projectsThreadsPage())),
                             }
                             else if(fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == true && fromTThread == false && fromFasThread == false){
                                 fromQaaThread = false,
-                                Navigator.pop(context),
-                                //Navigator.push(context, MaterialPageRoute(builder: (context) => questionsAndAnswersThreadsPage())),
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => questionsAndAnswersThreadsPage())),
                               }
                               else if(fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == true && fromFasThread == false){
                                   fromTThread = false,
-                                  Navigator.pop(context),
-                                  //Navigator.push(context, MaterialPageRoute(builder: (context) => technologiesThreadsPage())),
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => technologiesThreadsPage())),
                                 }
                                 else if(fromDbuThread == false && fromNdThread == false && fromPThread == false && fromQaaThread == false && fromTThread == false && fromFasThread == true){
                                     fromFasThread = false,
-                                    Navigator.pop(context),
-                                    //Navigator.push(context, MaterialPageRoute(builder: (context) => feedbackAndSuggestionsThreadsPage())),
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => feedbackAndSuggestionsThreadsPage())),
                                   }
                                   else if(fromDbuPage == true && fromNdPage == false && fromPPage == false && fromQaaPage == false && fromTPage == false && fromFasPage == false){
                                       fromDbuPage = false,

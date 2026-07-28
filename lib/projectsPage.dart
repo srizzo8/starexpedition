@@ -49,6 +49,7 @@ var myIndexPlaceProjects;
 var myLocation;
 
 int theCurrentPage = 0;
+int theCurrentPageProjectsThreadReplies = 0;
 
 int projectsNavigationDepth = 0;
 
@@ -638,7 +639,7 @@ class projectsPageState extends State<projectsPage> with RouteAware{
 
 class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
   int numberOfPagesProjectsThreadReplies = 0;
-  int theCurrentPageProjectsThreadReplies = 0;
+  //int theCurrentPageProjectsThreadReplies = 0;
 
   var listOfProjectsThreadReplies;
   var mySublistsProjectsThreadReplies = [];
@@ -1163,6 +1164,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
               },
 
               projectsNavigationDepth = 0,
+              theCurrentPageProjectsThreadReplies = 0,
             }
         ),
       ),
@@ -1275,8 +1277,7 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
               child: (myPagesProjectsThreadReplies.isNotEmpty && theCurrentPageProjectsThreadReplies < myPagesProjectsThreadReplies.length && mySublistsProjectsThreadReplies.isNotEmpty)? myPagesProjectsThreadReplies[theCurrentPageProjectsThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-              key: ValueKey(myPaginatorResetValue),
-              //height: MediaQuery.of(context).size.height * 0.0782125,
+              initialPage: theCurrentPageProjectsThreadReplies,
               numberPages: listOfProjectsThreadReplies.length != 0? numberOfPagesProjectsThreadReplies : 1,
               onPageChange: (myIndexProjectsThreadReplies){
                 setState((){

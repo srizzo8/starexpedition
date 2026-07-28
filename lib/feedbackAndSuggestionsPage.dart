@@ -53,6 +53,7 @@ var myIndexPlaceFas;
 var myLocation;
 
 int theCurrentPageFas = 0;
+int theCurrentPageFasThreadReplies = 0;
 
 int fasNavigationDepth = 0;
 
@@ -639,7 +640,7 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage> 
 
 class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsThreadsPage> with RouteAware{
   int numberOfPagesFasThreadReplies = 0;
-  int theCurrentPageFasThreadReplies = 0;
+  //int theCurrentPageFasThreadReplies = 0;
 
   var listOfFasThreadReplies;
   var mySublistsFasThreadReplies = [];
@@ -1168,6 +1169,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
               },
 
               fasNavigationDepth = 0,
+              theCurrentPageFasThreadReplies = 0,
             }
         ),
       ),
@@ -1279,8 +1281,7 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
               child: (myPagesFasThreadReplies.isNotEmpty && theCurrentPageFasThreadReplies < myPagesFasThreadReplies.length && mySublistsFasThreadReplies.isNotEmpty)? myPagesFasThreadReplies[theCurrentPageFasThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-              key: ValueKey(myPaginatorResetValue),
-              //height: MediaQuery.of(context).size.height * 0.0782125,
+              initialPage: theCurrentPageFasThreadReplies,
               numberPages: listOfFasThreadReplies.length != 0? numberOfPagesFasThreadReplies : 1,
               onPageChange: (myIndexFasThreadReplies){
                 setState((){

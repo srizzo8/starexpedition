@@ -48,6 +48,7 @@ var myIndexPlaceQaa;
 var myLocation;
 
 int theCurrentPageQaa = 0;
+int theCurrentPageQaaThreadReplies = 0;
 
 int qaaNavigationDepth = 0;
 
@@ -634,7 +635,7 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
 
 class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsPage> with RouteAware{
   int numberOfPagesQaaThreadReplies = 0;
-  int theCurrentPageQaaThreadReplies = 0;
+  //int theCurrentPageQaaThreadReplies = 0;
 
   var listOfQaaThreadReplies;
   var mySublistsQaaThreadReplies = [];
@@ -1165,6 +1166,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
               },
 
               qaaNavigationDepth = 0,
+              theCurrentPageQaaThreadReplies = 0,
             }
         ),
       ),
@@ -1278,8 +1280,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
               child: (myPagesQaaThreadReplies.isNotEmpty && theCurrentPageQaaThreadReplies < myPagesQaaThreadReplies.length && mySublistsQaaThreadReplies.isNotEmpty)? myPagesQaaThreadReplies[theCurrentPageQaaThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-              key: ValueKey(myPaginatorResetValue),
-              //height: MediaQuery.of(context).size.height * 0.0782125,
+              initialPage: theCurrentPageQaaThreadReplies,
               numberPages: listOfQaaThreadReplies.length != 0? numberOfPagesQaaThreadReplies : 1,
               onPageChange: (myIndexQaaThreadReplies){
                 setState((){

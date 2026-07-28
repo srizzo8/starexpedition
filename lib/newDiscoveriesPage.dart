@@ -48,6 +48,7 @@ var myIndexPlaceNewDiscoveries;
 var myLocation;
 
 int theCurrentPageNd = 0;
+int theCurrentPageNdThreadReplies = 0;
 
 int ndNavigationDepth = 0;
 
@@ -633,7 +634,7 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage> with RouteAware{
 
 class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with RouteAware{
   int numberOfPagesNdThreadReplies = 0;
-  int theCurrentPageNdThreadReplies = 0;
+  //int theCurrentPageNdThreadReplies = 0;
 
   var listOfNdThreadReplies;
   var mySublistsNdThreadReplies = [];
@@ -1163,6 +1164,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
               },
 
               ndNavigationDepth = 0,
+              theCurrentPageNdThreadReplies = 0,
             }
         ),
       ),
@@ -1274,8 +1276,7 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
               child: (myPagesNdThreadReplies.isNotEmpty && theCurrentPageNdThreadReplies < myPagesNdThreadReplies.length && mySublistsNdThreadReplies.isNotEmpty)? myPagesNdThreadReplies[theCurrentPageNdThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
             NumberPaginator(
-              key: ValueKey(myPaginatorResetValue),
-              //height: MediaQuery.of(context).size.height * 0.0782125,
+              initialPage: theCurrentPageNdThreadReplies,
               numberPages: listOfNdThreadReplies.length != 0? numberOfPagesNdThreadReplies : 1,
               onPageChange: (myIndexNdThreadReplies){
                 setState((){
