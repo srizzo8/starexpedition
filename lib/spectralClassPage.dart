@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
 import 'loginPage.dart';
+import 'login_information/loginStatus.dart';
 import 'main.dart' as myMain;
 
 String mySpectralClass = "";
@@ -28,9 +30,7 @@ class spectralClassPage extends StatefulWidget{
 
 class spectralClassPageState extends State<spectralClassPage> with RouteAware{
   static String nameOfRoute = '/spectralClassPage';
-  //final spectralClassSnapshot = await spectralClassRef.get();
   List<String> spectralClassOfStars = [];
-  //String spectralClass = " ";
   var scpNumberOfStars = myMain.starsForSearchBar.length;
   List<String> spectralClassCount = [];
   bool b = false;
@@ -41,27 +41,18 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
     for(int i = 0; i < scpNumberOfStars; i++) {
       if(firebaseDesktopHelper.onDesktop){
         final spectralClassRef = await firebaseDesktopHelper.getFirebaseData(myMain.starsForSearchBar[i].starName!);
-        //print('This is spectralClassRef: ' + spectralClassRef.toString());
         var spectralClassSnapshot = spectralClassRef["spectral_class"];
-        //print('This is spectralClassSnapshot: ' + spectralClassSnapshot.toString());
-        //print(spectralClassSnapshot.value.toString());
         spectralClasses.add(spectralClassSnapshot.toString());
       }
       else{
         final spectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
-        //print('This is spectralClassRef: ' + spectralClassRef.toString());
         var spectralClassSnapshot = await spectralClassRef.child("spectral_class").get();
-        //print('This is spectralClassSnapshot: ' + spectralClassSnapshot.toString());
-        //print(spectralClassSnapshot.value.toString());
         spectralClasses.add(spectralClassSnapshot.value.toString());
       }
     }
-    //print(spectralClasses);
 
     return spectralClasses;
   }
-
-  //spectralClassOfStars = await getSpectralClassData();
 
   @override
   Future<List<String>> generateSpectralClasses() async{
@@ -105,8 +96,6 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
           countOStars++;
           break;
       }
-      //print([countMStars.toString(), countKStars.toString(), countGStars.toString(), countFStars.toString(), countAStars.toString(), countBStars.toString(), countOStars.toString()]);
-
     }
     return [countMStars.toString(), countKStars.toString(), countGStars.toString(), countFStars.toString(), countAStars.toString(), countBStars.toString(), countOStars.toString()];
   }
@@ -121,32 +110,9 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
 
   @override
   void initState() {
-    /*Future.delayed(Duration.zero,() async {
-      spectralClassOfStars = await getSpectralClassData();
-      print('The spectral classes of stars: ' + spectralClassOfStars.toString());
-      spectralClassCount = await generateSpectralClasses();
-      print('This is spectralClassCount: ' + spectralClassCount.toString());
-    });*/
-
     getDataForMyLists();
     super.initState();
-
-    //print('This is spectralClassCount: ' + spectralClassCount.toString());
   }
-  /*void futureListToListConverterGSCD(Future<List<String>> fls) async{
-    Future<List<String>> flcSpectralClassOfStars = getSpectralClassData();
-    List<String> listOfStrings = await flcSpectralClassOfStars;
-    print("New list: " + listOfStrings.toString());
-  }*/
-
-  /*void main() async{
-    List<String> list1 = await getSpectralClassData();
-    List<String> list2 = await generateSpectralClasses();
-    spectralClassOfStars.add(list1.toString());
-    spectralClassCount.add(list2.toString());
-    print('spectralClassOfStars in main method: ' + spectralClassOfStars.toString());
-    print('spectralClassCount in main method: ' + spectralClassCount.toString());
-  }*/
 
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
@@ -176,38 +142,15 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
 
   @override
   Widget build(BuildContext bc) {
-    /*Future.delayed(Duration.zero, () async {
-      spectralClassOfStars = await getSpectralClassData();
-      print('The spectral classes of stars: ' + spectralClassOfStars.toString());
-      spectralClassCount = await generateSpectralClasses();
-      print('This is spectralClassCount: ' + spectralClassCount.toString());
-    });*/
-
-    //futureListToListConverterGSCD(getSpectralClassData());
-    //Future.delayed(const Duration(milliseconds: 200), (){
     if(b == true) {
       print('spectralClassOfStars in build method: ' + spectralClassOfStars.toString());
       print('spectralClassCount in build method: ' + spectralClassCount.toString());
-      //print('This is spectralClassCount in the build method: ' + spectralClassCount.toString());
-    }//});
-    /*() async{
-      spectralClassCount = await generateSpectralClasses();
-      print('async spectralClassCount: ' + spectralClassCount.toString());
-    };
-    print('spectralClassCount outside async: ' + spectralClassCount.toString());*/
+    }
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
-        /*leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () =>{
-            print("Going to home page"),
-            Navigator.push(bc, MaterialPageRoute(builder: (bc) => const myMain.StarExpedition())),
-          },
-        ),*/
       ),
       body: spectralClassOfStars.isEmpty || spectralClassCount.isEmpty? Center(child: CircularProgressIndicator()):
       SingleChildScrollView(
@@ -218,7 +161,6 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
           ),
           Center(
             child: Container(
-              //alignment: Alignment.topCenter,
               child: Text("Spectral Classes of Stars", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
             ),
           ),
@@ -452,8 +394,6 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
           Center(
             child: Container(
               child: Text("\nSources", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-              //height: 20,
-              //width: 360,
             ),
           ),
           Container(
@@ -472,20 +412,6 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
       ),
       drawer: myMain.starExpeditionNavigationDrawer(),
     );
-    //});
-    /*return Scaffold(
-      appBar: AppBar(
-        title: Text("Star Expedition"),
-      ),
-      body: Wrap(
-      children: <Widget>[
-        Container(
-          alignment: Alignment.topCenter,
-          child: Text("Hello World"),
-        ),
-      ]
-    ),
-    );*/
   }
 }
 
@@ -508,7 +434,6 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
   List<List<myMain.myStars>> fullListOfStars = [];
   bool switchOn = false;
   myMain.myStars clickedStar = myMain.myStars(starName: "not available");
-  //List<myMain.myStars> myStarListForASpectralClass = [];
 
   ValueNotifier<mySpectralClassStarSortingCriteria> mySpectralClassStarSortingCriteriaNotifier = ValueNotifier(mySpectralClassStarSortingCriteria.alphabeticalAToZ);
 
@@ -529,20 +454,16 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
 
       if(firebaseDesktopHelper.onDesktop){
         final starsWithSpectralClassRef = await firebaseDesktopHelper.getFirebaseData(myMain.starsForSearchBar[i].starName!);
-        //print(starsWithSpectralClassRef.toString());
         var starSnapshot = starsWithSpectralClassRef["spectral_class"];
-        //print('This is starSnapshot: ' + starSnapshot.toString());
         starSnapshotString = starSnapshot.toString();
       }
       else{
         final starsWithSpectralClassRef = FirebaseDatabase.instance.ref(myMain.starsForSearchBar[i].starName!);
-        //print(starsWithSpectralClassRef.toString());
         var starSnapshot = await starsWithSpectralClassRef.child("spectral_class").get();
-        //print('This is starSnapshot: ' + starSnapshot.toString());
         starSnapshotString = starSnapshot.value.toString();
       }
       String starSnapshotSpectralClass = starSnapshotString[0];
-      //print('This is starSnapshotSpectralClass: ' + starSnapshotSpectralClass);
+
       switch(starSnapshotSpectralClass){
         case "M":
           getMStars.add(myMain.starsForSearchBar[i]);
@@ -577,14 +498,6 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
     getBStars.sort((s1, s2) => s1.starName!.toLowerCase().compareTo(s2.starName!.toLowerCase()));
     getOStars.sort((s1, s2) => s1.starName!.toLowerCase().compareTo(s2.starName!.toLowerCase()));
 
-    /*print("List of M-type stars: " + mStars.toString());
-    print("List of K-type stars: " + kStars.toString());
-    print("List of G-type stars: " + gStars.toString());
-    print("List of F-type stars: " + fStars.toString());
-    print("List of A-type stars: " + aStars.toString());
-    print("List of B-type stars: " + bStars.toString());
-    print("List of O-type stars: " + oStars.toString());*/
-    //return "myFutureString";
     return [getMStars, getKStars, getGStars, getFStars, getAStars, getBStars, getOStars];
   }
 
@@ -657,22 +570,15 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
 
   @override
   Widget build(BuildContext context){
-    //List<String> buildMethodStarList = [];
+    final myLoginStatus = context.watch<loginStatus>();
 
     if(switchOn == true) {
-      //print('Here are some M stars: ' + mStars.toString());
       print('This is fullListOfStars: ' + fullListOfStars.toString());
-      //print('List of M stars: ' + fullListOfStars[0].toString());
-      //print('An M star: ' + fullListOfStars[0][1].toString());
-      //buildMethodStarList = spectralClassListInformation() as List<String>;
-      //print(buildMethodStarList);
-      //print("The list: ${fullListOfStars[indexPlaceSpectralClass()].toString()}");
-
       print("Method being utilized: ${fullListOfStars[indexPlaceSpectralClass()]}");
-      //mySortMatchQuery(fullListOfStars[indexPlaceSpectralClass()] as List<myMain.myStars>);
-      //print("Result: ${(mySortMatchQuery(fullListOfStars[indexPlaceSpectralClass()] as List<myMain.myStars>)) as String}");
     }
+
     List<String> informationAboutClickedStar = [];
+
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
@@ -696,53 +602,6 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
             padding: EdgeInsets.all(10.0),
             child: Text("List of stars with articles that belong to the " + mySpectralClass + " spectral class", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
-          /*Padding(
-            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.025, 0.0, 0.0, 0.0),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.0333,
-              width: MediaQuery.of(context).size.width * 0.275,
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton(
-                    isExpanded: true,
-                    value: mySpectralClassTemporaryCriteria,
-                    icon: Icon(Icons.keyboard_arrow_down),
-                    items: [
-                      DropdownMenuItem(
-                        value: mySpectralClassStarSortingCriteria.alphabeticalAToZ,
-                        child: Text("Alphabetical A to Z (default)"),
-                      ),
-                      DropdownMenuItem(
-                        value: mySpectralClassStarSortingCriteria.alphabeticalZToA,
-                        child: Text("Alphabetical Z to A"),
-                      ),
-                      DropdownMenuItem(
-                        value: mySpectralClassStarSortingCriteria.distanceClosestToFurthest,
-                        child: Text("Distance (from closest to furthest in light-years)"),
-                      ),
-                      DropdownMenuItem(
-                        value: mySpectralClassStarSortingCriteria.distanceFurthestToClosest,
-                        child: Text("Distance (from furthest to closest in light-years)"),
-                      ),
-                      DropdownMenuItem(
-                        value: mySpectralClassStarSortingCriteria.temperatureCoolestToHottest,
-                        child: Text("Temperature (from coolest to hottest in Kelvin)"),
-                      ),
-                      DropdownMenuItem(
-                        value: mySpectralClassStarSortingCriteria.temperatureHottestToCoolest,
-                        child: Text("Temperature (from hottest to coolest in Kelvin)"),
-                      ),
-                    ],
-                    onChanged: (mySpectralClassStarSortingCriteria? myValue){
-                      setState((){
-                        if(myValue != null){
-                          mySpectralClassTemporaryCriteria = myValue;
-                        }
-                      });
-                    }
-                ),
-              ),
-            ),
-          ),*/
           IconButton(
               icon: Icon(Icons.sort),
               tooltip: "Sort star by",
@@ -800,7 +659,6 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
                                     mySpectralClassStarSortingCriteriaNotifier.value = mySpectralClassTemporaryCriteria;
                                     print("This is mySpectralClassStarSortingCriteriaNotifier.value: ${mySpectralClassStarSortingCriteriaNotifier.value}");
                                     Navigator.of(bc).pop();
-                                    //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
                                   },
                                   child: Text("Ok"),
                                 ),
@@ -815,15 +673,6 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
-          /*Container(
-            height: 300,
-            width: 360,*/
-          /*child: InkWell(
-              onTap: (){
-                print('You clicked on a star!');
-              },
-              child: spectralClassListInformation(),
-            )*/
           switchOn?
             (fullListOfStars[indexPlaceSpectralClass()].length > 0? Expanded(
               child: ValueListenableBuilder<mySpectralClassStarSortingCriteria>(
@@ -873,55 +722,26 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
                         );
 
                         //Is a user tracking this star?
-                        if(myNewUsername != "" && myUsername == ""){
+                        if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                           if(firebaseDesktopHelper.onDesktop){
                             List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                            var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                            var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
-                            //var docNameForNewUsers = usersProfileInfo["docId"];
+                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
 
-                            Map<String, dynamic> currentInfoOfNewUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
-
-                            myMain.starTracked = currentInfoOfNewUser?["starsTracked"].containsKey(myMain.correctStar);
+                            myMain.starTracked = currentInfoOfUser?["starsTracked"].containsKey(myMain.correctStar);
                             print("starTracked: ${myMain.starTracked}");
                           }
                           else{
-                            var theNewUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                            var docNameForNewUsers;
-                            theNewUser.docs.forEach((result){
-                              docNameForNewUsers = result.id;
+                            var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                            var docNameForUsers;
+                            theUser.docs.forEach((result){
+                              docNameForUsers = result.id;
                             });
 
-                            DocumentSnapshot<Map<dynamic, dynamic>> snapshotNewUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForNewUsers).get();
-                            Map<dynamic, dynamic>? individual = snapshotNewUsers.data();
-
-                            myMain.starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMain.correctStar);
-                            print("starTracked: ${myMain.starTracked}");
-                          }
-                        }
-                        else if(myNewUsername == "" && myUsername != ""){
-                          if(firebaseDesktopHelper.onDesktop){
-                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                            var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                            //var docNameForExistingUsers = usersProfileInfo["docId"];
-
-                            Map<String, dynamic> currentInfoOfExistingUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
-
-                            myMain.starTracked = currentInfoOfExistingUser?["starsTracked"].containsKey(myMain.correctStar);
-                            print("starTracked: ${myMain.starTracked}");
-                          }
-                          else{
-                            var theExistingUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
-                            var docNameForExistingUsers;
-                            theExistingUser.docs.forEach((result){
-                              docNameForExistingUsers = result.id;
-                            });
-
-                            DocumentSnapshot<Map<dynamic, dynamic>> snapshotExistingUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForExistingUsers).get();
-                            Map<dynamic, dynamic>? individual = snapshotExistingUsers.data();
+                            DocumentSnapshot<Map<dynamic, dynamic>> snapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForUsers).get();
+                            Map<dynamic, dynamic>? individual = snapshotUsers.data();
 
                             myMain.starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMain.correctStar);
                             print("starTracked: ${myMain.starTracked}");

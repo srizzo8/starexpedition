@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:starexpedition4/spectralClassPage.dart';
 
 import 'package:starexpedition4/main.dart' as myMain;
@@ -25,6 +26,8 @@ import 'package:json_editor/json_editor.dart';
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'login_information/loginStatus.dart';
+
 var theUser;
 var theNewUser;
 var usersEmail;
@@ -32,6 +35,7 @@ var usersEmailForEmailChangeMessage;
 var usersNewEmail;
 var userForEmailChange;
 
+var myUsernameForProfilePicture;
 bool hasProfilePicture = false;
 
 bool whitespaceChecker(String? myString){
@@ -114,18 +118,12 @@ class settingsPageState extends State<settingsPage> with RouteAware{
   }
 
   Widget build(BuildContext context){
+    final myLoginStatus = context.watch<loginStatus>();
     ScreenUtil.init(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Star Expedition"),
-        /*leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.white,
-          onPressed: () async =>{
-            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
-          }
-        ),*/
       ),
       body: Column(
         children: <Widget>[
@@ -187,10 +185,10 @@ class settingsPageState extends State<settingsPage> with RouteAware{
             ),
             onPressed: () async{
               //Adding info about user blurb, interests, and location
-              if(myUsername != "" && myNewUsername == ""){
+              if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                 if(firebaseDesktopHelper.onDesktop){
                   List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-                  var theUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                  var theUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
                   var getUsersInfo = theUser["usernameProfileInformation"];
 
                   myMain.usersBlurb = getUsersInfo["userInformation"];
@@ -198,42 +196,16 @@ class settingsPageState extends State<settingsPage> with RouteAware{
                   myMain.usersLocation = getUsersInfo["userLocation"];
                 }
                 else{
-                  await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get().then((result){
+                  await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get().then((result){
                     myMain.usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
                     myMain.usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
                     myMain.usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
-                    //myMain.numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
-                    //myMain.starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
-                    //myMain.planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
                   });
                 }
 
                 //Check if a user has a profile picture or not:
-                hasProfilePicture = await checkUserProfilePicture(myUsername);
-                print("Does the user have a profile picture? ${hasProfilePicture}");
-              }
-              else if(myUsername == "" && myNewUsername != ""){
-                if(firebaseDesktopHelper.onDesktop){
-                  List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-                  var theNewUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-                  var getNewUsersInfo = theNewUser["usernameProfileInformation"];
-
-                  myMain.usersBlurb = getNewUsersInfo["userInformation"];
-                  myMain.usersInterests = getNewUsersInfo["userInterests"];
-                  myMain.usersLocation = getNewUsersInfo["userLocation"];
-                }
-                else{
-                  await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get().then((result){
-                    myMain.usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
-                    myMain.usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
-                    myMain.usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
-                    //myMain.numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
-                    //myMain.starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
-                    //myMain.planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
-                  });
-                }
-                //Check if a user has a profile picture or not:
-                hasProfilePicture = await checkUserProfilePicture(myNewUsername);
+                hasProfilePicture = await checkUserProfilePicture(myLoginStatus.myUsername);
+                myUsernameForProfilePicture = myLoginStatus.myUsername;
                 print("Does the user have a profile picture? ${hasProfilePicture}");
               }
               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => editingMyUserProfile()));
@@ -328,6 +300,7 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
   }
 
   Widget build(BuildContext context){
+    final myLoginStatus = context.watch<loginStatus>();
     return Listener(
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_){
@@ -475,16 +448,16 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                       print("currentPasswordController.text: ${currentPasswordController.text}");
                       print("newPasswordController.text: ${newPasswordController.text}");
                       print("secondNewPasswordController.text: ${secondNewPasswordController.text}");
-                      print("myUsername = ${myUsername}, myNewUsername = ${myNewUsername}");
+                      print("myUsername = ${myLoginStatus.myUsername}");
 
-                      if(myUsername != "" && myNewUsername == ""){
+                      if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                         if(firebaseDesktopHelper.onDesktop){
                           myUserResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                          userDoc = myUserResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                          userDoc = myUserResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
                           gettingDocName = userDoc["docId"];
                         }
                         else{
-                          myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                          myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
                           myUserResult.docs.forEach((result){
                             userDoc = result.data();
                             print("This is the result: ${result.data()}");
@@ -529,113 +502,11 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                                   actions: [
                                     TextButton(
                                       onPressed: () => {
-                                        theUser = myUsername,
+                                        theUser = myLoginStatus.myUsername,
                                         theNewUser = "",
                                         usersEmail = userDoc["emailAddress"],
                                         Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                        //emailNotifications.passwordChangeConfirmationEmail(),
                                         emailNotifications.sendAnEmail(usersEmail, "Password Change Confirmation", "Hi ${theUser},<br><br>We have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
-                                        currentPasswordController.text = "",
-                                        newPasswordController.text = "",
-                                        secondNewPasswordController.text = "",
-                                      },
-                                      child: Text("Ok"),
-                                    ),
-                                  ],
-                                );
-                              }
-                          );
-                        }
-                        else{
-                          myMain.myAccessCheckNotifier.value = DateTime.now();
-
-                          showDialog(
-                            context: context,
-                            builder: (myContent) => AlertDialog(
-                              title: Text("Password Change Unsuccessful"),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(messageForUsers.length, (i){
-                                  return messageForUsers[i];
-                                }),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: (){
-                                    Navigator.of(myContent).pop();
-                                    currentPasswordController.text = "";
-                                    newPasswordController.text = "";
-                                    secondNewPasswordController.text = "";
-                                  },
-                                  child: Container(
-                                    child: const Text("Ok"),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      }
-                      else if(myUsername == "" && myNewUsername != ""){
-                        if(firebaseDesktopHelper.onDesktop){
-                          myUserResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                          userDoc = myUserResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-                          gettingDocName = userDoc["docId"];
-                        }
-                        else{
-                          myUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                          myUserResult.docs.forEach((result){
-                            userDoc = result.data();
-                            print("This is the result: ${result.data()}");
-                            gettingDocName = result.id;
-                          });
-                        }
-                        print("userDoc[password]: ${userDoc["password"].toString()}");
-
-                        usersPass = decryptMyPassword(myKey, userDoc["password"]);
-                        print("usersPass: ${usersPass}");
-
-                        messageForUsers = dialogMessageChangePassword([currentPasswordController.text, newPasswordController.text, secondNewPasswordController.text]);
-
-                        if(messageForUsers.isEmpty){
-                          //Password successfully changed
-                          print("gettingDocName: ${gettingDocName.toString()}");
-
-                          if(firebaseDesktopHelper.onDesktop){
-                            //List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
-                            //Map<String, dynamic> currentInfoOfUser = everyUser.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});//Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
-
-                            //Updating a user's password:
-                            await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
-                              "password": encryptMyPassword(myKey, newPasswordController.text).base64,
-                            });
-                          }
-                          else{
-                            FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
-                              print("Updated");
-                            }).catchError((e) => print("This is your error: ${e}"));
-                          }
-
-                          print("This is new user password: ${userDoc["password"]}");
-
-                          myMain.myAccessCheckNotifier.value = DateTime.now();
-
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext bc){
-                                return AlertDialog(
-                                  title: Text("Password Change Successful"),
-                                  content: Text("You have successfully changed your password"),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => {
-                                        theUser = "",
-                                        theNewUser = myNewUsername,
-                                        usersEmail = userDoc["emailAddress"],
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                        //emailNotifications.passwordChangeConfirmationEmail(),
-                                        emailNotifications.sendAnEmail(usersEmail, "Password Change Confirmation", "Hi ${theNewUser},<br><br>We have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
                                         currentPasswordController.text = "",
                                         newPasswordController.text = "",
                                         secondNewPasswordController.text = "",
@@ -767,6 +638,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
   }
 
   Widget build(BuildContext context){
+    final myLoginStatus = context.watch<loginStatus>();
     return Listener(
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_){
@@ -802,24 +674,6 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                 child: Text("${registrationRequirements[1]}", textAlign: TextAlign.center),
               ),
-              /*Center(
-                child: Container(
-                  padding: const EdgeInsets.all(0.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text("Current Email Address", style: TextStyle(fontSize: 14.0)),
-                  height: 20,
-                  width: 380,
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: TextField(
-                  controller: currentEmailAddressController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),*/
               IntrinsicHeight(
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -850,24 +704,6 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                     ]
                 ),
               ),
-              /*Center(
-                child: Container(
-                  padding: const EdgeInsets.all(0.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text("New Email Address", style: TextStyle(fontSize: 14.0)),
-                  height: 20,
-                  width: 380,
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: TextField(
-                  controller: newEmailAddressController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),*/
             IntrinsicHeight(
               child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -898,25 +734,6 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                   ]
                 ),
               ),
-              /*Center(
-                child: Container(
-                  padding: const EdgeInsets.all(0.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text("Password", style: TextStyle(fontSize: 14.0)),
-                  height: 20,
-                  width: 380,
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(20.0),
-                child: TextField(
-                  controller: myPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),*/
             IntrinsicHeight(
               child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -959,20 +776,18 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                   child: InkWell(
                     child: Ink(
                       color: Colors.black,
-                      //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                       child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                     ),
                   ),
                     onPressed: () async{
-                      //if(currentEmailAddressController.text != "" && newEmailAddressController.text != "" && myPasswordController.text != ""){
-                      if(myUsername != "" && myNewUsername == ""){
+                      if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                         if(firebaseDesktopHelper.onDesktop){
                           myEmailResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                          docForUsername = myEmailResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                          docForUsername = myEmailResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
                           gettingDocName = docForUsername["docId"];
                         }
                         else{
-                          myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                          myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
                           myEmailResult.docs.forEach((myResult){
                             docForUsername = myResult.data();
                             print("This is the result: ${myResult.data()}");
@@ -981,7 +796,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                         }
                         print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
                         usersEmailForEmailChangeMessage = docForUsername["emailAddress"];
-                        userForEmailChange = myUsername;
+                        userForEmailChange = myLoginStatus.myUsername;
 
                         messageForUsers = dialogMessageChangeEmailAddress([currentEmailAddressController.text, newEmailAddressController.text, myPasswordController.text]);
 
@@ -996,7 +811,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                             });
 
                             List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-                            var theMatchingUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                            var theMatchingUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
                             if(theMatchingUser.isNotEmpty){
                               du = theMatchingUser;
@@ -1011,130 +826,10 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                               print("Updated the email address");
                             }).catchError((e) => print("This is your error: ${e}"));
 
-                            var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                            var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
                             newEmailResult.docs.forEach((theResult){
                               du = theResult.data();
                               print("This is the result: ${theResult.data()}");
-                              //var gettingDn = theResult.id;
-                            });
-                          }
-
-                          print("This is new user email address: ${docForUsername["emailAddress"]}");
-
-                          myMain.myAccessCheckNotifier.value = DateTime.now();
-
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext bc){
-                                return AlertDialog(
-                                  title: Text("Email Address Change Successful"),
-                                  content: Text("You have successfully changed your email address"),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => {
-                                        usersEmailAddress = docForUsername["emailAddress"],
-                                        usersNewEmail = du["emailAddress"],
-                                        print("usersNewEmail: ${usersNewEmail}"),
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-
-                                        //For previous email address:
-                                        emailNotifications.sendAnEmail(usersEmailForEmailChangeMessage, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>We have noticed that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
-
-                                        //For new email address:
-                                        emailNotifications.sendAnEmail(usersNewEmail, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>This message is to confirm that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}.<br><br>Best,<br>Star Expedition"),
-
-                                        currentEmailAddressController.text = "",
-                                        newEmailAddressController.text = "",
-                                        myPasswordController.text = "",
-                                      },
-                                      child: Text("Ok"),
-                                    ),
-                                  ],
-                                );
-                              }
-                          );
-                        }
-                        else{
-                          myMain.myAccessCheckNotifier.value = DateTime.now();
-                          showDialog(
-                            context: context,
-                            builder: (myContent) => AlertDialog(
-                              title: Text("Email Address Change Unsuccessful"),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(messageForUsers.length, (i){
-                                  return messageForUsers[i];
-                                }),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: (){
-                                    Navigator.pop(context);
-                                    currentEmailAddressController.text = "";
-                                    newEmailAddressController.text = "";
-                                    myPasswordController.text = "";
-                                  },
-                                  child: Container(
-                                    child: const Text("Ok"),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      }
-                      else if(myUsername == "" && myNewUsername != ""){
-                        if(firebaseDesktopHelper.onDesktop){
-                          myEmailResult = await firebaseDesktopHelper.getFirestoreCollection("User");
-                          docForUsername = myEmailResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-                          gettingDocName = docForUsername["docId"];
-                        }
-                        else{
-                          myEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                          myEmailResult.docs.forEach((myResult){
-                            docForUsername = myResult.data();
-                            print("This is the result: ${myResult.data()}");
-                            gettingDocName = myResult.id;
-                          });
-                        }
-                        print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
-                        usersEmailForEmailChangeMessage = docForUsername["emailAddress"];
-                        userForEmailChange = myNewUsername;
-
-                        messageForUsers = dialogMessageChangeEmailAddress([currentEmailAddressController.text, newEmailAddressController.text, myPasswordController.text]);
-
-                        if(messageForUsers.isEmpty){
-                          //email address successfully changed
-                          print("Your email will change");
-
-                          if(firebaseDesktopHelper.onDesktop){
-                            //Updating a user's email address:
-                            await firebaseDesktopHelper.updateFirestoreDocument("User/${gettingDocName.toString()}", {
-                              "emailAddress": newEmailAddressController.text,
-                            });
-
-                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-                            var theMatchingUser = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                            if(theMatchingUser.isNotEmpty){
-                              du = theMatchingUser;
-                              print("This is du: ${du}");
-                            }
-                            else{
-                              print("User is not found");
-                            }
-                          }
-                          else{
-                            FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
-                              print("Updated the email address");
-                            }).catchError((e) => print("This is your error: ${e}"));
-
-                            var newEmailResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                            newEmailResult.docs.forEach((theResult){
-                              du = theResult.data();
-                              print("This is the result: ${theResult.data()}");
-                              //var gettingDn = theResult.id;
                             });
                           }
 

@@ -10,9 +10,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 import 'package:starexpedition4/forgottenPassword.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'emailNotifications.dart';
+import 'login_information/loginStatus.dart';
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
 import 'projectsPage.dart' as projectsPage;
@@ -32,7 +35,6 @@ String myUsername = "";
 bool loginBool = false;
 
 //Accessing users array from main.dart:
-//print(myMain.theUsers.toString());
 
 class loginPage extends StatefulWidget{
   const loginPage ({Key? key}) : super(key: key);
@@ -106,13 +108,6 @@ class loginPageState extends State<loginPage> with RouteAware{
       appBar: AppBar(
           centerTitle: true,
           title: Text("Star Expedition"),
-          /*leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              color: Colors.white,
-              onPressed: () =>{
-                Navigator.push(bc, MaterialPageRoute(builder: (bc) => const myMain.StarExpedition())),
-              }
-          )*/
       ),
       body: Wrap(
           children: <Widget>[
@@ -123,9 +118,6 @@ class loginPageState extends State<loginPage> with RouteAware{
               alignment: Alignment.center,
               child: Text("Login", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
             ),
-            /*Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),*/
             IntrinsicHeight(
               child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -197,8 +189,7 @@ class loginPageState extends State<loginPage> with RouteAware{
                   ),
                   child: InkWell(
                     child: Ink(
-                      //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                      child: Text("Log in", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),// style: TextStyle(fontSize: 12.0)), //style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                      child: Text("Log in", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                     ),
                   ),
                   onPressed: () async{
@@ -210,12 +201,6 @@ class loginPageState extends State<loginPage> with RouteAware{
                       //userResult
                       if(myServerCheck.docs.isNotEmpty){
                         if(firebaseDesktopHelper.onDesktop){
-                          //var userResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get();
-                          /*userResult.docs.forEach((outcome){
-                            userDocument = outcome.data();
-                            //userLowercased = outcome.data()["username"].toLowerCase();
-                            print("This is the outcome: ${outcome.data()}");
-                          });*/
                           var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
                           userDocument = userResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == usernameController.text.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
                         }
@@ -231,20 +216,6 @@ class loginPageState extends State<loginPage> with RouteAware{
                       encrypt.Encrypted encryptedEnteredPass = theRegisterPage.encryptMyPassword(theRegisterPage.myKey, passwordController.text);
                       print("Encrypted pass: ${encryptedEnteredPass.base64}");
 
-                      //print("userdocument[password]: ${userDocument["password"]}");
-                      //print("checking: ${theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"])}");
-
-                      //if(usernameList.contains(usernameController.text.toLowerCase())
-
-                      /*var passwordDocument;
-                        var passwordResult = await FirebaseFirestore.instance.collection("User").where("password", isEqualTo: passwordController.text).get();
-                        passwordResult.docs.forEach((outcome){
-                          passwordDocument = outcome.data();
-                        });*/
-                      //print("passwordDocument: $passwordDocument");
-
-                      //if(userLowercased == usernameController.text.toLowerCase())
-                      //if(userDocument.toString() == passwordDocument.toString() && userDocument != null && passwordDocument != null){
                       if(userDocument != null && userDocument["usernameLowercased"] == usernameController.text.toLowerCase() && passwordController.text == theRegisterPage.decryptMyPassword(theRegisterPage.myKey, userDocument["password"]) && usernameController.text != "" && passwordController.text != ""){ //myMain.theUsers!.contains(usernameController.text)
                         print("userDocument is NOT null");
                         if(myMain.discussionBoardLogin == true){
@@ -259,15 +230,15 @@ class loginPageState extends State<loginPage> with RouteAware{
                             });
                           }
                           print("Logging in as: " + myUsername);
-                          print("myNewUsername: " + theRegisterPage.myNewUsername);
+                          //print("myNewUsername: " + theRegisterPage.myNewUsername);
                           Navigator.pushReplacementNamed(context, loginPageRoutes.discussionBoard);
                           myMain.discussionBoardLogin = false;
                           loginBool = true;
+                          context.read<loginStatus>().loggingIn(myUsername);
+                          myUsername = "";
                         }
                         else{
                           print("Logging in 123");
-
-                          //sendAnEmail("funkykong2008@gmail.com", "Howdy Doody", "<h1>Hello there!</h1><p>Testing testing 123! Is this Patrick?</p>");
 
                           if(firebaseDesktopHelper.onDesktop){
                             var userResult = await firebaseDesktopHelper.getFirestoreCollection("User");
@@ -283,9 +254,10 @@ class loginPageState extends State<loginPage> with RouteAware{
                           print("Logging in as " + myUsername);
                           Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
                           print("myUsername: " + myUsername);
-                          print("myNewUsername: " + theRegisterPage.myNewUsername);
+                          //print("myNewUsername: " + theRegisterPage.myNewUsername);
                           loginBool = true;
-                          //print("Outcome: ${userDocument.keys.sort()}");
+                          context.read<loginStatus>().loggingIn(myUsername);
+                          myUsername = "";
                         }
                       }
                       else{

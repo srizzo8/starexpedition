@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:provider/provider.dart';
 //import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:starexpedition4/projects_firestore_database_information/projectsDatabaseFirestoreInfo.dart';
 import 'package:starexpedition4/projects_firestore_database_information/projectsInformation.dart';
@@ -22,6 +23,7 @@ import 'package:starexpedition4/technologies_firestore_database_information/tech
 import 'package:starexpedition4/technologies_firestore_database_information/technologiesInformation.dart';
 import 'discussionBoardPage.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
+import 'login_information/loginStatus.dart';
 import 'new_discoveries_firestore_database_information/newDiscoveriesDatabaseFirestoreInfo.dart';
 import 'new_discoveries_firestore_database_information/newDiscoveriesInformation.dart';
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
@@ -152,6 +154,7 @@ class createThreadState extends State<createThread> with RouteAware{
   }
 
   Widget build(BuildContext createThreadBuildContext){
+    final myLoginStatus = createThreadBuildContext.watch<loginStatus>();
     return Listener(
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_){
@@ -227,7 +230,7 @@ class createThreadState extends State<createThread> with RouteAware{
               ),*/
               Padding(
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                  child: theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""?
+                  child: myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""?
                   SizedBox(
                     width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                     child: TextField(
@@ -237,19 +240,7 @@ class createThreadState extends State<createThread> with RouteAware{
                       maxLines: 1,
                       maxLength: 30,
                       enabled: false,
-                      controller: TextEditingController()..text = theLoginPage.myUsername,
-                    ),
-                  ): (theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != "")?
-                  SizedBox(
-                    width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: "Username",
-                      ),
-                      maxLines: 1,
-                      maxLength: null,
-                      enabled: false,
-                      controller: TextEditingController()..text = theRegisterPage.myNewUsername,
+                      controller: TextEditingController()..text = myLoginStatus.myUsername,
                     ),
                   ): SizedBox(
                       width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
@@ -362,12 +353,9 @@ class createThreadState extends State<createThread> with RouteAware{
                     try{
                       print(discussionBoardUpdatesPage.discussionBoardUpdatesBool);
                       print(technologiesPage.technologiesBool);
-                      if(theLoginPage.myUsername != "" && theRegisterPage.myNewUsername == ""){
-                        usernameController.text = theLoginPage.myUsername;
-                      }
-                      else if(theLoginPage.myUsername == "" && theRegisterPage.myNewUsername != ""){
-                        usernameController.text = theRegisterPage.myNewUsername;
-                      }
+
+                      usernameController.text = myLoginStatus.myUsername;
+
                       if(usernameController.text != "" && threadNameController.text != "" && threadContentController.text != "" && whitespaceChecker(usernameController.text) == false && whitespaceChecker(threadNameController.text) == false && whitespaceChecker(threadContentController.text) == false){
                         //print(usernameController.text);
                         if(discussionBoardUpdatesPage.discussionBoardUpdatesBool == true && questionsAndAnswersPage.questionsAndAnswersBool == false && technologiesPage.technologiesBool == false && projectsPage.projectsBool == false && newDiscoveriesPage.newDiscoveriesBool == false && feedbackAndSuggestionsPage.fasBool == false) {
@@ -401,11 +389,11 @@ class createThreadState extends State<createThread> with RouteAware{
 
                           createDiscussionBoardUpdatesThread(theNewDiscussionBoardUpdatesThread);
 
-                          if(myUsername != "" && myNewUsername == ""){
+                          if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                             if(firebaseDesktopHelper.onDesktop){
                               List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                              var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                              var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
                               if(theCorrectUser.isNotEmpty){
                                 userData = theCorrectUser;
@@ -451,7 +439,7 @@ class createThreadState extends State<createThread> with RouteAware{
                               }
                             }
                             else{
-                              myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                              myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
                               myInfo.docs.forEach((resultExistingUsername){
                                 userData = resultExistingUsername.data();
                                 docName = resultExistingUsername.id;
@@ -464,72 +452,6 @@ class createThreadState extends State<createThread> with RouteAware{
                                 "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                               }).then((a){
                                 print("You have updated the post number for the existing user!");
-                              });
-                            }
-                          }
-                          else if(myUsername == "" && myNewUsername != ""){
-                            if(firebaseDesktopHelper.onDesktop){
-                              List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                              var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                              if(theCorrectUser.isNotEmpty){
-                                userData = theCorrectUser;
-                                docName = theCorrectUser["docId"] ?? "N/A";
-
-                                print("userData: ${userData}");
-                                print("docName for your username: ${docName}");
-
-                                //Updating the document:
-                                try{
-                                  //Getting the current information about a user:
-                                  Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
-
-                                  print("theCorrectUser: ${theCorrectUser}");
-                                  print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
-                                  print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
-                                  print("Full user info: ${currentInfoOfUser}");
-                                  print("Full user keys: ${currentInfoOfUser.keys}");
-
-                                  //Incrementing the number of posts a user has:
-                                  int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
-                                  currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
-
-                                  //Updating the information about a user:
-                                  await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                    "usernameProfileInformation": currentInfoOfUser,
-                                  });
-
-                                  print("You have updated the number of posts for the user!");
-
-                                  //Determining if the full document still has all of the fields
-                                  List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                  var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
-                                  print("The full document after the update: $theVerifiedUser");
-                                }
-                                catch (error){
-                                  print("Error updating information of user: ${error}");
-                                  print("Stack trace: ${StackTrace.current}");
-                                }
-                              }
-                              else{
-                                print("User not found");
-                              }
-                            }
-                            else{
-                              myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                              myInfo.docs.forEach((resultNewUsername){
-                                userData = resultNewUsername.data();
-                                docName = resultNewUsername.id;
-                              });
-
-                              print("userData: ${userData}");
-                              print("docName: ${docName}");
-
-                              FirebaseFirestore.instance.collection("User").doc(docName).update({
-                                "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
-                              }).then((a){
-                                print("You have updated the post number for the new user!");
                               });
                             }
                           }
@@ -594,11 +516,11 @@ class createThreadState extends State<createThread> with RouteAware{
 
                             createQuestionsAndAnswersThread(theNewQuestionsAndAnswersThread);
 
-                            if(myUsername != "" && myNewUsername == ""){
+                            if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                               if(firebaseDesktopHelper.onDesktop){
                                 List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                                var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
                                 if(theCorrectUser.isNotEmpty){
                                   userData = theCorrectUser;
@@ -644,7 +566,7 @@ class createThreadState extends State<createThread> with RouteAware{
                                 }
                               }
                               else{
-                                myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
                                 myInfo.docs.forEach((resultExistingUsername){
                                   userData = resultExistingUsername.data();
                                   docName = resultExistingUsername.id;
@@ -657,72 +579,6 @@ class createThreadState extends State<createThread> with RouteAware{
                                   "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                                 }).then((a){
                                   print("You have updated the post number for the existing user!");
-                                });
-                              }
-                            }
-                            else if(myUsername == "" && myNewUsername != ""){
-                              if(firebaseDesktopHelper.onDesktop){
-                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                if(theCorrectUser.isNotEmpty){
-                                  userData = theCorrectUser;
-                                  docName = theCorrectUser["docId"] ?? "N/A";
-
-                                  print("userData: ${userData}");
-                                  print("docName for your username: ${docName}");
-
-                                  //Updating the document:
-                                  try{
-                                    //Getting the current information about a user:
-                                    Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
-
-                                    print("theCorrectUser: ${theCorrectUser}");
-                                    print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
-                                    print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
-                                    print("Full user info: ${currentInfoOfUser}");
-                                    print("Full user keys: ${currentInfoOfUser.keys}");
-
-                                    //Incrementing the number of posts a user has:
-                                    int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
-                                    currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
-
-                                    //Updating the information about a user:
-                                    await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                      "usernameProfileInformation": currentInfoOfUser,
-                                    });
-
-                                    print("You have updated the number of posts for the user!");
-
-                                    //Determining if the full document still has all of the fields
-                                    List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                    var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
-                                    print("The full document after the update: $theVerifiedUser");
-                                  }
-                                  catch (error){
-                                    print("Error updating information of user: ${error}");
-                                    print("Stack trace: ${StackTrace.current}");
-                                  }
-                                }
-                                else{
-                                  print("User not found");
-                                }
-                              }
-                              else{
-                                myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                                myInfo.docs.forEach((resultNewUsername){
-                                  userData = resultNewUsername.data();
-                                  docName = resultNewUsername.id;
-                                });
-
-                                print("userData: ${userData}");
-                                print("docName: ${docName}");
-
-                                FirebaseFirestore.instance.collection("User").doc(docName).update({
-                                  "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
-                                }).then((a){
-                                  print("You have updated the post number for the new user!");
                                 });
                               }
                             }
@@ -783,11 +639,11 @@ class createThreadState extends State<createThread> with RouteAware{
 
                               createTechnologiesThread(theNewTechnologiesThread);
 
-                              if(myUsername != "" && myNewUsername == ""){
+                              if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                                 if(firebaseDesktopHelper.onDesktop){
                                   List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                  var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                                  var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
                                   if(theCorrectUser.isNotEmpty){
                                     userData = theCorrectUser;
@@ -833,7 +689,7 @@ class createThreadState extends State<createThread> with RouteAware{
                                   }
                                 }
                                 else{
-                                  myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                  myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
                                   myInfo.docs.forEach((resultExistingUsername){
                                     userData = resultExistingUsername.data();
                                     docName = resultExistingUsername.id;
@@ -846,72 +702,6 @@ class createThreadState extends State<createThread> with RouteAware{
                                     "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                                   }).then((a){
                                     print("You have updated the post number for the existing user!");
-                                  });
-                                }
-                              }
-                              else if(myUsername == "" && myNewUsername != ""){
-                                if(firebaseDesktopHelper.onDesktop){
-                                  List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                  var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                  if(theCorrectUser.isNotEmpty){
-                                    userData = theCorrectUser;
-                                    docName = theCorrectUser["docId"] ?? "N/A";
-
-                                    print("userData: ${userData}");
-                                    print("docName for your username: ${docName}");
-
-                                    //Updating the document:
-                                    try{
-                                      //Getting the current information about a user:
-                                      Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
-
-                                      print("theCorrectUser: ${theCorrectUser}");
-                                      print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
-                                      print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
-                                      print("Full user info: ${currentInfoOfUser}");
-                                      print("Full user keys: ${currentInfoOfUser.keys}");
-
-                                      //Incrementing the number of posts a user has:
-                                      int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
-                                      currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
-
-                                      //Updating the information about a user:
-                                      await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                        "usernameProfileInformation": currentInfoOfUser,
-                                      });
-
-                                      print("You have updated the number of posts for the user!");
-
-                                      //Determining if the full document still has all of the fields
-                                      List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                      var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
-                                      print("The full document after the update: $theVerifiedUser");
-                                    }
-                                    catch (error){
-                                      print("Error updating information of user: ${error}");
-                                      print("Stack trace: ${StackTrace.current}");
-                                    }
-                                  }
-                                  else{
-                                    print("User not found");
-                                  }
-                                }
-                                else{
-                                  myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                                  myInfo.docs.forEach((resultNewUsername){
-                                    userData = resultNewUsername.data();
-                                    docName = resultNewUsername.id;
-                                  });
-
-                                  print("userData: ${userData}");
-                                  print("docName: ${docName}");
-
-                                  FirebaseFirestore.instance.collection("User").doc(docName).update({
-                                    "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
-                                  }).then((a){
-                                    print("You have updated the post number for the new user!");
                                   });
                                 }
                               }
@@ -972,11 +762,11 @@ class createThreadState extends State<createThread> with RouteAware{
 
                                 createProjectsThread(theNewProjectsThread);
 
-                                if(myUsername != "" && myNewUsername == ""){
+                                if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                                   if(firebaseDesktopHelper.onDesktop){
                                     List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                    var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                                    var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
                                     if(theCorrectUser.isNotEmpty){
                                       userData = theCorrectUser;
@@ -1022,7 +812,7 @@ class createThreadState extends State<createThread> with RouteAware{
                                     }
                                   }
                                   else{
-                                    myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                    myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
                                     myInfo.docs.forEach((resultExistingUsername){
                                       userData = resultExistingUsername.data();
                                       docName = resultExistingUsername.id;
@@ -1035,72 +825,6 @@ class createThreadState extends State<createThread> with RouteAware{
                                       "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                                     }).then((a){
                                       print("You have updated the post number for the existing user!");
-                                    });
-                                  }
-                                }
-                                else if(myUsername == "" && myNewUsername != ""){
-                                  if(firebaseDesktopHelper.onDesktop){
-                                    List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                    var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                    if(theCorrectUser.isNotEmpty){
-                                      userData = theCorrectUser;
-                                      docName = theCorrectUser["docId"] ?? "N/A";
-
-                                      print("userData: ${userData}");
-                                      print("docName for your username: ${docName}");
-
-                                      //Updating the document:
-                                      try{
-                                        //Getting the current information about a user:
-                                        Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
-
-                                        print("theCorrectUser: ${theCorrectUser}");
-                                        print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
-                                        print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
-                                        print("Full user info: ${currentInfoOfUser}");
-                                        print("Full user keys: ${currentInfoOfUser.keys}");
-
-                                        //Incrementing the number of posts a user has:
-                                        int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
-                                        currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
-
-                                        //Updating the information about a user:
-                                        await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                          "usernameProfileInformation": currentInfoOfUser,
-                                        });
-
-                                        print("You have updated the number of posts for the user!");
-
-                                        //Determining if the full document still has all of the fields
-                                        List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                        var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
-                                        print("The full document after the update: $theVerifiedUser");
-                                      }
-                                      catch (error){
-                                        print("Error updating information of user: ${error}");
-                                        print("Stack trace: ${StackTrace.current}");
-                                      }
-                                    }
-                                    else{
-                                      print("User not found");
-                                    }
-                                  }
-                                  else{
-                                    myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                                    myInfo.docs.forEach((resultNewUsername){
-                                      userData = resultNewUsername.data();
-                                      docName = resultNewUsername.id;
-                                    });
-
-                                    print("userData: ${userData}");
-                                    print("docName: ${docName}");
-
-                                    FirebaseFirestore.instance.collection("User").doc(docName).update({
-                                      "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
-                                    }).then((a){
-                                      print("You have updated the post number for the new user!");
                                     });
                                   }
                                 }
@@ -1161,11 +885,11 @@ class createThreadState extends State<createThread> with RouteAware{
 
                                   createNewDiscoveriesThread(theNewNewDiscoveriesThread);
 
-                                  if(myUsername != "" && myNewUsername == ""){
+                                  if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                                     if(firebaseDesktopHelper.onDesktop){
                                       List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                      var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                                      var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
                                       if(theCorrectUser.isNotEmpty){
                                         userData = theCorrectUser;
@@ -1211,7 +935,7 @@ class createThreadState extends State<createThread> with RouteAware{
                                       }
                                     }
                                     else{
-                                      myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                      myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
                                       myInfo.docs.forEach((resultExistingUsername){
                                         userData = resultExistingUsername.data();
                                         docName = resultExistingUsername.id;
@@ -1224,72 +948,6 @@ class createThreadState extends State<createThread> with RouteAware{
                                         "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                                       }).then((a){
                                         print("You have updated the post number for the existing user!");
-                                      });
-                                    }
-                                  }
-                                  else if(myUsername == "" && myNewUsername != ""){
-                                    if(firebaseDesktopHelper.onDesktop){
-                                      List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                      var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                      if(theCorrectUser.isNotEmpty){
-                                        userData = theCorrectUser;
-                                        docName = theCorrectUser["docId"] ?? "N/A";
-
-                                        print("userData: ${userData}");
-                                        print("docName for your username: ${docName}");
-
-                                        //Updating the document:
-                                        try{
-                                          //Getting the current information about a user:
-                                          Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
-
-                                          print("theCorrectUser: ${theCorrectUser}");
-                                          print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
-                                          print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
-                                          print("Full user info: ${currentInfoOfUser}");
-                                          print("Full user keys: ${currentInfoOfUser.keys}");
-
-                                          //Incrementing the number of posts a user has:
-                                          int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
-                                          currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
-
-                                          //Updating the information about a user:
-                                          await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                            "usernameProfileInformation": currentInfoOfUser,
-                                          });
-
-                                          print("You have updated the number of posts for the user!");
-
-                                          //Determining if the full document still has all of the fields
-                                          List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                          var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
-                                          print("The full document after the update: $theVerifiedUser");
-                                        }
-                                        catch (error){
-                                          print("Error updating information of user: ${error}");
-                                          print("Stack trace: ${StackTrace.current}");
-                                        }
-                                      }
-                                      else{
-                                        print("User not found");
-                                      }
-                                    }
-                                    else{
-                                      myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                                      myInfo.docs.forEach((resultNewUsername){
-                                        userData = resultNewUsername.data();
-                                        docName = resultNewUsername.id;
-                                      });
-
-                                      print("userData: ${userData}");
-                                      print("docName: ${docName}");
-
-                                      FirebaseFirestore.instance.collection("User").doc(docName).update({
-                                        "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
-                                      }).then((a){
-                                        print("You have updated the post number for the new user!");
                                       });
                                     }
                                   }
@@ -1354,11 +1012,11 @@ class createThreadState extends State<createThread> with RouteAware{
                                     //Feedback:
                                     sendUserFeedback(myUsername: usernameController.text, myThreadName: threadNameController.text, myThreadContent: threadContentController.text);
 
-                                    if(myUsername != "" && myNewUsername == ""){
+                                    if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                                       if(firebaseDesktopHelper.onDesktop){
                                         List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                        var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myUsername.toLowerCase(), orElse: () => <String, dynamic>{});
+                                        var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
                                         if(theCorrectUser.isNotEmpty){
                                           userData = theCorrectUser;
@@ -1404,7 +1062,7 @@ class createThreadState extends State<createThread> with RouteAware{
                                         }
                                       }
                                       else{
-                                        myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myUsername.toLowerCase()).get();
+                                        myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
                                         myInfo.docs.forEach((resultExistingUsername){
                                           userData = resultExistingUsername.data();
                                           docName = resultExistingUsername.id;
@@ -1417,72 +1075,6 @@ class createThreadState extends State<createThread> with RouteAware{
                                           "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
                                         }).then((a){
                                           print("You have updated the post number for the existing user!");
-                                        });
-                                      }
-                                    }
-                                    else if(myUsername == "" && myNewUsername != ""){
-                                      if(firebaseDesktopHelper.onDesktop){
-                                        List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                        var theCorrectUser = allUsers.firstWhere((user) => user["usernameLowercased"].toString() == myNewUsername.toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                        if(theCorrectUser.isNotEmpty){
-                                          userData = theCorrectUser;
-                                          docName = theCorrectUser["docId"] ?? "N/A";
-
-                                          print("userData: ${userData}");
-                                          print("docName for your username: ${docName}");
-
-                                          //Updating the document:
-                                          try{
-                                            //Getting the current information about a user:
-                                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theCorrectUser["usernameProfileInformation"] ?? {});
-
-                                            print("theCorrectUser: ${theCorrectUser}");
-                                            print("Value of numberOfPosts: ${currentInfoOfUser["numberOfPosts"]}");
-                                            print("Runtime type of numberOfPosts: ${currentInfoOfUser["numberOfPosts"].runtimeType}");
-                                            print("Full user info: ${currentInfoOfUser}");
-                                            print("Full user keys: ${currentInfoOfUser.keys}");
-
-                                            //Incrementing the number of posts a user has:
-                                            int currentPostsForUser = currentInfoOfUser["numberOfPosts"];
-                                            currentInfoOfUser["numberOfPosts"] = currentPostsForUser + 1;
-
-                                            //Updating the information about a user:
-                                            await firebaseDesktopHelper.updateFirestoreDocument("User/$docName", {
-                                              "usernameProfileInformation": currentInfoOfUser,
-                                            });
-
-                                            print("You have updated the number of posts for the user!");
-
-                                            //Determining if the full document still has all of the fields
-                                            List<Map<String, dynamic>> myVerify = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                            var theVerifiedUser = myVerify.firstWhere((user) => user["docId"] == docName);
-                                            print("The full document after the update: $theVerifiedUser");
-                                          }
-                                          catch (error){
-                                            print("Error updating information of user: ${error}");
-                                            print("Stack trace: ${StackTrace.current}");
-                                          }
-                                        }
-                                        else{
-                                          print("User not found");
-                                        }
-                                      }
-                                      else{
-                                        myInfo = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myNewUsername.toLowerCase()).get();
-                                        myInfo.docs.forEach((resultNewUsername){
-                                          userData = resultNewUsername.data();
-                                          docName = resultNewUsername.id;
-                                        });
-
-                                        print("userData: ${userData}");
-                                        print("docName: ${docName}");
-
-                                        FirebaseFirestore.instance.collection("User").doc(docName).update({
-                                          "usernameProfileInformation.numberOfPosts": FieldValue.increment(1),
-                                        }).then((a){
-                                          print("You have updated the post number for the new user!");
                                         });
                                       }
                                     }

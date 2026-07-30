@@ -10,10 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:get/get.dart' hide Context;
 import 'package:get/get_core/src/get_main.dart' hide Context;
+import 'package:http/http.dart';
 //import 'package:backendless_sdk/backendless_sdk.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
+import 'login_information/loginStatus.dart';
 import 'main.dart';
 import 'questionsAndAnswersPage.dart' as questionsAndAnswersPage;
 import 'technologiesPage.dart' as technologiesPage;
@@ -292,27 +295,6 @@ class registerPageState extends State<registerPage>{
               padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
               child: Text("To register successfully on Star Expedition:\n\n${registrationRequirements[0]}\n${registrationRequirements[1]}\n${registrationRequirements[2]}", textAlign: TextAlign.center),
             ),
-            /*Container(
-              height: MediaQuery.of(buildContext).size.height * 0.015625,
-            ),*/
-            /*Center(
-              child: Container(
-                padding: const EdgeInsets.all(0.0),
-                alignment: Alignment.centerLeft,
-                child: Text("Username", style: TextStyle(fontSize: 14.0)),
-                height: 20,
-                width: 380,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              child: TextField(
-                controller: theUsername,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),*/
             IntrinsicHeight(
               child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -642,9 +624,11 @@ class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
                                 print(myMain.theUsers);
                                 myMain.discussionBoardLogin = false;
                                 registerBool = true;
+                                context.read<loginStatus>().loggingIn(myNewUsername);
                                 print("Registering successfully as: " + userEmailPasswordList.toString());
                                 //emailNotifications.registrationConfirmationEmail();
                                 emailNotifications.sendAnEmail(myNewEmail, "Welcome to Star Expedition!", "Hi ${myNewUsername},<br><br>We hope you enjoy your time on here.<br><br>If you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.<br><br>Best,<br>Star Expedition");
+                                myNewUsername = "";
                               }
                               else{
                                 Navigator.pushReplacementNamed(bc, registerPageRoutes.homePage);
@@ -665,9 +649,11 @@ class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
                                 print(myMain.theUsers);
                                 myMain.discussionBoardLogin = false;
                                 registerBool = true;
+                                context.read<loginStatus>().loggingIn(myNewUsername);
                                 print("Registering successfully as: " + userEmailPasswordList.toString());
                                 //emailNotifications.registrationConfirmationEmail();
                                 emailNotifications.sendAnEmail(myNewEmail, "Welcome to Star Expedition!", "Hi ${myNewUsername},<br><br>We hope you enjoy your time on here.<br><br>If you have any questions or concerns, please send an email to starexpedition.theapp@gmail.com.<br><br>Best,<br>Star Expedition");
+                                myNewUsername = "";
                               }
                             },
                             child: const Text("Ok"),
