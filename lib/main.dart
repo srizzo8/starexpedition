@@ -2441,24 +2441,22 @@ class articlePage extends StatelessWidget{
 
   List<Text> starPdfMessageForUser = [];
 
-  void getKeys(Map myMap){ // This is for getting planet names, which are keys
+  List<String> getKeys(Map myMap){ // This is for getting planet names, which are keys
     //Making the star's planets in alphabetical order
     var planetsList = myMap.keys.toList()..sort();
-    for(var planet in planetsList){
-      myPlanet.add(planet);
-      print("The key (or planet's name) is: " + planet);
-    }
+    return planetsList.map((myKeys) => myKeys.toString()).toList();
   }
 
-  Future<List<String>> getStarData() async{
+  Future<List<String>?> getStarData() async{
     final ref;
+    List<String>? myPlanetsResult;
 
     if(firebaseDesktopHelper.onDesktop){
       ref = await firebaseDesktopHelper.getFirebaseData(correctStar);
 
       final snapshot = ref["Planets"];
       if (snapshot != null) {
-        getKeys(snapshot as Map); // Calling getKeys so that I can get the planets' names
+        myPlanetsResult = getKeys(snapshot as Map); // Calling getKeys so that I can get the planets' names
         print(snapshot);
       } else {
         print('No data available.');
@@ -2469,7 +2467,7 @@ class articlePage extends StatelessWidget{
 
       final snapshot = await ref.child('Planets').get();
       if (snapshot.exists) {
-        getKeys(snapshot.value as Map); // Calling getKeys so that I can get the planets' names
+        myPlanetsResult = getKeys(snapshot.value as Map); // Calling getKeys so that I can get the planets' names
         print(snapshot.value);
       } else {
         print('No data available.');
@@ -2477,7 +2475,7 @@ class articlePage extends StatelessWidget{
     }
     print('This is the correct star: ' + correctStar);
     return Future.delayed(Duration(seconds: 1), () {
-      return myPlanet; // Data should be returned from the snapshot.
+      return myPlanetsResult; // Data should be returned from the snapshot.
     });
   }
 
@@ -2613,7 +2611,7 @@ class articlePage extends StatelessWidget{
             }
         ),
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<String>?>(
         builder: (bc, mySnapshot){
           if(mySnapshot.connectionState == ConnectionState.done){
             if(mySnapshot.hasError){
