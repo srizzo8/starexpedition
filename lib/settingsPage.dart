@@ -336,6 +336,11 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                 child: Text("${registrationRequirements[2]}", textAlign: TextAlign.center),
               ),
+              Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+                child: Text("After you have successfully changed your password, a confirmation email will be sent to you. Please check both your main and spam inboxes for it.", textAlign: TextAlign.center),
+              ),
               IntrinsicHeight(
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -673,6 +678,11 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                 alignment: Alignment.center,
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
                 child: Text("${registrationRequirements[1]}", textAlign: TextAlign.center),
+              ),
+              Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+                child: Text("After you have successfully changed your email address, confirmation emails will be sent to both your current and new email addresses. Please check both your main and spam inboxes for them.", textAlign: TextAlign.center),
               ),
               IntrinsicHeight(
                 child: Row(

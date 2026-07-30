@@ -295,6 +295,11 @@ class registerPageState extends State<registerPage>{
               padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
               child: Text("To register successfully on Star Expedition:\n\n${registrationRequirements[0]}\n${registrationRequirements[1]}\n${registrationRequirements[2]}", textAlign: TextAlign.center),
             ),
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(left: MediaQuery.of(buildContext).size.width * 0.031250, right: MediaQuery.of(buildContext).size.width * 0.031250),
+              child: Text("After you entered in a username, email address, and password that match the guidelines, a six-digit verification code will be emailed to you. Please check both your main and spam inboxes for it.", textAlign: TextAlign.center)
+            ),
             IntrinsicHeight(
               child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,

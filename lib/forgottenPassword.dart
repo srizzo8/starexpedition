@@ -250,24 +250,11 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
             Container(
               height: MediaQuery.of(context).size.height * 0.015625,
             ),
-            /*Center(
-              child: Container(
-                padding: const EdgeInsets.all(0.0),
-                alignment: Alignment.centerLeft,
-                child: Text("Username", style: TextStyle(fontSize: 14.0)),
-                height: 20,
-                width: 380,
-              ),
-            ),
             Container(
-              padding: const EdgeInsets.all(20.0),
-              child: TextField(
-                controller: myUsernameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),*/
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+              child: Text("After you entered in your username and email address, a six-digit verification code will be emailed to you. Please check both your main and spam inboxes for it.", textAlign: TextAlign.center),
+            ),
             IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -299,24 +286,6 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
             Container(
               height: MediaQuery.of(context).size.height * 0.015625,
             ),
-            /*Center(
-              child: Container(
-                padding: const EdgeInsets.all(0.0),
-                alignment: Alignment.centerLeft,
-                child: Text("Email address", style: TextStyle(fontSize: 14.0)),
-                height: 20,
-                width: 380,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              child: TextField(
-                controller: myEmailController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),*/
             IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -356,7 +325,6 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
                 child: InkWell(
                   child: Ink(
                     color: Colors.black,
-                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                     child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                   ),
                 ),
@@ -542,9 +510,6 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
               alignment: Alignment.center,
               child: Text("Enter in the 6-digit code that was emailed to you", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
             ),
-            /*Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),*/
             IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -587,18 +552,6 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
                 ],
               ),
             ),
-            /*Container(
-              padding: const EdgeInsets.all(20.0),
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-                controller: numberController,
-                maxLength: 6,
-                obscureText: true,
-                keyboardType: TextInputType.number,
-              ),
-            ),*/
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -607,7 +560,6 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
                 child: InkWell(
                   child: Ink(
                     color: Colors.black,
-                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                     child: Text("Submit", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                   ),
                 ),
@@ -829,25 +781,6 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
               padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
               child: Text("${registrationRequirements[2]}", textAlign: TextAlign.center),
             ),
-            /*Center(
-              child: Container(
-                padding: const EdgeInsets.all(0.0),
-                alignment: Alignment.centerLeft,
-                child: Text("New Password", style: TextStyle(fontSize: 14.0)),
-                height: 20,
-                width: 380,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-                controller: newPassController,
-                obscureText: true,
-              ),
-            ),*/
             IntrinsicHeight(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -886,28 +819,6 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                   ],
                 ),
               ),
-            /*Container(
-              height: 5,
-            ),*/
-            /*Center(
-              child: Container(
-                padding: const EdgeInsets.all(0.0),
-                alignment: Alignment.centerLeft,
-                child: Text("Confirm New Password", style: TextStyle(fontSize: 14.0)),
-                height: 20,
-                width: 380,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              child: TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-                controller: confirmNewPassController,
-                obscureText: true,
-              ),
-            ),*/
             IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -957,7 +868,6 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                 child: InkWell(
                   child: Ink(
                     color: Colors.black,
-                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
                     child: Text("Reset Your Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
                   ),
                 ),
@@ -975,12 +885,6 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                               TextButton(
                                 onPressed: () async {
                                   //Changing a user's password
-                                  /*var docForUser;
-                                  var theUserResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: theUsersUsername.toLowerCase()).get();
-                                  theUserResult.docs.forEach((outcome){
-                                    docForUser = outcome.data();
-                                    print("This is the outcome: ${outcome.data()}");
-                                  });*/
                                   var docForUser;
                                   var gettingTheDocName;
 
@@ -1018,8 +922,6 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                                   }
 
                                   //Leads to the Star Expedition login page:
-                                  //myUsername = theUsersUsername;
-                                  //loginBool = true;
                                   Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage()));
                                 },
                                 child: const Text("Ok"),
