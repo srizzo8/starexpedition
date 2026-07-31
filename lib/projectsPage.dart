@@ -61,6 +61,8 @@ var pThreadClickedData;
 var specificPThreadData;
 
 var threadPosterUserIsReplyingToP;
+var replyPosterUserIsReplyingToP;
+var contentOfReplyUserIsReplyingToP;
 var titleOfThreadUserIsReplyingToP;
 
 class projectsPage extends StatefulWidget{
@@ -851,6 +853,10 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                     width: MediaQuery.of(context).size.width * 0.5,
                                   ),
                                   onTap: () async{
+                                    replyPosterUserIsReplyingToP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString();
+                                    contentOfReplyUserIsReplyingToP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString();
+                                    titleOfThreadUserIsReplyingToP = threadTitleP;
+
                                     replyToReplyTimeP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["time"];
                                     replyToReplyContentP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replyContent"].toString();
                                     replyToReplyPosterP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replier"].toString();
@@ -1029,6 +1035,10 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                     width: MediaQuery.of(context).size.width * 0.5,
                                   ),
                                   onTap: () async{
+                                    replyPosterUserIsReplyingToP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString();
+                                    contentOfReplyUserIsReplyingToP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString();
+                                    titleOfThreadUserIsReplyingToP = threadTitleP;
+
                                     replyToReplyTimeP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["time"];
                                     replyToReplyContentP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replyContent"].toString();
                                     replyToReplyPosterP = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies]![index]["replier"].toString();

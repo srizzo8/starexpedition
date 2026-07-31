@@ -65,6 +65,8 @@ var fasThreadClickedData;
 var specificFasThreadData;
 
 var threadPosterUserIsReplyingToFas;
+var replyPosterUserIsReplyingToFas;
+var contentOfReplyUserIsReplyingToFas;
 var titleOfThreadUserIsReplyingToFas;
 
 class feedbackAndSuggestionsPage extends StatefulWidget{
@@ -852,6 +854,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                     width: MediaQuery.of(context).size.width * 0.5,
                                   ),
                                   onTap: () async{
+                                    replyPosterUserIsReplyingToFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString();
+                                    contentOfReplyUserIsReplyingToFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString();
+                                    titleOfThreadUserIsReplyingToFas = threadTitleFas;
+
                                     replyToReplyTimeFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["time"];
                                     replyToReplyContentFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replyContent"].toString();
                                     replyToReplyPosterFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replier"].toString();
@@ -1032,6 +1038,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                     width: MediaQuery.of(context).size.width * 0.5,
                                   ),
                                   onTap: () async{
+                                    replyPosterUserIsReplyingToFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replier"].toString();
+                                    contentOfReplyUserIsReplyingToFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies][index]["replyContent"].toString();
+                                    titleOfThreadUserIsReplyingToFas = threadTitleFas;
+
                                     replyToReplyTimeFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["time"];
                                     replyToReplyContentFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replyContent"].toString();
                                     replyToReplyPosterFas = mySublistsFasThreadReplies[theCurrentPageFasThreadReplies]![index]["replier"].toString();

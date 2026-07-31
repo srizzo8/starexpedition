@@ -60,6 +60,8 @@ var qaaThreadClickedData;
 var specificQaaThreadData;
 
 var threadPosterUserIsReplyingToQaa;
+var replyPosterUserIsReplyingToQaa;
+var contentOfReplyUserIsReplyingToQaa;
 var titleOfThreadUserIsReplyingToQaa;
 
 class questionsAndAnswersPage extends StatefulWidget{
@@ -847,6 +849,10 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                     width: MediaQuery.of(context).size.width * 0.5,
                                   ),
                                   onTap: () async{
+                                    replyPosterUserIsReplyingToQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString();
+                                    contentOfReplyUserIsReplyingToQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replyContent"].toString();
+                                    titleOfThreadUserIsReplyingToQaa = threadTitleQaa;
+
                                     replyToReplyTimeQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["time"];
                                     replyToReplyContentQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["replyContent"].toString();
                                     replyToReplyPosterQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["replier"].toString();
@@ -1028,6 +1034,10 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                     width: MediaQuery.of(context).size.width * 0.5,
                                   ),
                                   onTap: () async{
+                                    replyPosterUserIsReplyingToQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replier"].toString();
+                                    contentOfReplyUserIsReplyingToQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies][index]["replyContent"].toString();
+                                    titleOfThreadUserIsReplyingToQaa = threadTitleQaa;
+
                                     replyToReplyTimeQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["time"];
                                     replyToReplyContentQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["replyContent"].toString();
                                     replyToReplyPosterQaa = mySublistsQaaThreadReplies[theCurrentPageQaaThreadReplies]![index]["replier"].toString();

@@ -66,6 +66,7 @@ var specificDbuThreadData;
 
 var threadPosterUserIsReplyingToDbu;
 var replyPosterUserIsReplyingToDbu;
+var contentOfReplyUserIsReplyingToDbu;
 var titleOfThreadUserIsReplyingToDbu;
 
 class discussionBoardUpdatesPage extends StatefulWidget{
@@ -859,6 +860,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               ),
                               onPressed: () async{
                                 replyPosterUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
+                                contentOfReplyUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString();
                                 titleOfThreadUserIsReplyingToDbu = threadTitleDbu;
 
                                 replyToReplyTimeDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["time"];//.toString();
@@ -1060,6 +1062,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               ),
                               onPressed: () async{
                                 replyPosterUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
+                                contentOfReplyUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString();
                                 titleOfThreadUserIsReplyingToDbu = threadTitleDbu;
 
                                 replyToReplyTimeDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["time"];//.toString();

@@ -60,6 +60,8 @@ var ndThreadClickedData;
 var specificNdThreadData;
 
 var threadPosterUserIsReplyingToNd;
+var replyPosterUserIsReplyingToNd;
+var contentOfReplyUserIsReplyingToNd;
 var titleOfThreadUserIsReplyingToNd;
 
 class newDiscoveriesPage extends StatefulWidget{
@@ -846,6 +848,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                     width: MediaQuery.of(context).size.width * 0.5,
                                   ),
                                   onTap: () async{
+                                    replyPosterUserIsReplyingToNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString();
+                                    contentOfReplyUserIsReplyingToNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString();
+                                    titleOfThreadUserIsReplyingToNd = threadTitleNd;
+
                                     replyToReplyTimeNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies]![index]["time"];
                                     replyToReplyContentNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies]![index]["replyContent"].toString();
                                     replyToReplyPosterNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies]![index]["replier"].toString();
@@ -1027,6 +1033,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                     width: MediaQuery.of(context).size.width * 0.5,
                                   ),
                                   onTap: () async{
+                                    replyPosterUserIsReplyingToNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString();
+                                    contentOfReplyUserIsReplyingToNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString();
+                                    titleOfThreadUserIsReplyingToNd = threadTitleNd;
+
                                     replyToReplyTimeNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies]![index]["time"];
                                     replyToReplyContentNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies]![index]["replyContent"].toString();
                                     replyToReplyPosterNd = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies]![index]["replier"].toString();

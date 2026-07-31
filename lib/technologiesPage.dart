@@ -60,6 +60,8 @@ var tThreadClickedData;
 var specificTThreadData;
 
 var threadPosterUserIsReplyingToT;
+var replyPosterUserIsReplyingToT;
+var contentOfReplyUserIsReplyingToT;
 var titleOfThreadUserIsReplyingToT;
 
 class technologiesPage extends StatefulWidget{
@@ -847,6 +849,10 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                                 width: MediaQuery.of(context).size.width * 0.5,
                               ),
                               onTap: () async{
+                                replyPosterUserIsReplyingToT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString();
+                                contentOfReplyUserIsReplyingToT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replyContent"].toString();
+                                titleOfThreadUserIsReplyingToT = threadTitleT;
+
                                 replyToReplyTimeT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["time"];
                                 replyToReplyContentT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["replyContent"].toString();
                                 replyToReplyPosterT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["replier"].toString();
@@ -1026,6 +1032,10 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                                   width: MediaQuery.of(context).size.width * 0.5,
                                 ),
                                 onTap: () async{
+                                  replyPosterUserIsReplyingToT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString();
+                                  contentOfReplyUserIsReplyingToT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replyContent"].toString();
+                                  titleOfThreadUserIsReplyingToT = threadTitleT;
+
                                   replyToReplyTimeT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["time"];
                                   replyToReplyContentT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["replyContent"].toString();
                                   replyToReplyPosterT = mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies]![index]["replier"].toString();

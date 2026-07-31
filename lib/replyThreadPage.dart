@@ -474,6 +474,24 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       else{
                                         print("User not found");
                                       }
+
+                                      //Getting information about the poster of the reply a user replied to:
+                                      List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                      var theReplyPoster = everyUser.firstWhere((user) => user["usernameLowercased"].toString() == (discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                      if(theReplyPoster.isNotEmpty){
+                                        var dbuReplyPosterData = theReplyPoster;
+                                        var dbuReplyPosterDocName = dbuReplyPosterData["docId"] ?? "N/A";
+
+                                        Map<String, dynamic> currentInfoOfDbuReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
+                                        var dbuReplyPostersEmailAddress = currentInfoOfDbuReplyPoster["emailAddress"];
+
+                                        sendAnEmail(dbuReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Discussion Board Updates subforum thread titled ${discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu}. Here was the content of your reply: <br><br>${discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu = "";
+                                        discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu = "";
+                                        discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu = "";
+                                        dbuReplyPostersEmailAddress = "";
+                                      }
                                     }
                                     else{
                                       myInfoForReplies = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
@@ -490,6 +508,17 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       }).then((a){
                                         print("You have updated the post number for the existing user!");
                                       });
+
+                                      //Getting information about the poster of the thread a user replied to:
+                                      var theReplyPoster = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu).toLowerCase()).get();
+                                      var dbuReplyPosterDocName = theReplyPoster.docs.first;
+                                      var dbuReplyPostersEmailAddress = dbuReplyPosterDocName.get("emailAddress");
+
+                                      sendAnEmail(dbuReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Discussion Board Updates subforum thread titled ${discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu}. Here was the content of your reply: <br><br>${discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu = "";
+                                      discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu = "";
+                                      discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu = "";
+                                      dbuReplyPostersEmailAddress = "";
                                     }
                                   }
                                 }
@@ -646,7 +675,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfQaaThreadPoster = Map<String, dynamic>.from(theThreadPoster["usernameProfileInformation"] ?? {});
                                         var qaaThreadPostersEmailAddress = currentInfoOfQaaThreadPoster["emailAddress"];
 
-                                        sendAnEmail(qaaThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${questionsAndAnswersPage.threadPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Discussion Board Updates subforum titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendAnEmail(qaaThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${questionsAndAnswersPage.threadPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Questions and Answers subforum titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
                                         questionsAndAnswersPage.threadPosterUserIsReplyingToQaa = "";
                                         questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa = "";
                                         qaaThreadPostersEmailAddress = "";
@@ -748,6 +777,24 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       else{
                                         print("User not found");
                                       }
+
+                                      //Getting information about the poster of the reply a user replied to:
+                                      List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                      var theReplyPoster = everyUser.firstWhere((user) => user["usernameLowercased"].toString() == (questionsAndAnswersPage.replyPosterUserIsReplyingToQaa).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                      if(theReplyPoster.isNotEmpty){
+                                        var qaaReplyPosterData = theReplyPoster;
+                                        var qaaReplyPosterDocName = qaaReplyPosterData["docId"] ?? "N/A";
+
+                                        Map<String, dynamic> currentInfoOfQaaReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
+                                        var qaaReplyPostersEmailAddress = currentInfoOfQaaReplyPoster["emailAddress"];
+
+                                        sendAnEmail(qaaReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${questionsAndAnswersPage.replyPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Questions and Answers subforum thread titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. Here was the content of your reply: <br><br>${questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        questionsAndAnswersPage.replyPosterUserIsReplyingToQaa = "";
+                                        questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa = "";
+                                        questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa = "";
+                                        qaaReplyPostersEmailAddress = "";
+                                      }
                                     }
                                     else{
                                       myInfoForReplies = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
@@ -764,6 +811,17 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       }).then((a){
                                         print("You have updated the post number for the existing user!");
                                       });
+
+                                      //Getting information about the poster of the thread a user replied to:
+                                      var theReplyPoster = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (questionsAndAnswersPage.replyPosterUserIsReplyingToQaa).toLowerCase()).get();
+                                      var qaaReplyPosterDocName = theReplyPoster.docs.first;
+                                      var qaaReplyPostersEmailAddress = qaaReplyPosterDocName.get("emailAddress");
+
+                                      sendAnEmail(qaaReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${questionsAndAnswersPage.replyPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Questions and Answers subforum thread titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. Here was the content of your reply: <br><br>${questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      questionsAndAnswersPage.replyPosterUserIsReplyingToQaa = "";
+                                      questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa = "";
+                                      questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa = "";
+                                      qaaReplyPostersEmailAddress = "";
                                     }
                                   }
                                 }
@@ -1022,6 +1080,24 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       else{
                                         print("User not found");
                                       }
+
+                                      //Getting information about the poster of the reply a user replied to:
+                                      List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                      var theReplyPoster = everyUser.firstWhere((user) => user["usernameLowercased"].toString() == (technologiesPage.replyPosterUserIsReplyingToT).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                      if(theReplyPoster.isNotEmpty){
+                                        var tReplyPosterData = theReplyPoster;
+                                        var tReplyPosterDocName = tReplyPosterData["docId"] ?? "N/A";
+
+                                        Map<String, dynamic> currentInfoOfTReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
+                                        var tReplyPostersEmailAddress = currentInfoOfTReplyPoster["emailAddress"];
+
+                                        sendAnEmail(tReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${technologiesPage.replyPosterUserIsReplyingToT},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Technologies subforum thread titled ${technologiesPage.titleOfThreadUserIsReplyingToT}. Here was the content of your reply: <br><br>${technologiesPage.contentOfReplyUserIsReplyingToT}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        technologiesPage.replyPosterUserIsReplyingToT = "";
+                                        technologiesPage.contentOfReplyUserIsReplyingToT = "";
+                                        technologiesPage.titleOfThreadUserIsReplyingToT = "";
+                                        tReplyPostersEmailAddress = "";
+                                      }
                                     }
                                     else{
                                       myInfoForReplies = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
@@ -1038,6 +1114,17 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       }).then((a){
                                         print("You have updated the post number for the existing user!");
                                       });
+
+                                      //Getting information about the poster of the thread a user replied to:
+                                      var theReplyPoster = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (technologiesPage.replyPosterUserIsReplyingToT).toLowerCase()).get();
+                                      var tReplyPosterDocName = theReplyPoster.docs.first;
+                                      var tReplyPostersEmailAddress = tReplyPosterDocName.get("emailAddress");
+
+                                      sendAnEmail(tReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${technologiesPage.replyPosterUserIsReplyingToT},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Technologies subforum thread titled ${technologiesPage.titleOfThreadUserIsReplyingToT}. Here was the content of your reply: <br><br>${technologiesPage.contentOfReplyUserIsReplyingToT}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      technologiesPage.replyPosterUserIsReplyingToT = "";
+                                      technologiesPage.contentOfReplyUserIsReplyingToT = "";
+                                      technologiesPage.titleOfThreadUserIsReplyingToT = "";
+                                      tReplyPostersEmailAddress = "";
                                     }
                                   }
                                 }
@@ -1291,6 +1378,24 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       else{
                                         print("User not found");
                                       }
+
+                                      //Getting information about the poster of the reply a user replied to:
+                                      List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                      var theReplyPoster = everyUser.firstWhere((user) => user["usernameLowercased"].toString() == (projectsPage.replyPosterUserIsReplyingToP).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                      if(theReplyPoster.isNotEmpty){
+                                        var pReplyPosterData = theReplyPoster;
+                                        var pReplyPosterDocName = pReplyPosterData["docId"] ?? "N/A";
+
+                                        Map<String, dynamic> currentInfoOfPReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
+                                        var pReplyPostersEmailAddress = currentInfoOfPReplyPoster["emailAddress"];
+
+                                        sendAnEmail(pReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${projectsPage.replyPosterUserIsReplyingToP},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Projects subforum thread titled ${projectsPage.titleOfThreadUserIsReplyingToP}. Here was the content of your reply: <br><br>${projectsPage.contentOfReplyUserIsReplyingToP}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        projectsPage.replyPosterUserIsReplyingToP = "";
+                                        projectsPage.contentOfReplyUserIsReplyingToP = "";
+                                        projectsPage.titleOfThreadUserIsReplyingToP = "";
+                                        pReplyPostersEmailAddress = "";
+                                      }
                                     }
                                     else{
                                       myInfoForReplies = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
@@ -1307,6 +1412,17 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       }).then((a){
                                         print("You have updated the post number for the existing user!");
                                       });
+
+                                      //Getting information about the poster of the thread a user replied to:
+                                      var theReplyPoster = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (projectsPage.replyPosterUserIsReplyingToP).toLowerCase()).get();
+                                      var pReplyPosterDocName = theReplyPoster.docs.first;
+                                      var pReplyPostersEmailAddress = pReplyPosterDocName.get("emailAddress");
+
+                                      sendAnEmail(pReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${projectsPage.replyPosterUserIsReplyingToP},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Projects subforum thread titled ${projectsPage.titleOfThreadUserIsReplyingToP}. Here was the content of your reply: <br><br>${projectsPage.contentOfReplyUserIsReplyingToP}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      projectsPage.replyPosterUserIsReplyingToP = "";
+                                      projectsPage.contentOfReplyUserIsReplyingToP = "";
+                                      projectsPage.titleOfThreadUserIsReplyingToP = "";
+                                      pReplyPostersEmailAddress = "";
                                     }
                                   }
                                 }
@@ -1562,6 +1678,24 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       else{
                                         print("User not found");
                                       }
+
+                                      //Getting information about the poster of the reply a user replied to:
+                                      List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                      var theReplyPoster = everyUser.firstWhere((user) => user["usernameLowercased"].toString() == (newDiscoveriesPage.replyPosterUserIsReplyingToNd).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                      if(theReplyPoster.isNotEmpty){
+                                        var ndReplyPosterData = theReplyPoster;
+                                        var ndReplyPosterDocName = ndReplyPosterData["docId"] ?? "N/A";
+
+                                        Map<String, dynamic> currentInfoOfNdReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
+                                        var ndReplyPostersEmailAddress = currentInfoOfNdReplyPoster["emailAddress"];
+
+                                        sendAnEmail(ndReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${newDiscoveriesPage.replyPosterUserIsReplyingToNd},<br><br>${myLoginStatus.myUsername} has replied to your reply from the New Discoveries subforum thread titled ${newDiscoveriesPage.titleOfThreadUserIsReplyingToNd}. Here was the content of your reply: <br><br>${newDiscoveriesPage.contentOfReplyUserIsReplyingToNd}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        newDiscoveriesPage.replyPosterUserIsReplyingToNd = "";
+                                        newDiscoveriesPage.contentOfReplyUserIsReplyingToNd = "";
+                                        newDiscoveriesPage.titleOfThreadUserIsReplyingToNd = "";
+                                        ndReplyPostersEmailAddress = "";
+                                      }
                                     }
                                     else{
                                       myInfoForReplies = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
@@ -1578,6 +1712,17 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       }).then((a){
                                         print("You have updated the post number for the existing user!");
                                       });
+
+                                      //Getting information about the poster of the thread a user replied to:
+                                      var theReplyPoster = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (newDiscoveriesPage.replyPosterUserIsReplyingToNd).toLowerCase()).get();
+                                      var ndReplyPosterDocName = theReplyPoster.docs.first;
+                                      var ndReplyPostersEmailAddress = ndReplyPosterDocName.get("emailAddress");
+
+                                      sendAnEmail(ndReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${newDiscoveriesPage.replyPosterUserIsReplyingToNd},<br><br>${myLoginStatus.myUsername} has replied to your reply from the New Discoveries subforum thread titled ${newDiscoveriesPage.titleOfThreadUserIsReplyingToNd}. Here was the content of your reply: <br><br>${newDiscoveriesPage.contentOfReplyUserIsReplyingToNd}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      newDiscoveriesPage.replyPosterUserIsReplyingToNd = "";
+                                      newDiscoveriesPage.contentOfReplyUserIsReplyingToNd = "";
+                                      newDiscoveriesPage.titleOfThreadUserIsReplyingToNd = "";
+                                      ndReplyPostersEmailAddress = "";
                                     }
                                   }
                                 }
@@ -1828,6 +1973,24 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       else{
                                         print("User not found");
                                       }
+
+                                      //Getting information about the poster of the reply a user replied to:
+                                      List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                      var theReplyPoster = everyUser.firstWhere((user) => user["usernameLowercased"].toString() == (feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                      if(theReplyPoster.isNotEmpty){
+                                        var fasReplyPosterData = theReplyPoster;
+                                        var fasReplyPosterDocName = fasReplyPosterData["docId"] ?? "N/A";
+
+                                        Map<String, dynamic> currentInfoOfFasReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
+                                        var fasReplyPostersEmailAddress = currentInfoOfFasReplyPoster["emailAddress"];
+
+                                        sendAnEmail(fasReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Feedback and Suggestions subforum thread titled ${feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas}. Here was the content of your reply: <br><br>${feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas = "";
+                                        feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas = "";
+                                        feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas = "";
+                                        fasReplyPostersEmailAddress = "";
+                                      }
                                     }
                                     else{
                                       myInfoForReplies = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
@@ -1844,6 +2007,17 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       }).then((a){
                                         print("You have updated the post number for the existing user!");
                                       });
+
+                                      //Getting information about the poster of the thread a user replied to:
+                                      var theReplyPoster = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas).toLowerCase()).get();
+                                      var fasReplyPosterDocName = theReplyPoster.docs.first;
+                                      var fasReplyPostersEmailAddress = fasReplyPosterDocName.get("emailAddress");
+
+                                      sendAnEmail(fasReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Feedback and Suggestions subforum thread titled ${feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas}. Here was the content of your reply: <br><br>${feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas = "";
+                                      feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas = "";
+                                      feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas = "";
+                                      fasReplyPostersEmailAddress = "";
                                     }
                                   }
                                 }
