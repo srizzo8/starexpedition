@@ -59,6 +59,9 @@ var theQaaThreadResult;
 var qaaThreadClickedData;
 var specificQaaThreadData;
 
+var threadPosterUserIsReplyingToQaa;
+var titleOfThreadUserIsReplyingToQaa;
+
 class questionsAndAnswersPage extends StatefulWidget{
   const questionsAndAnswersPage ({Key? key}) : super(key: key);
 
@@ -1251,6 +1254,8 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                       ),
                     ),
                     onTap: () async {
+                      threadPosterUserIsReplyingToQaa = threadAuthorQaa;
+                      titleOfThreadUserIsReplyingToQaa = threadTitleQaa;
                       questionsAndAnswersReplyingToReplyBool = false;
                       questionsAndAnswersReplyBool = true;
                       qaaNavigationDepth++;

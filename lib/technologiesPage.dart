@@ -59,6 +59,9 @@ var theTThreadResult;
 var tThreadClickedData;
 var specificTThreadData;
 
+var threadPosterUserIsReplyingToT;
+var titleOfThreadUserIsReplyingToT;
+
 class technologiesPage extends StatefulWidget{
   const technologiesPage ({Key? key}) : super(key: key);
 
@@ -1246,6 +1249,8 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                 ),
               ),
               onTap: () async{
+                threadPosterUserIsReplyingToT = threadAuthorT;
+                titleOfThreadUserIsReplyingToT = threadTitleT;
                 technologiesReplyingToReplyBool = false;
                 technologiesReplyBool = true;
                 technologiesNavigationDepth++;

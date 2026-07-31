@@ -59,6 +59,9 @@ var theNdThreadResult;
 var ndThreadClickedData;
 var specificNdThreadData;
 
+var threadPosterUserIsReplyingToNd;
+var titleOfThreadUserIsReplyingToNd;
+
 class newDiscoveriesPage extends StatefulWidget{
   const newDiscoveriesPage ({Key? key}) : super(key: key);
 
@@ -1248,6 +1251,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                       ),
                     ),
                     onTap: () async {
+                      threadPosterUserIsReplyingToNd = threadAuthorNd;
+                      titleOfThreadUserIsReplyingToNd = threadTitleNd;
                       newDiscoveriesReplyingToReplyBool = false;
                       newDiscoveriesReplyBool = true;
                       ndNavigationDepth++;

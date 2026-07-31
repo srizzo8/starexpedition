@@ -60,6 +60,9 @@ var thePThreadResult;
 var pThreadClickedData;
 var specificPThreadData;
 
+var threadPosterUserIsReplyingToP;
+var titleOfThreadUserIsReplyingToP;
+
 class projectsPage extends StatefulWidget{
   const projectsPage ({Key? key}) : super(key: key);
 
@@ -1249,6 +1252,8 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                       ),
                     ),
                     onTap: () async {
+                      threadPosterUserIsReplyingToP = threadAuthorP;
+                      titleOfThreadUserIsReplyingToP = threadTitleP;
                       projectsReplyingToReplyBool = false;
                       projectsReplyBool = true;
                       projectsNavigationDepth++;

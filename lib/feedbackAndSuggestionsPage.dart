@@ -64,6 +64,9 @@ var theFasThreadResult;
 var fasThreadClickedData;
 var specificFasThreadData;
 
+var threadPosterUserIsReplyingToFas;
+var titleOfThreadUserIsReplyingToFas;
+
 class feedbackAndSuggestionsPage extends StatefulWidget{
   const feedbackAndSuggestionsPage ({Key? key}) : super(key: key);
 
@@ -1253,6 +1256,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                       ),
                     ),
                     onTap: () async{
+                      threadPosterUserIsReplyingToFas = threadAuthorFas;
+                      titleOfThreadUserIsReplyingToFas = threadTitleFas;
                       fasReplyingToReplyBool = false;
                       fasReplyBool = true;
                       fasNavigationDepth++;

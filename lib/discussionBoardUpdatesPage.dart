@@ -64,6 +64,10 @@ var theDbuThreadResult;
 var dbuThreadClickedData;
 var specificDbuThreadData;
 
+var threadPosterUserIsReplyingToDbu;
+var replyPosterUserIsReplyingToDbu;
+var titleOfThreadUserIsReplyingToDbu;
+
 class discussionBoardUpdatesPage extends StatefulWidget{
   const discussionBoardUpdatesPage ({Key? key}) : super(key: key);
 
@@ -386,35 +390,8 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
     myMain.myAccessCheckNotifier.value = DateTime.now();
   }
 
-  /*Future<List<dynamic>> getDbuThreads() async{
-    var theSublistDbu = [];
-    var myIndex;
-
-    for(int i = 0; i < listOfDbuThreads.length; i += portionSizeDbu){
-      theSublistDbu.add(listOfDbuThreads.sublist(i, i + portionSizeDbu > listOfDbuThreads.length ? listOfDbuThreads.length : i + portionSizeDbu));
-      //print("i: $i");
-    }
-
-    //pageNumDbu = theCurrentPageDbu;
-
-    return Future.delayed(Duration(seconds: 1), () {
-      return theSublistDbu;
-    });
-  }*/
-
   //build method
   Widget build(BuildContext bc){
-    /*listOfDbuThreads = discussionBoardPage.discussionBoardUpdatesThreads;
-    for(int i = 0; i < listOfDbuThreads.length; i += portionSizeDbu){
-      mySublistsDbu.add(listOfDbuThreads.sublist(i, i + portionSizeDbu > listOfDbuThreads.length ? listOfDbuThreads.length : i + portionSizeDbu));
-    }
-    print("listOfDbuThreads.length: ${listOfDbuThreads.length}");
-
-    mySublistsDbuInformation = mySublistsDbu;*/
-
-    //double threadContainerHeight = 45.0;
-    //double myFontSize = threadContainerHeight / 3.0;
-
     listOfDbuThreads = discussionBoardPage.discussionBoardUpdatesThreads;
 
     rebuildSublistsIfNecessary();
@@ -623,8 +600,6 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
-            //margin: EdgeInsets.only(left: 250.0),
-            //alignment: Alignment.center,
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
@@ -632,14 +607,7 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
                 child: InkWell(
                   child: Ink(
                     color: Colors.black,
-                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.0031250),
-                    //height: 40,
-                    //width: 150,
-                    //child: Center(
                     child: Text("Post New Thread", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                    //),
-                    //margin: EdgeInsets.only(left: 250.0),
-                    //alignment: Alignment.center,
                   ),
                 ),
                 onPressed: (){
@@ -667,47 +635,6 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
               }
           ),
         ],
-
-        /*children: <Widget>[
-          Container(
-            height: 5,
-          ),
-          Container(
-            child: Text("Discussion Board Updates Subforum", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-          ),
-          Container(
-            height: 30,
-            width: 120,
-            margin: EdgeInsets.only(left: 250.0),
-            alignment: Alignment.center,
-            child: InkWell(
-                child: Ink(
-                  color: Colors.black,
-                  padding: EdgeInsets.all(5.0),
-                  child: Text("Post new thread", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white), textAlign: TextAlign.center),
-                ),
-                onTap: (){
-                  print(discussionBoardUpdatesBool);
-                  discussionBoardUpdatesBool = true;
-                  print(discussionBoardUpdatesBool);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
-                  print("I am going to write a new thread.");
-                }
-            ),
-          ),
-          Expanded(
-            child: myPagesDbu[theCurrentPageDbu],
-          ),
-          NumberPaginator(
-              height: 50,
-              numberPages: numberOfPagesDbu,
-              onPageChange: (myIndexDbu){
-                setState((){
-                  theCurrentPageDbu = myIndexDbu;
-                });
-              }
-          ),
-        ],*/
       ),
     );
   }
@@ -931,6 +858,9 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 ),
                               ),
                               onPressed: () async{
+                                replyPosterUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
+                                titleOfThreadUserIsReplyingToDbu = threadTitleDbu;
+
                                 replyToReplyTimeDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["time"];//.toString();
                                 replyToReplyContentDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replyContent"].toString();
                                 replyToReplyPosterDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replier"].toString();
@@ -1047,10 +977,6 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                     myPaginatorResetValue++;
                                   });
                                 }
-
-                                //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                //print('Reply no. ' + index.toString());
-                                //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
                               }
                           ),
                           index == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].length - 1? Container(
@@ -1063,7 +989,6 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                           Container(
                             height: MediaQuery.of(context).size.height * 0.015625,
                           ),
-                          //if(discussionBoardUpdatesThreads[int.parse(threadID)][4] != null)
                           ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(Colors.grey[300]),
@@ -1075,8 +1000,6 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
-                                //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
-                                //child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),
                                 child: Text.rich(
                                   TextSpan(
                                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -1103,7 +1026,6 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                                 theUsersData = person.data();
                                               }),
                                             },
-                                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
                                             if(theUsersData?.isEmpty ?? true){
                                               Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
                                             }
@@ -1114,10 +1036,6 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                             }
                                           }
                                       ),
-                                      /*TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: " ",
-                                      ),*/
                                     ],
                                   ),
                                 ),
@@ -1141,28 +1059,15 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 ),
                               ),
                               onPressed: () async{
+                                replyPosterUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
+                                titleOfThreadUserIsReplyingToDbu = threadTitleDbu;
+
                                 replyToReplyTimeDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["time"];//.toString();
                                 replyToReplyContentDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replyContent"].toString();
                                 replyToReplyPosterDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replier"].toString();
-                                //replyToReplyOriginalInfoDbu = theDbuThreadReplies![index]["originalReplyInfo"].toString();
-                                //print("This is replyToReplyOriginalInfoDbu: $replyToReplyOriginalInfoDbu");
                                 print("This is replyToReplyTime: $replyToReplyTimeDbu");
 
                                 if(firebaseDesktopHelper.onDesktop){
-                                  /*await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                  myDocDbu = d.docs.first.id;
-                                  print(myDocDbu);
-                                });
-                                await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
-                                  replyToReplyDocDbu = rd.docs.first.id;
-                                  print(replyToReplyDocDbu);
-                                });*/
-
-                                  /*var theDocDbu = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
-                                myDocDbu = theDocDbu.firstWhere((myThreadId) => myThreadId["threadId"] == int.parse(threadID), orElse: () => {} as Map<String, dynamic>);
-
-                                var tempReplyToReplyVar = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
-                                replyToReplyDocDbu = tempReplyToReplyVar.firstWhere((myTime) => myTime["time"] == replyToReplyTimeDbu, orElse: () => {} as Map<String, dynamic>);*/
                                   var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
                                   var matchingThread = theDbuThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
@@ -1194,29 +1099,14 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                   });
                                   await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
                                     replyToReplyDocDbu = rd.docs.first.id;
-                                    //replyToReplyTime = rd.docs.first["time"];
-                                    //print("This is t: $replyToReplyTime");
-                                    //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
                                     print(replyToReplyDocDbu);
                                   });
                                 }
 
-                                //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
-
-                                //.add(oneReply);
-
-                                //QuerySnapshot dbuRepliesQuerySnapshot = (await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get()) as QuerySnapshot<Object?>;//.do//.docs.map((myDoc) => myDoc.data()).toList();;
-                                //theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
                                 print(theDbuThreadReplies);
                                 print(replyToReplyDocDbu);
-                                //print(replyToReplyDoc.snapshot);
-                                //print(replyContent);
 
                                 if(firebaseDesktopHelper.onDesktop){
-                                  /*DocumentSnapshot ds = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu) as DocumentSnapshot;
-                                print(ds.data());
-                                print(ds.data().runtimeType);*/
                                   print("The doc: $myDocDbu");
                                   print("The subdoc: $replyToReplyDocDbu");
 
@@ -1244,21 +1134,16 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                   print(ds.data().runtimeType);
                                 }
 
-
-                                //print(theDbuThreadReplies[1].runtimeType);
                                 myIndex = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu);
                                 //where replyToReplyDoc is in theDbuThreadReplies.
                                 print(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu));
                                 myReplyToReplyDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][myIndex];
-                                //print("myReplyToReplyDbu runtime type: ${myReplyToReplyDbu.runtimeType}");
+
                                 myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
-                                //myReplyToReplyDbuList = myReplyToReplyDbuMap.entries.map((myEntry) => "${myEntry.key}: ${myEntry.value}").toList();
 
                                 List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuMap];
                                 dbuRepliesToReplies.add(tempReplyToReplyList);
 
-                                //print("This is replyToReplyOriginalInfoDbu: ${replyToReplyOriginalInfoDbu["replyContent"]}");
-                                //print(myReplyToReplyDbuList["replyContent"]);
                                 print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
 
                                 print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
@@ -1276,43 +1161,6 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                     myPaginatorResetValue++;
                                   });
                                 }
-
-                                //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                //print('Reply no. ' + index.toString());
-                                //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
-                                //print('Reply no. ' + index.toString());
-                                //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
-                                /*var replyContent;
-                                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                      myDoc = d.docs.first.id;
-                                      print(myDoc);
-                                    });
-                                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").get().then((secondRd) {
-                                      replyContent = secondRd.docs.first;
-                                      replyToReplyDoc = secondRd.docs.first.id;
-
-                                      replyToReplyTime = secondRd.docs.first["time"];
-                                      print("This is t: $replyToReplyTime");
-
-                                      print(replyToReplyDoc);
-                                    });
-                                    print(theDbuThreadReplies);
-                                    print(replyToReplyDoc);
-                                    print(replyContent);
-                                    myIndex = theDbuThreadReplies.indexOf(replyToReplyDoc); //where replyToReplyDoc is in theDbuThreadReplies.
-                                    print("This is myIndex: $myIndex");
-                                    discussionBoardUpdatesReplyBool = true;
-                                    discussionBoardUpdatesReplyingToReplyBool = true;
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                    //print('Reply no. ' + index.toString());
-                                    //print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());
-                                    /*myIndex = index;
-                                    discussionBoardUpdatesReplyBool = true;
-                                    discussionBoardUpdatesReplyingToReplyBool = true;
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-                                    print('Reply no. ' + index.toString());
-                                    print('Replying to this reply: ' + discussionBoardUpdatesThreads[int.parse(threadID)][4][myIndex][2].toString());*/
-                                    print(theDbuThreadReplies.length);*/
                               }
                           ),
                           index == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].length - 1? Container(
@@ -1337,11 +1185,9 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () => {
-              //Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage())),
               print("We're going backwards. This is the depth: ${dbuNavigationDepth}"),
 
               if(Navigator.canPop(context)){
-                //Navigator.pop(context),
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const discussionBoardUpdatesPage())),
               },
 
@@ -1399,14 +1245,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                   }
                                 }
                             ),
-                            /*TextSpan(
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                              text: " ",
-                            ),*/
                           ],
                         ),
                       ),
-                    ),//Text("Thread title: " + threadTitleDbu + "\n" + "Posted by: " + threadAuthorDbu + "\n" + threadContentDbu),
+                    ),
                     color: Colors.grey[300],
                     alignment: Alignment.topLeft,
                   ),
@@ -1431,16 +1273,15 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                   ),
                 ),
                 onPressed: () async {
+                  threadPosterUserIsReplyingToDbu = threadAuthorDbu;
+                  titleOfThreadUserIsReplyingToDbu = threadTitleDbu;
                   print("Pages length: ${myPagesDbuThreadReplies.length}");
 
                   discussionBoardUpdatesReplyingToReplyBool = false;
                   discussionBoardUpdatesReplyBool = true;
                   dbuNavigationDepth++;
                   print(reversedDiscussionBoardUpdatesThreadsIterable.toList());
-                  //myIndexPlace = discussionBoardUpdatesPageState.index;
-                  //myIndexPlace = reversedDiscussionBoardUpdatesThreadsIterable.toList().indexWhere((reversedDiscussionBoardUpdatesThreadsIterable) => reversedDiscussionBoardUpdatesThreadsIterable.contains("[" + threadAuthorDbu + ", " + threadTitleDbu + ", " + threadContentDbu + "]"));
                   print(threadID);
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
 
                   final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
 
@@ -1455,9 +1296,6 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                   print('Replying to the thread');
                 }
             ),
-            /*Container(
-              height: MediaQuery.of(context).size.height * 0.015625,
-            ),*/
             Center(
               child: (myPagesDbuThreadReplies.isNotEmpty && theCurrentPageDbuThreadReplies < myPagesDbuThreadReplies.length && mySublistsDbuThreadReplies.isNotEmpty)? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),
             ),
