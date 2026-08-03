@@ -1566,6 +1566,8 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
 }
 
 class starExpeditionNavigationDrawer extends StatelessWidget{
+  static final ValueNotifier<bool> clickingBool = ValueNotifier(false);
+
   @override
   Widget build(BuildContext context){
     final myLoginStatus = context.watch<loginStatus>();
@@ -1594,226 +1596,398 @@ class starExpeditionNavigationDrawer extends StatelessWidget{
                     child: Text("Star Expedition Navigation Menu\n\nHi ${myLoginStatus.myUsername}", style: TextStyle(color: Colors.white, fontSize: 24, fontFamily: "Railway")),
                   ),
                 ),
-              ListTile(
-                  title: (myLoginStatus.userIsLoggedIn == false && myLoginStatus.myUsername == "")? Text("Login") : Text("Logout"),
-                  onTap: (){
-                    if(myLoginStatus.userIsLoggedIn == false && myLoginStatus.myUsername == "") {
-                      discussionBoardLogin = false;
-                      Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
-                    }
-                    else if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                      //myUsername = "";
-                      //myNewUsername = "";
-                      theLoginPage.loginBool = false;
-                      discussionBoardLogin = false;
-                      registerBool = false;
-                      context.read<loginStatus>().loggingOut();
-                      print("Logging out from already existing account");
-                      Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
-                    }
+                ValueListenableBuilder<bool>(
+                  valueListenable: clickingBool,
+                  builder: (context, isClicking, child){
+                    return AbsorbPointer(
+                      absorbing: isClicking,
+                      child: ListTile(
+                        title: (myLoginStatus.userIsLoggedIn == false && myLoginStatus.myUsername == "")? Text("Login") : Text("Logout"),
+                        onTap: (){
+                          if(clickingBool.value){
+                            return;
+                          }
+
+                          clickingBool.value = true;
+
+                          if(myLoginStatus.userIsLoggedIn == false && myLoginStatus.myUsername == "") {
+                            discussionBoardLogin = false;
+                            Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
+                          }
+                          else if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                            //myUsername = "";
+                            //myNewUsername = "";
+                            theLoginPage.loginBool = false;
+                            discussionBoardLogin = false;
+                            registerBool = false;
+                            context.read<loginStatus>().loggingOut();
+                            print("Logging out from already existing account");
+                            Navigator.pushReplacementNamed(context, loginPageRoutes.homePage);
+                          }
+                          clickingBool.value = false;
+                        }
+                      ),
+                    );
                   }
-              ),
-              if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != "")
-                ListTile(
-                    title: Text("My Profile"),
-                    onTap: () async{
-                      if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                        theUsernameResult = myLoginStatus.myUsername;
-                        if(firebaseDesktopHelper.onDesktop){
-                          List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                          var myCorrectUser = everyUser.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
-                          var getUserProfileInformationAttribute = myCorrectUser["usernameProfileInformation"];
-
-                          usersBlurb = getUserProfileInformationAttribute["userInformation"];
-                          usersInterests = getUserProfileInformationAttribute["userInterests"];
-                          usersLocation = getUserProfileInformationAttribute["userLocation"];
-                          numberOfPostsUserHasMade = getUserProfileInformationAttribute["numberOfPosts"];
-                          starsUserTracked = getUserProfileInformationAttribute["starsTracked"];
-                          planetsUserTracked = getUserProfileInformationAttribute["planetsTracked"];
-
-                          print("Desktop usersBlurb: ${usersBlurb}");
-                          print("Desktop usersInterests: ${usersInterests}");
-                          print("Desktop usersLocation: ${usersLocation}");
-                          print("Desktop numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
-                          print("Desktop starsUserTracked: ${starsUserTracked}");
-                          print("Desktop planetsUserTracked: ${planetsUserTracked}");
-                        }
-                        else{
-                          await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get().then((result){
-                            usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
-                            usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
-                            usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
-                            numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
-                            starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
-                            planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
-                          });
-                        }
-                        print("usersBlurb: ${usersBlurb}");
-                        print("usersInterests: ${usersInterests}");
-                        print("usersLocation: ${usersLocation}");
-                        print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
-                        print("starsUserTracked: ${starsUserTracked}");
-                        print("planetsUserTracked: ${planetsUserTracked}");
-                        userForLoadingProfilePictureInUsersPerspective = theUsernameResult;
-                        Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
-                      }
-                    }
                 ),
               if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != "")
-                ListTile(
-                    title: Text("Settings"),
-                    onTap: () {
-                      Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
+                ValueListenableBuilder<bool>(
+                  valueListenable: clickingBool,
+                  builder: (context, isClicking, child){
+                    return AbsorbPointer(
+                      absorbing: isClicking,
+                        child: ListTile(
+                          title: Text("My Profile"),
+                          onTap: () async{
+                            if(clickingBool.value){
+                              return;
+                            }
+
+                            clickingBool.value = true;
+
+                            if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                              theUsernameResult = myLoginStatus.myUsername;
+                              if(firebaseDesktopHelper.onDesktop){
+                                List<Map<String, dynamic>> everyUser = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                var myCorrectUser = everyUser.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                                var getUserProfileInformationAttribute = myCorrectUser["usernameProfileInformation"];
+
+                                usersBlurb = getUserProfileInformationAttribute["userInformation"];
+                                usersInterests = getUserProfileInformationAttribute["userInterests"];
+                                usersLocation = getUserProfileInformationAttribute["userLocation"];
+                                numberOfPostsUserHasMade = getUserProfileInformationAttribute["numberOfPosts"];
+                                starsUserTracked = getUserProfileInformationAttribute["starsTracked"];
+                                planetsUserTracked = getUserProfileInformationAttribute["planetsTracked"];
+
+                                print("Desktop usersBlurb: ${usersBlurb}");
+                                print("Desktop usersInterests: ${usersInterests}");
+                                print("Desktop usersLocation: ${usersLocation}");
+                                print("Desktop numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                                print("Desktop starsUserTracked: ${starsUserTracked}");
+                                print("Desktop planetsUserTracked: ${planetsUserTracked}");
+                              }
+                              else{
+                                await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get().then((result){
+                                  usersBlurb = result.docs.first.data()["usernameProfileInformation"]["userInformation"];
+                                  usersInterests = result.docs.first.data()["usernameProfileInformation"]["userInterests"];
+                                  usersLocation = result.docs.first.data()["usernameProfileInformation"]["userLocation"];
+                                  numberOfPostsUserHasMade = result.docs.first.data()["usernameProfileInformation"]["numberOfPosts"];
+                                  starsUserTracked = result.docs.first.data()["usernameProfileInformation"]["starsTracked"];
+                                  planetsUserTracked = result.docs.first.data()["usernameProfileInformation"]["planetsTracked"];
+                                });
+                              }
+                              print("usersBlurb: ${usersBlurb}");
+                              print("usersInterests: ${usersInterests}");
+                              print("usersLocation: ${usersLocation}");
+                              print("numberOfPostsUserHasMade: ${numberOfPostsUserHasMade}");
+                              print("starsUserTracked: ${starsUserTracked}");
+                              print("planetsUserTracked: ${planetsUserTracked}");
+                              userForLoadingProfilePictureInUsersPerspective = theUsernameResult;
+                              Navigator.pushReplacementNamed(context, routesToOtherPages.userProfileInUserPerspectivePage);
+                            }
+                            clickingBool.value = false;
+                          }
+                        )
+                      );
                     }
+                  ),
+              if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != "")
+                ValueListenableBuilder<bool>(
+                  valueListenable: clickingBool,
+                  builder: (context, isClicking, child){
+                    return AbsorbPointer(
+                      absorbing: isClicking,
+                      child: ListTile(
+                        title: Text("Settings"),
+                        onTap: () {
+                          if(clickingBool.value){
+                            return;
+                          }
+
+                          clickingBool.value = true;
+
+                          Navigator.pushReplacementNamed(context, routesToOtherPages.settingsPage);
+
+                          clickingBool.value = false;
+                        }
+                      ),
+                    );
+                  }
                 ),
-              ListTile(
-                  title: Text("Home"),
-                  onTap: (){
-                    discussionBoardLogin = false;
-                    Navigator.pushReplacementNamed(context, routesToOtherPages.homePage);
-                  }
-              ),
-              ListTile(
-                  title: Text("Why Star Expedition Was Made"),
-                  onTap: () {
-                    discussionBoardLogin = false;
-                    Navigator.pushReplacementNamed(context, routesToOtherPages.whyMade);
-                    //throw Exception("Testing the error");
-                  }
-              ),
-              ListTile(
-                  title: Text("Information about the Spectral Classes of Stars"),
-                  onTap: () {
-                    discussionBoardLogin = false;
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage()));
-                    Navigator.pushReplacementNamed(context, routesToOtherPages.spectralClass);
-                  }
-              ),
-              ListTile(
-                  title: Text("Most Tracked Stars and Planets"),
-                  onTap: () async {
-                    discussionBoardLogin = false;
-                    starsUsersTracked = [];
-                    planetsUsersTracked = [];
-                    if(firebaseDesktopHelper.onDesktop){
-                      var myUsersDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
-                      for(int user = 0; user < myUsersDocs.length; user++){
-                        if(myUsersDocs[user]["usernameProfileInformation"]["starsTracked"] != {}){
-                          for(int myStar = 0; myStar < myUsersDocs[user]["usernameProfileInformation"]["starsTracked"].keys.length; myStar++){
-                            starsUsersTracked.add(myUsersDocs[user]["usernameProfileInformation"]["starsTracked"].keys.elementAt(myStar));
-                          }
+              ValueListenableBuilder<bool>(
+                valueListenable: clickingBool,
+                builder: (context, isClicking, child){
+                  return AbsorbPointer(
+                    absorbing: isClicking,
+                    child: ListTile(
+                      title: Text("Home"),
+                      onTap: (){
+                        if(clickingBool.value){
+                          return;
                         }
 
-                        if(myUsersDocs[user]["usernameProfileInformation"]["planetsTracked"] != {}){
-                          for(int myPlanet = 0; myPlanet < myUsersDocs[user]["usernameProfileInformation"]["planetsTracked"].keys.length; myPlanet++){
-                            planetsUsersTracked.add(myUsersDocs[user]["usernameProfileInformation"]["planetsTracked"].keys.elementAt(myPlanet));
-                          }
+                        clickingBool.value = true;
+
+                        discussionBoardLogin = false;
+                        Navigator.pushReplacementNamed(context, routesToOtherPages.homePage);
+
+                        clickingBool.value = false;
+                      }
+                    ),
+                  );
+                }
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: clickingBool,
+                builder: (context, isClicking, child){
+                  return AbsorbPointer(
+                    absorbing: isClicking,
+                    child: ListTile(
+                      title: Text("Why Star Expedition Was Made"),
+                      onTap: () {
+                        if(clickingBool.value){
+                          return;
                         }
-                      }
-                      print("Stars users tracked: ${starsUsersTracked}");
-                      print("Planets users tracked: ${planetsUsersTracked}");
 
-                      for(var s in allStars){
-                        starsAndAmountOfTracks[s] = (starsUsersTracked.where((myElement) => myElement == s).length).toString();
-                      }
-                      for(var p in allPlanets){
-                        planetsAndAmountOfTracks[p] = (planetsUsersTracked.where((myElement) => myElement == p).length).toString();
-                      }
+                        clickingBool.value = true;
 
-                      print("starsAndAmountOfTracks: ${starsAndAmountOfTracks}");
-                      print("planetsAndAmountOfTracks: ${planetsAndAmountOfTracks}");
-                    }
-                    else{
-                      await FirebaseFirestore.instance.collection("User").get().then((qSnapshot){
-                        for(var user in qSnapshot.docs){
-                          print("user: ${user.data()}");
-                          print("user.data()[usernameProfileInformation][starsTracked]: ${user.data()["usernameProfileInformation"]["starsTracked"]}");
-                          if(user.data()["usernameProfileInformation"]["starsTracked"] != {}){
-                            for(int myStar = 0; myStar < user.data()["usernameProfileInformation"]["starsTracked"].keys.length; myStar++){
-                              starsUsersTracked.add(user.data()["usernameProfileInformation"]["starsTracked"].keys.elementAt(myStar));
+                        discussionBoardLogin = false;
+                        Navigator.pushReplacementNamed(context, routesToOtherPages.whyMade);
+                        //throw Exception("Testing the error");
+
+                        clickingBool.value = false;
+                      }
+                    ),
+                  );
+                }
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: clickingBool,
+                builder: (context, isClicking, child){
+                  return AbsorbPointer(
+                    absorbing: isClicking,
+                    child: ListTile(
+                      title: Text("Information about the Spectral Classes of Stars"),
+                      onTap: () {
+                        if(clickingBool.value){
+                          return;
+                        }
+
+                        clickingBool.value = true;
+
+                        discussionBoardLogin = false;
+                        // Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage()));
+                        Navigator.pushReplacementNamed(context, routesToOtherPages.spectralClass);
+
+                        clickingBool.value = false;
+                      }
+                    ),
+                  );
+                }
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: clickingBool,
+                builder: (context, isClicking, child){
+                  return AbsorbPointer(
+                    absorbing: isClicking,
+                    child: ListTile(
+                        title: Text("Most Tracked Stars and Planets"),
+                        onTap: () async {
+                          if(clickingBool.value){
+                            return;
+                          }
+
+                          clickingBool.value = true;
+
+                          discussionBoardLogin = false;
+                          starsUsersTracked = [];
+                          planetsUsersTracked = [];
+                          if(firebaseDesktopHelper.onDesktop){
+                            var myUsersDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
+                            for(int user = 0; user < myUsersDocs.length; user++){
+                              if(myUsersDocs[user]["usernameProfileInformation"]["starsTracked"] != {}){
+                                for(int myStar = 0; myStar < myUsersDocs[user]["usernameProfileInformation"]["starsTracked"].keys.length; myStar++){
+                                  starsUsersTracked.add(myUsersDocs[user]["usernameProfileInformation"]["starsTracked"].keys.elementAt(myStar));
+                                }
+                              }
+
+                              if(myUsersDocs[user]["usernameProfileInformation"]["planetsTracked"] != {}){
+                                for(int myPlanet = 0; myPlanet < myUsersDocs[user]["usernameProfileInformation"]["planetsTracked"].keys.length; myPlanet++){
+                                  planetsUsersTracked.add(myUsersDocs[user]["usernameProfileInformation"]["planetsTracked"].keys.elementAt(myPlanet));
+                                }
+                              }
                             }
-                          }
+                            print("Stars users tracked: ${starsUsersTracked}");
+                            print("Planets users tracked: ${planetsUsersTracked}");
 
-                          if(user.data()["usernameProfileInformation"]["planetsTracked"] != {}){
-                            for(int myPlanet = 0; myPlanet < user.data()["usernameProfileInformation"]["planetsTracked"].keys.length; myPlanet++){
-                              planetsUsersTracked.add(user.data()["usernameProfileInformation"]["planetsTracked"].keys.elementAt(myPlanet));
+                            for(var s in allStars){
+                              starsAndAmountOfTracks[s] = (starsUsersTracked.where((myElement) => myElement == s).length).toString();
                             }
-                          }
-                        }
-                      });
-                      print("Stars users tracked: ${starsUsersTracked}");
-                      print("Planets users tracked: ${planetsUsersTracked}");
+                            for(var p in allPlanets){
+                              planetsAndAmountOfTracks[p] = (planetsUsersTracked.where((myElement) => myElement == p).length).toString();
+                            }
 
-                      for(var s in allStars){
-                        starsAndAmountOfTracks[s] = (starsUsersTracked.where((myElement) => myElement == s).length).toString();
-                      }
-                      for(var p in allPlanets){
-                        planetsAndAmountOfTracks[p] = (planetsUsersTracked.where((myElement) => myElement == p).length).toString();
-                      }
-
-                      print("starsAndAmountOfTracks: ${starsAndAmountOfTracks}");
-                      print("planetsAndAmountOfTracks: ${planetsAndAmountOfTracks}");
-                    }
-
-                    Navigator.pushReplacementNamed(context, routesToOtherPages.mostTrackedStarsAndPlanetsPage);
-                  }
-              ),
-              ListTile(
-                  title: Text("Discussion Board"),
-                  onTap: () {
-                    discussionBoardLogin = true;
-                    if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                      Navigator.pushReplacementNamed(context, routesToOtherPages.discussionBoard);
-                    }
-                    else{
-                      Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
-                    }
-                  }
-              ),
-              ListTile(
-                  title: Text("Conversion Calculator"),
-                  onTap: (){
-                    discussionBoardLogin = false;
-                    Navigator.pushReplacementNamed(context, routesToOtherPages.conversionCalculator);
-                  }
-              ),
-              ListTile(
-                  title: Text("User Search"),
-                  onTap: () async{
-                    discussionBoardLogin = false;
-                    if(firebaseDesktopHelper.onDesktop){
-                      var myUsersDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
-                      for(int u = 0; u < myUsersDocs.length; u++){
-                        if(!(theListOfUsers.contains(myUsersDocs[u]["username"]))){
-                          theListOfUsers.add(myUsersDocs[u]["username"]);
-                        }
-                      }
-                      print("this is my users: $myUsersDocs");
-                    }
-                    else{
-                      await FirebaseFirestore.instance.collection("User").get().then((qSnapshot){
-                        for(var documentSnapshot in qSnapshot.docs){
-                          print("documentSnapshot: ${documentSnapshot.data()}");
-                          if(!(theListOfUsers.contains(documentSnapshot.data()["username"]))) {
-                            theListOfUsers.add(documentSnapshot.data()["username"]);
+                            print("starsAndAmountOfTracks: ${starsAndAmountOfTracks}");
+                            print("planetsAndAmountOfTracks: ${planetsAndAmountOfTracks}");
                           }
                           else{
-                            //continue
+                            await FirebaseFirestore.instance.collection("User").get().then((qSnapshot){
+                              for(var user in qSnapshot.docs){
+                                print("user: ${user.data()}");
+                                print("user.data()[usernameProfileInformation][starsTracked]: ${user.data()["usernameProfileInformation"]["starsTracked"]}");
+                                if(user.data()["usernameProfileInformation"]["starsTracked"] != {}){
+                                  for(int myStar = 0; myStar < user.data()["usernameProfileInformation"]["starsTracked"].keys.length; myStar++){
+                                    starsUsersTracked.add(user.data()["usernameProfileInformation"]["starsTracked"].keys.elementAt(myStar));
+                                  }
+                                }
+
+                                if(user.data()["usernameProfileInformation"]["planetsTracked"] != {}){
+                                  for(int myPlanet = 0; myPlanet < user.data()["usernameProfileInformation"]["planetsTracked"].keys.length; myPlanet++){
+                                    planetsUsersTracked.add(user.data()["usernameProfileInformation"]["planetsTracked"].keys.elementAt(myPlanet));
+                                  }
+                                }
+                              }
+                            });
+                            print("Stars users tracked: ${starsUsersTracked}");
+                            print("Planets users tracked: ${planetsUsersTracked}");
+
+                            for(var s in allStars){
+                              starsAndAmountOfTracks[s] = (starsUsersTracked.where((myElement) => myElement == s).length).toString();
+                            }
+                            for(var p in allPlanets){
+                              planetsAndAmountOfTracks[p] = (planetsUsersTracked.where((myElement) => myElement == p).length).toString();
+                            }
+
+                            print("starsAndAmountOfTracks: ${starsAndAmountOfTracks}");
+                            print("planetsAndAmountOfTracks: ${planetsAndAmountOfTracks}");
                           }
+
+                          Navigator.pushReplacementNamed(context, routesToOtherPages.mostTrackedStarsAndPlanetsPage);
+                          clickingBool.value = false;
                         }
-                      });
-                    }
-                    print("theListOfUsers: ${theListOfUsers}");
-                    Navigator.pushReplacementNamed(context, routesToOtherPages.userSearchBarPage);
-                  }
+                    )
+                  );
+                }
               ),
-              ListTile(
-                  title: Text("Data Collection Settings"),
-                  onTap: (){
-                    showMyDataCollectionDialog(context);
-                  }
-              )
+              ValueListenableBuilder<bool>(
+                valueListenable: clickingBool,
+                builder: (context, isClicking, child){
+                  return AbsorbPointer(
+                    absorbing: isClicking,
+                    child: ListTile(
+                      title: Text("Discussion Board"),
+                      onTap: () {
+                        if(clickingBool.value){
+                          return;
+                        }
+
+                        clickingBool.value = true;
+
+                        discussionBoardLogin = true;
+                        if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                          Navigator.pushReplacementNamed(context, routesToOtherPages.discussionBoard);
+                        }
+                        else{
+                          Navigator.pushReplacementNamed(context, routesToOtherPages.theLoginPage);
+                        }
+
+                        clickingBool.value = false;
+                      }
+                    )
+                  );
+                }
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: clickingBool,
+                builder: (context, isClicking, child){
+                  return AbsorbPointer(
+                    absorbing: isClicking,
+                    child: ListTile(
+                      title: Text("Conversion Calculator"),
+                      onTap: (){
+                        if(clickingBool.value){
+                          return;
+                        }
+
+                        clickingBool.value = true;
+
+                        discussionBoardLogin = false;
+                        Navigator.pushReplacementNamed(context, routesToOtherPages.conversionCalculator);
+
+                        clickingBool.value = false;
+                      }
+                    ),
+                  );
+                }
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: clickingBool,
+                builder: (context, isClicking, child){
+                  return AbsorbPointer(
+                    absorbing: isClicking,
+                    child: ListTile(
+                      title: Text("User Search"),
+                      onTap: () async{
+                        if(clickingBool.value){
+                          return;
+                        }
+
+                        clickingBool.value = true;
+
+                        discussionBoardLogin = false;
+                        if(firebaseDesktopHelper.onDesktop){
+                          var myUsersDocs = await firebaseDesktopHelper.getFirestoreCollection("User");
+                          for(int u = 0; u < myUsersDocs.length; u++){
+                            if(!(theListOfUsers.contains(myUsersDocs[u]["username"]))){
+                              theListOfUsers.add(myUsersDocs[u]["username"]);
+                            }
+                          }
+                          print("this is my users: $myUsersDocs");
+                        }
+                        else{
+                          await FirebaseFirestore.instance.collection("User").get().then((qSnapshot){
+                            for(var documentSnapshot in qSnapshot.docs){
+                              print("documentSnapshot: ${documentSnapshot.data()}");
+                              if(!(theListOfUsers.contains(documentSnapshot.data()["username"]))) {
+                                theListOfUsers.add(documentSnapshot.data()["username"]);
+                              }
+                              else{
+                                //continue
+                              }
+                            }
+                          });
+                        }
+                        print("theListOfUsers: ${theListOfUsers}");
+                        Navigator.pushReplacementNamed(context, routesToOtherPages.userSearchBarPage);
+                        clickingBool.value = false;
+                      }
+                    ),
+                  );
+                }
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: clickingBool,
+                builder: (context, isClicking, child){
+                  return AbsorbPointer(
+                    absorbing: isClicking,
+                    child: ListTile(
+                      title: Text("Data Collection Settings"),
+                      onTap: () async{
+                        if(clickingBool.value){
+                          return;
+                        }
+
+                        clickingBool.value = true;
+
+                        await showMyDataCollectionDialog(context);
+
+                        clickingBool.value = false;
+                      }
+                    ),
+                  );
+                }
+              ),
             ]
         )
     );

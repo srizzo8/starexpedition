@@ -551,7 +551,7 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
 
                           myMain.myAccessCheckNotifier.value = DateTime.now();
 
-                          showDialog(
+                          await showDialog(
                               context: context,
                               builder: (BuildContext bc){
                                 return AlertDialog(
@@ -560,18 +560,15 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                                   actions: [
                                     TextButton(
                                       onPressed: () => {
+                                        Navigator.of(bc).pop(),
                                         theUser = myLoginStatus.myUsername,
                                         theNewUser = "",
                                         usersEmail = userDoc["emailAddress"],
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
-                                        emailNotifications.sendAnEmail(usersEmail, "Password Change Confirmation", "Hi ${theUser},<br><br>We have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
                                         currentPasswordController.text = "",
                                         newPasswordController.text = "",
                                         secondNewPasswordController.text = "",
-
-                                        if(mounted){
-                                          setState(() => submitChangesButton = false),
-                                        }
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                        emailNotifications.sendAnEmail(usersEmail, "Password Change Confirmation", "Hi ${theUser},<br><br>We have noticed that you have changed your password. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
                                       },
                                       child: Text("Ok"),
                                     ),
@@ -579,11 +576,18 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                                 );
                               }
                           );
+                          if(mounted){
+                            setState(() => submitChangesButton = false);
+                          }
                         }
                         else{
                           myMain.myAccessCheckNotifier.value = DateTime.now();
 
-                          showDialog(
+                          if(!mounted){
+                            return;
+                          }
+
+                          await showDialog(
                             context: context,
                             builder: (myContent) => AlertDialog(
                               title: Text("Password Change Unsuccessful"),
@@ -601,9 +605,6 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                                     //currentPasswordController.text = "";
                                     //newPasswordController.text = "";
                                     //secondNewPasswordController.text = "";
-                                    if(mounted){
-                                      setState(() => submitChangesButton = false);
-                                    }
                                   },
                                   child: Container(
                                     child: const Text("Ok"),
@@ -612,6 +613,9 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                               ],
                             ),
                           );
+                          if(mounted){
+                            setState(() => submitChangesButton = false);
+                          }
                         }
                       }
                     }
@@ -918,7 +922,11 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
 
                           myMain.myAccessCheckNotifier.value = DateTime.now();
 
-                          showDialog(
+                          if(!mounted){
+                            return;
+                          }
+
+                          await showDialog(
                               context: context,
                               builder: (BuildContext bc){
                                 return AlertDialog(
@@ -926,25 +934,24 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                                   content: Text("You have successfully changed your email address"),
                                   actions: [
                                     TextButton(
-                                      onPressed: () => {
-                                        usersEmailAddress = docForUsername["emailAddress"],
-                                        usersNewEmail = du["emailAddress"],
-                                        print("usersNewEmail: ${usersNewEmail}"),
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+                                      onPressed: () {
+                                        Navigator.of(bc).pop();
+
+                                        usersEmailAddress = docForUsername["emailAddress"];
+                                        usersNewEmail = du["emailAddress"];
+                                        print("usersNewEmail: ${usersNewEmail}");
+
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage()));
 
                                         //For previous email address:
-                                        emailNotifications.sendAnEmail(usersEmailForEmailChangeMessage, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>We have noticed that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition"),
+                                        emailNotifications.sendAnEmail(usersEmailForEmailChangeMessage, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>We have noticed that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}. If you did not do this, please contact starexpedition.theapp@gmail.com as soon as possible.<br><br>Best,<br>Star Expedition");
 
                                         //For new email address:
-                                        emailNotifications.sendAnEmail(usersNewEmail, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>This message is to confirm that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}.<br><br>Best,<br>Star Expedition"),
+                                        emailNotifications.sendAnEmail(usersNewEmail, "Email Change Confirmation", "Hi ${userForEmailChange},<br><br>This message is to confirm that you have changed your email address from ${usersEmailForEmailChangeMessage} to ${usersNewEmail}.<br><br>Best,<br>Star Expedition");
 
-                                        currentEmailAddressController.text = "",
-                                        newEmailAddressController.text = "",
-                                        myPasswordController.text = "",
-
-                                        if(mounted){
-                                          setState(() => submitChangesButton = false),
-                                        }
+                                        currentEmailAddressController.text = "";
+                                        newEmailAddressController.text = "";
+                                        myPasswordController.text = "";
                                       },
                                       child: Text("Ok"),
                                     ),
@@ -952,10 +959,18 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                                 );
                               }
                           );
+                          if(mounted){
+                            setState(() => submitChangesButton = false);
+                          }
                         }
                         else{
                           myMain.myAccessCheckNotifier.value = DateTime.now();
-                          showDialog(
+
+                          if(!mounted){
+                            return;
+                          }
+
+                          await showDialog(
                             context: context,
                             builder: (myContent) => AlertDialog(
                               title: Text("Email Address Change Unsuccessful"),
@@ -973,9 +988,6 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                                     //currentEmailAddressController.text = "";
                                     //newEmailAddressController.text = "";
                                     //myPasswordController.text = "";
-                                    if(mounted){
-                                      setState(() => submitChangesButton = false);
-                                    }
                                   },
                                   child: Container(
                                     child: const Text("Ok"),
@@ -984,6 +996,10 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                               ],
                             ),
                           );
+
+                          if(mounted){
+                            setState(() => submitChangesButton = false);
+                          }
                         }
                       }
                     }
