@@ -104,6 +104,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
 
   bool postingAReply = false;
 
+  bool replyButton = false;
+
   List<Text> createReplyDialogMessage(List<String> info){
     List<Text> messageForUserReplyToThread = [];
     if(whitespaceChecker(usernameReplyController.text)){
@@ -259,6 +261,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                   height: MediaQuery.of(context).size.height * 0.015625,
                 ),
                 Center(
+                  child: AbsorbPointer(
+                    absorbing: replyButton,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
@@ -270,6 +274,12 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                             ),
                           ),
                         onPressed: () async{
+                          if(replyButton){
+                            return;
+                          }
+
+                          setState(() => replyButton = true);
+
                           //Ignoring extra clicks while posting reply:
                           if(postingAReply){
                             return;
@@ -2123,7 +2133,11 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                               postingAReply = false;
                             }
                           }
-                      }
+                          if(mounted){
+                            setState(() => replyButton = false);
+                          }
+                        }
+                    ),
                   ),
                 ),
               ],

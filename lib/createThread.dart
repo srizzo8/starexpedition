@@ -92,6 +92,8 @@ class createThreadState extends State<createThread> with RouteAware{
 
   bool creatingAThread = false;
 
+  bool createThreadButton = false;
+
   List<Text> createThreadDialogMessage(List<String> info){
     List<Text> messageForUserCreateThread = [];
     if(whitespaceChecker(usernameController.text)){
@@ -225,9 +227,6 @@ class createThreadState extends State<createThread> with RouteAware{
                 child: Text("Making a thread", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), textAlign: TextAlign.center),
                 alignment: Alignment.center,
               ),
-              /*Container(
-                height: MediaQuery.of(context).size.height * 0.015625,
-              ),*/
               Padding(
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
                   child: myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""?
@@ -327,8 +326,8 @@ class createThreadState extends State<createThread> with RouteAware{
                 height: MediaQuery.of(context).size.height * 0.015625,
               ),
               Center(
-                //child: Padding(
-                  //padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                child: AbsorbPointer(
+                  absorbing: createThreadButton,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -341,6 +340,12 @@ class createThreadState extends State<createThread> with RouteAware{
                     ),
                   ),
                   onPressed: () async{
+                    if(createThreadButton){
+                      return;
+                    }
+
+                    setState(() => createThreadButton = true);
+
                     //Ignoring extra clicks while posting new thread:
                     if(creatingAThread){
                       return;
@@ -1150,8 +1155,12 @@ class createThreadState extends State<createThread> with RouteAware{
                         creatingAThread = false;
                       }
                     }
+                    if(mounted){
+                      setState(() => createThreadButton = false);
+                    }
                   }
                 ),
+              ),
               ),
             ],
           ),

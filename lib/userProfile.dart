@@ -262,6 +262,10 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
   bool isSaving = false;
   bool holdingRemovalOfPicture = false;
 
+  bool updatePhotoButton = false;
+  bool removePhotoButton = false;
+  bool updateProfileButton = false;
+
   //Loading existing photo from Firestore when user arrives on the page:
   Future<void> loadMyProfilePicture(String theUsersName) async{
     var usersData;
@@ -513,7 +517,9 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                  child: ElevatedButton(
+                  child: AbsorbPointer(
+                    absorbing: updatePhotoButton,
+                    child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                       ),
@@ -524,34 +530,62 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                         ),
                       ),
                       onPressed: () async{
+                        if(updatePhotoButton){
+                          return;
+                        }
+
+                        setState(() => updatePhotoButton = true);
+
                         holdingRemovalOfPicture = false;
                         handlingMyPick();
+
+                        if(mounted){
+                          setState(() => updatePhotoButton = false);
+                        }
                       }
+                    ),
                   ),
                 ),
                 if((hasProfilePicture == true || myImageBytes != null) && holdingRemovalOfPicture == false)
                   Padding(
                     padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                      ),
-                      child: InkWell(
-                        child: Ink(
-                          color: Colors.black,
-                          child: Text("Remove Profile Picture", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                    child: AbsorbPointer(
+                      absorbing: removePhotoButton,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
                         ),
+                        child: InkWell(
+                          child: Ink(
+                            color: Colors.black,
+                            child: Text("Remove Profile Picture", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                          ),
+                        ),
+                        onPressed: () async{
+                          if(removePhotoButton){
+                            return;
+                          }
+
+                          setState(() => removePhotoButton = true);
+
+                          setState((){
+                            holdingRemovalOfPicture = true;
+                          });
+
+                          if(!mounted){
+                            return;
+                          }
+
+                          setState(() => removePhotoButton = false);
+                        }
                       ),
-                      onPressed: () async{
-                        setState((){
-                          holdingRemovalOfPicture = true;
-                        });
-                      }
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                  child: ElevatedButton(
+                  child: AbsorbPointer(
+                    absorbing: updateProfileButton,
+                    child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                       ),
@@ -563,6 +597,12 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                         ),
                       ),
                       onPressed: () async{
+                        if(updateProfileButton){
+                          return;
+                        }
+
+                        setState(() => updateProfileButton = true);
+
                         final theUsername = myLoginStatus.myUsername;
 
                         if(myImageBytes != null){
@@ -639,8 +679,13 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                           }
 
                           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => settingsPage()));
+
+                          if(mounted){
+                            setState(() => updateProfileButton = false);
+                          }
                         }
                       }
+                    ),
                   ),
                 ),
                 Container(
@@ -666,6 +711,9 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
   Uint8List? myImageBytes;
 
   myMain.myStars clickedStar = myMain.myStars(starName: "not available");
+
+  bool starNavigationButton = false;
+  bool planetNavigationButton = false;
 
   @override
   void initState(){
@@ -787,9 +835,17 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                     Column(
                       children: <Widget>[
                         Center(
+                          child: AbsorbPointer(
+                            absorbing: starNavigationButton,
                           child: GestureDetector(
                             child: Text("${myMain.starsUserTracked.keys.toList()[s]}", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                             onTap: () async{
+                              if(starNavigationButton){
+                                return;
+                              }
+
+                              setState(() => starNavigationButton = true);
+
                               myMain.correctStar = myMain.starsUserTracked.keys.toList()[s];
                               print(myMain.correctStar);
                               clickedStar.starName = myMain.correctStar;
@@ -854,12 +910,20 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                               }
 
                               myMain.myAccessCheckNotifier.value = DateTime.now();
+
+                              if(!mounted){
+                                return;
+                              }
+
                               await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
 
-                              setState((){
-                                //continue
-                              });
+                              if(mounted){
+                                setState((){
+                                  starNavigationButton = false;
+                                });
+                              }
                             }
+                          ),
                           ),
                         ),
                         s < (myMain.starsUserTracked.keys.toList()).length - 1? Container(
@@ -887,9 +951,17 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                     Column(
                       children: <Widget>[
                         Center(
+                          child: AbsorbPointer(
+                            absorbing: planetNavigationButton,
                           child: GestureDetector(
                             child: Text("${myMain.planetsUserTracked.keys.toList()[p]}", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                             onTap: () async{
+                              if(planetNavigationButton){
+                                return;
+                              }
+
+                              setState(() => planetNavigationButton = true);
+
                               myMain.correctPlanet = myMain.planetsUserTracked.keys.toList()[p];
 
                               myMain.starsAndTheirPlanets.forEach((key, value){
@@ -964,12 +1036,20 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
                               }
 
                               myMain.myAccessCheckNotifier.value = DateTime.now();
+
+                              if(!mounted){
+                                return;
+                              }
+
                               await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(myMain.informationAboutPlanet)));
 
-                              setState((){
-                                //continue
-                              });
+                              if(mounted){
+                                setState((){
+                                  planetNavigationButton = false;
+                                });
+                              }
                             }
+                          ),
                           ),
                         ),
                         Container(
@@ -1003,6 +1083,9 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
   Uint8List? myImageBytes;
 
   myMain.myStars clickedStar = myMain.myStars(starName: "not available");
+
+  bool starNavigationButton = false;
+  bool planetNavigationButton = false;
 
   @override
   void initState(){
@@ -1190,9 +1273,17 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                     Column(
                       children: <Widget>[
                         Center(
+                        child: AbsorbPointer(
+                          absorbing: starNavigationButton,
                           child: GestureDetector(
                             child: Text("${theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s]}", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                             onTap: () async{
+                              if(starNavigationButton){
+                                return;
+                              }
+
+                              setState(() => starNavigationButton = true);
+
                               myMain.correctStar = theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()[s];
                               print(myMain.correctStar);
                               clickedStar.starName = myMain.correctStar;
@@ -1257,13 +1348,21 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                               }
 
                               myMain.myAccessCheckNotifier.value = DateTime.now();
+
+                              if(!mounted){
+                                return;
+                              }
+
                               await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
 
-                              setState((){
-                                //continue
-                              });
+                              if(mounted){
+                                setState((){
+                                  starNavigationButton = false;
+                                });
+                              }
                             }
                           ),
+                        ),
                         ),
                         s < (theUsersData["usernameProfileInformation"]["starsTracked"].keys.toList()).length - 1? Container(
                           padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, 0.0, MediaQuery.of(context).size.width * 0.015625, 0.0),
@@ -1290,9 +1389,17 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                     Column(
                       children: <Widget>[
                         Center(
+                          child: AbsorbPointer(
+                            absorbing: planetNavigationButton,
                           child: GestureDetector(
                             child: Text("${theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p]}", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
                             onTap: () async{
+                              if(planetNavigationButton){
+                                return;
+                              }
+
+                              setState(() => planetNavigationButton = true);
+
                               myMain.correctPlanet = theUsersData["usernameProfileInformation"]["planetsTracked"].keys.toList()[p];
 
                               myMain.starsAndTheirPlanets.forEach((key, value){
@@ -1370,12 +1477,20 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
                               }
 
                               myMain.myAccessCheckNotifier.value = DateTime.now();
+
+                              if(!mounted){
+                                return;
+                              }
+
                               await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(myMain.informationAboutPlanet)));
 
-                              setState((){
-                                //continue
-                              });
+                              if(mounted){
+                                setState((){
+                                  planetNavigationButton = false;
+                                });
+                              }
                             }
+                          ),
                           ),
                         ),
                         Container(

@@ -78,6 +78,8 @@ class pdfViewerState extends State<pdfViewer> with RouteAware{
   bool snapshotExistsStars = false;
   bool snapshotExistsPlanets = false;
 
+  bool pdfGoButtonBool = false;
+
   bool checkNumbersOnly(String num){
     List<String> validCharacters = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
@@ -231,9 +233,17 @@ class pdfViewerState extends State<pdfViewer> with RouteAware{
                     Container(
                       height: MediaQuery.of(context).size.height * 0.015625,
                     ),
-                    ElevatedButton(
+                    AbsorbPointer(
+                      absorbing: pdfGoButtonBool,
+                      child: ElevatedButton(
                         child: Text("Go", textAlign: TextAlign.center),
                         onPressed: (){
+                          if(pdfGoButtonBool){
+                            return;
+                          }
+
+                          setState(() => pdfGoButtonBool = true);
+
                           int? pageUserIsOn = int.tryParse(starPdfPageController.text);
                           if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalStarPdfPages && !pageUserIsOn.toString().contains(".")){
                             myStarPdfxController.jumpToPage(pageUserIsOn);
@@ -275,7 +285,11 @@ class pdfViewerState extends State<pdfViewer> with RouteAware{
                               ),
                             );
                           }
+                          if(mounted){
+                            setState(() => pdfGoButtonBool = false);
+                          }
                         }
+                      ),
                     ),
                   ],
                 ),
@@ -420,9 +434,17 @@ class pdfViewerState extends State<pdfViewer> with RouteAware{
                 Container(
                   height: MediaQuery.of(context).size.height * 0.015625,
                 ),
-                ElevatedButton(
+                AbsorbPointer(
+                  absorbing: pdfGoButtonBool,
+                  child: ElevatedButton(
                     child: Text("Go", textAlign: TextAlign.center),
                     onPressed: (){
+                      if(pdfGoButtonBool){
+                        return;
+                      }
+
+                      setState(() => pdfGoButtonBool = true);
+
                       int? pageUserIsOn = int.tryParse(planetPdfPageController.text);
                       if(pageUserIsOn != null && pageUserIsOn >= 1 && pageUserIsOn <= totalPlanetPdfPages && !pageUserIsOn.toString().contains(".")){
                         myPlanetPdfxController.jumpToPage(pageUserIsOn);
@@ -464,7 +486,11 @@ class pdfViewerState extends State<pdfViewer> with RouteAware{
                           ),
                         );
                       }
+                      if(mounted){
+                        setState(() => pdfGoButtonBool = false);
+                      }
                     }
+                  ),
                 ),
               ],
             ),

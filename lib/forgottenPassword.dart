@@ -61,6 +61,8 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
   var docForUser;
   var docForEmail;
 
+  bool submitButton = false;
+
   Future<bool> usernameEmailMatch(String username, String emailAddress) async{
     bool match = false;
 
@@ -209,7 +211,7 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () =>{
-          myMain.myAccessCheckNotifier.value = DateTime.now(),
+            myMain.myAccessCheckNotifier.value = DateTime.now(),
 
             showDialog(
               context: context,
@@ -318,6 +320,8 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
               height: MediaQuery.of(context).size.height * 0.015625,
             ),
             Center(
+              child: AbsorbPointer(
+                absorbing: submitButton,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
@@ -329,6 +333,12 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
                   ),
                 ),
                 onPressed: () async{
+                  if(submitButton){
+                    return;
+                  }
+
+                  setState(() => submitButton = true);
+
                   print("Pressed");
                   usersMessage = await dialogMessageForgottenPassword([myUsernameController.text, myEmailController.text]);
 
@@ -363,7 +373,11 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
                                   //Leads to a page that has a six-digit code emailed to a user
                                   theUsersUsername = docForUser["username"];
                                   theUsersEmail = myEmailController.text;
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPasswordCodeEntry()));
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPasswordCodeEntry())).then((_){
+                                    if(mounted){
+                                      setState(() => submitButton = false);
+                                    }
+                                  });
                                   mySixDigitCode = await emailNotifications.sixDigitCode();
 
                                   emailNotifications.sendAnEmail(theUsersEmail, "Password Reset Code", "Hi ${theUsersUsername},<br><br>We have noticed that you have forgotten your password. Please enter in this 6-digit verification code into Star Expedition:<br><br>${mySixDigitCode}<br><br>Once you have entered it in, you may reset your password.<br><br>Best,<br>Star Expedition");
@@ -391,9 +405,13 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
                         actions: <Widget>[
                           TextButton(
                             onPressed: (){
+                              if(!mounted){
+                                return;
+                              }
+
                               Navigator.pop(context);
-                              myUsernameController.text = "";
-                              myEmailController.text = "";
+
+                              setState(() => submitButton = false);
                             },
                             child: Container(
                               child: const Text("Ok"),
@@ -404,6 +422,7 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
                     );
                   }
                 }
+              ),
               ),
             ),
           ],
@@ -416,6 +435,8 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
 class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> with RouteAware{
   TextEditingController numberController = TextEditingController();
   List<Text> usersMessage = [];
+
+  bool submitButton = false;
 
   List<Text> dialogMessageForgottenPasswordCode(String enteredPasscode){
     List<Text> messageForUser = [];
@@ -553,6 +574,8 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
               ),
             ),
             Center(
+              child: AbsorbPointer(
+                absorbing: submitButton,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
@@ -564,6 +587,12 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
                   ),
                 ),
                 onPressed: (){
+                  if(submitButton){
+                    return;
+                  }
+
+                  setState(() => submitButton = true);
+
                   //Go to "changing password" screen
                   usersMessage = dialogMessageForgottenPasswordCode(numberController.text);
                   if(usersMessage.isEmpty){
@@ -578,7 +607,11 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
                               TextButton(
                                 onPressed: () async => {
                                   //Leads to a page where one can reset his or her password
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => resetPassword())),
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => resetPassword())).then((_){
+                                    if(mounted){
+                                      setState(() => submitButton = false);
+                                    }
+                                  }),
                                 },
                                 child: const Text("Ok"),
                               )
@@ -603,8 +636,13 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
                         actions: <Widget>[
                           TextButton(
                             onPressed: (){
+                              if(!mounted){
+                                return;
+                              }
+
                               Navigator.pop(context);
-                              numberController.text = "";
+
+                              setState(() => submitButton = false);
                             },
                             child: Container(
                               child: const Text("Ok"),
@@ -615,6 +653,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
                     );
                   }
                 }
+              ),
               ),
             ),
           ],
@@ -628,6 +667,8 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
   TextEditingController newPassController = TextEditingController();
   TextEditingController confirmNewPassController = TextEditingController();
   List<Text> usersMessage = [];
+
+  bool submitButton = false;
 
   bool whitespaceChecker(String? myString){
     if(myString == null){
@@ -861,6 +902,8 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
               height: MediaQuery.of(context).size.height * 0.015625,
             ),
             Center(
+              child: AbsorbPointer(
+                absorbing: submitButton,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
@@ -872,6 +915,12 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                   ),
                 ),
                 onPressed: () async{
+                  if(submitButton){
+                    return;
+                  }
+
+                  setState(() => submitButton = true);
+
                   usersMessage = await dialogMessageForgottenPassword([newPassController.text, confirmNewPassController.text]);
                   if(usersMessage.isEmpty){
                     myMain.myAccessCheckNotifier.value = DateTime.now();
@@ -922,7 +971,11 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                                   }
 
                                   //Leads to the Star Expedition login page:
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage()));
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => loginPage())).then((_){
+                                    if(mounted){
+                                      setState(() => submitButton = false);
+                                    }
+                                  });
                                 },
                                 child: const Text("Ok"),
                               )
@@ -947,9 +1000,13 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                         actions: <Widget>[
                           TextButton(
                             onPressed: (){
+                              if(!mounted){
+                                return;
+                              }
+
                               Navigator.pop(context);
-                              newPassController.text = "";
-                              confirmNewPassController.text = "";
+
+                              setState(() => submitButton = false);
                             },
                             child: Container(
                               child: const Text("Ok"),
@@ -960,6 +1017,7 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                     );
                   }
                 }
+              ),
               ),
             ),
           ],

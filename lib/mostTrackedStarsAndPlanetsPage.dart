@@ -48,6 +48,9 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
 
   bool isLoading = true;
 
+  bool tableToStarNavigation = false;
+  bool tableToPlanetNavigation = false;
+
   @override
   void initState(){
     super.initState();
@@ -215,13 +218,22 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                       ),
                     ),
                     DataCell(
-                      SizedBox(
-                        width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
-                        child: Center(
-                          child: Text(myStar.key, style: TextStyle(fontSize: 10.0.sp, color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                      AbsorbPointer(
+                        absorbing: tableToStarNavigation,
+                        child: SizedBox(
+                          width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
+                          child: Center(
+                            child: Text(myStar.key, style: TextStyle(fontSize: 10.0.sp, color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                          ),
                         ),
                       ),
                       onTap: () async{
+                        if(tableToStarNavigation){
+                          return;
+                        }
+
+                        setState(() => tableToStarNavigation = true);
+
                         myMain.correctStar = myStar.key;
                         print(myMain.correctStar);
                         myClickedStar.starName = myMain.correctStar;
@@ -287,7 +299,13 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                         }
 
                         myMain.myAccessCheckNotifier.value = DateTime.now();
-                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: myClickedStar))).then((_) => updateTrackedStarsAndPlanetsData());
+                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: myClickedStar))).then((_){
+                          if(mounted){
+                            setState(() => tableToStarNavigation = false);
+                          }
+
+                          updateTrackedStarsAndPlanetsData();
+                        });
                       }
                     ),
                     DataCell(
@@ -349,13 +367,22 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                       ),
                     ),
                     DataCell(
-                      SizedBox(
-                        width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
-                        child: Center(
-                          child: Text(myPlanet.key, style: TextStyle(fontSize: 10.0.sp, color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                      AbsorbPointer(
+                        absorbing: tableToPlanetNavigation,
+                        child: SizedBox(
+                          width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.height * 0.33333 : 125,
+                          child: Center(
+                            child: Text(myPlanet.key, style: TextStyle(fontSize: 10.0.sp, color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                          ),
                         ),
                       ),
                       onTap: () async{
+                        if(tableToPlanetNavigation){
+                          return;
+                        }
+
+                        setState(() => tableToPlanetNavigation = true);
+
                         myMain.correctPlanet = myPlanet.key;
 
                         myMain.starsAndTheirPlanets.forEach((key, value){
@@ -430,7 +457,13 @@ class mostTrackedStarsAndPlanetsPageState extends State<mostTrackedStarsAndPlane
                         }
 
                         myMain.myAccessCheckNotifier.value = DateTime.now();
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(informationAboutClickedPlanet))).then((_) => updateTrackedStarsAndPlanetsData());
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => myMain.planetArticle(informationAboutClickedPlanet))).then((_){
+                          if(mounted){
+                            setState(() => tableToPlanetNavigation = false);
+                          }
+
+                          updateTrackedStarsAndPlanetsData();
+                        });
                       }
                     ),
                     DataCell(

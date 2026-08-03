@@ -103,6 +103,8 @@ class myDbuSearch extends SearchDelegate{
 
   final ScrollController myScrollController = ScrollController();
 
+  ValueNotifier<bool> dbuSearchNavigation = ValueNotifier(false);
+
   @override
   TextInputAction get textInputAction => TextInputAction.search;
 
@@ -208,106 +210,125 @@ class myDbuSearch extends SearchDelegate{
           itemCount: myMatchQuery.length,
           itemBuilder: (bc4, index){
             var myResult = myMatchQuery[index];
-            return ListTile(
-                title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
-                onTap: () async{
-                  SystemChannels.textInput.invokeMethod("TextInput.hide");
+            return ValueListenableBuilder<bool>(
+              valueListenable: dbuSearchNavigation,
+              builder: (context, dbuSearch, child){
+                return AbsorbPointer(
+                  absorbing: dbuSearch,
+                  child: ListTile(
+                    title: Text("${myResult[0]}\nBy: ${myResult[1]}"),
+                    onTap: () async{
+                      if(dbuSearchNavigation.value){
+                        return;
+                      }
 
-                  theDbuThreadResult = myResult[0];
+                      dbuSearchNavigation.value = true;
 
-                  //Finding the thread from listOfDbuThreads:
-                  final myMatch = listOfDbuThreads.firstWhere((myDbuThread) => myDbuThread["threadTitle"] == myResult[0], orElse: () => null);
+                      SystemChannels.textInput.invokeMethod("TextInput.hide");
 
-                  if(myMatch == null){
-                    print("Unfortunately, the thread data for ${myResult[0]} cannot be found");
-                    return;
-                  }
+                      theDbuThreadResult = myResult[0];
 
-                  specificDbuThreadData = myMatch;
+                      //Finding the thread from listOfDbuThreads:
+                      final myMatch = listOfDbuThreads.firstWhere((myDbuThread) => myDbuThread["threadTitle"] == myResult[0], orElse: () => null);
 
-                  if(firebaseDesktopHelper.onDesktop){
-                    dbuThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
-                    specificDbuThreadData = dbuThreadClickedData.firstWhere((myDbuThread) => myDbuThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);
-                    print("dbuThreadClickedData: ${dbuThreadClickedData}");
-                    print("specifcDbuThreadData: ${specificDbuThreadData}");
+                      if(myMatch == null){
+                        print("Unfortunately, the thread data for ${myResult[0]} cannot be found");
+                        return;
+                      }
 
-                    threadAuthorDbu = specificDbuThreadData["poster"].toString();
-                    threadTitleDbu = specificDbuThreadData["threadTitle"].toString();
-                    threadContentDbu = specificDbuThreadData["threadContent"].toString();
-                    threadID = specificDbuThreadData["threadId"].toString();
+                      specificDbuThreadData = myMatch;
 
-                    //Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadsPage()));
-                  }
-                  else{
-                    dbuThreadClickedData = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadTitle", isEqualTo: myResult[0].toLowerCase()).get();
-                    dbuThreadClickedData.docs.forEach((myThread){
-                      specificDbuThreadData = myThread.data();
-                    });
+                      if(firebaseDesktopHelper.onDesktop){
+                        dbuThreadClickedData = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
+                        specificDbuThreadData = dbuThreadClickedData.firstWhere((myDbuThread) => myDbuThread["threadTitle"].toString().toLowerCase() == myResult[0].toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                        print("dbuThreadClickedData: ${dbuThreadClickedData}");
+                        print("specifcDbuThreadData: ${specificDbuThreadData}");
 
-                    threadAuthorDbu = specificDbuThreadData["poster"].toString();
-                    threadTitleDbu = specificDbuThreadData["threadTitle"].toString();
-                    threadContentDbu = specificDbuThreadData["threadContent"].toString();
-                    threadID = specificDbuThreadData["threadId"].toString();
+                        threadAuthorDbu = specificDbuThreadData["poster"].toString();
+                        threadTitleDbu = specificDbuThreadData["threadTitle"].toString();
+                        threadContentDbu = specificDbuThreadData["threadContent"].toString();
+                        threadID = specificDbuThreadData["threadId"].toString();
 
-                    print("You clicked on a thread title: ${myResult}");
-                    print("The DBU thread data: ${specificDbuThreadData}");
-                    print("Content of the DBU thread: ${specificDbuThreadData["threadContent"]}");
-                    print("Thread ID of the DBU thread: ${specificDbuThreadData["threadId"]}");
-                    //Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadsPage()));
-                  }
+                        //Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadsPage()));
+                      }
+                      else{
+                        dbuThreadClickedData = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadTitle", isEqualTo: myResult[0].toLowerCase()).get();
+                        dbuThreadClickedData.docs.forEach((myThread){
+                          specificDbuThreadData = myThread.data();
+                        });
 
-                  if(firebaseDesktopHelper.onDesktop){
-                    var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
-                    var matchingThread = theDbuThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+                        threadAuthorDbu = specificDbuThreadData["poster"].toString();
+                        threadTitleDbu = specificDbuThreadData["threadTitle"].toString();
+                        threadContentDbu = specificDbuThreadData["threadContent"].toString();
+                        threadID = specificDbuThreadData["threadId"].toString();
 
-                    if(matchingThread.isNotEmpty){
-                      //Getting the document ID:
-                      myDocDbu = matchingThread["docId"];
-                      print("This is myDocDbu: ${myDocDbu}");
+                        print("You clicked on a thread title: ${myResult}");
+                        print("The DBU thread data: ${specificDbuThreadData}");
+                        print("Content of the DBU thread: ${specificDbuThreadData["threadContent"]}");
+                        print("Thread ID of the DBU thread: ${specificDbuThreadData["threadId"]}");
+                        //Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadsPage()));
+                      }
+
+                      if(firebaseDesktopHelper.onDesktop){
+                        var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
+                        var matchingThread = theDbuThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
+
+                        if(matchingThread.isNotEmpty){
+                          //Getting the document ID:
+                          myDocDbu = matchingThread["docId"];
+                          print("This is myDocDbu: ${myDocDbu}");
+                        }
+                        else{
+                          print("Sorry; the thread was not found");
+                        }
+                      }
+                      else{
+                        await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                          myDocDbu = d.docs.first.id;
+                          print("This is myDocDbu: ${myDocDbu}");
+                        });
+                      }
+
+                      //Getting the replies of a thread
+                      if(firebaseDesktopHelper.onDesktop){
+                        theDbuThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
+
+                        print(theDbuThreadReplies.runtimeType);
+
+                        print(DateTime.now().runtimeType);
+
+                        theDbuThreadReplies.sort((b, a){
+                          DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
+                          DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
+                          return dta.compareTo(dtb);
+                        });
+                      }
+                      else{
+                        await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies");//.add(oneReply);
+
+                        QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
+                        theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
+
+                        print(theDbuThreadReplies.runtimeType);
+
+                        print(DateTime.now().runtimeType);
+
+                        (theDbuThreadReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
+                      }
+                      print("Number of theDbuThreadReplies: ${theDbuThreadReplies.length}");
+
+                      if(!bc4.mounted){
+                        return;
+                      }
+
+                      Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadsPage()));
+                      dbuSearchNavigation.value = false;
                     }
-                    else{
-                      print("Sorry; the thread was not found");
-                    }
-                  }
-                  else{
-                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                      myDocDbu = d.docs.first.id;
-                      print("This is myDocDbu: ${myDocDbu}");
-                    });
-                  }
-
-                  //Getting the replies of a thread
-                  if(firebaseDesktopHelper.onDesktop){
-                    theDbuThreadReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
-
-                    print(theDbuThreadReplies.runtimeType);
-
-                    print(DateTime.now().runtimeType);
-
-                    theDbuThreadReplies.sort((b, a){
-                      DateTime dta = firebaseDesktopHelper.convertStringToDateTime(a["time"]);
-                      DateTime dtb = firebaseDesktopHelper.convertStringToDateTime(b["time"]);
-                      return dta.compareTo(dtb);
-                    });
-                  }
-                  else{
-                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies");//.add(oneReply);
-
-                    QuerySnapshot dbuRepliesQuerySnapshot = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").get();//.do//.docs.map((myDoc) => myDoc.data()).toList();;
-                    theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
-                    print(theDbuThreadReplies.runtimeType);
-
-                    print(DateTime.now().runtimeType);
-
-                    (theDbuThreadReplies as List<dynamic>).sort((b, a) => (DateTime.parse(a["time"])).compareTo(DateTime.parse(b["time"])));
-                  }
-                  print("Number of theDbuThreadReplies: ${theDbuThreadReplies.length}");
-
-                  Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => discussionBoardUpdatesThreadsPage()));
-                }
+                  )
+                );
+              }
             );
-          }
+        }
       ),
     );
   }
@@ -335,6 +356,10 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
 
   TextEditingController dbuQuery = TextEditingController();
   myDbuSearch mdbus = new myDbuSearch();
+
+  bool createThreadButton = false;
+  bool clickThread = false;
+  bool clickUsername = false;
 
   @override
   void initState(){
@@ -413,7 +438,9 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.75,
                       height: MediaQuery.of(context).size.height * 0.08,
-                      child: ElevatedButton(
+                      child: AbsorbPointer(
+                        absorbing: clickThread,
+                        child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey[300],
                             shape: RoundedRectangleBorder(
@@ -427,54 +454,77 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
                                   child: Container(
                                     alignment: Alignment.centerLeft,
                                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.050000),
-                                    child: Text.rich(
-                                      TextSpan(
-                                        text: "${mySublistsDbu[theCurrentPageDbu][index]["threadTitle"].toString()}\nBy: ",
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
-                                        children: [
-                                          TextSpan(
-                                              text: "${mySublistsDbu[theCurrentPageDbu][index]["poster"].toString()}",
-                                              style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal, height: 1.1),
-                                              recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                                dbuClickedOnUser = true,
+                                    child: AbsorbPointer(
+                                      absorbing: clickUsername,
+                                      child: Text.rich(
+                                        TextSpan(
+                                          text: "${mySublistsDbu[theCurrentPageDbu][index]["threadTitle"].toString()}\nBy: ",
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, height: 1.1),
+                                          children: [
+                                            TextSpan(
+                                                text: "${mySublistsDbu[theCurrentPageDbu][index]["poster"].toString()}",
+                                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal, height: 1.1),
+                                                recognizer: TapGestureRecognizer()..onTap = () async {
+                                                  if(clickUsername){
+                                                    return;
+                                                  }
 
-                                                if(firebaseDesktopHelper.onDesktop){
-                                                  nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                                  theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
-                                                }
-                                                else{
-                                                  nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase()).get(),
-                                                  nameData.docs.forEach((person){
-                                                    theUsersData = person.data();
-                                                  }),
-                                                },
+                                                  setState(() => clickUsername = true);
 
-                                                print("This is nameData: ${nameData}"),
-                                                //print("This is the poster: ${mySublistsDbu[theCurrentPageDbu][index]["poster"].toString()}"),
-                                                print("This is theUsersData: ${theUsersData}"),
+                                                  dbuClickedOnUser = true;
 
-                                                //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                                if(theUsersData?.isEmpty ?? true){
-                                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                                  if(firebaseDesktopHelper.onDesktop){
+                                                    nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                    theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                                  }
+                                                  else{
+                                                    nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbu[theCurrentPageDbu][index]["poster"].toString().toLowerCase()).get();
+                                                    nameData.docs.forEach((person){
+                                                      theUsersData = person.data();
+                                                    });
+                                                  };
+
+                                                  print("This is nameData: ${nameData}");
+                                                  //print("This is the poster: ${mySublistsDbu[theCurrentPageDbu][index]["poster"].toString()}"),
+                                                  print("This is theUsersData: ${theUsersData}");
+
+                                                  //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  if(theUsersData?.isEmpty ?? true){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                      }
+                                                    });
+                                                  }
+                                                  else{
+                                                    theUsernameResult = mySublistsDbu[theCurrentPageDbu][index]["poster"].toString();
+                                                    fromDbuPage = true;
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                      }
+                                                    });
+                                                  }
                                                 }
-                                                else{
-                                                  theUsernameResult = mySublistsDbu[theCurrentPageDbu][index]["poster"].toString(),
-                                                  fromDbuPage = true,
-                                                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                                }
-                                              }
-                                          ),
-                                          TextSpan(
-                                            text: " ",
-                                          ),
-                                        ],
+                                            ),
+                                            TextSpan(
+                                              text: " ",
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
+                                  ),
                                   ),
                                 ),
                               ]
                           ),
                           onPressed: () async{
+                            if(clickThread){
+                              return;
+                            }
+
+                            setState(() => clickThread = true);
+
                             print("This is index: $index");
                             print("listOfDbuThreads is null? ${listOfDbuThreads == null}");
                             print("I clicked on a thread");
@@ -537,7 +587,12 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
                             print("Number of theDbuThreadReplies: ${theDbuThreadReplies.length}");
 
                             Navigator.push(context, MaterialPageRoute(builder: (context) => discussionBoardUpdatesThreadsPage()));
+
+                            if(mounted){
+                              setState(() => clickThread = false);
+                            }
                           }
+                        ),
                       ),
                     ),
                   ),
@@ -601,7 +656,9 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
           Center(
-            child: ElevatedButton(
+            child: AbsorbPointer(
+              absorbing: createThreadButton,
+              child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                 ),
@@ -612,13 +669,24 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
                   ),
                 ),
                 onPressed: (){
+                  if(createThreadButton){
+                    return;
+                  }
+
+                  setState(() => createThreadButton = true);
+
                   print(discussionBoardUpdatesBool);
                   discussionBoardUpdatesBool = true;
                   print(discussionBoardUpdatesBool);
                   dbuNavigationDepth++;
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const createThread()));
                   print("I am going to write a new thread.");
+
+                  if(mounted){
+                    setState(() => createThreadButton = false);
+                  }
                 }
+              ),
             ),
           ),
           Expanded(
@@ -651,6 +719,9 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
 
   int myPaginatorResetValue = 0;
   int previousDataLength = -1;
+
+  bool clickUsername = false;
+  bool replyButton = false;
 
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
@@ -731,49 +802,64 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
-                                //Reply to: Reply content, reply poster
-                                //child: Text("Reply to: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replyContent"].toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["theOriginalReplyInfo"]["replier"].toString()),
-                                child: Text.rich(
-                                  TextSpan(
-                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "Reply to:\n${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}",
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "\nPosted by: ",
-                                      ),
-                                      TextSpan(
-                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                          text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
-                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                            dbuClickedOnUser = true,
+                                child: AbsorbPointer(
+                                  absorbing: clickUsername,
+                                  child: Text.rich(
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: "Reply to:\n${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}",
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          text: "\nPosted by: ",
+                                        ),
+                                        TextSpan(
+                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                            text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                            recognizer: TapGestureRecognizer()..onTap = () async {
+                                              if(clickUsername){
+                                                return;
+                                              }
 
-                                            if(firebaseDesktopHelper.onDesktop){
-                                              nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                              theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
+                                              setState(() => clickUsername = true);
+
+                                              dbuClickedOnUser = true;
+
+                                              if(firebaseDesktopHelper.onDesktop){
+                                                nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                              }
+                                              else{
+                                                nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get();
+                                                nameData.docs.forEach((person){
+                                                  theUsersData = person.data();
+                                                });
+                                              };
+                                              //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                              if(theUsersData?.isEmpty ?? true){
+                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                  if(mounted){
+                                                    setState(() => clickUsername = false);
+                                                  }
+                                                });
+                                              }
+                                              else{
+                                                theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString();
+                                                fromDbuThread = true;
+                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                  if(mounted){
+                                                    setState(() => clickUsername = false);
+                                                  }
+                                                });
+                                              }
                                             }
-                                            else{
-                                              nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get(),
-                                              nameData.docs.forEach((person){
-                                                theUsersData = person.data();
-                                              }),
-                                            },
-                                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                            if(theUsersData?.isEmpty ?? true){
-                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                                            }
-                                            else{
-                                              theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString(),
-                                              fromDbuThread = true,
-                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                            }
-                                          }
-                                      ),
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: " ",
-                                      ),
-                                    ],
+                                        ),
+                                        TextSpan(
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          text: " ",
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 color: Colors.tealAccent, //theDbuThreadReplies[index]["theOriginalReplyInfo"].toString(), theDbuThreadReplies[index]["theOriginalReplyInfo"].toString()
@@ -795,48 +881,59 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
-                                //child: Text("Posted on: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][2] + "\n" + "Posted by: " + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][0] + "\n" + reversedDiscussionBoardUpdatesRepliesIterable.toList()[index][1]),
-                                //child: Text("Posted on: " + theDbuThreadReplies[index]["time"].toDate().toString() + "\n" + "Posted by: " + theDbuThreadReplies[index]["replier"].toString() + "\n" + theDbuThreadReplies[index]["replyContent"].toString()),
-                                child: Text.rich(
-                                  TextSpan(
-                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}\n",
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}\nPosted by: ",
-                                      ),
-                                      TextSpan(
-                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                          text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
-                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                            dbuClickedOnUser = true,
-                                            if(firebaseDesktopHelper.onDesktop){
-                                              nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                              theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
+                                child: AbsorbPointer(
+                                  absorbing: clickUsername,
+                                  child: Text.rich(
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}\n",
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                        ),
+                                        TextSpan(
+                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                            text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
+                                            recognizer: TapGestureRecognizer()..onTap = () async {
+                                              if(clickUsername){
+                                                return;
+                                              }
+
+                                              setState(() => clickUsername = true);
+
+                                              dbuClickedOnUser = true;
+                                              if(firebaseDesktopHelper.onDesktop){
+                                                nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                              }
+                                              else{
+                                                nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get();
+                                                nameData.docs.forEach((person){
+                                                  theUsersData = person.data();
+                                                });
+                                              };
+                                              //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                              if(theUsersData?.isEmpty ?? true){
+                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                  if(mounted){
+                                                    setState(() => clickUsername = false);
+                                                  }
+                                                });
+                                              }
+                                              else{
+                                                theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
+                                                fromDbuThread = true;
+                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                  if(mounted){
+                                                    setState(() => clickUsername = false);
+                                                  }
+                                                });
+                                              }
                                             }
-                                            else{
-                                              nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                              nameData.docs.forEach((person){
-                                                theUsersData = person.data();
-                                              }),
-                                            },
-                                            //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                            if(theUsersData?.isEmpty ?? true){
-                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                                            }
-                                            else{
-                                              theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString(),
-                                              fromDbuThread = true,
-                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                            }
-                                          }
-                                      ),
-                                      /*TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: " ",
-                                      ),*/
-                                    ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 color: Colors.grey[300],
@@ -846,7 +943,9 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 //Does nothing
                               }
                           ),
-                          ElevatedButton(
+                          AbsorbPointer(
+                            absorbing: replyButton,
+                            child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.grey[500],
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -859,6 +958,12 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 ),
                               ),
                               onPressed: () async{
+                                if(replyButton){
+                                  return;
+                                }
+
+                                setState(() => replyButton = true);
+
                                 replyPosterUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
                                 contentOfReplyUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString();
                                 titleOfThreadUserIsReplyingToDbu = threadTitleDbu;
@@ -866,8 +971,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 replyToReplyTimeDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["time"];//.toString();
                                 replyToReplyContentDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replyContent"].toString();
                                 replyToReplyPosterDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replier"].toString();
-                                //replyToReplyOriginalInfoDbu = theDbuThreadReplies![index]["originalReplyInfo"].toString();
-                                //print("This is replyToReplyOriginalInfoDbu: ${replyToReplyOriginalInfoDbu["replyContent"]}");
+
                                 print("This is replyToReplyTime: $replyToReplyTimeDbu");
 
                                 if(firebaseDesktopHelper.onDesktop){
@@ -890,41 +994,14 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                   });
                                   await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
                                     replyToReplyDocDbu = rd.docs.first.id;
-                                    //replyToReplyTime = rd.docs.first["time"];
-                                    //print("This is t: $replyToReplyTime");
-                                    //replyContent = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
                                     print(replyToReplyDocDbu);
                                   });
                                 }
 
-                                //var theReply = FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").where();
-
-                                //.add(oneReply);
-
-                                //QuerySnapshot dbuRepliesQuerySnapshot = (await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDoc).collection("Replies").doc(replyToReplyDoc).get()) as QuerySnapshot<Object?>;//.do//.docs.map((myDoc) => myDoc.data()).toList();;
-                                //theDbuThreadReplies = dbuRepliesQuerySnapshot.docs.map((replies) => replies.data()).toList();
-
                                 print(theDbuThreadReplies);
                                 print(replyToReplyDocDbu);
-                                //print(replyToReplyDoc.snapshot);
-                                //print(replyContent);
 
                                 if(firebaseDesktopHelper.onDesktop){
-                                  /*DocumentSnapshot ds = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu) as DocumentSnapshot;
-                                print(ds.data());
-                                print(ds.data().runtimeType);*/
-                                  /*List<Map<String, dynamic>> docsList = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
-                                for (var d in docsList){
-                                  if(d == replyToReplyDocDbu){
-                                    print("This is d: $d");
-                                    break;
-                                  }
-                                  else{
-                                    //continue
-                                  }
-                                }
-                                print(ds.data());
-                                print(ds.data().runtimeType);*/
                                   print("The doc: $myDocDbu");
                                   print("The subdoc: $replyToReplyDocDbu");
 
@@ -954,10 +1031,7 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 print(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu));
                                 myIndex = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu); //where replyToReplyDoc is in theDbuThreadReplies.
                                 myReplyToReplyDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][myIndex];
-                                //print("myReplyToReplyDbu runtime type: ${myReplyToReplyDbu.runtimeType}");
-                                //myReplyToReplyDbu.forEach((k, v) => myReplyToReplyDbuList.);//List.from(myReplyToReplyDbu);//Map.from(myReplyToReplyDbu);
                                 myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
-                                //myReplyToReplyDbuList = myReplyToReplyDbuMap.entries.map((myEntry) => "${myEntry.key}: ${myEntry.value}").toList();
 
                                 List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuMap];
                                 dbuRepliesToReplies.add(tempReplyToReplyList);
@@ -973,13 +1047,20 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
 
                                 //Refreshing the page after returning from a reply:
+                                if(!mounted){
+                                  return;
+                                }
+
                                 if(myResult == true){
                                   setState((){
                                     theCurrentPageDbuThreadReplies = 0;
                                     myPaginatorResetValue++;
                                   });
                                 }
+
+                                setState(() => replyButton = false);
                               }
+                            ),
                           ),
                           index == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].length - 1? Container(
                             height: MediaQuery.of(context).size.height * 0.015625,
@@ -1002,43 +1083,60 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                               child: Container(
-                                child: Text.rich(
-                                  TextSpan(
-                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                    text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}\n",
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                        text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}\nPosted by: ",
-                                      ),
-                                      TextSpan(
-                                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                          text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
-                                          recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                            dbuClickedOnUser = true,
+                                child: AbsorbPointer(
+                                  absorbing: clickUsername,
+                                  child: Text.rich(
+                                    TextSpan(
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}\n",
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                          text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                        ),
+                                        TextSpan(
+                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                            text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
+                                            recognizer: TapGestureRecognizer()..onTap = () async {
+                                              if(clickUsername){
+                                                return;
+                                              }
 
-                                            if(firebaseDesktopHelper.onDesktop){
-                                              nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                              theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{}),
-                                              print("theUsersData is this on Desktop: ${theUsersData}"),
+                                              setState(() => clickUsername = true);
+
+                                              dbuClickedOnUser = true;
+
+                                              if(firebaseDesktopHelper.onDesktop){
+                                                nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                                print("theUsersData is this on Desktop: ${theUsersData}");
+                                              }
+                                              else{
+                                                nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get();
+                                                nameData.docs.forEach((person){
+                                                  theUsersData = person.data();
+                                                });
+                                              };
+                                              if(theUsersData?.isEmpty ?? true){
+                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                  if(mounted){
+                                                    setState(() => clickUsername = false);
+                                                  }
+                                                });
+                                              }
+                                              else{
+                                                theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
+                                                fromDbuThread = true;
+                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                  if(mounted){
+                                                    setState(() => clickUsername = false);
+                                                  }
+                                                });
+                                              }
                                             }
-                                            else{
-                                              nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get(),
-                                              nameData.docs.forEach((person){
-                                                theUsersData = person.data();
-                                              }),
-                                            },
-                                            if(theUsersData?.isEmpty ?? true){
-                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
-                                            }
-                                            else{
-                                              theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString(),
-                                              fromDbuThread = true,
-                                              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                            }
-                                          }
-                                      ),
-                                    ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 color: Colors.grey[300],
@@ -1048,123 +1146,137 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 //Does nothing
                               }
                           ),
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey[500],
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                              child: InkWell(
-                                child: Ink(
-                                  child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
-                                  color: Colors.grey[500],
-                                  width: MediaQuery.of(context).size.width * 0.5,
+                          AbsorbPointer(
+                            absorbing: replyButton,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[500],
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 ),
-                              ),
-                              onPressed: () async{
-                                replyPosterUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
-                                contentOfReplyUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString();
-                                titleOfThreadUserIsReplyingToDbu = threadTitleDbu;
-
-                                replyToReplyTimeDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["time"];//.toString();
-                                replyToReplyContentDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replyContent"].toString();
-                                replyToReplyPosterDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replier"].toString();
-                                print("This is replyToReplyTime: $replyToReplyTimeDbu");
-
-                                if(firebaseDesktopHelper.onDesktop){
-                                  var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
-                                  var matchingThread = theDbuThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
-
-                                  if(matchingThread.isNotEmpty){
-                                    //Getting the document ID:
-                                    myDocDbu = matchingThread["docId"];
-                                    print("This is myDocDbu: ${myDocDbu}");
-                                  }
-                                  else{
-                                    print("Sorry; the thread was not found");
+                                child: InkWell(
+                                  child: Ink(
+                                    child: Text("Reply", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
+                                    color: Colors.grey[500],
+                                    width: MediaQuery.of(context).size.width * 0.5,
+                                  ),
+                                ),
+                                onPressed: () async{
+                                  if(replyButton){
+                                    return;
                                   }
 
-                                  var theDbuThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
-                                  var matchingReply = theDbuThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeDbu, orElse: () => <String, dynamic>{});
+                                  setState(() => replyButton = true);
 
-                                  if(matchingReply.isNotEmpty){
-                                    //Getting the document ID:
-                                    replyToReplyDocDbu = matchingReply["docId"];
-                                    print("This is replyToReplyDocDbu: ${replyToReplyDocDbu}");
-                                  }
-                                  else{
-                                    print("Sorry; the thread was not found");
-                                  }
-                                }
-                                else{
-                                  await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
-                                    myDocDbu = d.docs.first.id;
-                                    print(myDocDbu);
-                                  });
-                                  await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
-                                    replyToReplyDocDbu = rd.docs.first.id;
-                                    print(replyToReplyDocDbu);
-                                  });
-                                }
+                                  replyPosterUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
+                                  contentOfReplyUserIsReplyingToDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString();
+                                  titleOfThreadUserIsReplyingToDbu = threadTitleDbu;
 
-                                print(theDbuThreadReplies);
-                                print(replyToReplyDocDbu);
+                                  replyToReplyTimeDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["time"];//.toString();
+                                  replyToReplyContentDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replyContent"].toString();
+                                  replyToReplyPosterDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies]![index]["replier"].toString();
+                                  print("This is replyToReplyTime: $replyToReplyTimeDbu");
 
-                                if(firebaseDesktopHelper.onDesktop){
-                                  print("The doc: $myDocDbu");
-                                  print("The subdoc: $replyToReplyDocDbu");
+                                  if(firebaseDesktopHelper.onDesktop){
+                                    var theDbuThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
+                                    var matchingThread = theDbuThreads.firstWhere((myDoc) => myDoc["threadId"] == int.parse(threadID), orElse: () => <String, dynamic>{});
 
-                                  try{
-                                    Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu);
-
-                                    print("This is dsData: ${dsData}");
-                                    print("This is dsData's runtime type: ${dsData.runtimeType}");
-
-                                    if(dsData != null){
-                                      print("This is dsData: ${dsData}");
-                                      print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                    if(matchingThread.isNotEmpty){
+                                      //Getting the document ID:
+                                      myDocDbu = matchingThread["docId"];
+                                      print("This is myDocDbu: ${myDocDbu}");
                                     }
                                     else{
-                                      print("The document is not found on Desktop");
+                                      print("Sorry; the thread was not found");
+                                    }
+
+                                    var theDbuThreadsReplies = await firebaseDesktopHelper.getFirestoreSubcollection("Discussion_Board_Updates", myDocDbu, "Replies");
+                                    var matchingReply = theDbuThreadsReplies.firstWhere((myDoc) => myDoc["time"] == replyToReplyTimeDbu, orElse: () => <String, dynamic>{});
+
+                                    if(matchingReply.isNotEmpty){
+                                      //Getting the document ID:
+                                      replyToReplyDocDbu = matchingReply["docId"];
+                                      print("This is replyToReplyDocDbu: ${replyToReplyDocDbu}");
+                                    }
+                                    else{
+                                      print("Sorry; the thread was not found");
                                     }
                                   }
-                                  catch (error){
-                                    print("There is an error on Desktop: ${error}");
+                                  else{
+                                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").where("threadId", isEqualTo: int.parse(threadID)).get().then((d) {
+                                      myDocDbu = d.docs.first.id;
+                                      print(myDocDbu);
+                                    });
+                                    await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").where("time", isEqualTo: replyToReplyTimeDbu).get().then((rd) {
+                                      replyToReplyDocDbu = rd.docs.first.id;
+                                      print(replyToReplyDocDbu);
+                                    });
                                   }
+
+                                  print(theDbuThreadReplies);
+                                  print(replyToReplyDocDbu);
+
+                                  if(firebaseDesktopHelper.onDesktop){
+                                    print("The doc: $myDocDbu");
+                                    print("The subdoc: $replyToReplyDocDbu");
+
+                                    try{
+                                      Map<String, dynamic>? dsData = await firebaseDesktopHelper.getFirestoreSubcollectionDocument("Discussion_Board_Updates", myDocDbu, "Replies", replyToReplyDocDbu);
+
+                                      print("This is dsData: ${dsData}");
+                                      print("This is dsData's runtime type: ${dsData.runtimeType}");
+
+                                      if(dsData != null){
+                                        print("This is dsData: ${dsData}");
+                                        print("This is dsData's runtime type: ${dsData.runtimeType}");
+                                      }
+                                      else{
+                                        print("The document is not found on Desktop");
+                                      }
+                                    }
+                                    catch (error){
+                                      print("There is an error on Desktop: ${error}");
+                                    }
+                                  }
+                                  else{
+                                    DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
+                                    print(ds.data());
+                                    print(ds.data().runtimeType);
+                                  }
+
+                                  myIndex = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu);
+                                  //where replyToReplyDoc is in theDbuThreadReplies.
+                                  print(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu));
+                                  myReplyToReplyDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][myIndex];
+
+                                  myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
+
+                                  List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuMap];
+                                  dbuRepliesToReplies.add(tempReplyToReplyList);
+
+                                  print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
+
+                                  print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
+                                  print("This is myIndex: $myIndex");
+                                  discussionBoardUpdatesReplyBool = true;
+                                  discussionBoardUpdatesReplyingToReplyBool = true;
+                                  dbuNavigationDepth++;
+
+                                  final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
+
+                                  if(!mounted){
+                                    return;
+                                  }
+
+                                  //Refreshing the page after returning from a reply:
+                                  if(myResult == true){
+                                    setState((){
+                                      theCurrentPageDbuThreadReplies = 0;
+                                      myPaginatorResetValue++;
+                                    });
+                                  }
+                                  setState(() => replyButton = false);
                                 }
-                                else{
-                                  DocumentSnapshot ds = await FirebaseFirestore.instance.collection("Discussion_Board_Updates").doc(myDocDbu).collection("Replies").doc(replyToReplyDocDbu).get();
-                                  print(ds.data());
-                                  print(ds.data().runtimeType);
-                                }
-
-                                myIndex = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu);
-                                //where replyToReplyDoc is in theDbuThreadReplies.
-                                print(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].indexWhere((i) => i["time"] == replyToReplyTimeDbu));
-                                myReplyToReplyDbu = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][myIndex];
-
-                                myReplyToReplyDbuMap = Map.from(myReplyToReplyDbu);
-
-                                List<dynamic> tempReplyToReplyList = [replyToReplyContentDbu, replyToReplyPosterDbu, myReplyToReplyDbuMap];
-                                dbuRepliesToReplies.add(tempReplyToReplyList);
-
-                                print("myReplyToReplyDbuMap: ${myReplyToReplyDbuMap}");
-
-                                print("myReplyToReplyDbu: ${myReplyToReplyDbu["replyContent"]}");
-                                print("This is myIndex: $myIndex");
-                                discussionBoardUpdatesReplyBool = true;
-                                discussionBoardUpdatesReplyingToReplyBool = true;
-                                dbuNavigationDepth++;
-
-                                final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
-
-                                //Refreshing the page after returning from a reply:
-                                if(myResult == true){
-                                  setState((){
-                                    theCurrentPageDbuThreadReplies = 0;
-                                    myPaginatorResetValue++;
-                                  });
-                                }
-                              }
+                              ),
                           ),
                           index == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies].length - 1? Container(
                             height: MediaQuery.of(context).size.height * 0.015625,
@@ -1212,43 +1324,60 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                   child: Container(
                     child: Padding(
                       padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
-                      child: Text.rich(
-                        TextSpan(
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                          text: "${threadTitleDbu}\n",
-                          children: <TextSpan>[
-                            TextSpan(
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                              text: "${threadContentDbu}\nPosted by: ",
-                            ),
-                            TextSpan(
-                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                text: "${threadAuthorDbu}",
-                                recognizer: TapGestureRecognizer()..onTap = () async =>{
-                                  dbuClickedOnUser = true,
+                      child: AbsorbPointer(
+                        absorbing: clickUsername,
+                        child: Text.rich(
+                          TextSpan(
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                            text: "${threadTitleDbu}\n",
+                            children: <TextSpan>[
+                              TextSpan(
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                text: "${threadContentDbu}\nPosted by: ",
+                              ),
+                              TextSpan(
+                                  style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                  text: "${threadAuthorDbu}",
+                                  recognizer: TapGestureRecognizer()..onTap = () async {
+                                    if(clickUsername){
+                                      return;
+                                    }
 
-                                  if(firebaseDesktopHelper.onDesktop){
-                                    nameData = await firebaseDesktopHelper.getFirestoreCollection("User"),
-                                    theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorDbu.toLowerCase(), orElse: () => <String, dynamic>{}),
-                                  }
-                                  else{
-                                    nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorDbu.toLowerCase()).get(),
-                                    nameData.docs.forEach((person){
-                                      theUsersData = person.data();
-                                    }),
-                                  },
+                                    setState(() => clickUsername = true);
 
-                                  if(theUsersData?.isEmpty ?? true){
-                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())),
+                                    dbuClickedOnUser = true;
+
+                                    if(firebaseDesktopHelper.onDesktop){
+                                      nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                      theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorDbu.toLowerCase(), orElse: () => <String, dynamic>{});
+                                    }
+                                    else{
+                                      nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorDbu.toLowerCase()).get();
+                                      nameData.docs.forEach((person){
+                                        theUsersData = person.data();
+                                      });
+                                    };
+
+                                    if(theUsersData?.isEmpty ?? true){
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                        if(mounted){
+                                          setState(() => clickUsername = false);
+                                        }
+                                      });
+                                    }
+                                    else{
+                                      theUsernameResult = threadAuthorDbu;
+                                      fromDbuThread = true;
+                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                        if(mounted){
+                                          setState(() => clickUsername = false);
+                                        }
+                                      });
+                                    }
                                   }
-                                  else{
-                                    theUsernameResult = threadAuthorDbu,
-                                    fromDbuThread = true,
-                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                  }
-                                }
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -1260,7 +1389,9 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                   //Does nothing
                 }
             ),
-            ElevatedButton(
+            AbsorbPointer(
+              absorbing: replyButton,
+              child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[500],
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1276,6 +1407,12 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                   ),
                 ),
                 onPressed: () async {
+                  if(replyButton){
+                    return;
+                  }
+
+                  setState(() => replyButton = true);
+
                   threadPosterUserIsReplyingToDbu = threadAuthorDbu;
                   titleOfThreadUserIsReplyingToDbu = threadTitleDbu;
                   print("Pages length: ${myPagesDbuThreadReplies.length}");
@@ -1288,6 +1425,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
 
                   final myResult = await Navigator.push(context, MaterialPageRoute(builder: (context) => const replyThreadPage()));
 
+                  if(!mounted){
+                    return;
+                  }
+
                   //Refreshing the page after returning from a reply:
                   if(myResult == true){
                     setState((){
@@ -1296,8 +1437,11 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                     });
                   }
 
+                  setState(() => replyButton = false);
+
                   print('Replying to the thread');
                 }
+              ),
             ),
             Center(
               child: (myPagesDbuThreadReplies.isNotEmpty && theCurrentPageDbuThreadReplies < myPagesDbuThreadReplies.length && mySublistsDbuThreadReplies.isNotEmpty)? myPagesDbuThreadReplies[theCurrentPageDbuThreadReplies] : Container(padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.height * 0.015625, 0.0, MediaQuery.of(context).size.height * 0.015625), child: Text("There are no replies to this thread yet. Be the first to reply!", textAlign: TextAlign.center),),

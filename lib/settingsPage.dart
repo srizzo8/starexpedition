@@ -91,6 +91,10 @@ class settingsPage extends StatefulWidget{
 class settingsPageState extends State<settingsPage> with RouteAware{
   static String nameOfRoute = '/settings';
 
+  bool changePasswordButton = false;
+  bool changeEmailAddressButton = false;
+  bool updateProfileButton = false;
+
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
   void didChangeDependencies(){
@@ -136,43 +140,71 @@ class settingsPageState extends State<settingsPage> with RouteAware{
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
-              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
-              backgroundColor: Colors.black,
-            ),
-            child: InkWell(
-              child: Ink(
-                child: Text("Change Password", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+          AbsorbPointer(
+            absorbing: changePasswordButton,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
+                maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
+                backgroundColor: Colors.black,
               ),
+              child: InkWell(
+                child: Ink(
+                  child: Text("Change Password", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                ),
+              ),
+              onPressed: (){
+                if(changePasswordButton){
+                  return;
+                }
+
+                setState(() => changePasswordButton = true);
+
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changePasswordPage())).then((_){
+                  if(mounted){
+                    setState(() => changePasswordButton = false);
+                  }
+                });
+              }
             ),
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changePasswordPage()));
-            }
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
-              maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
-              backgroundColor: Colors.black,
-            ),
-            child: InkWell(
-              child: Ink(
-                child: Text("Change Email\nAddress", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+          AbsorbPointer(
+            absorbing: changeEmailAddressButton,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
+                maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
+                backgroundColor: Colors.black,
               ),
+              child: InkWell(
+                child: Ink(
+                  child: Text("Change Email\nAddress", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                ),
+              ),
+              onPressed: (){
+                if(changeEmailAddressButton){
+                  return;
+                }
+
+                setState(() => changeEmailAddressButton = true);
+
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changeEmailAddressPage())).then((_){
+                  if(mounted){
+                    setState(() => changeEmailAddressButton = false);
+                  }
+                });
+              }
             ),
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => changeEmailAddressPage()));
-            }
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
-          ElevatedButton(
+          AbsorbPointer(
+          absorbing: updateProfileButton,
+          child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
               maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
@@ -184,6 +216,12 @@ class settingsPageState extends State<settingsPage> with RouteAware{
               ),
             ),
             onPressed: () async{
+              if(updateProfileButton){
+                return;
+              }
+
+              setState(() => updateProfileButton = true);
+
               //Adding info about user blurb, interests, and location
               if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                 if(firebaseDesktopHelper.onDesktop){
@@ -208,8 +246,13 @@ class settingsPageState extends State<settingsPage> with RouteAware{
                 myUsernameForProfilePicture = myLoginStatus.myUsername;
                 print("Does the user have a profile picture? ${hasProfilePicture}");
               }
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => editingMyUserProfile()));
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => editingMyUserProfile())).then((_){
+                if(mounted){
+                  setState(() => updateProfileButton = false);
+                }
+              });
             }
+          ),
           ),
         ],
       ),
@@ -234,6 +277,8 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
   var gettingDocName;
   var usersPass;
   List messageForUsers = [];
+
+  bool submitChangesButton = false;
 
   List<Text> dialogMessageChangePassword(List<String> info){
     List<Text> usersMessage = [];
@@ -438,18 +483,26 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                 height: MediaQuery.of(context).size.height * 0.015625,
               ),
               Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                  ),
-                  child: InkWell(
-                    child: Ink(
-                      color: Colors.black,
-                      //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                      child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                child: AbsorbPointer(
+                  absorbing: submitChangesButton,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
                     ),
-                  ),
-                  onPressed: () async{
+                    child: InkWell(
+                      child: Ink(
+                        color: Colors.black,
+                        //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
+                        child: Text("Confirm Your Password Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                      ),
+                    ),
+                    onPressed: () async{
+                      if(submitChangesButton){
+                        return;
+                      }
+
+                      setState(() => submitChangesButton = true);
+
                       print("currentPasswordController.text: ${currentPasswordController.text}");
                       print("newPasswordController.text: ${newPasswordController.text}");
                       print("secondNewPasswordController.text: ${secondNewPasswordController.text}");
@@ -515,6 +568,10 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                                         currentPasswordController.text = "",
                                         newPasswordController.text = "",
                                         secondNewPasswordController.text = "",
+
+                                        if(mounted){
+                                          setState(() => submitChangesButton = false),
+                                        }
                                       },
                                       child: Text("Ok"),
                                     ),
@@ -541,9 +598,12 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                                 TextButton(
                                   onPressed: (){
                                     Navigator.of(myContent).pop();
-                                    currentPasswordController.text = "";
-                                    newPasswordController.text = "";
-                                    secondNewPasswordController.text = "";
+                                    //currentPasswordController.text = "";
+                                    //newPasswordController.text = "";
+                                    //secondNewPasswordController.text = "";
+                                    if(mounted){
+                                      setState(() => submitChangesButton = false);
+                                    }
                                   },
                                   child: Container(
                                     child: const Text("Ok"),
@@ -555,6 +615,7 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                         }
                       }
                     }
+                  ),
                 ),
               ),
             ],
@@ -585,6 +646,8 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
   var du;
   var usersEmailAddress;
   List messageForUsers = [];
+
+  bool submitChangesButton = false;
 
   List<Text> dialogMessageChangeEmailAddress(List<String> info){
     List<Text> usersMessage = [];
@@ -779,17 +842,25 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                 height: MediaQuery.of(context).size.height * 0.015625,
               ),
               Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                  ),
-                  child: InkWell(
-                    child: Ink(
-                      color: Colors.black,
-                      child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                child: AbsorbPointer(
+                  absorbing: submitChangesButton,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
                     ),
-                  ),
+                    child: InkWell(
+                      child: Ink(
+                        color: Colors.black,
+                        child: Text("Confirm Your Email Address Change", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                      ),
+                    ),
                     onPressed: () async{
+                      if(submitChangesButton){
+                        return;
+                      }
+
+                      setState(() => submitChangesButton = true);
+
                       if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                         if(firebaseDesktopHelper.onDesktop){
                           myEmailResult = await firebaseDesktopHelper.getFirestoreCollection("User");
@@ -870,6 +941,10 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                                         currentEmailAddressController.text = "",
                                         newEmailAddressController.text = "",
                                         myPasswordController.text = "",
+
+                                        if(mounted){
+                                          setState(() => submitChangesButton = false),
+                                        }
                                       },
                                       child: Text("Ok"),
                                     ),
@@ -895,9 +970,12 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                                 TextButton(
                                   onPressed: (){
                                     Navigator.pop(context);
-                                    currentEmailAddressController.text = "";
-                                    newEmailAddressController.text = "";
-                                    myPasswordController.text = "";
+                                    //currentEmailAddressController.text = "";
+                                    //newEmailAddressController.text = "";
+                                    //myPasswordController.text = "";
+                                    if(mounted){
+                                      setState(() => submitChangesButton = false);
+                                    }
                                   },
                                   child: Container(
                                     child: const Text("Ok"),
@@ -909,6 +987,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                         }
                       }
                     }
+                  ),
                 ),
               ),
             ],

@@ -72,6 +72,10 @@ class loginPageState extends State<loginPage> with RouteAware{
 
   final userInfo = Get.put(theUserInformation());
 
+  bool loginButtonBool = false;
+  bool forgottenPasswordButtonBool = false;
+  bool registerButtonBool = false;
+
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
   void didChangeDependencies(){
@@ -183,7 +187,9 @@ class loginPageState extends State<loginPage> with RouteAware{
               height: MediaQuery.of(context).size.height * 0.015625,
             ),
             Center(
-              child: ElevatedButton(
+              child: AbsorbPointer(
+                absorbing: loginButtonBool,
+                child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                   ),
@@ -193,6 +199,12 @@ class loginPageState extends State<loginPage> with RouteAware{
                     ),
                   ),
                   onPressed: () async{
+                    if(loginButtonBool){
+                      return;
+                    }
+
+                    setState(() => loginButtonBool = true);
+
                     var myServerCheck = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: usernameController.text.toLowerCase()).get(GetOptions(source: Source.server));
 
                     if(usernameController.text != "" && passwordController.text != "") {
@@ -261,8 +273,6 @@ class loginPageState extends State<loginPage> with RouteAware{
                         }
                       }
                       else{
-                        //print("userDocument info: ${userDocument["usernameLowercased"]}, ${userDocument["password"]}");
-                        //print("passwordDocument: $passwordDocument");
                         if(myServerCheck.docs.isNotEmpty){
                           myMain.myAccessCheckNotifier.value = DateTime.now();
                           showDialog(
@@ -275,8 +285,8 @@ class loginPageState extends State<loginPage> with RouteAware{
                                     TextButton(
                                       onPressed: () => {
                                         Navigator.pop(context),
-                                        usernameController.text = "",
-                                        passwordController.text = "",
+                                        //usernameController.text = "",
+                                        //passwordController.text = "",
                                       },
                                       child: const Text("Ok"),
                                     )
@@ -298,8 +308,8 @@ class loginPageState extends State<loginPage> with RouteAware{
                                     TextButton(
                                       onPressed: () => {
                                         Navigator.pop(context),
-                                        usernameController.text = "",
-                                        passwordController.text = "",
+                                        //usernameController.text = "",
+                                        //passwordController.text = "",
                                       },
                                       child: const Text("Ok"),
                                     )
@@ -322,8 +332,8 @@ class loginPageState extends State<loginPage> with RouteAware{
                                 TextButton(
                                   onPressed: () => {
                                     Navigator.pop(context),
-                                    usernameController.text = "",
-                                    passwordController.text = "",
+                                    //usernameController.text = "",
+                                    //passwordController.text = "",
                                   },
                                   child: const Text("Ok"),
                                 )
@@ -344,8 +354,8 @@ class loginPageState extends State<loginPage> with RouteAware{
                                 TextButton(
                                   onPressed: () => {
                                     Navigator.pop(context),
-                                    usernameController.text = "",
-                                    passwordController.text = "",
+                                    //usernameController.text = "",
+                                    //passwordController.text = "",
                                   },
                                   child: const Text("Ok"),
                                 )
@@ -366,8 +376,8 @@ class loginPageState extends State<loginPage> with RouteAware{
                                 TextButton(
                                   onPressed: () => {
                                     Navigator.pop(context),
-                                    usernameController.text = "",
-                                    passwordController.text = "",
+                                    //usernameController.text = "",
+                                    //passwordController.text = "",
                                   },
                                   child: const Text("Ok"),
                                 )
@@ -388,8 +398,8 @@ class loginPageState extends State<loginPage> with RouteAware{
                                 TextButton(
                                   onPressed: () => {
                                     Navigator.pop(context),
-                                    usernameController.text = "",
-                                    passwordController.text = "",
+                                    //usernameController.text = "",
+                                    //passwordController.text = "",
                                   },
                                   child: const Text("Ok"),
                                 )
@@ -398,7 +408,11 @@ class loginPageState extends State<loginPage> with RouteAware{
                           }
                       );
                     }
+                    if(mounted){
+                      setState(() => loginButtonBool = false);
+                    }
                   }
+                ),
               ),
             ),
             Center(
@@ -418,24 +432,31 @@ class loginPageState extends State<loginPage> with RouteAware{
               ),
             ),
             Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                ),
-                child: InkWell(
-                  child: Ink(
-                    //color: Colors.black,
-                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                    //height: 20,
-                    child: Text("Forgotten Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
+              child: AbsorbPointer(
+                absorbing: forgottenPasswordButtonBool,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
                   ),
-                  /*onPressed: () async{
+                  child: InkWell(
+                    child: Ink(
+                      child: Text("Forgotten Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
+                    ),
+                  ),
+                  onPressed: () async{
+                    if(forgottenPasswordButtonBool){
+                      return;
+                    }
+
+                    setState(() => forgottenPasswordButtonBool = true);
+
                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPassword.forgottenPassword()));
-                  }*/
+
+                    if(mounted){
+                      setState(() => forgottenPasswordButtonBool = false);
+                    }
+                  }
                 ),
-                onPressed: () async{
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => forgottenPassword.forgottenPassword()));
-                }
               ),
             ),
             Center(
@@ -450,25 +471,35 @@ class loginPageState extends State<loginPage> with RouteAware{
               ),
             ),
             Center(
-              child: ElevatedButton(
+              child: AbsorbPointer(
+                absorbing: registerButtonBool,
+                child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                 ),
                 child: InkWell(
                   child: Ink(
                     color: Colors.black,
-                    //padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
-                    //height: 20,
                     child: Text("Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)), //style: TextStyle(fontSize: 12.0)),//, style: TextStyle(fontSize: 14.0)),
                   ),
                 ),
                 onPressed: () async{
-                  //Navigator.pushReplacementNamed(context, loginPageRoutes.myRegisterPage);
+                  if(registerButtonBool){
+                    return;
+                  }
+
+                  setState(() => registerButtonBool = true);
+
                   databaseService().initMyDatabase();
                   Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => theRegisterPage.registerPage()));
                   print("Signing up");
+
+                  if(mounted){
+                    setState(() => registerButtonBool = false);
+                  }
                 }
               ),
+            ),
             ),
           ],
         ),

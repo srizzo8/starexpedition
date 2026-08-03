@@ -39,6 +39,8 @@ class mySearch extends SearchDelegate{
 
   final ScrollController myScrollController = ScrollController();
 
+  ValueNotifier<bool> goToProfilePageBool = ValueNotifier(false);
+
   @override
   TextInputAction get textInputAction => TextInputAction.search;
 
@@ -144,31 +146,55 @@ class mySearch extends SearchDelegate{
         itemCount: myMatchQuery.length,
         itemBuilder: (bc4, index){
           var myResult = myMatchQuery[index];
-          return ListTile(
-            title: Text(myResult),
-            onTap: () async{
-              SystemChannels.textInput.invokeMethod("TextInput.hide");
+            return ValueListenableBuilder<bool>(
+              valueListenable: goToProfilePageBool,
+              builder: (context, goingToProfilePage, child){
+                return AbsorbPointer(
+                  absorbing: goingToProfilePage,
+                  child: ListTile(
+                    title: Text(myResult),
+                    onTap: () async{
+                      if(goToProfilePageBool.value){
+                        return;
+                      }
 
-              theUsernameResult = myResult;
+                      goToProfilePageBool.value = true;
 
-              if(firebaseDesktopHelper.onDesktop){
-                nameClickedData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                theUsersData = nameClickedData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
-                print("nameclickeddata: ${nameClickedData}");
-                print("theusersdata: ${theUsersData}");
+                      SystemChannels.textInput.invokeMethod("TextInput.hide");
 
-                Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
-              }
-              else{
-                nameClickedData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myResult.toLowerCase()).get();
-                nameClickedData.docs.forEach((person){
-                  theUsersData = person.data();
-                });
-                print("You clicked on someone's name: ${myResult}");
-                print("The user's data: ${theUsersData}");
-                print("Stars tracked: ${theUsersData["usernameProfileInformation"]["starsTracked"]}");
-                Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
-              }
+                      theUsernameResult = myResult;
+
+                      if(firebaseDesktopHelper.onDesktop){
+                        nameClickedData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                        theUsersData = nameClickedData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == myResult.toLowerCase(), orElse: () => {} as Map<String, dynamic>);
+                        print("nameclickeddata: ${nameClickedData}");
+                        print("theusersdata: ${theUsersData}");
+
+                        if(!bc4.mounted){
+                          return;
+                        }
+
+                        Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
+                      }
+                      else{
+                        nameClickedData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: myResult.toLowerCase()).get();
+                        nameClickedData.docs.forEach((person){
+                          theUsersData = person.data();
+                        });
+                        print("You clicked on someone's name: ${myResult}");
+                        print("The user's data: ${theUsersData}");
+                        print("Stars tracked: ${theUsersData["usernameProfileInformation"]["starsTracked"]}");
+
+                        if(!bc4.mounted){
+                          return;
+                        }
+
+                        Navigator.push(bc4, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective()));
+                      }
+                      goToProfilePageBool.value = false;
+                    }
+                  ),
+                );
             }
           );
         }
@@ -216,13 +242,6 @@ class userSearchBarPageState extends State<userSearchBarPage> with RouteAware{
         appBar: AppBar(
           centerTitle: true,
           title: Text("Star Expedition"),
-          /*leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              color: Colors.white,
-              onPressed: () =>{
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => myMain.StarExpedition())),
-              }
-          ),*/
         ),
         body: Column(
             children: <Widget>[

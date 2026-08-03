@@ -37,6 +37,9 @@ class paywallPageState extends State<paywallPage>{
   List<ProductDetails> myProducts = [];
   bool isLoading = true;
 
+  bool monthlyButtonBool = false;
+  bool yearlyButtonBool = false;
+
   @override
   void initState(){
     super.initState();
@@ -123,25 +126,38 @@ class paywallPageState extends State<paywallPage>{
                   child: const Text("Our monthly plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                 ),
                 Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      //When onPressed is null, this button is grey[500]:
-                      backgroundColor: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[500] : Colors.black,
-                      foregroundColor: Colors.white,
+                  child: AbsorbPointer(
+                    absorbing: monthlyButtonBool,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        //When onPressed is null, this button is grey[500]:
+                        backgroundColor: widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[500] : Colors.black,
+                        foregroundColor: Colors.white,
 
-                      //Overriding the disabled opacity:
-                      elevation: 0,
-                    ).copyWith(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                        (states) => widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[500] : Colors.black,
+                        //Overriding the disabled opacity:
+                        elevation: 0,
+                      ).copyWith(
+                        backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                          (states) => widget.activeProductId == theBillingService.myMonthlyId? Colors.grey[500] : Colors.black,
+                        ),
                       ),
+                      child: Text(widget.activeProductId == theBillingService.myMonthlyId? "Your current plan" : widget.activeProductId == theBillingService.myYearlyId? "Switch to Monthly (${monthly?.price}/month)" : "${monthly?.price}/month", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
+                      //Does nothing if a user already has an active monthly plan:
+                      onPressed: widget.activeProductId == theBillingService.myMonthlyId? null : (){
+                        if(monthlyButtonBool){
+                          return;
+                        }
+
+                        setState(() => monthlyButtonBool = true);
+
+                        print("Paying for a monthly subscription");
+                        widget.myBillingService.subscribe(monthly!);
+
+                        if(mounted){
+                          setState(() => monthlyButtonBool = false);
+                        }
+                      }
                     ),
-                    child: Text(widget.activeProductId == theBillingService.myMonthlyId? "Your current plan" : widget.activeProductId == theBillingService.myYearlyId? "Switch to Monthly (${monthly?.price}/month)" : "${monthly?.price}/month", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
-                    //Does nothing if a user already has an active monthly plan:
-                    onPressed: widget.activeProductId == theBillingService.myMonthlyId? null : (){
-                      print("Paying for a monthly subscription");
-                      widget.myBillingService.subscribe(monthly!);
-                    }
                   ),
                 ),
                 Container(
@@ -154,7 +170,9 @@ class paywallPageState extends State<paywallPage>{
                   child: const Text("Our yearly plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                 ),
                 Center(
-                  child: ElevatedButton(
+                  child: AbsorbPointer(
+                  absorbing: yearlyButtonBool,
+                    child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         //When onPressed is null, this button is grey[500]:
                         backgroundColor: widget.activeProductId == theBillingService.myYearlyId? Colors.grey[500] : Colors.black,
@@ -170,9 +188,20 @@ class paywallPageState extends State<paywallPage>{
                       child: Text(widget.activeProductId == theBillingService.myYearlyId? "Your current plan" : widget.activeProductId == theBillingService.myMonthlyId? "Switch to Yearly (${yearly?.price}/year)" : "${yearly?.price}/year", style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white), textAlign: TextAlign.center),
                       //Does nothing if a user already has an active yearly plan:
                       onPressed: widget.activeProductId == theBillingService.myYearlyId? null : (){
+                        if(yearlyButtonBool){
+                          return;
+                        }
+
+                        setState(() => yearlyButtonBool = true);
+
                         print("Paying for a yearly subscription");
                         widget.myBillingService.subscribe(yearly!);
+
+                        if(mounted){
+                          setState(() => yearlyButtonBool = false);
+                        }
                       }
+                    ),
                   ),
                 ),
               ],

@@ -68,6 +68,9 @@ class discussionBoardPageState extends State<discussionBoardPage> with RouteAwar
   static String nameOfRoute = '/discussionBoardPage';
   List<String> subforumList = ["Discussion Board Updates", "Questions and Answers", "Technologies", "Projects", "New Discoveries", "Feedback and Suggestions"];
 
+  bool discussionBoardSubforumNavigation = false;
+  bool discussionBoardRulesNavigation = false;
+
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
   void didChangeDependencies(){
@@ -121,6 +124,8 @@ class discussionBoardPageState extends State<discussionBoardPage> with RouteAwar
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Center(
+                        child: AbsorbPointer(
+                        absorbing: discussionBoardSubforumNavigation,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey[300],
@@ -137,6 +142,12 @@ class discussionBoardPageState extends State<discussionBoardPage> with RouteAwar
                             ),
                           ),
                           onPressed: () async{
+                            if(discussionBoardSubforumNavigation){
+                              return;
+                            }
+
+                            setState(() => discussionBoardSubforumNavigation = true);
+
                             if(firebaseDesktopHelper.onDesktop){
                               //Getting the amount of threads that are in the Discussion Board Updates subforum:
                               discussionBoardUpdatesThreads = await firebaseDesktopHelper.getFirestoreCollection("Discussion_Board_Updates");
@@ -234,7 +245,11 @@ class discussionBoardPageState extends State<discussionBoardPage> with RouteAwar
                                 print("Feedback and Suggestions");
                                 break;
                             }
+                            if(mounted){
+                              setState(() => discussionBoardSubforumNavigation = false);
+                            }
                           }
+                        ),
                         ),
                       ),
                       Container(
@@ -247,7 +262,9 @@ class discussionBoardPageState extends State<discussionBoardPage> with RouteAwar
                   return Padding(
                     padding: EdgeInsets.fromLTRB(0.0, MediaQuery.of(context).size.width * 0.025, 0.0, 0.0),
                     child: Center(
-                      child: ElevatedButton(
+                      child: AbsorbPointer(
+                        absorbing: discussionBoardRulesNavigation,
+                        child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
                           ),
@@ -259,6 +276,12 @@ class discussionBoardPageState extends State<discussionBoardPage> with RouteAwar
                             ),
                           ),
                           onPressed: (){
+                            if(discussionBoardRulesNavigation){
+                              return;
+                            }
+
+                            setState(() => discussionBoardRulesNavigation = true);
+
                             myMain.myAccessCheckNotifier.value = DateTime.now();
                             showDialog(
                                 context: context,
@@ -277,7 +300,11 @@ class discussionBoardPageState extends State<discussionBoardPage> with RouteAwar
                                   );
                                 }
                             );
+                            if(mounted){
+                              setState(() => discussionBoardRulesNavigation = false);
+                            }
                           }
+                        ),
                       ),
                     ),
                   );

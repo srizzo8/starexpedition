@@ -35,6 +35,14 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
   List<String> spectralClassCount = [];
   bool b = false;
 
+  bool mSpectralClassCountNavigation = false;
+  bool kSpectralClassCountNavigation = false;
+  bool gSpectralClassCountNavigation = false;
+  bool fSpectralClassCountNavigation = false;
+  bool aSpectralClassCountNavigation = false;
+  bool bSpectralClassCountNavigation = false;
+  bool oSpectralClassCountNavigation = false;
+
   @override
   Future <List<String>> getSpectralClassData() async{
     List<String> spectralClasses = [];
@@ -214,15 +222,28 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   //DataCell(Text('Proxima Centauri')),
                   DataCell(Align(
                     alignment: Alignment.center,
-                    child: GestureDetector(
-                      child: Text(spectralClassCount[0].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
-                      onTap: (){
-                        print("You clicked me!");
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                        mySpectralClass = "M";
-                      },
+                    child: AbsorbPointer(
+                      absorbing: mSpectralClassCountNavigation,
+                        child: GestureDetector(
+                          child: Text(spectralClassCount[0].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                          onTap: (){
+                            if(mSpectralClassCountNavigation){
+                              return;
+                            }
+
+                            setState(() => mSpectralClassCountNavigation = true);
+
+                            print("You clicked me!");
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                            mySpectralClass = "M";
+
+                            if(mounted){
+                              setState(() => mSpectralClassCountNavigation = false);
+                            }
+                          },
+                        ),
+                      ),
                     ),
-                  ),
                   ),
                 ]),
                 DataRow(cells: [
@@ -242,13 +263,26 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
-                    child: GestureDetector(
-                      child: Text(spectralClassCount[1].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
-                      onTap: (){
-                        print('You clicked me!');
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                        mySpectralClass = "K";
-                      },
+                    child: AbsorbPointer(
+                      absorbing: kSpectralClassCountNavigation,
+                      child: GestureDetector(
+                        child: Text(spectralClassCount[1].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                        onTap: (){
+                          if(kSpectralClassCountNavigation){
+                            return;
+                          }
+
+                          setState(() => kSpectralClassCountNavigation = true);
+
+                          print('You clicked me!');
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                          mySpectralClass = "K";
+
+                          if(mounted){
+                            setState(() => kSpectralClassCountNavigation = false);
+                          }
+                        },
+                      ),
                     ),
                   ),
                   ),
@@ -270,12 +304,25 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
-                    child: GestureDetector(
-                      child: Text(spectralClassCount[2].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                        mySpectralClass = "G";
-                      },
+                    child: AbsorbPointer(
+                      absorbing: gSpectralClassCountNavigation,
+                      child: GestureDetector(
+                        child: Text(spectralClassCount[2].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                        onTap: (){
+                          if(gSpectralClassCountNavigation){
+                            return;
+                          }
+
+                          setState(() => gSpectralClassCountNavigation = true);
+
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                          mySpectralClass = "G";
+
+                          if(mounted){
+                            setState(() => gSpectralClassCountNavigation = false);
+                          }
+                        },
+                      ),
                     ),
                   ),
                   ),      //Text(spectralClassCount[2].toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.purple))),
@@ -297,14 +344,27 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
-                    child: GestureDetector(
-                      child: Text(spectralClassCount[3].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                        mySpectralClass = "F";
-                      },
-                    ),
-                  )
+                      child: AbsorbPointer(
+                        absorbing: fSpectralClassCountNavigation,
+                        child: GestureDetector(
+                          child: Text(spectralClassCount[3].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                          onTap: (){
+                            if(fSpectralClassCountNavigation){
+                              return;
+                            }
+
+                            setState(() => fSpectralClassCountNavigation = true);
+
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                            mySpectralClass = "F";
+
+                            if(mounted){
+                              setState(() => fSpectralClassCountNavigation = false);
+                            }
+                          },
+                        ),
+                      ),
+                    )
                   ),
                 ]),
                 DataRow(cells: [
@@ -324,14 +384,27 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
-                    child: GestureDetector(
-                      child: Text(spectralClassCount[4].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                        mySpectralClass = "A";
-                      },
-                    ),
-                  )
+                      child: AbsorbPointer(
+                        absorbing: aSpectralClassCountNavigation,
+                        child: GestureDetector(
+                          child: Text(spectralClassCount[4].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                          onTap: (){
+                            if(aSpectralClassCountNavigation){
+                              return;
+                            }
+
+                            setState(() => aSpectralClassCountNavigation = true);
+
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                            mySpectralClass = "A";
+
+                            if(mounted){
+                              setState(() => aSpectralClassCountNavigation = false);
+                            }
+                          },
+                        ),
+                      ),
+                    )
                   ),
                 ]),
                 DataRow(cells: [
@@ -351,14 +424,27 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
-                    child: GestureDetector(
-                      child: Text(spectralClassCount[5].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                        mySpectralClass = "B";
-                      },
-                    ),
-                  )
+                      child: AbsorbPointer(
+                        absorbing: bSpectralClassCountNavigation,
+                        child: GestureDetector(
+                          child: Text(spectralClassCount[5].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                          onTap: (){
+                            if(bSpectralClassCountNavigation){
+                              return;
+                            }
+
+                            setState(() => bSpectralClassCountNavigation = true);
+
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                            mySpectralClass = "B";
+
+                            if(mounted){
+                              setState(() => bSpectralClassCountNavigation = false);
+                            }
+                          },
+                        ),
+                      ),
+                    )
                   ),
                 ]),
                 DataRow(cells: [
@@ -378,14 +464,27 @@ class spectralClassPageState extends State<spectralClassPage> with RouteAware{
                   ),
                   DataCell(Align(
                     alignment: Alignment.center,
-                    child: GestureDetector(
-                      child: Text(spectralClassCount[6].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
-                        mySpectralClass = "O";
-                      },
-                    ),
-                  )
+                      child: AbsorbPointer(
+                        absorbing: oSpectralClassCountNavigation,
+                        child: GestureDetector(
+                          child: Text(spectralClassCount[6].toString(), style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                          onTap: (){
+                            if(oSpectralClassCountNavigation){
+                              return;
+                            }
+
+                            setState(() => oSpectralClassCountNavigation = true);
+
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => listForSpectralClassesPage()));
+                            mySpectralClass = "O";
+
+                            if(mounted){
+                              setState(() => oSpectralClassCountNavigation = false);
+                            }
+                          },
+                        ),
+                      ),
+                    )
                   ),
                 ]),
               ],
@@ -436,6 +535,10 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
   myMain.myStars clickedStar = myMain.myStars(starName: "not available");
 
   ValueNotifier<mySpectralClassStarSortingCriteria> mySpectralClassStarSortingCriteriaNotifier = ValueNotifier(mySpectralClassStarSortingCriteria.alphabeticalAToZ);
+
+  bool starNavigationFromSpectralClassPageList = false;
+  bool goingBackFromSpectralClassPageList = false;
+  bool activatingStarSorter = false;
 
   @override
   Future<List<List<myMain.myStars>>> getStars() async{
@@ -583,13 +686,26 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
       appBar: AppBar(
           centerTitle: true,
           title: Text("Star Expedition"),
-          leading: IconButton(
+          leading: AbsorbPointer(
+            absorbing: goingBackFromSpectralClassPageList,
+            child: IconButton(
               icon: Icon(Icons.arrow_back),
               color: Colors.white,
-              onPressed: () =>{
-                Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage())),
+              onPressed: () {
+                if(goingBackFromSpectralClassPageList){
+                  return;
+                }
+
+                setState(() => goingBackFromSpectralClassPageList = true);
+
+                Navigator.push(context, MaterialPageRoute(builder: (context) => spectralClassPage()));
+
+                if(mounted){
+                  setState(() => goingBackFromSpectralClassPageList = false);
+                }
               }
           )
+        ),
       ),
       body: fullListOfStars.isEmpty? Center(child: CircularProgressIndicator()):
       Column(
@@ -602,10 +718,18 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
             padding: EdgeInsets.all(10.0),
             child: Text("List of stars with articles that belong to the " + mySpectralClass + " spectral class", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           ),
-          IconButton(
+          AbsorbPointer(
+            absorbing: activatingStarSorter,
+            child: IconButton(
               icon: Icon(Icons.sort),
               tooltip: "Sort star by",
               onPressed: (){
+                if(activatingStarSorter){
+                  return;
+                }
+
+                setState(() => activatingStarSorter = true);
+
                 //Temporary variable to hold a user's selection inside the dialog:
                 mySpectralClassStarSortingCriteria mySpectralClassTemporaryCriteria = mySpectralClassStarSortingCriteriaNotifier.value;
 
@@ -668,7 +792,11 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
                       );
                     }
                 );
+                if(mounted){
+                  setState(() => activatingStarSorter = false);
+                }
               }
+            ),
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.015625,
@@ -682,76 +810,90 @@ class listForSpectralClassesPageState extends State<listForSpectralClassesPage> 
                     itemCount: fullListOfStars[indexPlaceSpectralClass()].length,
                     itemBuilder: (context, index){
                       mySortMatchQuery(fullListOfStars[indexPlaceSpectralClass()]);
-                    return ListTile(
-                      title: Text(fullListOfStars[indexPlaceSpectralClass()][index].starName!, textAlign: TextAlign.center),
-                      onTap: () async{
-                        myMain.correctStar = fullListOfStars[indexPlaceSpectralClass()][index].starName!;
-                        print(myMain.correctStar);
-                        clickedStar.starName = myMain.correctStar;
-                        print(clickedStar.starName);
-
-                        informationAboutClickedStar = await myMain.getStarInformation();
-                        print(informationAboutClickedStar);
-                        fromSpectralClassPage = true;
-
-                        myMain.starFileContent = await myMain.readStarFile();
-
-                        myMain.listOfStarUrls = [];
-
-                        final myLines = myMain.starFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((s) => s.isNotEmpty && s != " ").toList();
-
-                        Map<int, String> myTitles = {};
-
-                        for(int i = 0; i < myLines.length; i++){
-                          if(myLines[i].contains("||")){
-                            final parts = myLines[i].split("||");
-                            myMain.listOfStarUrls.add(parts[0].trim());
-                            myTitles[i] = parts[1].trim();
-                          }
-                          else{
-                            myMain.listOfStarUrls.add(myLines[i]);
-                          }
-                        }
-
-                        myMain.urlTitlesForStars = await Future.wait(List.generate(myMain.listOfStarUrls.length, (i){
-                            if(myTitles.containsKey(i)){
-                              return Future.value(myTitles[i]);
+                      return AbsorbPointer(
+                        absorbing: starNavigationFromSpectralClassPageList,
+                        child: ListTile(
+                          title: Text(fullListOfStars[indexPlaceSpectralClass()][index].starName!, textAlign: TextAlign.center),
+                          onTap: () async{
+                            if(starNavigationFromSpectralClassPageList){
+                              return;
                             }
-                            return myMain.getTitleOfPage(myMain.listOfStarUrls[i]);
-                          })
-                        );
 
-                        //Is a user tracking this star?
-                        if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                          if(firebaseDesktopHelper.onDesktop){
-                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                            setState(() => starNavigationFromSpectralClassPageList = true);
 
-                            var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                            myMain.correctStar = fullListOfStars[indexPlaceSpectralClass()][index].starName!;
+                            print(myMain.correctStar);
+                            clickedStar.starName = myMain.correctStar;
+                            print(clickedStar.starName);
 
-                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
+                            informationAboutClickedStar = await myMain.getStarInformation();
+                            print(informationAboutClickedStar);
+                            fromSpectralClassPage = true;
 
-                            myMain.starTracked = currentInfoOfUser?["starsTracked"].containsKey(myMain.correctStar);
-                            print("starTracked: ${myMain.starTracked}");
-                          }
-                          else{
-                            var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                            var docNameForUsers;
-                            theUser.docs.forEach((result){
-                              docNameForUsers = result.id;
-                            });
+                            myMain.starFileContent = await myMain.readStarFile();
 
-                            DocumentSnapshot<Map<dynamic, dynamic>> snapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForUsers).get();
-                            Map<dynamic, dynamic>? individual = snapshotUsers.data();
+                            myMain.listOfStarUrls = [];
 
-                            myMain.starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMain.correctStar);
-                            print("starTracked: ${myMain.starTracked}");
-                          }
-                        }
+                            final myLines = myMain.starFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((s) => s.isNotEmpty && s != " ").toList();
 
-                        myMain.myAccessCheckNotifier.value = DateTime.now();
-                        Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
-                      },
-                      leading: Image.asset(myMain.starsForSearchBar[myMain.starsForSearchBar.indexWhere((star) => star.starName! == fullListOfStars[indexPlaceSpectralClass()][index].starName!)].imagePath!, fit: BoxFit.cover, height: 50, width: 50));
+                            Map<int, String> myTitles = {};
+
+                            for(int i = 0; i < myLines.length; i++){
+                              if(myLines[i].contains("||")){
+                                final parts = myLines[i].split("||");
+                                myMain.listOfStarUrls.add(parts[0].trim());
+                                myTitles[i] = parts[1].trim();
+                              }
+                              else{
+                                myMain.listOfStarUrls.add(myLines[i]);
+                              }
+                            }
+
+                            myMain.urlTitlesForStars = await Future.wait(List.generate(myMain.listOfStarUrls.length, (i){
+                                if(myTitles.containsKey(i)){
+                                  return Future.value(myTitles[i]);
+                                }
+                                return myMain.getTitleOfPage(myMain.listOfStarUrls[i]);
+                              })
+                            );
+
+                            //Is a user tracking this star?
+                            if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                              if(firebaseDesktopHelper.onDesktop){
+                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                var usersProfileInfo = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersProfileInfo["usernameProfileInformation"] ?? {});
+
+                                myMain.starTracked = currentInfoOfUser?["starsTracked"].containsKey(myMain.correctStar);
+                                print("starTracked: ${myMain.starTracked}");
+                              }
+                              else{
+                                var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                                var docNameForUsers;
+                                theUser.docs.forEach((result){
+                                  docNameForUsers = result.id;
+                                });
+
+                                DocumentSnapshot<Map<dynamic, dynamic>> snapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForUsers).get();
+                                Map<dynamic, dynamic>? individual = snapshotUsers.data();
+
+                                myMain.starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMain.correctStar);
+                                print("starTracked: ${myMain.starTracked}");
+                              }
+                            }
+
+                            myMain.myAccessCheckNotifier.value = DateTime.now();
+                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => myMain.articlePage(informationAboutClickedStar), settings: RouteSettings(arguments: clickedStar)));
+
+                            if(mounted){
+                              setState(() => starNavigationFromSpectralClassPageList = false);
+                            }
+                          },
+                          leading: Image.asset(myMain.starsForSearchBar[myMain.starsForSearchBar.indexWhere((star) => star.starName! == fullListOfStars[indexPlaceSpectralClass()][index].starName!)].imagePath!, fit: BoxFit.cover, height: 50, width: 50),
+                        ),
+                      );
                     },
                   );
                 }
