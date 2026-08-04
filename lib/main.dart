@@ -2691,12 +2691,16 @@ class articlePage extends StatelessWidget{
   var myPlanet = <String>[];
 
   final List<String> starInfo;
-  articlePage(this.starInfo);
+  Future<List<String>?>? starFutureData;
+
+  articlePage(this.starInfo, {super.key});
 
   List<Text> starPdfMessageForUser = [];
 
   final ValueNotifier<bool> navigationBackToPreviousPage = ValueNotifier(false);
   final ValueNotifier<bool> navigationToPlanetArticle = ValueNotifier(false);
+  final ValueNotifier<bool> trackStarButton = ValueNotifier(false);
+  final ValueNotifier<bool> untrackStarButton = ValueNotifier(false);
 
   List<String> getKeys(Map myMap){ // This is for getting planet names, which are keys
     //Making the star's planets in alphabetical order
@@ -2794,6 +2798,8 @@ class articlePage extends StatelessWidget{
 
   @override
   Widget build(BuildContext bc) {
+    starFutureData ??= getStarData();
+
     final myLoginStatus = bc.watch<loginStatus>();
 
     var info = ModalRoute.of(bc)!.settings;
@@ -3298,293 +3304,344 @@ class articlePage extends StatelessWidget{
                           if(((myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != "") && starTracked == false))
                             Padding(
                               padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
-                              child: Center(
-                                child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
-                                    ),
-                                    child: Ink(
-                                      color: Colors.black,
-                                      child: Text("Track this Star", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
-                                    ),
-                                    onPressed: () async{
-                                      if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                                        TextEditingController reasonForStarTrackUsers = TextEditingController();
-                                        var starsTracked;
+                              child: ValueListenableBuilder<bool>(
+                                valueListenable: trackStarButton,
+                                builder: (bc, trackingStar, child){
+                                  return AbsorbPointer(
+                                    absorbing: trackingStar,
+                                    child: Center(
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.black,
+                                        ),
+                                        child: Ink(
+                                          color: Colors.black,
+                                          child: Text("Track this Star", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                                        ),
+                                        onPressed: () async{
+                                          if(trackStarButton.value){
+                                            return;
+                                          }
 
-                                        if(firebaseDesktopHelper.onDesktop){
-                                          List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                          trackStarButton.value = true;
 
-                                          var user = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                                          if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                                            TextEditingController reasonForStarTrackUsers = TextEditingController();
+                                            var starsTracked;
 
-                                          docNameForStarsTrackedUser = user["docId"];
-                                          print("docNameForStarsTrackedUser: ${docNameForStarsTrackedUser}");
+                                            if(firebaseDesktopHelper.onDesktop){
+                                              List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                          Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(user["usernameProfileInformation"] ?? {});
+                                              var user = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                          starsTracked = currentInfoOfUser?["starsTracked"];
-                                        }
-                                        else{
-                                          var user = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                                          user.docs.forEach((result){
-                                            docNameForStarsTrackedUser = result.id;
-                                          });
-                                          print(docNameForStarsTrackedUser);
+                                              docNameForStarsTrackedUser = user["docId"];
+                                              print("docNameForStarsTrackedUser: ${docNameForStarsTrackedUser}");
 
-                                          DocumentSnapshot<Map<dynamic, dynamic>> mySnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedUser).get();
-                                          Map<dynamic, dynamic>? individual = mySnapshotUsers.data();
+                                              Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(user["usernameProfileInformation"] ?? {});
 
-                                          print(individual?["usernameProfileInformation"]);
-                                          print(individual?["usernameProfileInformation"]["starsTracked"]);
+                                              starsTracked = currentInfoOfUser?["starsTracked"];
+                                            }
+                                            else{
+                                              var user = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                                              user.docs.forEach((result){
+                                                docNameForStarsTrackedUser = result.id;
+                                              });
+                                              print(docNameForStarsTrackedUser);
 
-                                          starsTracked = individual?["usernameProfileInformation"]["starsTracked"];
-                                        }
+                                              DocumentSnapshot<Map<dynamic, dynamic>> mySnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedUser).get();
+                                              Map<dynamic, dynamic>? individual = mySnapshotUsers.data();
 
-                                        if(starsTracked.length < 3){
-                                          myAccessCheckNotifier.value = DateTime.now();
+                                              print(individual?["usernameProfileInformation"]);
+                                              print(individual?["usernameProfileInformation"]["starsTracked"]);
 
-                                          showDialog(
-                                              context: bc,
-                                              builder: (BuildContext context){
-                                                return Listener(
-                                                  behavior: HitTestBehavior.translucent,
-                                                  onPointerDown: (_){
-                                                    FocusManager.instance.primaryFocus?.unfocus();
-                                                  },
-                                                  child: AlertDialog(
-                                                    title: Text("Tracking ${theStar.starName!}"),
-                                                    content: Wrap(
-                                                      children: <Widget>[
-                                                        Center(
-                                                          child: Container(
-                                                            alignment: Alignment.centerLeft,
-                                                            child: Text("Why are you interested in tracking this star?"),
+                                              starsTracked = individual?["usernameProfileInformation"]["starsTracked"];
+                                            }
+
+                                            if(starsTracked.length < 3){
+                                              myAccessCheckNotifier.value = DateTime.now();
+
+                                              await showDialog(
+                                                  context: bc,
+                                                  builder: (BuildContext context){
+                                                    return Listener(
+                                                      behavior: HitTestBehavior.translucent,
+                                                      onPointerDown: (_){
+                                                        FocusManager.instance.primaryFocus?.unfocus();
+                                                      },
+                                                      child: AlertDialog(
+                                                        title: Text("Tracking ${theStar.starName!}"),
+                                                        content: Wrap(
+                                                          children: <Widget>[
+                                                            Center(
+                                                              child: Container(
+                                                                alignment: Alignment.centerLeft,
+                                                                child: Text("Why are you interested in tracking this star?"),
+                                                              ),
+                                                            ),
+                                                            TextField(
+                                                              controller: reasonForStarTrackUsers,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        actions: [
+                                                          TextButton(
+                                                              child: Text("Ok"),
+                                                              onPressed: () async{
+                                                                if(whitespaceChecker(reasonForStarTrackUsers.text) == false){
+                                                                  starsTracked.addEntries({theStar.starName!: reasonForStarTrackUsers.text}.entries);
+
+                                                                  if(firebaseDesktopHelper.onDesktop){
+                                                                    List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+
+                                                                    var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForStarsTrackedUser, orElse: () => <String, dynamic>{});
+
+                                                                    Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
+
+                                                                    //Updating starsTracked:
+                                                                    currentInfoOfUser["starsTracked"] = starsTracked;
+
+                                                                    await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForStarsTrackedUser", {
+                                                                      "usernameProfileInformation": currentInfoOfUser,
+                                                                    });
+                                                                  }
+                                                                  else{
+                                                                    FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedUser).update({
+                                                                      "usernameProfileInformation.starsTracked": starsTracked,
+                                                                    }).then((outcome) {
+                                                                      print("starsTracked updated!");
+                                                                    });
+                                                                  }
+
+                                                                  if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                                                                    if(firebaseDesktopHelper.onDesktop){
+                                                                      var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                      var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                                      //Getting the current profile info of the user:
+                                                                      Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
+                                                                      starTracked = currentInfoOfUser["starsTracked"].containsKey(theStar.starName!);
+                                                                      print("starTracked: ${starTracked}");
+                                                                    }
+                                                                    else{
+                                                                      var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                                                                      var docNameForUsers;
+                                                                      theUser.docs.forEach((result){
+                                                                        docNameForUsers = result.id;
+                                                                      });
+
+                                                                      DocumentSnapshot<Map<dynamic, dynamic>> snapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForUsers).get();
+                                                                      Map<dynamic, dynamic>? individual = snapshotUsers.data();
+
+                                                                      starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                                      print("starTracked: ${starTracked}");
+                                                                    }
+                                                                  }
+                                                                  myAccessCheckNotifier.value = DateTime.now();
+
+                                                                  if(!context.mounted){
+                                                                    return;
+                                                                  }
+
+                                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+                                                                }
+                                                              }
                                                           ),
-                                                        ),
-                                                        TextField(
-                                                          controller: reasonForStarTrackUsers,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                          child: Text("Ok"),
-                                                          onPressed: () async{
-                                                            if(whitespaceChecker(reasonForStarTrackUsers.text) == false){
-                                                              starsTracked.addEntries({theStar.starName!: reasonForStarTrackUsers.text}.entries);
-
-                                                              if(firebaseDesktopHelper.onDesktop){
-                                                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
-
-                                                                var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForStarsTrackedUser, orElse: () => <String, dynamic>{});
-
-                                                                Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
-
-                                                                //Updating starsTracked:
-                                                                currentInfoOfUser["starsTracked"] = starsTracked;
-
-                                                                await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForStarsTrackedUser", {
-                                                                  "usernameProfileInformation": currentInfoOfUser,
-                                                                });
-                                                              }
-                                                              else{
-                                                                FirebaseFirestore.instance.collection("User").doc(docNameForStarsTrackedUser).update({
-                                                                  "usernameProfileInformation.starsTracked": starsTracked,
-                                                                }).then((outcome) {
-                                                                  print("starsTracked updated!");
-                                                                });
+                                                          TextButton(
+                                                            child: Text("Cancel"),
+                                                            onPressed: (){
+                                                              if(!context.mounted){
+                                                                return;
                                                               }
 
-                                                              if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                                                                if(firebaseDesktopHelper.onDesktop){
-                                                                  var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                                  var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
-
-                                                                  //Getting the current profile info of the user:
-                                                                  Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
-                                                                  starTracked = currentInfoOfUser["starsTracked"].containsKey(theStar.starName!);
-                                                                  print("starTracked: ${starTracked}");
-                                                                }
-                                                                else{
-                                                                  var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                                                                  var docNameForUsers;
-                                                                  theUser.docs.forEach((result){
-                                                                    docNameForUsers = result.id;
-                                                                  });
-
-                                                                  DocumentSnapshot<Map<dynamic, dynamic>> snapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForUsers).get();
-                                                                  Map<dynamic, dynamic>? individual = snapshotUsers.data();
-
-                                                                  starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
-                                                                  print("starTracked: ${starTracked}");
-                                                                }
-                                                              }
-                                                              myAccessCheckNotifier.value = DateTime.now();
-                                                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+                                                              Navigator.pop(context);
                                                             }
-                                                          }
+                                                          ),
+                                                        ],
                                                       ),
-                                                      TextButton(
-                                                          child: Text("Cancel"),
-                                                          onPressed: ()=>{
-                                                            Navigator.pop(context),
-                                                          }
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              }
-                                          );
-                                        }
-                                        else{
-                                          myAccessCheckNotifier.value = DateTime.now();
+                                                    );
+                                                  }
+                                              );
+                                            }
+                                            else{
+                                              myAccessCheckNotifier.value = DateTime.now();
 
-                                          showDialog(
-                                              context: bc,
-                                              builder: (BuildContext context){
-                                                return AlertDialog(
-                                                  title: Text("Unable to track star"),
-                                                  content: Text("You have reached the maximum number of stars to track!"),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                        child: Container(
-                                                          child: Text("Ok"),
-                                                        ),
-                                                        onPressed: (){
-                                                          Navigator.pop(context);
-                                                        }
-                                                    )
-                                                  ],
+                                              await showDialog(
+                                                  context: bc,
+                                                  builder: (BuildContext context){
+                                                    return AlertDialog(
+                                                      title: Text("Unable to track star"),
+                                                      content: Text("You have reached the maximum number of stars to track!"),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                            child: Container(
+                                                              child: Text("Ok"),
+                                                            ),
+                                                            onPressed: (){
+                                                              if(!context.mounted){
+                                                                return;
+                                                              }
+
+                                                              Navigator.pop(context);
+                                                            }
+                                                        )
+                                                      ],
+                                                    );
+                                                  }
                                                 );
                                               }
-                                          );
-                                        }
-                                      }
-                                      print("Tracking the star");
-                                    }
+                                            }
+                                            print("Tracking the star");
+                                            trackStarButton.value = false;
+                                          }
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 ),
-                              ),
                             ),
                           if(((myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != "") && starTracked == true))
                             Padding(
                               padding: EdgeInsets.all(MediaQuery.of(bc).size.height * 0.015625),
-                              child: Center(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.black,
-                                  ),
-                                  child: Ink(
-                                    color: Colors.black,
-                                    child: Text("Untrack this Star", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
-                                  ),
-                                  onPressed: () async{
-                                    myAccessCheckNotifier.value = DateTime.now();
-                                    showDialog(
-                                        context: bc,
-                                        builder: (BuildContext context){
-                                          return AlertDialog(
-                                            title: Text("Untracking Star"),
-                                            content: Text("Are you sure you want to untrack this star?"),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                  child: Text("Yes"),
-                                                  onPressed: () async{
-                                                    print("Untracking star");
-                                                    if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                                                      if(firebaseDesktopHelper.onDesktop){
-                                                        List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                              child: ValueListenableBuilder<bool>(
+                                valueListenable: untrackStarButton,
+                                builder: (bc, untrackingStar, child){
+                                  return AbsorbPointer(
+                                    absorbing: untrackingStar,
+                                    child: Center(
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.black,
+                                        ),
+                                        child: Ink(
+                                          color: Colors.black,
+                                          child: Text("Untrack this Star", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                                        ),
+                                        onPressed: () async{
+                                          if(untrackStarButton.value){
+                                            return;
+                                          }
 
-                                                        var theUser = allUsers.firstWhere((user) => user["usernameLowercased"] == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                                          untrackStarButton.value = true;
 
-                                                        var docForTheUser = theUser["docId"];
+                                          myAccessCheckNotifier.value = DateTime.now();
+                                          await showDialog(
+                                              context: bc,
+                                              builder: (BuildContext context){
+                                                return AlertDialog(
+                                                  title: Text("Untracking Star"),
+                                                  content: Text("Are you sure you want to untrack this star?"),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                        child: Text("Yes"),
+                                                        onPressed: () async{
+                                                          print("Untracking star");
+                                                          if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                                                            if(firebaseDesktopHelper.onDesktop){
+                                                              List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                                        Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theUser["usernameProfileInformation"] ?? {});
+                                                              var theUser = allUsers.firstWhere((user) => user["usernameLowercased"] == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                                        //Getting and modifying starsTracked:
-                                                        Map<String, dynamic> starsTracked = Map<String, dynamic>.from(currentInfoOfUser["starsTracked"] ?? {});
-                                                        starsTracked.remove(theStar.starName!);
+                                                              var docForTheUser = theUser["docId"];
 
-                                                        //Gets an updated list of the stars a user has tracked:
-                                                        currentInfoOfUser["starsTracked"] = starsTracked;
+                                                              Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theUser["usernameProfileInformation"] ?? {});
 
-                                                        await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheUser", {
-                                                          "usernameProfileInformation": currentInfoOfUser,
-                                                        });
+                                                              //Getting and modifying starsTracked:
+                                                              Map<String, dynamic> starsTracked = Map<String, dynamic>.from(currentInfoOfUser["starsTracked"] ?? {});
+                                                              starsTracked.remove(theStar.starName!);
 
-                                                        print("starsTracked: ${starsTracked}");
-                                                        starsUserTracked.remove(theStar.starName!);
-                                                      }
-                                                      else{
-                                                        var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                                                        var docForTheUser;
+                                                              //Gets an updated list of the stars a user has tracked:
+                                                              currentInfoOfUser["starsTracked"] = starsTracked;
 
-                                                        theUser.docs.forEach((result){
-                                                          docForTheUser = result.id;
-                                                        });
+                                                              await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheUser", {
+                                                                "usernameProfileInformation": currentInfoOfUser,
+                                                              });
 
-                                                        DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docForTheUser).get();
-                                                        Map<dynamic, dynamic>? individual = theSnapshotUsers.data();
+                                                              print("starsTracked: ${starsTracked}");
+                                                              starsUserTracked.remove(theStar.starName!);
+                                                            }
+                                                            else{
+                                                              var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                                                              var docForTheUser;
 
-                                                        var starsTracked = individual?["usernameProfileInformation"]["starsTracked"];
+                                                              theUser.docs.forEach((result){
+                                                                docForTheUser = result.id;
+                                                              });
 
-                                                        starsTracked.remove(theStar.starName!);
-                                                        FirebaseFirestore.instance.collection("User").doc(docForTheUser).update({
-                                                          "usernameProfileInformation.starsTracked": starsTracked,
-                                                        }).then((outcome) {
-                                                          print("Untracked the star!");
-                                                        });
+                                                              DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docForTheUser).get();
+                                                              Map<dynamic, dynamic>? individual = theSnapshotUsers.data();
 
-                                                        print("starsTracked: ${starsTracked}");
-                                                        starsUserTracked.remove(theStar.starName!);
-                                                      }
+                                                              var starsTracked = individual?["usernameProfileInformation"]["starsTracked"];
 
-                                                      if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                                                        if(firebaseDesktopHelper.onDesktop){
-                                                          var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                          var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                                                              starsTracked.remove(theStar.starName!);
+                                                              FirebaseFirestore.instance.collection("User").doc(docForTheUser).update({
+                                                                "usernameProfileInformation.starsTracked": starsTracked,
+                                                              }).then((outcome) {
+                                                                print("Untracked the star!");
+                                                              });
 
-                                                          //Getting the current profile info of the user:
-                                                          Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
-                                                          starTracked = currentInfoOfUser["starsTracked"].containsKey(theStar.starName!);
-                                                          print("starTracked: ${starTracked}");
-                                                          starsUsersTracked.remove(theStar.starName!);
+                                                              print("starsTracked: ${starsTracked}");
+                                                              starsUserTracked.remove(theStar.starName!);
+                                                            }
+
+                                                            if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                                                              if(firebaseDesktopHelper.onDesktop){
+                                                                var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                                //Getting the current profile info of the user:
+                                                                Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
+                                                                starTracked = currentInfoOfUser["starsTracked"].containsKey(theStar.starName!);
+                                                                print("starTracked: ${starTracked}");
+                                                                starsUsersTracked.remove(theStar.starName!);
+                                                              }
+                                                              else{
+                                                                var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                                                                var docNameForUsers;
+                                                                theUser.docs.forEach((result){
+                                                                  docNameForUsers = result.id;
+                                                                });
+
+                                                                DocumentSnapshot<Map<dynamic, dynamic>> snapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForUsers).get();
+                                                                Map<dynamic, dynamic>? individual = snapshotUsers.data();
+
+                                                                starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
+                                                                print("starTracked: ${starTracked}");
+                                                                starsUserTracked.remove(theStar.starName!);
+                                                              }
+                                                            }
+                                                            myAccessCheckNotifier.value = DateTime.now();
+
+                                                            if(!context.mounted){
+                                                              return;
+                                                            }
+
+                                                            await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
+                                                          }
                                                         }
-                                                        else{
-                                                          var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                                                          var docNameForUsers;
-                                                          theUser.docs.forEach((result){
-                                                            docNameForUsers = result.id;
-                                                          });
-
-                                                          DocumentSnapshot<Map<dynamic, dynamic>> snapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForUsers).get();
-                                                          Map<dynamic, dynamic>? individual = snapshotUsers.data();
-
-                                                          starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(theStar.starName!);
-                                                          print("starTracked: ${starTracked}");
-                                                          starsUserTracked.remove(theStar.starName!);
+                                                    ),
+                                                    TextButton(
+                                                      child: Text("No"),
+                                                      onPressed: (){
+                                                        if(!context.mounted){
+                                                          return;
                                                         }
-                                                      }
 
-                                                      myAccessCheckNotifier.value = DateTime.now();
-                                                      await Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: theStar)));
-                                                    }
-                                                  }
-                                              ),
-                                              TextButton(
-                                                  child: Text("No"),
-                                                  onPressed: (){
-                                                    Navigator.pop(context);
-                                                    print("No");
-                                                  }
-                                              )
-                                            ],
-                                          );
-                                        }
+                                                        Navigator.pop(context);
+                                                        print("No");
+                                                      }
+                                                    )
+                                                  ],
+                                                );
+                                              }
+                                            );
+                                            untrackStarButton.value = false;
+                                          },
+                                        ),
+                                      ),
                                     );
-                                  },
-                                ),
-                              ),
-                            ),
+                              }
+                            )
+                          ),
                         ],
                       ),
                       Container(
@@ -3606,7 +3663,7 @@ class articlePage extends StatelessWidget{
             return Center(child: CircularProgressIndicator());
           }
         },
-        future: getStarData(),
+        future: starFutureData,
       ),
     );
   }
@@ -3624,6 +3681,8 @@ class planetArticle extends StatelessWidget{
   List<Text> planetPdfMessageForUser = [];
 
   final ValueNotifier<bool> navigationBackToPreviousPage = ValueNotifier(false);
+  final ValueNotifier<bool> trackPlanetButton = ValueNotifier(false);
+  final ValueNotifier<bool> untrackPlanetButton = ValueNotifier(false);
 
   List<Text> planetPdfDialogMessage(http.Response response){
     List<Text> messageForUser = [];
@@ -3960,297 +4019,349 @@ class planetArticle extends StatelessWidget{
                           if((myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != "") && planetTracked == false)
                             Padding(
                               padding: EdgeInsets.all(MediaQuery.of(theContext).size.height * 0.015625),
-                              child: Center(
-                                child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
-                                    ),
-                                    child: Ink(
-                                      color: Colors.black,
-                                      child: Text("Track this Planet", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
-                                    ),
-                                    onPressed: () async{
-                                      if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                                        TextEditingController reasonForPlanetTrackUsers = TextEditingController();
-                                        var planetsTracked;
+                              child: ValueListenableBuilder<bool>(
+                                valueListenable: trackPlanetButton,
+                                builder: (bc, trackingPlanet, child){
+                                  return AbsorbPointer(
+                                    absorbing: trackingPlanet,
+                                    child: Center(
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.black,
+                                          ),
+                                          child: Ink(
+                                            color: Colors.black,
+                                            child: Text("Track this Planet", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                                          ),
+                                          onPressed: () async{
+                                            if(trackPlanetButton.value){
+                                              return;
+                                            }
 
-                                        if(firebaseDesktopHelper.onDesktop){
-                                          List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                            trackPlanetButton.value = true;
 
-                                          var user = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                                            if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                                              TextEditingController reasonForPlanetTrackUsers = TextEditingController();
+                                              var planetsTracked;
 
-                                          docNameForPlanetsTrackedUser = user["docId"];
-                                          print("docNameForPlanetsTrackedUser: ${docNameForPlanetsTrackedUser}");
+                                              if(firebaseDesktopHelper.onDesktop){
+                                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                          Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(user["usernameProfileInformation"] ?? {});
+                                                var user = allUsers.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                          planetsTracked = currentInfoOfUser?["planetsTracked"];
-                                        }
-                                        else{
-                                          var user = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                                          user.docs.forEach((result){
-                                            docNameForPlanetsTrackedUser = result.id;
-                                          });
-                                          print(docNameForPlanetsTrackedUser);
+                                                docNameForPlanetsTrackedUser = user["docId"];
+                                                print("docNameForPlanetsTrackedUser: ${docNameForPlanetsTrackedUser}");
 
-                                          DocumentSnapshot<Map<dynamic, dynamic>> mySnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedUser).get();
-                                          Map<dynamic, dynamic>? individual = mySnapshotUsers.data();
+                                                Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(user["usernameProfileInformation"] ?? {});
 
-                                          print(individual?["usernameProfileInformation"]);
-                                          print(individual?["usernameProfileInformation"]["planetsTracked"]);
+                                                planetsTracked = currentInfoOfUser?["planetsTracked"];
+                                              }
+                                              else{
+                                                var user = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                                                user.docs.forEach((result){
+                                                  docNameForPlanetsTrackedUser = result.id;
+                                                });
+                                                print(docNameForPlanetsTrackedUser);
 
-                                          planetsTracked = individual?["usernameProfileInformation"]["planetsTracked"];
-                                        }
+                                                DocumentSnapshot<Map<dynamic, dynamic>> mySnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedUser).get();
+                                                Map<dynamic, dynamic>? individual = mySnapshotUsers.data();
 
-                                        if(planetsTracked.length < 3){
-                                          myAccessCheckNotifier.value = DateTime.now();
-                                          showDialog(
-                                              context: theContext,
-                                              builder: (BuildContext context){
-                                                return Listener(
-                                                  behavior: HitTestBehavior.translucent,
-                                                  onPointerDown: (_){
-                                                    FocusManager.instance.primaryFocus?.unfocus();
-                                                  },
-                                                  child: AlertDialog(
-                                                    title: Text("Tracking ${correctPlanet}"),
-                                                    content: Wrap(
-                                                      children: <Widget>[
-                                                        Center(
-                                                          child: Container(
-                                                            alignment: Alignment.centerLeft,
-                                                            child: Text("Why are you interested in tracking this planet?"),
+                                                print(individual?["usernameProfileInformation"]);
+                                                print(individual?["usernameProfileInformation"]["planetsTracked"]);
+
+                                                planetsTracked = individual?["usernameProfileInformation"]["planetsTracked"];
+                                              }
+
+                                              if(planetsTracked.length < 3){
+                                                myAccessCheckNotifier.value = DateTime.now();
+                                                await showDialog(
+                                                    context: theContext,
+                                                    builder: (BuildContext context){
+                                                      return Listener(
+                                                        behavior: HitTestBehavior.translucent,
+                                                        onPointerDown: (_){
+                                                          FocusManager.instance.primaryFocus?.unfocus();
+                                                        },
+                                                        child: AlertDialog(
+                                                          title: Text("Tracking ${correctPlanet}"),
+                                                          content: Wrap(
+                                                            children: <Widget>[
+                                                              Center(
+                                                                child: Container(
+                                                                  alignment: Alignment.centerLeft,
+                                                                  child: Text("Why are you interested in tracking this planet?"),
+                                                                ),
+                                                              ),
+                                                              TextField(
+                                                                controller: reasonForPlanetTrackUsers,
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ),
-                                                        TextField(
-                                                          controller: reasonForPlanetTrackUsers,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                          child: Text("Ok"),
-                                                          onPressed: () async{
-                                                            if(whitespaceChecker(reasonForPlanetTrackUsers.text) == false){
-                                                              planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackUsers.text}.entries);
+                                                          actions: [
+                                                            TextButton(
+                                                                child: Text("Ok"),
+                                                                onPressed: () async{
+                                                                  if(whitespaceChecker(reasonForPlanetTrackUsers.text) == false){
+                                                                    planetsTracked.addEntries({correctPlanet: reasonForPlanetTrackUsers.text}.entries);
 
-                                                              if(firebaseDesktopHelper.onDesktop){
-                                                                List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                    if(firebaseDesktopHelper.onDesktop){
+                                                                      List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                                                var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForPlanetsTrackedUser, orElse: () => <String, dynamic>{});
+                                                                      var currentUser = allUsers.firstWhere((user) => user["docId"] == docNameForPlanetsTrackedUser, orElse: () => <String, dynamic>{});
 
-                                                                Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
+                                                                      Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(currentUser["usernameProfileInformation"] ?? {});
 
-                                                                //Updating planetsTracked:
-                                                                currentInfoOfUser["planetsTracked"] = planetsTracked;
+                                                                      //Updating planetsTracked:
+                                                                      currentInfoOfUser["planetsTracked"] = planetsTracked;
 
-                                                                await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForPlanetsTrackedUser", {
-                                                                  "usernameProfileInformation": currentInfoOfUser,
-                                                                });
-                                                              }
-                                                              else{
-                                                                FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedUser).update({
-                                                                  "usernameProfileInformation.planetsTracked": planetsTracked,
-                                                                }).then((outcome) {
-                                                                  print("planetsTracked updated!");
-                                                                });
-                                                              }
+                                                                      await firebaseDesktopHelper.updateFirestoreDocument("User/$docNameForPlanetsTrackedUser", {
+                                                                        "usernameProfileInformation": currentInfoOfUser,
+                                                                      });
+                                                                    }
+                                                                    else{
+                                                                      FirebaseFirestore.instance.collection("User").doc(docNameForPlanetsTrackedUser).update({
+                                                                        "usernameProfileInformation.planetsTracked": planetsTracked,
+                                                                      }).then((outcome) {
+                                                                        print("planetsTracked updated!");
+                                                                      });
+                                                                    }
 
-                                                              //Is the planet tracked by the user?
-                                                              if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                                                                if(firebaseDesktopHelper.onDesktop){
-                                                                  var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                                  var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                                                                    //Is the planet tracked by the user?
+                                                                    if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                                                                      if(firebaseDesktopHelper.onDesktop){
+                                                                        var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                                        var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
-                                                                  //Getting the current profile info of the user:
-                                                                  Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
-                                                                  planetTracked = currentInfoOfUser["planetsTracked"].containsKey(correctPlanet);
-                                                                  print("planetTracked: ${planetTracked}");
+                                                                        //Getting the current profile info of the user:
+                                                                        Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
+                                                                        planetTracked = currentInfoOfUser["planetsTracked"].containsKey(correctPlanet);
+                                                                        print("planetTracked: ${planetTracked}");
+                                                                      }
+                                                                      else{
+                                                                        var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                                                                        var theDocNameForUsers;
+                                                                        theUser.docs.forEach((result){
+                                                                          theDocNameForUsers = result.id;
+                                                                        });
+
+                                                                        DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForUsers).get();
+                                                                        Map<dynamic, dynamic>? individual = theSnapshotUsers.data();
+
+                                                                        planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                                        print("planetTracked: ${planetTracked}");
+                                                                      }
+                                                                    }
+
+                                                                    myAccessCheckNotifier.value = DateTime.now();
+
+                                                                    if(!context.mounted){
+                                                                      return;
+                                                                    }
+
+                                                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                                                                  }
                                                                 }
-                                                                else{
-                                                                  var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                                                                  var theDocNameForUsers;
-                                                                  theUser.docs.forEach((result){
-                                                                    theDocNameForUsers = result.id;
-                                                                  });
-
-                                                                  DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForUsers).get();
-                                                                  Map<dynamic, dynamic>? individual = theSnapshotUsers.data();
-
-                                                                  planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
-                                                                  print("planetTracked: ${planetTracked}");
+                                                            ),
+                                                            TextButton(
+                                                              child: Text("Cancel"),
+                                                              onPressed: () {
+                                                                if(!context.mounted){
+                                                                  return;
                                                                 }
-                                                              }
 
-                                                              myAccessCheckNotifier.value = DateTime.now();
-                                                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
-                                                            }
-                                                          }
-                                                      ),
-                                                      TextButton(
-                                                          child: Text("Cancel"),
-                                                          onPressed: ()=>{
-                                                            Navigator.pop(context),
-                                                          }
-                                                      ),
-                                                    ],
-                                                  ),
+                                                                Navigator.pop(context);
+                                                              }
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }
                                                 );
                                               }
-                                          );
-                                        }
-                                        else{
-                                          myAccessCheckNotifier.value = DateTime.now();
-                                          showDialog(
-                                              context: theContext,
-                                              builder: (BuildContext context){
-                                                return AlertDialog(
-                                                  title: Text("Unable to track planet"),
-                                                  content: Text("You have reached the maximum number of planets to track!"),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                        child: Container(
-                                                          child: Text("Ok"),
-                                                        ),
-                                                        onPressed: (){
-                                                          Navigator.pop(context);
-                                                        }
-                                                    ),
-                                                  ],
+                                              else{
+                                                myAccessCheckNotifier.value = DateTime.now();
+                                                await showDialog(
+                                                    context: theContext,
+                                                    builder: (BuildContext context){
+                                                      return AlertDialog(
+                                                        title: Text("Unable to track planet"),
+                                                        content: Text("You have reached the maximum number of planets to track!"),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                              child: Container(
+                                                                child: Text("Ok"),
+                                                              ),
+                                                              onPressed: (){
+                                                                if(!context.mounted){
+                                                                  return;
+                                                                }
+
+                                                                Navigator.pop(context);
+                                                              }
+                                                          ),
+                                                        ],
+                                                      );
+                                                    }
                                                 );
                                               }
-                                          );
-                                        }
-                                      }
-                                    }
-                                ),
-                              ),
-                            ),
+                                            }
+                                            trackPlanetButton.value = false;
+                                          }
+                                          ),
+                                        )
+                                );
+                              }
+                            )
+                          ),
                           if((myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != "") && planetTracked == true)
                             Padding(
                               padding: EdgeInsets.all(MediaQuery.of(theContext).size.height * 0.015625),
-                              child: Center(
-                                child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black,
-                                    ),
-                                    child: Ink(
-                                      color: Colors.black,
-                                      child: Text("Untrack this Planet", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
-                                    ),
-                                    onPressed: () async{
-                                      myAccessCheckNotifier.value = DateTime.now();
-                                      showDialog(
-                                          context: theContext,
-                                          builder: (BuildContext context){
-                                            return AlertDialog(
-                                              title: Text("Untracking Planet"),
-                                              content: Text("Are you sure you want to untrack this planet?"),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                    child: Text("Yes"),
-                                                    onPressed: () async{
-                                                      print("Untracking planet");
-                                                      if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                                                        if(firebaseDesktopHelper.onDesktop){
-                                                          List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
+                              child: ValueListenableBuilder<bool>(
+                                valueListenable: untrackPlanetButton,
+                                builder: (bc, untrackingPlanet, child){
+                                  return AbsorbPointer(
+                                    absorbing: untrackingPlanet,
+                                     child: Center(
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.black,
+                                        ),
+                                        child: Ink(
+                                          color: Colors.black,
+                                          child: Text("Untrack this Planet", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                                        ),
+                                        onPressed: () async{
+                                          if(untrackPlanetButton.value){
+                                            return;
+                                          }
 
-                                                          var theUser = allUsers.firstWhere((user) => user["usernameLowercased"] == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                                          untrackPlanetButton.value = true;
 
-                                                          var docForTheUser = theUser["docId"];
-
-                                                          Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theUser["usernameProfileInformation"] ?? {});
-
-                                                          //Getting and modifying starsTracked:
-                                                          Map<String, dynamic> planetsTracked = Map<String, dynamic>.from(currentInfoOfUser["planetsTracked"] ?? {});
-                                                          planetsTracked.remove(correctPlanet);
-
-                                                          //Gets an updated list of the stars a user has tracked:
-                                                          currentInfoOfUser["planetsTracked"] = planetsTracked;
-
-                                                          await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheUser", {
-                                                            "usernameProfileInformation": currentInfoOfUser,
-                                                          });
-
-                                                          print("planetTracked: ${planetTracked}");
-
-                                                          planetsUserTracked.remove(correctPlanet);
-                                                        }
-                                                        else{
-                                                          var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                                                          var docForTheUser;
-
-                                                          theUser.docs.forEach((result){
-                                                            docForTheUser = result.id;
-                                                          });
-
-                                                          DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docForTheUser).get();
-                                                          Map<dynamic, dynamic>? individual = theSnapshotUsers.data();
-
-                                                          var planetsTracked = individual?["usernameProfileInformation"]["planetsTracked"];
-
-                                                          planetsTracked.remove(correctPlanet);
-                                                          FirebaseFirestore.instance.collection("User").doc(docForTheUser).update({
-                                                            "usernameProfileInformation.planetsTracked": planetsTracked,
-                                                          }).then((outcome) {
-                                                            print("Untracked the planet!");
-                                                          });
-
-                                                          print("planetTracked: ${planetTracked}");
-                                                          planetsUserTracked.remove(correctPlanet);
-                                                        }
-
-                                                        //Is the planet tracked by the user?
+                                          myAccessCheckNotifier.value = DateTime.now();
+                                          await showDialog(
+                                              context: theContext,
+                                              builder: (BuildContext context){
+                                                return AlertDialog(
+                                                  title: Text("Untracking Planet"),
+                                                  content: Text("Are you sure you want to untrack this planet?"),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child: Text("Yes"),
+                                                      onPressed: () async{
+                                                        print("Untracking planet");
                                                         if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                                                           if(firebaseDesktopHelper.onDesktop){
-                                                            var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                            var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                                                            List<Map<String, dynamic>> allUsers = await firebaseDesktopHelper.getFirestoreCollection("User");
 
-                                                            //Getting the current profile info of the user:
-                                                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
-                                                            planetTracked = currentInfoOfUser["planetsTracked"].containsKey(correctPlanet);
+                                                            var theUser = allUsers.firstWhere((user) => user["usernameLowercased"] == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                            var docForTheUser = theUser["docId"];
+
+                                                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(theUser["usernameProfileInformation"] ?? {});
+
+                                                            //Getting and modifying starsTracked:
+                                                            Map<String, dynamic> planetsTracked = Map<String, dynamic>.from(currentInfoOfUser["planetsTracked"] ?? {});
+                                                            planetsTracked.remove(correctPlanet);
+
+                                                            //Gets an updated list of the stars a user has tracked:
+                                                            currentInfoOfUser["planetsTracked"] = planetsTracked;
+
+                                                            await firebaseDesktopHelper.updateFirestoreDocument("User/$docForTheUser", {
+                                                              "usernameProfileInformation": currentInfoOfUser,
+                                                            });
+
                                                             print("planetTracked: ${planetTracked}");
 
                                                             planetsUserTracked.remove(correctPlanet);
                                                           }
                                                           else{
                                                             var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                                                            var theDocNameForUsers;
+                                                            var docForTheUser;
+
                                                             theUser.docs.forEach((result){
-                                                              theDocNameForUsers = result.id;
+                                                              docForTheUser = result.id;
                                                             });
 
-                                                            DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForUsers).get();
+                                                            DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docForTheUser).get();
                                                             Map<dynamic, dynamic>? individual = theSnapshotUsers.data();
 
-                                                            planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                            var planetsTracked = individual?["usernameProfileInformation"]["planetsTracked"];
+
+                                                            planetsTracked.remove(correctPlanet);
+                                                            FirebaseFirestore.instance.collection("User").doc(docForTheUser).update({
+                                                              "usernameProfileInformation.planetsTracked": planetsTracked,
+                                                            }).then((outcome) {
+                                                              print("Untracked the planet!");
+                                                            });
+
                                                             print("planetTracked: ${planetTracked}");
                                                             planetsUserTracked.remove(correctPlanet);
                                                           }
+
+                                                          //Is the planet tracked by the user?
+                                                          if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                                                            if(firebaseDesktopHelper.onDesktop){
+                                                              var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                              var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                                                              //Getting the current profile info of the user:
+                                                              Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
+                                                              planetTracked = currentInfoOfUser["planetsTracked"].containsKey(correctPlanet);
+                                                              print("planetTracked: ${planetTracked}");
+
+                                                              planetsUserTracked.remove(correctPlanet);
+                                                            }
+                                                            else{
+                                                              var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                                                              var theDocNameForUsers;
+                                                              theUser.docs.forEach((result){
+                                                                theDocNameForUsers = result.id;
+                                                              });
+
+                                                              DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForUsers).get();
+                                                              Map<dynamic, dynamic>? individual = theSnapshotUsers.data();
+
+                                                              planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                                                              print("planetTracked: ${planetTracked}");
+                                                              planetsUserTracked.remove(correctPlanet);
+                                                            }
+                                                          }
+
+                                                          myAccessCheckNotifier.value = DateTime.now();
+
+                                                          if(!context.mounted){
+                                                            return;
+                                                          }
+
+                                                          await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                                                        }
+                                                      }
+                                                    ),
+                                                    TextButton(
+                                                      child: Text("No"),
+                                                      onPressed: (){
+                                                        if(!context.mounted){
+                                                          return;
                                                         }
 
-                                                        myAccessCheckNotifier.value = DateTime.now();
-                                                        await Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
+                                                        Navigator.pop(context);
+                                                        print("No");
                                                       }
-                                                    }
-                                                ),
-                                                TextButton(
-                                                    child: Text("No"),
-                                                    onPressed: (){
-                                                      Navigator.pop(context);
-                                                      print("No");
-                                                    }
-                                                ),
-                                              ],
+                                                    ),
+                                                  ],
+                                                );
+                                              }
                                             );
+                                            untrackPlanetButton.value = false;
                                           }
-                                      );
-                                    }
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
                 );
               }
               else{
