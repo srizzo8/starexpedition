@@ -536,6 +536,9 @@ class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
 
   bool registrationSixDigitCodeButtonBool = false;
 
+  //Scroll controller:
+  final sixDigitCodeScrollController = ScrollController();
+
   List<Text> dialogMessageRegistrationCode(String enteredRegistrationCode){
     List<Text> messageForUser = [];
 
@@ -573,11 +576,14 @@ class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
                               maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(bc).size.width * 0.375000 : 320,
                             ),
                             child: Scrollbar(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                reverse: true,
+                              //child: SingleChildScrollView(
+                                //scrollDirection: Axis.vertical,
+                                //reverse: false,
+                                controller: sixDigitCodeScrollController,
+                                thumbVisibility: true,
                                 child: SizedBox(
                                   child: TextField(
+                                    scrollController: sixDigitCodeScrollController,
                                     minLines: 1,
                                     maxLines: 1,
                                     decoration: InputDecoration(
@@ -593,7 +599,7 @@ class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
                                     controller: numberControllerForRegistration,
                                   ),
                                 ),
-                              ),
+                              //),
                             ),
                           ),
                         ),

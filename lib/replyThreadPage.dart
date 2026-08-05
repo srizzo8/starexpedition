@@ -106,6 +106,9 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
 
   bool replyButton = false;
 
+  //Scroll controller:
+  final replyContentScrollController = ScrollController();
+
   List<Text> createReplyDialogMessage(List<String> info){
     List<Text> messageForUserReplyToThread = [];
     if(whitespaceChecker(usernameReplyController.text)){
@@ -233,11 +236,14 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                                     ),
                                     child: Scrollbar(
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.vertical,
-                                        reverse: true,
+                                      //child: SingleChildScrollView(
+                                        //scrollDirection: Axis.vertical,
+                                        //reverse: false,
+                                        controller: replyContentScrollController,
+                                        thumbVisibility: true,
                                         child: SizedBox(
                                           child: TextField(
+                                            scrollController: replyContentScrollController,
                                             minLines: 5,
                                             maxLines: 5,
                                             decoration: InputDecoration(
@@ -248,7 +254,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                             controller: replyContentController,
                                           ),
                                         ),
-                                      ),
+                                      //),
                                     ),
                                   ),
                                 )

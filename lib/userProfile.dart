@@ -266,6 +266,11 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
   bool removePhotoButton = false;
   bool updateProfileButton = false;
 
+  //Scroll controllers:
+  final informationScrollController = ScrollController();
+  final interestsScrollController = ScrollController();
+  final locationScrollController = ScrollController();
+
   //Loading existing photo from Firestore when user arrives on the page:
   Future<void> loadMyProfilePicture(String theUsersName) async{
     var usersData;
@@ -405,11 +410,14 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                                   maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                                 ),
                                 child: Scrollbar(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    reverse: true,
+                                  //child: SingleChildScrollView(
+                                    //scrollDirection: Axis.vertical,
+                                    //reverse: false,
+                                    controller: informationScrollController,
+                                    thumbVisibility: true,
                                     child: SizedBox(
                                       child: TextField(
+                                        scrollController: informationScrollController,
                                         minLines: 5,
                                         maxLines: 5,
                                         focusNode: myFieldFocus,
@@ -422,7 +430,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                                         controller: informationAboutMyselfController,
                                       ),
                                     ),
-                                  ),
+                                  //),
                                 ),
                               ),
                             ),
@@ -444,11 +452,14 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                                 maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                               ),
                               child: Scrollbar(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  reverse: true,
+                                //child: SingleChildScrollView(
+                                  //scrollDirection: Axis.vertical,
+                                  //reverse: false,
+                                  controller: interestsScrollController,
+                                  thumbVisibility: true,
                                   child: SizedBox(
                                     child: TextField(
+                                      scrollController: interestsScrollController,
                                       minLines: 5,
                                       maxLines: 5,
                                       decoration: InputDecoration(
@@ -459,7 +470,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                                       controller: interestsController,
                                     ),
                                   ),
-                                ),
+                                //),
                               ),
                             ),
                           ),
@@ -481,11 +492,14 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                                 maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                               ),
                               child: Scrollbar(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  reverse: true,
+                                //child: SingleChildScrollView(
+                                  //scrollDirection: Axis.vertical,
+                                  //reverse: false,
+                                  controller: locationScrollController,
+                                  thumbVisibility: true,
                                   child: SizedBox(
                                     child: TextField(
+                                      scrollController: locationScrollController,
                                       minLines: 5,
                                       maxLines: 5,
                                       decoration: InputDecoration(
@@ -496,7 +510,7 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                                       controller: locationController,
                                     ),
                                   ),
-                                ),
+                                //),
                               ),
                             ),
                           ),

@@ -451,6 +451,9 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
 
   bool submitButton = false;
 
+  //Scroll controller:
+  final sixDigitCodeScrollController = ScrollController();
+
   List<Text> dialogMessageForgottenPasswordCode(String enteredPasscode){
     List<Text> messageForUser = [];
 
@@ -557,11 +560,14 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
                                 maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                               ),
                               child: Scrollbar(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  reverse: true,
+                                //child: SingleChildScrollView(
+                                  //scrollDirection: Axis.vertical,
+                                  //reverse: false,
+                                  controller: sixDigitCodeScrollController,
+                                  thumbVisibility: true,
                                   child: SizedBox(
                                     child: TextField(
+                                      scrollController: sixDigitCodeScrollController,
                                       minLines: 1,
                                       maxLines: 1,
                                       decoration: InputDecoration(
@@ -577,7 +583,7 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
                                       controller: numberController,
                                     ),
                                   ),
-                                ),
+                                //),
                               ),
                             ),
                           )
@@ -689,6 +695,10 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
   List<Text> usersMessage = [];
 
   bool submitButton = false;
+
+  //Scroll controllers:
+  final newPasswordScrollController = ScrollController();
+  final confirmNewPasswordScrollController = ScrollController();
 
   bool whitespaceChecker(String? myString){
     if(myString == null){
@@ -855,11 +865,14 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                                   maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                                 ),
                                 child: Scrollbar(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    reverse: true,
+                                  //child: SingleChildScrollView(
+                                    //scrollDirection: Axis.vertical,
+                                    //reverse: false,
+                                    controller: newPasswordScrollController,
+                                    thumbVisibility: true,
                                     child: SizedBox(
                                       child: TextField(
+                                        scrollController: newPasswordScrollController,
                                         minLines: 1,
                                         maxLines: 1,
                                         decoration: InputDecoration(
@@ -871,7 +884,7 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                                         obscureText: true,
                                       ),
                                     ),
-                                  ),
+                                  //),
                                 ),
                               ),
                             )
@@ -893,11 +906,14 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                                 maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                               ),
                               child: Scrollbar(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  reverse: true,
+                                //child: SingleChildScrollView(
+                                  //scrollDirection: Axis.vertical,
+                                  //reverse: false,
+                                  controller: confirmNewPasswordScrollController,
+                                  thumbVisibility: true,
                                   child: SizedBox(
                                     child: TextField(
+                                      scrollController: confirmNewPasswordScrollController,
                                       minLines: 1,
                                       maxLines: 1,
                                       decoration: InputDecoration(
@@ -909,7 +925,7 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                                       obscureText: true,
                                     ),
                                   ),
-                                ),
+                                //),
                               ),
                             ),
                           )

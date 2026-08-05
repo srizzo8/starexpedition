@@ -94,6 +94,10 @@ class createThreadState extends State<createThread> with RouteAware{
 
   bool createThreadButton = false;
 
+  //Scroll controllers:
+  final threadTitleScrollController = ScrollController();
+  final threadContentScrollController = ScrollController();
+
   List<Text> createThreadDialogMessage(List<String> info){
     List<Text> messageForUserCreateThread = [];
     if(whitespaceChecker(usernameController.text)){
@@ -259,11 +263,14 @@ class createThreadState extends State<createThread> with RouteAware{
                                 maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                               ),
                               child: Scrollbar(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  reverse: true,
+                                //child: SingleChildScrollView(
+                                  //scrollDirection: Axis.vertical,
+                                  //reverse: false,
+                                  controller: threadTitleScrollController,
+                                  thumbVisibility: true,
                                   child: SizedBox(
                                     child: TextField(
+                                      scrollController: threadTitleScrollController,
                                       minLines: 1,
                                       maxLines: 1,
                                       decoration: InputDecoration(
@@ -276,7 +283,7 @@ class createThreadState extends State<createThread> with RouteAware{
                                       controller: threadNameController,
                                     ),
                                   ),
-                                ),
+                                //),
                               ),
                             ),
                           )
@@ -298,11 +305,14 @@ class createThreadState extends State<createThread> with RouteAware{
                                   maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                                 ),
                                 child: Scrollbar(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    reverse: true,
+                                  //child: SingleChildScrollView(
+                                    //scrollDirection: Axis.vertical,
+                                    //reverse: false,
+                                    controller: threadContentScrollController,
+                                    thumbVisibility: true,
                                     child: SizedBox(
                                       child: TextField(
+                                        scrollController: threadContentScrollController,
                                         minLines: 5,
                                         maxLines: 5,
                                         decoration: InputDecoration(
@@ -313,7 +323,7 @@ class createThreadState extends State<createThread> with RouteAware{
                                         controller: threadContentController,
                                       ),
                                     ),
-                                  ),
+                                  //),
                                 ),
                               ),
                             ),
