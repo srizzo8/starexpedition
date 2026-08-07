@@ -276,7 +276,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                         child: InkWell(
                           child: Ink(
                             color: Colors.black,
-                              child: Text("Reply to Thread", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
+                              child: Text("Reply", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal), textAlign: TextAlign.center),
                             ),
                           ),
                         onPressed: () async{
