@@ -319,7 +319,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   print(threadNum.runtimeType);
                                   var myReply = DiscussionBoardUpdatesReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: {}
@@ -422,7 +422,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                     }
                                   }
 
-                                  pendingDiscussionBoardUpdatesReply.add(DateTime.now().toString());
+                                  pendingDiscussionBoardUpdatesReply.add(DateTime.now().toUtc().toString());
                                   pendingDiscussionBoardUpdatesReply.add(usernameReplyController.text);
                                   pendingDiscussionBoardUpdatesReply.add(replyContentController.text);
                                 }
@@ -434,7 +434,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   replyNum = discussionBoardUpdatesPage.myIndex;
                                   var myReply = DiscussionBoardUpdatesReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: discussionBoardUpdatesPage.myReplyToReplyDbuMap
@@ -624,7 +624,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   print(threadNum.runtimeType);
                                   var myReplyQuestionsAndAnswers = QuestionsAndAnswersReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: {}
@@ -725,7 +725,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                     }
                                   }
 
-                                  pendingQuestionsAndAnswersReply.add(DateTime.now().toString());
+                                  pendingQuestionsAndAnswersReply.add(DateTime.now().toUtc().toString());
                                   pendingQuestionsAndAnswersReply.add(usernameReplyController.text);
                                   pendingQuestionsAndAnswersReply.add(replyContentController.text);
                                 }
@@ -737,7 +737,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   replyNum = questionsAndAnswersPage.myIndex;
                                   var myReplyQuestionsAndAnswers = QuestionsAndAnswersReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: questionsAndAnswersPage.myReplyToReplyQaaMap
@@ -927,7 +927,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   print(threadNum.runtimeType);
                                   var myReplyTechnologies = TechnologiesReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: {}
@@ -1028,7 +1028,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                     }
                                   }
 
-                                  pendingTechnologiesReply.add(DateTime.now().toString());
+                                  pendingTechnologiesReply.add(DateTime.now().toUtc().toString());
                                   pendingTechnologiesReply.add(usernameReplyController.text);
                                   pendingTechnologiesReply.add(replyContentController.text);
                                 }
@@ -1040,7 +1040,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   replyNum = technologiesPage.myIndex;
                                   var myReplyTechnologies = TechnologiesReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: technologiesPage.myReplyToReplyTMap
@@ -1225,7 +1225,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   print(threadNum.runtimeType);
                                   var myReplyProjects = ProjectsReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: {}
@@ -1326,7 +1326,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                     }
                                   }
 
-                                  pendingProjectsReply.add(DateTime.now().toString());
+                                  pendingProjectsReply.add(DateTime.now().toUtc().toString());
                                   pendingProjectsReply.add(usernameReplyController.text);
                                   pendingProjectsReply.add(replyContentController.text);
                                 }
@@ -1338,7 +1338,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   replyNum = projectsPage.myIndex;
                                   var myReplyProjects = ProjectsReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: projectsPage.myReplyToReplyPMap
@@ -1525,7 +1525,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   print(threadNum.runtimeType);
                                   var myReplyNewDiscoveries = NewDiscoveriesReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: {}
@@ -1626,7 +1626,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                     }
                                   }
 
-                                  pendingNewDiscoveriesReply.add(DateTime.now().toString());
+                                  pendingNewDiscoveriesReply.add(DateTime.now().toUtc().toString());
                                   pendingNewDiscoveriesReply.add(usernameReplyController.text);
                                   pendingNewDiscoveriesReply.add(replyContentController.text);
                                 }
@@ -1638,7 +1638,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   replyNum = newDiscoveriesPage.myIndex;
                                   var myReplyNewDiscoveries = NewDiscoveriesReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: newDiscoveriesPage.myReplyToReplyNdMap
@@ -1820,7 +1820,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   print(threadNum.runtimeType);
                                   var myReplyFeedbackAndSuggestions = FeedbackAndSuggestionsReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: {}
@@ -1921,7 +1921,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                     }
                                   }
 
-                                  pendingFeedbackAndSuggestionsReply.add(DateTime.now().toString());
+                                  pendingFeedbackAndSuggestionsReply.add(DateTime.now().toUtc().toString());
                                   pendingFeedbackAndSuggestionsReply.add(usernameReplyController.text);
                                   pendingFeedbackAndSuggestionsReply.add(replyContentController.text);
                                 }
@@ -1933,7 +1933,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                   replyNum = feedbackAndSuggestionsPage.myIndex;
                                   var myReplyFeedbackAndSuggestions = FeedbackAndSuggestionsReplies(
                                       threadNumber: threadNum,
-                                      time: DateTime.now().toIso8601String(),
+                                      time: DateTime.now().toUtc().toIso8601String(),
                                       replier: usernameReplyController.text,
                                       replyContent: replyContentController.text,
                                       theOriginalReplyInfo: feedbackAndSuggestionsPage.myReplyToReplyFasMap

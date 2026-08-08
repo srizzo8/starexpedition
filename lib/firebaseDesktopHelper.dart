@@ -241,7 +241,7 @@ class firebaseDesktopHelper{
     }
 
     var myDateTimeFormatter = DateFormat("MMMM d, yyyy 'at' h:mm:ss a");
-    return myDateTimeFormatter.format(dt.toLocal());
+    return "${myDateTimeFormatter.format(dt.toUtc())} UTC";
   }
 
   //Converting String version of a date/time to DateTime for subforums:
