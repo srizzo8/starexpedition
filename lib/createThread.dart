@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +46,7 @@ import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
 //import 'package:sentry/sentry.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_quill/flutter_quill.dart';
 
 var myInfo;
 var userData;
@@ -98,6 +101,22 @@ class createThreadState extends State<createThread> with RouteAware{
   final threadTitleScrollController = ScrollController();
   final threadContentScrollController = ScrollController();
 
+  //Quill controller:
+  final QuillController threadQuillController = QuillController.basic();
+
+  //StreamSubscription:
+  late final StreamSubscription threadQuillSyncSubscription;
+
+  bool uploadingThreadImage = false;
+
+  @override
+  void initState(){
+    super.initState();
+    threadQuillSyncSubscription = threadQuillController.document.changes.listen((myEvent){
+      threadContentController.text = jsonEncode(threadQuillController.document.toDelta().toJson());
+    });
+  }
+
   List<Text> createThreadDialogMessage(List<String> info){
     List<Text> messageForUserCreateThread = [];
     if(whitespaceChecker(usernameController.text)){
@@ -133,6 +152,40 @@ class createThreadState extends State<createThread> with RouteAware{
     }
   }
 
+  /*Future<String> uploadMyImageToFirebaseStorage(File myFile) async{
+    final myFileName = "${DateTime.now().toUtc().millisecondsSinceEpoch}_${myFile.path.split('/').last}";
+    final myStorageRef = FirebaseStorage.instance.ref().child("thread_images/${myFileName}");
+
+    final uploadTask = await myStorageRef.putFile(myFile);
+    final downloadMyUrl = await uploadTask.ref.getDownloadURL();
+
+    return downloadMyUrl;
+  }*/
+
+  Future<String> uploadMyImageToCloudinary(File myFile) async{
+    const myCloudName = "qrbab8fp";
+    const myUploadPreset = "star_expedition_thread_images";
+
+    final myUri = Uri.parse("https://api.cloudinary.com/v1_1/${myCloudName}/image/upload");
+
+    final myRequest = http.MultipartRequest("POST", myUri)
+      ..fields["upload_preset"] = myUploadPreset
+      ..files.add(await http.MultipartFile.fromPath("file", myFile.path));
+
+    final myResponse = await myRequest.send();
+    final myResponseBody = await myResponse.stream.bytesToString();
+
+    if(myResponse.statusCode == 200){
+      final myJsonResponse = jsonDecode(myResponseBody);
+
+      //Returns the hosted image URL:
+      return myJsonResponse["secure_url"];
+    }
+    else{
+      throw Exception("Unfortunately, the Cloudinary upload failed: ${myResponseBody}");
+    }
+  }
+
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
   void didChangeDependencies(){
@@ -143,6 +196,7 @@ class createThreadState extends State<createThread> with RouteAware{
   @override
   void dispose(){
     myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    threadQuillSyncSubscription.cancel();
     super.dispose();
   }
 
@@ -165,6 +219,7 @@ class createThreadState extends State<createThread> with RouteAware{
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_){
         FocusManager.instance.primaryFocus?.unfocus();
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
       },
       child: Scaffold(
       appBar: AppBar(
@@ -292,44 +347,118 @@ class createThreadState extends State<createThread> with RouteAware{
                     ],
                   ),
                 ),
-                IntrinsicHeight(
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Flexible(
-                          child: Center(
-                            child: Container(
-                              padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.0078125, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                                ),
-                                child: Scrollbar(
-                                  //child: SingleChildScrollView(
-                                    //scrollDirection: Axis.vertical,
-                                    //reverse: false,
-                                    controller: threadContentScrollController,
-                                    thumbVisibility: true,
-                                    child: SizedBox(
-                                      child: TextField(
-                                        scrollController: threadContentScrollController,
-                                        minLines: 5,
-                                        maxLines: 5,
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          labelText: "Thread Content",
-                                        ),
-                                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                        controller: threadContentController,
-                                      ),
-                                    ),
-                                  //),
+                Center(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.0078125, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          QuillSimpleToolbar(
+                            controller: threadQuillController,
+                            config: QuillSimpleToolbarConfig(
+                              showFontFamily: false,
+                              showFontSize: false,
+                              showColorButton: false,
+                              showBackgroundColorButton: false,
+                              multiRowsDisplay: true,
+                              embedButtons: FlutterQuillEmbeds.toolbarButtons(
+                                imageButtonOptions: QuillToolbarImageButtonOptions(
+                                  imageButtonConfig: QuillToolbarImageConfig(
+                                    onImageInsertCallback: (myImage, myController) async{
+                                      setState(() => uploadingThreadImage = true);
+
+                                      try{
+                                        final myDownloadUrl = await uploadMyImageToCloudinary(File(myImage));
+                                        final myIndex = myController.selection.baseOffset;
+                                        final myLength = myController.selection.extentOffset - myIndex;
+                                        myController.replaceText(myIndex, myLength, BlockEmbed.image(myDownloadUrl), null);
+                                      }
+                                      catch (e){
+                                        if(mounted){
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext bc){
+                                              return AlertDialog(
+                                                title: Text("Error"),
+                                                content: Text("Unfortunately, you were not successful in uploading the image."),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: (){
+                                                      Navigator.of(bc).pop();
+                                                    },
+                                                    child: Text("Ok"),
+                                                  )
+                                                ],
+                                              );
+                                            }
+                                          );
+                                        }
+                                      }
+                                      finally{
+                                        if(mounted){
+                                          setState(() => uploadingThreadImage = false);
+                                        }
+                                      }
+                                    }
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ]
+                          if(uploadingThreadImage)
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                            ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Theme.of(context).dividerColor),
+                            ),
+                            height: 220,
+                            child: Scrollbar(
+                              controller: threadContentScrollController,
+                              thumbVisibility: true,
+                              child: QuillEditor(
+                                controller: threadQuillController,
+                                scrollController: threadContentScrollController,
+                                focusNode: FocusNode(),
+                                config: QuillEditorConfig(
+                                  padding: EdgeInsets.all(8.0),
+                                  embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                  customStyles: DefaultStyles(
+                                    paragraph: DefaultTextBlockStyle(
+                                      TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      HorizontalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      null,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],/*SizedBox(
+                          child: TextField(
+                            scrollController: threadContentScrollController,
+                            minLines: 5,
+                            maxLines: 5,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: "Thread Content",
+                            ),
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                            controller: threadContentController,
+                          ),
+                        ),*/
+                      ),
+                    ),
                   ),
               ),
               Container(

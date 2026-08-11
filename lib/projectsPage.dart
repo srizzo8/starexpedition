@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'dart:collection';
 
@@ -7,6 +8,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
@@ -717,6 +720,16 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
   bool clickUsername = false;
   bool replyButton = false;
 
+  Document buildMyDocumentFromProjectsThreadContent(String myRawContent){
+    try{
+      return Document.fromJson(jsonDecode(myRawContent));
+    }
+    catch (e){
+      //For older formats (the raw content is in plain text instead of JSON):
+      return Document.fromJson([{"insert": "${myRawContent}\n"}]);
+    }
+  }
+
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
   void didChangeDependencies(){
@@ -1319,16 +1332,50 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                       padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                       child: AbsorbPointer(
                         absorbing: clickUsername,
-                        child: Text.rich(
-                          TextSpan(
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                            text: "${threadTitleP}\n",
-                            children: <TextSpan>[
-                              TextSpan(
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                text: "${threadContentP}\nPosted by: ",
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("${threadTitleP}\n", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+
+                            //The thread content:
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                textTheme: Theme.of(context).textTheme.apply(
+                                  bodyColor: Colors.black,
+                                  displayColor: Colors.black,
+                                ),
                               ),
+                              child: QuillEditor(
+                                controller: QuillController(
+                                  document: buildMyDocumentFromProjectsThreadContent(threadContentP),
+                                  selection: TextSelection.collapsed(offset: 0),
+                                  readOnly: true,
+                                ),
+                                focusNode: FocusNode(),
+                                scrollController: ScrollController(),
+                                config: QuillEditorConfig(
+                                  padding: EdgeInsets.zero,
+                                  embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                  customStyles: DefaultStyles(
+                                    paragraph: DefaultTextBlockStyle(
+                                      TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      HorizontalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      null,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            //Author of thread:
+                            Text.rich(
                               TextSpan(
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                text: "\nPosted by: ",
+                                children: <TextSpan>[
+                                TextSpan(
                                   style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
                                   text: "${threadAuthorP}",
                                   recognizer: TapGestureRecognizer()..onTap = () async {
@@ -1368,9 +1415,11 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                                       });
                                     }
                                   }
+                                ),
+                                ]
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

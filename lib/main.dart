@@ -6,6 +6,8 @@ import 'dart:io' show HttpHeaders, Platform;
 import 'dart:math';
 //if(kIsWeb) import 'dart:html' as html;
 import 'dart:typed_data';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:starexpedition4/web_related_information/webErrorHandlersImplementation.dart';
 //if(kIsWeb) import 'package:js/js_util.dart' as jsUtil;
@@ -68,6 +70,7 @@ import 'package:starexpedition4/subscriptionGate.dart';
 import 'package:starexpedition4/data_collection_information/dataCollectionSetting.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 /*import 'webErrorStub.dart'
   if(dart.library.html) 'forWebErrors.dart';*/
@@ -639,6 +642,15 @@ class MyApp extends StatelessWidget {
             color: Colors.red,
           ),
         ),
+        localizationsDelegates: [
+          FlutterQuillLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('en'),
+        ],
         builder: (context, child){
           return ScreenUtilInit(
             designSize: const Size(360, 690),

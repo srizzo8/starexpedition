@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:starexpedition4/replyThreadPage.dart';
 import 'package:starexpedition4/userProfile.dart';
@@ -723,6 +726,16 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
   bool clickUsername = false;
   bool replyButton = false;
 
+  Document buildMyDocumentFromDbuThreadContent(String myRawContent){
+    try{
+      return Document.fromJson(jsonDecode(myRawContent));
+    }
+    catch (e){
+      //For older formats (the raw content is in plain text instead of JSON):
+      return Document.fromJson([{"insert": "${myRawContent}\n"}]);
+    }
+  }
+
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
   void didChangeDependencies(){
@@ -1326,58 +1339,94 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                       padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.031250),
                       child: AbsorbPointer(
                         absorbing: clickUsername,
-                        child: Text.rich(
-                          TextSpan(
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                            text: "${threadTitleDbu}\n",
-                            children: <TextSpan>[
-                              TextSpan(
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                text: "${threadContentDbu}\nPosted by: ",
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("${threadTitleDbu}\n", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+
+                            //The thread content:
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                textTheme: Theme.of(context).textTheme.apply(
+                                  bodyColor: Colors.black,
+                                  displayColor: Colors.black,
+                                ),
                               ),
-                              TextSpan(
-                                  style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                  text: "${threadAuthorDbu}",
-                                  recognizer: TapGestureRecognizer()..onTap = () async {
-                                    if(clickUsername){
-                                      return;
-                                    }
-
-                                    setState(() => clickUsername = true);
-
-                                    dbuClickedOnUser = true;
-
-                                    if(firebaseDesktopHelper.onDesktop){
-                                      nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                      theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorDbu.toLowerCase(), orElse: () => <String, dynamic>{});
-                                    }
-                                    else{
-                                      nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorDbu.toLowerCase()).get();
-                                      nameData.docs.forEach((person){
-                                        theUsersData = person.data();
-                                      });
-                                    };
-
-                                    if(theUsersData?.isEmpty ?? true){
-                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
-                                        if(mounted){
-                                          setState(() => clickUsername = false);
-                                        }
-                                      });
-                                    }
-                                    else{
-                                      theUsernameResult = threadAuthorDbu;
-                                      fromDbuThread = true;
-                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
-                                        if(mounted){
-                                          setState(() => clickUsername = false);
-                                        }
-                                      });
-                                    }
-                                  }
+                              child: QuillEditor(
+                                controller: QuillController(
+                                  document: buildMyDocumentFromDbuThreadContent(threadContentDbu),
+                                  selection: TextSelection.collapsed(offset: 0),
+                                  readOnly: true,
+                                ),
+                                focusNode: FocusNode(),
+                                scrollController: ScrollController(),
+                                config: QuillEditorConfig(
+                                  padding: EdgeInsets.zero,
+                                  embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                  customStyles: DefaultStyles(
+                                    paragraph: DefaultTextBlockStyle(
+                                      TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      HorizontalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      null,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ],
-                          ),
+                            ),
+
+                            //Author of thread:
+                            Text.rich(
+                              TextSpan(
+                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                text: "\nPosted by: ",
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                      text: "${threadAuthorDbu}",
+                                      recognizer: TapGestureRecognizer()..onTap = () async {
+                                        if(clickUsername){
+                                          return;
+                                        }
+
+                                        setState(() => clickUsername = true);
+
+                                        dbuClickedOnUser = true;
+
+                                        if(firebaseDesktopHelper.onDesktop){
+                                          nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                          theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == threadAuthorDbu.toLowerCase(), orElse: () => <String, dynamic>{});
+                                        }
+                                        else{
+                                          nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: threadAuthorDbu.toLowerCase()).get();
+                                          nameData.docs.forEach((person){
+                                            theUsersData = person.data();
+                                          });
+                                        };
+
+                                        if(theUsersData?.isEmpty ?? true){
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                            if(mounted){
+                                              setState(() => clickUsername = false);
+                                            }
+                                          });
+                                        }
+                                        else{
+                                          theUsernameResult = threadAuthorDbu;
+                                          fromDbuThread = true;
+                                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                            if(mounted){
+                                              setState(() => clickUsername = false);
+                                            }
+                                          });
+                                        }
+                                      }
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
