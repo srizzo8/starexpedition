@@ -121,6 +121,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
   late final StreamSubscription replyQuillSyncSubscription;
 
   bool uploadingReplyImage = false;
+  bool uploadingReplyVideo = false;
 
   @override
   void initState(){
@@ -161,7 +162,31 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
       return myJsonResponse["secure_url"];
     }
     else{
-      throw Exception("Unfortunately, the Cloudinary upload failed: ${myResponseBody}");
+      throw Exception("Unfortunately, the Cloudinary image upload failed: ${myResponseBody}");
+    }
+  }
+
+  Future<String> uploadMyVideoToCloudinary(File myFile) async{
+    const myCloudName = "qrbab8fp";
+    const myUploadPreset = "star_expedition_reply_videos";
+
+    final myUri = Uri.parse("https://api.cloudinary.com/v1_1/${myCloudName}/video/upload");
+
+    final myRequest = http.MultipartRequest("POST", myUri)
+      ..fields["upload_preset"] = myUploadPreset
+      ..files.add(await http.MultipartFile.fromPath("file", myFile.path));
+
+    final myResponse = await myRequest.send();
+    final myResponseBody = await myResponse.stream.bytesToString();
+
+    if(myResponse.statusCode == 200){
+      final myJsonResponse = jsonDecode(myResponseBody);
+
+      //Returns the hosted image URL:
+      return myJsonResponse["secure_url"];
+    }
+    else{
+      throw Exception("Unfortunately, the Cloudinary video upload failed: ${myResponseBody}");
     }
   }
 
@@ -328,10 +353,50 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       }
                                   ),
                                 ),
+                                videoButtonOptions: QuillToolbarVideoButtonOptions(
+                                  videoConfig: QuillToolbarVideoConfig(
+                                      onVideoInsertCallback: (myVideo, myController) async{
+                                        setState(() => uploadingReplyVideo = true);
+
+                                        try{
+                                          final myDownloadUrl = await uploadMyVideoToCloudinary(File(myVideo));
+                                          final myIndex = myController.selection.baseOffset;
+                                          final myLength = myController.selection.extentOffset - myIndex;
+                                          myController.replaceText(myIndex, myLength, BlockEmbed.video(myDownloadUrl), null);
+                                        }
+                                        catch (e){
+                                          if(mounted){
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext bc){
+                                                  return AlertDialog(
+                                                    title: Text("Error"),
+                                                    content: Text("Unfortunately, you were not successful in uploading the video."),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: (){
+                                                          Navigator.of(bc).pop();
+                                                        },
+                                                        child: Text("Ok"),
+                                                      )
+                                                    ],
+                                                  );
+                                                }
+                                            );
+                                          }
+                                        }
+                                        finally{
+                                          if(mounted){
+                                            setState(() => uploadingReplyVideo = false);
+                                          }
+                                        }
+                                      }
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                          if(uploadingReplyImage)
+                          if(uploadingReplyImage || uploadingReplyVideo)
                             Padding(
                               padding: EdgeInsets.all(8.0),
                               child: Center(
