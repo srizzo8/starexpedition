@@ -730,6 +730,16 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
     }
   }
 
+  Document buildMyDocumentFromProjectsReplyContent(String myRawContent){
+    try{
+      return Document.fromJson(jsonDecode(myRawContent));
+    }
+    catch (e){
+      //For older formats (the raw content is in plain text instead of JSON):
+      return Document.fromJson([{"insert": "${myRawContent}\n"}]);
+    }
+  }
+
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
   void didChangeDependencies(){
@@ -811,57 +821,96 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                               child: Container(
                                 child: AbsorbPointer(
                                   absorbing: clickUsername,
-                                  child: Text.rich(
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "Reply to:\n${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                            text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
-                                            recognizer: TapGestureRecognizer()..onTap = () async {
-                                              if(clickUsername){
-                                                return;
-                                              }
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Reply to: ", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),),
 
-                                              setState(() => clickUsername = true);
-
-                                              projectsClickedOnUser = true;
-
-                                              if(firebaseDesktopHelper.onDesktop){
-                                                projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
-                                              }
-                                              else{
-                                                projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get();
-                                                projectsNameData.docs.forEach((person){
-                                                  theUsersData = person.data();
-                                                });
-                                              };
-                                              if(theUsersData?.isEmpty ?? true){
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
-                                                  }
-                                                });
-                                              }
-                                              else{
-                                                theUsernameResult = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString();
-                                                fromPThread = true;
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
-                                                  }
-                                                });
-                                              }
-                                            }
+                                      //Reply content:
+                                      Theme(
+                                        data: Theme.of(context).copyWith(
+                                          textTheme: Theme.of(context).textTheme.apply(
+                                            bodyColor: Colors.black,
+                                            displayColor: Colors.black,
+                                          ),
                                         ),
+                                        child: QuillEditor(
+                                          controller: QuillController(
+                                            document: buildMyDocumentFromProjectsReplyContent(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()),
+                                            selection: TextSelection.collapsed(offset: 0),
+                                            readOnly: true,
+                                          ),
+                                          focusNode: FocusNode(),
+                                          scrollController: ScrollController(),
+                                          config: QuillEditorConfig(
+                                            padding: EdgeInsets.zero,
+                                            embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                            customStyles: DefaultStyles(
+                                              paragraph: DefaultTextBlockStyle(
+                                                TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                                HorizontalSpacing.zero,
+                                                VerticalSpacing.zero,
+                                                VerticalSpacing.zero,
+                                                null,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Text.rich(
                                         TextSpan(
                                           style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                          text: " ",
+                                          text: "\nPosted by: ",
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                                text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                                recognizer: TapGestureRecognizer()..onTap = () async {
+                                                  if(clickUsername){
+                                                    return;
+                                                  }
+
+                                                  setState(() => clickUsername = true);
+
+                                                  projectsClickedOnUser = true;
+
+                                                  if(firebaseDesktopHelper.onDesktop){
+                                                    projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                    theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                                  }
+                                                  else{
+                                                    projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get();
+                                                    projectsNameData.docs.forEach((person){
+                                                      theUsersData = person.data();
+                                                    });
+                                                  };
+                                                  //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  if(theUsersData?.isEmpty ?? true){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                      }
+                                                    });
+                                                  }
+                                                  else{
+                                                    theUsernameResult = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString();
+                                                    fromPThread = true;
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                      }
+                                                    });
+                                                  }
+                                                }
+                                            ),
+                                            TextSpan(
+                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                              text: " ",
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 color: Colors.tealAccent,
@@ -884,58 +933,91 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                               child: Container(
                                 child: AbsorbPointer(
                                   absorbing: clickUsername,
-                                  child: Text.rich(
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}\n",
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                          text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                  child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        //Reply content:
+                                        Theme(
+                                          data: Theme.of(context).copyWith(
+                                            textTheme: Theme.of(context).textTheme.apply(
+                                              bodyColor: Colors.black,
+                                              displayColor: Colors.black,
+                                            ),
+                                          ),
+                                          child: QuillEditor(
+                                            controller: QuillController(
+                                              document: buildMyDocumentFromProjectsReplyContent(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()),
+                                              selection: TextSelection.collapsed(offset: 0),
+                                              readOnly: true,
+                                            ),
+                                            focusNode: FocusNode(),
+                                            scrollController: ScrollController(),
+                                            config: QuillEditorConfig(
+                                              padding: EdgeInsets.zero,
+                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                              customStyles: DefaultStyles(
+                                                paragraph: DefaultTextBlockStyle(
+                                                  TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                                  HorizontalSpacing.zero,
+                                                  VerticalSpacing.zero,
+                                                  VerticalSpacing.zero,
+                                                  null,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        TextSpan(
-                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                            text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
-                                            recognizer: TapGestureRecognizer()..onTap = () async {
-                                              if(clickUsername){
-                                                return;
-                                              }
 
-                                              setState(() => clickUsername = true);
+                                        //Time and author of reply:
+                                        Text.rich(
+                                          TextSpan(
+                                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                            text: "\nPosted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                  style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                                  text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
+                                                  recognizer: TapGestureRecognizer()..onTap = () async {
+                                                    if(clickUsername){
+                                                      return;
+                                                    }
 
-                                              projectsClickedOnUser = true;
+                                                    setState(() => clickUsername = true);
 
-                                              if(firebaseDesktopHelper.onDesktop){
-                                                projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
-                                              }
-                                              else{
-                                                projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase()).get();
-                                                projectsNameData.docs.forEach((person){
-                                                  theUsersData = person.data();
-                                                });
-                                              };
-                                              if(theUsersData?.isEmpty ?? true){
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
+                                                    projectsClickedOnUser = true;
+                                                    if(firebaseDesktopHelper.onDesktop){
+                                                      projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                      theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                                    }
+                                                    else{
+                                                      projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase()).get();
+                                                      projectsNameData.docs.forEach((person){
+                                                        theUsersData = person.data();
+                                                      });
+                                                    };
+                                                    //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                    if(theUsersData?.isEmpty ?? true){
+                                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                        if(mounted){
+                                                          setState(() => clickUsername = false);
+                                                        }
+                                                      });
+                                                    }
+                                                    else{
+                                                      theUsernameResult = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString();
+                                                      fromPThread = true;
+                                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                        if(mounted){
+                                                          setState(() => clickUsername = false);
+                                                        }
+                                                      });
+                                                    }
                                                   }
-                                                });
-                                              }
-                                              else{
-                                                theUsernameResult = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString();
-                                                fromPThread = true;
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
-                                                  }
-                                                }
-                                              );
-                                            }
-                                          }
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
+                                      ]
                                   ),
                                 ),
                                 color: Colors.grey[300],
@@ -1088,58 +1170,93 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                               child: Container(
                                 child: AbsorbPointer(
                                   absorbing: clickUsername,
-                                  child: Text.rich(
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()}\n",
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                          text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                  child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        //Reply content:
+                                        Theme(
+                                          data: Theme.of(context).copyWith(
+                                            textTheme: Theme.of(context).textTheme.apply(
+                                              bodyColor: Colors.black,
+                                              displayColor: Colors.black,
+                                            ),
+                                          ),
+                                          child: QuillEditor(
+                                            controller: QuillController(
+                                              document: buildMyDocumentFromProjectsReplyContent(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replyContent"].toString()),
+                                              selection: TextSelection.collapsed(offset: 0),
+                                              readOnly: true,
+                                            ),
+                                            focusNode: FocusNode(),
+                                            scrollController: ScrollController(),
+                                            config: QuillEditorConfig(
+                                              padding: EdgeInsets.zero,
+                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                              customStyles: DefaultStyles(
+                                                paragraph: DefaultTextBlockStyle(
+                                                  TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                                  HorizontalSpacing.zero,
+                                                  VerticalSpacing.zero,
+                                                  VerticalSpacing.zero,
+                                                  null,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        TextSpan(
-                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                            text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
-                                            recognizer: TapGestureRecognizer()..onTap = () async {
-                                              if(clickUsername){
-                                                return;
-                                              }
 
-                                              setState(() => clickUsername = true);
+                                        //Time and author of reply:
+                                        Text.rich(
+                                          TextSpan(
+                                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                            text: "\nPosted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                  style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                                  text: "${mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString()}",
+                                                  recognizer: TapGestureRecognizer()..onTap = () async {
+                                                    if(clickUsername){
+                                                      return;
+                                                    }
 
-                                              projectsClickedOnUser = true;
+                                                    setState(() => clickUsername = true);
 
-                                              if(firebaseDesktopHelper.onDesktop){
-                                                projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
-                                                print("theUsersData is this on Desktop: ${theUsersData}");
-                                              }
-                                              else{
-                                                projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase()).get();
-                                                projectsNameData.docs.forEach((person){
-                                                  theUsersData = person.data();
-                                                });
-                                              };
-                                              if(theUsersData?.isEmpty ?? true){
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
+                                                    projectsClickedOnUser = true;
+
+                                                    if(firebaseDesktopHelper.onDesktop){
+                                                      projectsNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                      theUsersData = projectsNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                                      print("theUsersData is this on Desktop: ${theUsersData}");
+                                                    }
+                                                    else{
+                                                      projectsNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString().toLowerCase()).get();
+                                                      projectsNameData.docs.forEach((person){
+                                                        theUsersData = person.data();
+                                                      });
+                                                    };
+
+                                                    if(theUsersData?.isEmpty ?? true){
+                                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                        if(mounted){
+                                                          setState(() => clickUsername = false);
+                                                        }
+                                                      });
+                                                    }
+                                                    else{
+                                                      theUsernameResult = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString();
+                                                      fromPThread = true;
+                                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                        if(mounted){
+                                                          setState(() => clickUsername = false);
+                                                        }
+                                                      });
+                                                    }
                                                   }
-                                                });
-                                              }
-                                              else{
-                                                theUsernameResult = mySublistsProjectsThreadReplies[theCurrentPageProjectsThreadReplies][index]["replier"].toString();
-                                                fromPThread = true;
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
-                                                  }
-                                                });
-                                              }
-                                            }
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
+                                      ]
                                   ),
                                 ),
                                 color: Colors.grey[300],

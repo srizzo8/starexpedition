@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,8 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:starexpedition4/projects_firestore_database_information/projectsRepliesDatabaseFirestoreInfo.dart';
 import 'package:starexpedition4/projects_firestore_database_information/projectsRepliesInformation.dart';
@@ -109,6 +114,21 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
   //Scroll controller:
   final replyContentScrollController = ScrollController();
 
+  //Quill controller:
+  final QuillController replyQuillController = QuillController.basic();
+
+  //StreamSubscription:
+  late final StreamSubscription replyQuillSyncSubscription;
+
+  bool uploadingReplyImage = false;
+
+  @override
+  void initState(){
+    replyQuillSyncSubscription = replyQuillController.document.changes.listen((myEvent){
+      replyContentController.text = jsonEncode(replyQuillController.document.toDelta().toJson());
+    });
+  }
+
   List<Text> createReplyDialogMessage(List<String> info){
     List<Text> messageForUserReplyToThread = [];
     if(whitespaceChecker(usernameReplyController.text)){
@@ -121,6 +141,30 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
     return messageForUserReplyToThread;
   }
 
+  Future<String> uploadMyImageToCloudinary(File myFile) async{
+    const myCloudName = "qrbab8fp";
+    const myUploadPreset = "star_expedition_reply_images";
+
+    final myUri = Uri.parse("https://api.cloudinary.com/v1_1/${myCloudName}/image/upload");
+
+    final myRequest = http.MultipartRequest("POST", myUri)
+      ..fields["upload_preset"] = myUploadPreset
+      ..files.add(await http.MultipartFile.fromPath("file", myFile.path));
+
+    final myResponse = await myRequest.send();
+    final myResponseBody = await myResponse.stream.bytesToString();
+
+    if(myResponse.statusCode == 200){
+      final myJsonResponse = jsonDecode(myResponseBody);
+
+      //Returns the hosted image URL:
+      return myJsonResponse["secure_url"];
+    }
+    else{
+      throw Exception("Unfortunately, the Cloudinary upload failed: ${myResponseBody}");
+    }
+  }
+
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
   void didChangeDependencies(){
@@ -131,6 +175,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
   @override
   void dispose(){
     myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    replyQuillSyncSubscription.cancel();
     super.dispose();
   }
 
@@ -154,6 +199,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_){
         FocusManager.instance.primaryFocus?.unfocus();
+        SystemChannels.textInput.invokeMethod("TextInput.hide");
       },
       child: Scaffold(
         appBar: AppBar(
@@ -223,46 +269,129 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                     child: TextField(),
                   ),
                 ),
-                IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Flexible(
-                            child: Center(
-                                child: Container(
-                                  padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.0078125, MediaQuery.of(context).size.width * 0.015625, 0.0),
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
-                                    ),
-                                    child: Scrollbar(
-                                      //child: SingleChildScrollView(
-                                        //scrollDirection: Axis.vertical,
-                                        //reverse: false,
-                                        controller: replyContentScrollController,
-                                        thumbVisibility: true,
-                                        child: SizedBox(
-                                          child: TextField(
-                                            scrollController: replyContentScrollController,
-                                            minLines: 5,
-                                            maxLines: 5,
-                                            decoration: InputDecoration(
-                                              border: OutlineInputBorder(),
-                                              labelText: "Reply Content",
-                                            ),
-                                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                                            controller: replyContentController,
-                                          ),
-                                        ),
-                                      //),
+                Center(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.0078125, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          QuillSimpleToolbar(
+                            controller: replyQuillController,
+                            config: QuillSimpleToolbarConfig(
+                              showFontFamily: false,
+                              showFontSize: false,
+                              showColorButton: false,
+                              showBackgroundColorButton: false,
+                              multiRowsDisplay: true,
+                              embedButtons: FlutterQuillEmbeds.toolbarButtons(
+                                imageButtonOptions: QuillToolbarImageButtonOptions(
+                                  imageButtonConfig: QuillToolbarImageConfig(
+                                      onImageInsertCallback: (myImage, myController) async{
+                                        setState(() => uploadingReplyImage = true);
+
+                                        try{
+                                          final myDownloadUrl = await uploadMyImageToCloudinary(File(myImage));
+                                          final myIndex = myController.selection.baseOffset;
+                                          final myLength = myController.selection.extentOffset - myIndex;
+                                          myController.replaceText(myIndex, myLength, BlockEmbed.image(myDownloadUrl), null);
+                                        }
+                                        catch (e){
+                                          if(mounted){
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext bc){
+                                                  return AlertDialog(
+                                                    title: Text("Error"),
+                                                    content: Text("Unfortunately, you were not successful in uploading the image."),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: (){
+                                                          Navigator.of(bc).pop();
+                                                        },
+                                                        child: Text("Ok"),
+                                                      )
+                                                    ],
+                                                  );
+                                                }
+                                            );
+                                          }
+                                        }
+                                        finally{
+                                          if(mounted){
+                                            setState(() => uploadingReplyImage = false);
+                                          }
+                                        }
+                                      }
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          if(uploadingReplyImage)
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Theme.of(context).dividerColor),
+                            ),
+                            height: 220,
+                            child: Scrollbar(
+                              controller: replyContentScrollController,
+                              thumbVisibility: true,
+                              child: QuillEditor(
+                                controller: replyQuillController,
+                                scrollController: replyContentScrollController,
+                                focusNode: FocusNode(),
+                                config: QuillEditorConfig(
+                                  padding: EdgeInsets.all(8.0),
+                                  embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                  customStyles: DefaultStyles(
+                                    paragraph: DefaultTextBlockStyle(
+                                      TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                      HorizontalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      null,
                                     ),
                                   ),
-                                )
-                            )
-                        ),
-                      ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      /*Scrollbar(
+                        //child: SingleChildScrollView(
+                          //scrollDirection: Axis.vertical,
+                          //reverse: false,
+                          controller: replyContentScrollController,
+                          thumbVisibility: true,
+                          child: SizedBox(
+                            child: TextField(
+                              scrollController: replyContentScrollController,
+                              minLines: 5,
+                              maxLines: 5,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "Reply Content",
+                              ),
+                              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                              controller: replyContentController,
+                            ),
+                          ),
+                        //),
+                      ),*/
                     ),
-                  ),
+                  )
+                ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.015625,
                 ),

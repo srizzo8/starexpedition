@@ -736,6 +736,16 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
     }
   }
 
+  Document buildMyDocumentFromDbuReplyContent(String myRawContent){
+    try{
+      return Document.fromJson(jsonDecode(myRawContent));
+    }
+    catch (e){
+      //For older formats (the raw content is in plain text instead of JSON):
+      return Document.fromJson([{"insert": "${myRawContent}\n"}]);
+    }
+  }
+
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
   void didChangeDependencies(){
@@ -817,62 +827,96 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               child: Container(
                                 child: AbsorbPointer(
                                   absorbing: clickUsername,
-                                  child: Text.rich(
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "Reply to:\n${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}",
-                                      children: <TextSpan>[
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Reply to: ", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),),
+
+                                      //Reply content:
+                                      Theme(
+                                        data: Theme.of(context).copyWith(
+                                          textTheme: Theme.of(context).textTheme.apply(
+                                            bodyColor: Colors.black,
+                                            displayColor: Colors.black,
+                                          ),
+                                        ),
+                                        child: QuillEditor(
+                                          controller: QuillController(
+                                            document: buildMyDocumentFromDbuReplyContent(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()),
+                                            selection: TextSelection.collapsed(offset: 0),
+                                            readOnly: true,
+                                          ),
+                                          focusNode: FocusNode(),
+                                          scrollController: ScrollController(),
+                                          config: QuillEditorConfig(
+                                            padding: EdgeInsets.zero,
+                                            embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                            customStyles: DefaultStyles(
+                                              paragraph: DefaultTextBlockStyle(
+                                                TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                                HorizontalSpacing.zero,
+                                                VerticalSpacing.zero,
+                                                VerticalSpacing.zero,
+                                                null,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Text.rich(
                                         TextSpan(
                                           style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
                                           text: "\nPosted by: ",
-                                        ),
-                                        TextSpan(
-                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                            text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
-                                            recognizer: TapGestureRecognizer()..onTap = () async {
-                                              if(clickUsername){
-                                                return;
-                                              }
-
-                                              setState(() => clickUsername = true);
-
-                                              dbuClickedOnUser = true;
-
-                                              if(firebaseDesktopHelper.onDesktop){
-                                                nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
-                                              }
-                                              else{
-                                                nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get();
-                                                nameData.docs.forEach((person){
-                                                  theUsersData = person.data();
-                                                });
-                                              };
-                                              //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                              if(theUsersData?.isEmpty ?? true){
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                                text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                                recognizer: TapGestureRecognizer()..onTap = () async {
+                                                  if(clickUsername){
+                                                    return;
                                                   }
-                                                });
-                                              }
-                                              else{
-                                                theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString();
-                                                fromDbuThread = true;
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
+
+                                                  setState(() => clickUsername = true);
+
+                                                  dbuClickedOnUser = true;
+
+                                                  if(firebaseDesktopHelper.onDesktop){
+                                                    nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                    theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
                                                   }
-                                                });
-                                              }
-                                            }
+                                                  else{
+                                                    nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get();
+                                                    nameData.docs.forEach((person){
+                                                      theUsersData = person.data();
+                                                    });
+                                                  };
+                                                  //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  if(theUsersData?.isEmpty ?? true){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                      }
+                                                    });
+                                                  }
+                                                  else{
+                                                    theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString();
+                                                    fromDbuThread = true;
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                      }
+                                                    });
+                                                  }
+                                                }
+                                            ),
+                                            TextSpan(
+                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                              text: " ",
+                                            ),
+                                          ],
                                         ),
-                                        TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                          text: " ",
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 color: Colors.tealAccent, //theDbuThreadReplies[index]["theOriginalReplyInfo"].toString(), theDbuThreadReplies[index]["theOriginalReplyInfo"].toString()
@@ -896,57 +940,91 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               child: Container(
                                 child: AbsorbPointer(
                                   absorbing: clickUsername,
-                                  child: Text.rich(
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}\n",
-                                      children: <TextSpan>[
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      //Reply content:
+                                      Theme(
+                                        data: Theme.of(context).copyWith(
+                                          textTheme: Theme.of(context).textTheme.apply(
+                                            bodyColor: Colors.black,
+                                            displayColor: Colors.black,
+                                          ),
+                                        ),
+                                        child: QuillEditor(
+                                          controller: QuillController(
+                                            document: buildMyDocumentFromDbuReplyContent(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()),
+                                            selection: TextSelection.collapsed(offset: 0),
+                                            readOnly: true,
+                                          ),
+                                          focusNode: FocusNode(),
+                                          scrollController: ScrollController(),
+                                          config: QuillEditorConfig(
+                                            padding: EdgeInsets.zero,
+                                            embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                            customStyles: DefaultStyles(
+                                              paragraph: DefaultTextBlockStyle(
+                                                TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                                HorizontalSpacing.zero,
+                                                VerticalSpacing.zero,
+                                                VerticalSpacing.zero,
+                                                null,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      //Time and author of reply:
+                                      Text.rich(
                                         TextSpan(
                                           style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                          text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}\nPosted by: ",
-                                        ),
-                                        TextSpan(
-                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                            text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
-                                            recognizer: TapGestureRecognizer()..onTap = () async {
-                                              if(clickUsername){
-                                                return;
-                                              }
-
-                                              setState(() => clickUsername = true);
-
-                                              dbuClickedOnUser = true;
-                                              if(firebaseDesktopHelper.onDesktop){
-                                                nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
-                                              }
-                                              else{
-                                                nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get();
-                                                nameData.docs.forEach((person){
-                                                  theUsersData = person.data();
-                                                });
-                                              };
-                                              //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                              if(theUsersData?.isEmpty ?? true){
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
+                                          text: "\nPosted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                                text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
+                                                recognizer: TapGestureRecognizer()..onTap = () async {
+                                                  if(clickUsername){
+                                                    return;
                                                   }
-                                                });
-                                              }
-                                              else{
-                                                theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
-                                                fromDbuThread = true;
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
+
+                                                  setState(() => clickUsername = true);
+
+                                                  dbuClickedOnUser = true;
+                                                  if(firebaseDesktopHelper.onDesktop){
+                                                    nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                    theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
                                                   }
-                                                });
-                                              }
-                                            }
+                                                  else{
+                                                    nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get();
+                                                    nameData.docs.forEach((person){
+                                                      theUsersData = person.data();
+                                                    });
+                                                  };
+                                                  //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  if(theUsersData?.isEmpty ?? true){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                      }
+                                                    });
+                                                  }
+                                                  else{
+                                                    theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
+                                                    fromDbuThread = true;
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                      }
+                                                    });
+                                                  }
+                                                }
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ]
                                   ),
                                 ),
                                 color: Colors.grey[300],
@@ -1098,58 +1176,93 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                               child: Container(
                                 child: AbsorbPointer(
                                   absorbing: clickUsername,
-                                  child: Text.rich(
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()}\n",
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                          text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                  child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        //Reply content:
+                                        Theme(
+                                          data: Theme.of(context).copyWith(
+                                            textTheme: Theme.of(context).textTheme.apply(
+                                              bodyColor: Colors.black,
+                                              displayColor: Colors.black,
+                                            ),
+                                          ),
+                                          child: QuillEditor(
+                                            controller: QuillController(
+                                              document: buildMyDocumentFromDbuReplyContent(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replyContent"].toString()),
+                                              selection: TextSelection.collapsed(offset: 0),
+                                              readOnly: true,
+                                            ),
+                                            focusNode: FocusNode(),
+                                            scrollController: ScrollController(),
+                                            config: QuillEditorConfig(
+                                              padding: EdgeInsets.zero,
+                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                              customStyles: DefaultStyles(
+                                                paragraph: DefaultTextBlockStyle(
+                                                  TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                                  HorizontalSpacing.zero,
+                                                  VerticalSpacing.zero,
+                                                  VerticalSpacing.zero,
+                                                  null,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        TextSpan(
-                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                            text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
-                                            recognizer: TapGestureRecognizer()..onTap = () async {
-                                              if(clickUsername){
-                                                return;
-                                              }
 
-                                              setState(() => clickUsername = true);
+                                        //Time and author of reply:
+                                        Text.rich(
+                                          TextSpan(
+                                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                            text: "\nPosted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                  style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                                  text: "${mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString()}",
+                                                  recognizer: TapGestureRecognizer()..onTap = () async {
+                                                    if(clickUsername){
+                                                      return;
+                                                    }
 
-                                              dbuClickedOnUser = true;
+                                                    setState(() => clickUsername = true);
 
-                                              if(firebaseDesktopHelper.onDesktop){
-                                                nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
-                                                print("theUsersData is this on Desktop: ${theUsersData}");
-                                              }
-                                              else{
-                                                nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get();
-                                                nameData.docs.forEach((person){
-                                                  theUsersData = person.data();
-                                                });
-                                              };
-                                              if(theUsersData?.isEmpty ?? true){
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
+                                                    dbuClickedOnUser = true;
+
+                                                    if(firebaseDesktopHelper.onDesktop){
+                                                      nameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                      theUsersData = nameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                                      print("theUsersData is this on Desktop: ${theUsersData}");
+                                                    }
+                                                    else{
+                                                      nameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString().toLowerCase()).get();
+                                                      nameData.docs.forEach((person){
+                                                        theUsersData = person.data();
+                                                      });
+                                                    };
+
+                                                    if(theUsersData?.isEmpty ?? true){
+                                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                        }
+                                                      });
+                                                    }
+                                                    else{
+                                                      theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
+                                                      fromDbuThread = true;
+                                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                        if(mounted){
+                                                          setState(() => clickUsername = false);
+                                                        }
+                                                      });
+                                                    }
                                                   }
-                                                });
-                                              }
-                                              else{
-                                                theUsernameResult = mySublistsDbuThreadReplies[theCurrentPageDbuThreadReplies][index]["replier"].toString();
-                                                fromDbuThread = true;
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
-                                                  }
-                                                });
-                                              }
-                                            }
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
+                                      ]
                                   ),
                                 ),
                                 color: Colors.grey[300],

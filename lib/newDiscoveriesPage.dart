@@ -724,6 +724,15 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
     }
   }
 
+  Document buildMyDocumentFromNdReplyContent(String myRawContent){
+    try{
+      return Document.fromJson(jsonDecode(myRawContent));
+    }
+    catch (e){
+      //For older formats (the raw content is in plain text instead of JSON):
+      return Document.fromJson([{"insert": "${myRawContent}\n"}]);
+    }
+  }
 
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
@@ -806,58 +815,96 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                               child: Container(
                                 child: AbsorbPointer(
                                   absorbing: clickUsername,
-                                  child: Text.rich(
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "Reply to:\n${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()}\nPosted by: ",
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                            text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
-                                            recognizer: TapGestureRecognizer()..onTap = () async {
-                                              if(clickUsername){
-                                                return;
-                                              }
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Reply to: ", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),),
 
-                                              setState(() => clickUsername = true);
-
-                                              ndClickedOnUser = true;
-
-                                              if(firebaseDesktopHelper.onDesktop){
-                                                ndNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                theUsersData = ndNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
-                                              }
-                                              else{
-                                                ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get();
-                                                ndNameData.docs.forEach((person){
-                                                  theUsersData = person.data();
-                                                });
-                                              };
-
-                                              if(theUsersData?.isEmpty ?? true){
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
-                                                  }
-                                                });
-                                              }
-                                              else{
-                                                theUsernameResult = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString();
-                                                fromNdThread = true;
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
-                                                  }
-                                                });
-                                              }
-                                            }
+                                      //Reply content:
+                                      Theme(
+                                        data: Theme.of(context).copyWith(
+                                          textTheme: Theme.of(context).textTheme.apply(
+                                            bodyColor: Colors.black,
+                                            displayColor: Colors.black,
+                                          ),
                                         ),
+                                        child: QuillEditor(
+                                          controller: QuillController(
+                                            document: buildMyDocumentFromNdReplyContent(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replyContent"].toString()),
+                                            selection: TextSelection.collapsed(offset: 0),
+                                            readOnly: true,
+                                          ),
+                                          focusNode: FocusNode(),
+                                          scrollController: ScrollController(),
+                                          config: QuillEditorConfig(
+                                            padding: EdgeInsets.zero,
+                                            embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                            customStyles: DefaultStyles(
+                                              paragraph: DefaultTextBlockStyle(
+                                                TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                                HorizontalSpacing.zero,
+                                                VerticalSpacing.zero,
+                                                VerticalSpacing.zero,
+                                                null,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Text.rich(
                                         TextSpan(
                                           style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                          text: " ",
+                                          text: "\nPosted by: ",
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                                text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString()}",
+                                                recognizer: TapGestureRecognizer()..onTap = () async {
+                                                  if(clickUsername){
+                                                    return;
+                                                  }
+
+                                                  setState(() => clickUsername = true);
+
+                                                  ndClickedOnUser = true;
+
+                                                  if(firebaseDesktopHelper.onDesktop){
+                                                    ndNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                    theUsersData = ndNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                                  }
+                                                  else{
+                                                    ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString().toLowerCase()).get();
+                                                    ndNameData.docs.forEach((person){
+                                                      theUsersData = person.data();
+                                                    });
+                                                  };
+                                                  //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                  if(theUsersData?.isEmpty ?? true){
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                      }
+                                                    });
+                                                  }
+                                                  else{
+                                                    theUsernameResult = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["theOriginalReplyInfo"]["replier"].toString();
+                                                    fromNdThread = true;
+                                                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                      if(mounted){
+                                                        setState(() => clickUsername = false);
+                                                      }
+                                                    });
+                                                  }
+                                                }
+                                            ),
+                                            TextSpan(
+                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                              text: " ",
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 color: Colors.tealAccent,
@@ -880,57 +927,91 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                               child: Container(
                                 child: AbsorbPointer(
                                   absorbing: clickUsername,
-                                  child: Text.rich(
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()}\n",
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                          text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                  child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        //Reply content:
+                                        Theme(
+                                          data: Theme.of(context).copyWith(
+                                            textTheme: Theme.of(context).textTheme.apply(
+                                              bodyColor: Colors.black,
+                                              displayColor: Colors.black,
+                                            ),
+                                          ),
+                                          child: QuillEditor(
+                                            controller: QuillController(
+                                              document: buildMyDocumentFromNdReplyContent(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()),
+                                              selection: TextSelection.collapsed(offset: 0),
+                                              readOnly: true,
+                                            ),
+                                            focusNode: FocusNode(),
+                                            scrollController: ScrollController(),
+                                            config: QuillEditorConfig(
+                                              padding: EdgeInsets.zero,
+                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                              customStyles: DefaultStyles(
+                                                paragraph: DefaultTextBlockStyle(
+                                                  TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                                  HorizontalSpacing.zero,
+                                                  VerticalSpacing.zero,
+                                                  VerticalSpacing.zero,
+                                                  null,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        TextSpan(
-                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                            text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString()}",
-                                            recognizer: TapGestureRecognizer()..onTap = () async {
-                                              if(clickUsername){
-                                                return;
-                                              }
 
-                                              setState(() => clickUsername = true);
+                                        //Time and author of reply:
+                                        Text.rich(
+                                          TextSpan(
+                                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                            text: "\nPosted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                  style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                                  text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString()}",
+                                                  recognizer: TapGestureRecognizer()..onTap = () async {
+                                                    if(clickUsername){
+                                                      return;
+                                                    }
 
-                                              ndClickedOnUser = true;
+                                                    setState(() => clickUsername = true);
 
-                                              if(firebaseDesktopHelper.onDesktop){
-                                                ndNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                theUsersData = ndNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
-                                              }
-                                              else{
-                                                ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString().toLowerCase()).get();
-                                                ndNameData.docs.forEach((person){
-                                                  theUsersData = person.data();
-                                                });
-                                              };
-                                              if(theUsersData?.isEmpty ?? true){
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
+                                                    ndClickedOnUser = true;
+                                                    if(firebaseDesktopHelper.onDesktop){
+                                                      ndNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                      theUsersData = ndNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                                    }
+                                                    else{
+                                                      ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString().toLowerCase()).get();
+                                                      ndNameData.docs.forEach((person){
+                                                        theUsersData = person.data();
+                                                      });
+                                                    };
+                                                    //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
+                                                    if(theUsersData?.isEmpty ?? true){
+                                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                        if(mounted){
+                                                          setState(() => clickUsername = false);
+                                                        }
+                                                      });
+                                                    }
+                                                    else{
+                                                      theUsernameResult = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString();
+                                                      fromNdThread = true;
+                                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                        if(mounted){
+                                                          setState(() => clickUsername = false);
+                                                        }
+                                                      });
+                                                    }
                                                   }
-                                                });
-                                              }
-                                              else{
-                                                theUsernameResult = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString();
-                                                fromNdThread = true;
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
-                                                  }
-                                                });
-                                              }
-                                            }
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
+                                      ]
                                   ),
                                 ),
                                 color: Colors.grey[300],
@@ -1084,59 +1165,93 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                               child: Container(
                                 child: AbsorbPointer(
                                   absorbing: clickUsername,
-                                  child: Text.rich(
-                                    TextSpan(
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                      text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()}\n",
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
-                                          text: "Posted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                  child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        //Reply content:
+                                        Theme(
+                                          data: Theme.of(context).copyWith(
+                                            textTheme: Theme.of(context).textTheme.apply(
+                                              bodyColor: Colors.black,
+                                              displayColor: Colors.black,
+                                            ),
+                                          ),
+                                          child: QuillEditor(
+                                            controller: QuillController(
+                                              document: buildMyDocumentFromNdReplyContent(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replyContent"].toString()),
+                                              selection: TextSelection.collapsed(offset: 0),
+                                              readOnly: true,
+                                            ),
+                                            focusNode: FocusNode(),
+                                            scrollController: ScrollController(),
+                                            config: QuillEditorConfig(
+                                              padding: EdgeInsets.zero,
+                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                              customStyles: DefaultStyles(
+                                                paragraph: DefaultTextBlockStyle(
+                                                  TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                                  HorizontalSpacing.zero,
+                                                  VerticalSpacing.zero,
+                                                  VerticalSpacing.zero,
+                                                  null,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        TextSpan(
-                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
-                                            text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString()}",
-                                            recognizer: TapGestureRecognizer()..onTap = () async {
-                                              if(clickUsername){
-                                                return;
-                                              }
 
-                                              setState(() => clickUsername = true);
+                                        //Time and author of reply:
+                                        Text.rich(
+                                          TextSpan(
+                                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
+                                            text: "\nPosted on: ${firebaseDesktopHelper.formatMyTimestamp(mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["time"].toString())}\nPosted by: ",
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                  style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                                  text: "${mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString()}",
+                                                  recognizer: TapGestureRecognizer()..onTap = () async {
+                                                    if(clickUsername){
+                                                      return;
+                                                    }
 
-                                              ndClickedOnUser = true;
+                                                    setState(() => clickUsername = true);
 
-                                              if(firebaseDesktopHelper.onDesktop){
-                                                ndNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
-                                                theUsersData = ndNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
-                                                print("theUsersData is this on Desktop: ${theUsersData}");
-                                              }
-                                              else{
-                                                ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString().toLowerCase()).get();
-                                                ndNameData.docs.forEach((person){
-                                                  theUsersData = person.data();
-                                                });
-                                              };
-                                              //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())),
-                                              if(theUsersData?.isEmpty ?? true){
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
+                                                    ndClickedOnUser = true;
+
+                                                    if(firebaseDesktopHelper.onDesktop){
+                                                      ndNameData = await firebaseDesktopHelper.getFirestoreCollection("User");
+                                                      theUsersData = ndNameData.firstWhere((myUser) => myUser["usernameLowercased"].toString() == mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString().toLowerCase(), orElse: () => <String, dynamic>{});
+                                                      print("theUsersData is this on Desktop: ${theUsersData}");
+                                                    }
+                                                    else{
+                                                      ndNameData = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString().toLowerCase()).get();
+                                                      ndNameData.docs.forEach((person){
+                                                        theUsersData = person.data();
+                                                      });
+                                                    };
+
+                                                    if(theUsersData?.isEmpty ?? true){
+                                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => nonexistentUser())).then((_){
+                                                        if(mounted){
+                                                          setState(() => clickUsername = false);
+                                                        }
+                                                      });
+                                                    }
+                                                    else{
+                                                      theUsernameResult = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString();
+                                                      fromNdThread = true;
+                                                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
+                                                        if(mounted){
+                                                          setState(() => clickUsername = false);
+                                                        }
+                                                      });
+                                                    }
                                                   }
-                                                });
-                                              }
-                                              else{
-                                                theUsernameResult = mySublistsNdThreadReplies[theCurrentPageNdThreadReplies][index]["replier"].toString();
-                                                fromNdThread = true;
-                                                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => userProfileInOtherUsersPerspective())).then((_){
-                                                  if(mounted){
-                                                    setState(() => clickUsername = false);
-                                                  }
-                                                });
-                                              }
-                                            }
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
+                                      ]
                                   ),
                                 ),
                                 color: Colors.grey[300],
