@@ -1075,6 +1075,10 @@ class userProfileInUserPerspectiveState extends State<userProfileInUserPerspecti
 
                 if(myMain.planetsUserTracked.isEmpty)
                   Text("N/A", textAlign: TextAlign.center),
+
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015625,
+                ),
               ],
             ),
           ],
@@ -1516,6 +1520,10 @@ class userProfileInOtherUsersPerspectiveState extends State<userProfileInOtherUs
 
                 if(theUsersData["usernameProfileInformation"]["planetsTracked"].isEmpty)
                   Text("N/A", textAlign: TextAlign.center),
+
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.015625,
+                ),
               ],
             ),
           ],

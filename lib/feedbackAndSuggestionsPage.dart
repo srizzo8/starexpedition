@@ -699,6 +699,9 @@ class feedbackAndSuggestionsPageState extends State<feedbackAndSuggestionsPage> 
                 });
               }
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
         ],
       ),
     );
@@ -1611,6 +1614,9 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                   theCurrentPageFasThreadReplies = myIndexFasThreadReplies;
                 });
               }
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
           ],
         ),

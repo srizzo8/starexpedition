@@ -694,6 +694,9 @@ class newDiscoveriesPageState extends State<newDiscoveriesPage> with RouteAware{
                 });
               }
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
         ],
       ),
     );
@@ -1608,6 +1611,9 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                   theCurrentPageNdThreadReplies = myIndexNdThreadReplies;
                 });
               }
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
           ],
         ),

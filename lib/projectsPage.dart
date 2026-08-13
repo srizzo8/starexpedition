@@ -700,6 +700,9 @@ class projectsPageState extends State<projectsPage> with RouteAware{
                 });
               }
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
         ],
       ),
     );
@@ -1610,6 +1613,9 @@ class projectsThreadContent extends State<projectsThreadsPage> with RouteAware{
                   theCurrentPageProjectsThreadReplies = myIndexProjectsThreadReplies;
                 });
               }
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
           ],
         ),

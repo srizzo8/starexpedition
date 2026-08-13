@@ -696,6 +696,9 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
                 });
               }
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
         ],
       ),
     );
@@ -1608,6 +1611,9 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                   theCurrentPageQaaThreadReplies = myIndexQaaThreadReplies;
                 });
               }
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
           ],
         ),

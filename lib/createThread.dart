@@ -110,12 +110,16 @@ class createThreadState extends State<createThread> with RouteAware{
   bool uploadingThreadImage = false;
   bool uploadingThreadVideo = false;
 
+  late final FocusNode threadContentFocusNode;
+
   @override
   void initState(){
     super.initState();
     threadQuillSyncSubscription = threadQuillController.document.changes.listen((myEvent){
       threadContentController.text = jsonEncode(threadQuillController.document.toDelta().toJson());
     });
+
+    threadContentFocusNode = FocusNode();
   }
 
   List<Text> createThreadDialogMessage(List<String> info){
@@ -222,6 +226,7 @@ class createThreadState extends State<createThread> with RouteAware{
   void dispose(){
     myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
     threadQuillSyncSubscription.cancel();
+    threadContentFocusNode.dispose();
     super.dispose();
   }
 
@@ -390,6 +395,22 @@ class createThreadState extends State<createThread> with RouteAware{
                               showColorButton: false,
                               showBackgroundColorButton: false,
                               multiRowsDisplay: true,
+                              showStrikeThrough: false,
+                              showInlineCode: false,
+                              showCodeBlock: false,
+                              showQuote: false,
+                              showIndent: false,
+                              showHeaderStyle: false,
+                              showListCheck: false,
+                              showListNumbers: false,
+                              showListBullets: false,
+                              showAlignmentButtons: false,
+                              showLeftAlignment: false,
+                              showCenterAlignment: false,
+                              showRightAlignment: false,
+                              showJustifyAlignment: false,
+                              showDirection: false,
+                              showClearFormat: false,
                               embedButtons: FlutterQuillEmbeds.toolbarButtons(
                                 imageButtonOptions: QuillToolbarImageButtonOptions(
                                   imageButtonConfig: QuillToolbarImageConfig(
@@ -492,7 +513,7 @@ class createThreadState extends State<createThread> with RouteAware{
                               child: QuillEditor(
                                 controller: threadQuillController,
                                 scrollController: threadContentScrollController,
-                                focusNode: FocusNode(),
+                                focusNode: threadContentFocusNode,
                                 config: QuillEditorConfig(
                                   padding: EdgeInsets.all(8.0),
                                   embedBuilders: FlutterQuillEmbeds.editorBuilders(),
@@ -1365,6 +1386,9 @@ class createThreadState extends State<createThread> with RouteAware{
                   }
                 ),
               ),
+              ),
+              Container(
+                height: 350,
               ),
             ],
           ),

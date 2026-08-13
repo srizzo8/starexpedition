@@ -694,6 +694,9 @@ class technologiesPageState extends State<technologiesPage> with RouteAware{
               });
             }
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
         ],
       ),
     );
@@ -1606,6 +1609,9 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                 theCurrentPageTechnologiesThreadReplies = myIndexTechnologiesThreadReplies;
               });
             }
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
           ),
         ],
       ),

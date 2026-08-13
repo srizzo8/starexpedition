@@ -123,11 +123,15 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
   bool uploadingReplyImage = false;
   bool uploadingReplyVideo = false;
 
+  late final FocusNode replyContentFocusNode;
+
   @override
   void initState(){
     replyQuillSyncSubscription = replyQuillController.document.changes.listen((myEvent){
       replyContentController.text = jsonEncode(replyQuillController.document.toDelta().toJson());
     });
+
+    replyContentFocusNode = FocusNode();
   }
 
   List<Text> createReplyDialogMessage(List<String> info){
@@ -201,6 +205,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
   void dispose(){
     myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
     replyQuillSyncSubscription.cancel();
+    replyContentFocusNode.dispose();
     super.dispose();
   }
 
@@ -312,6 +317,22 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                               showColorButton: false,
                               showBackgroundColorButton: false,
                               multiRowsDisplay: true,
+                              showStrikeThrough: false,
+                              showInlineCode: false,
+                              showCodeBlock: false,
+                              showQuote: false,
+                              showIndent: false,
+                              showHeaderStyle: false,
+                              showListCheck: false,
+                              showListNumbers: false,
+                              showListBullets: false,
+                              showAlignmentButtons: false,
+                              showLeftAlignment: false,
+                              showCenterAlignment: false,
+                              showRightAlignment: false,
+                              showJustifyAlignment: false,
+                              showDirection: false,
+                              showClearFormat: false,
                               embedButtons: FlutterQuillEmbeds.toolbarButtons(
                                 imageButtonOptions: QuillToolbarImageButtonOptions(
                                   imageButtonConfig: QuillToolbarImageConfig(
@@ -414,7 +435,7 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                               child: QuillEditor(
                                 controller: replyQuillController,
                                 scrollController: replyContentScrollController,
-                                focusNode: FocusNode(),
+                                focusNode: replyContentFocusNode,
                                 config: QuillEditorConfig(
                                   padding: EdgeInsets.all(8.0),
                                   embedBuilders: FlutterQuillEmbeds.editorBuilders(),
@@ -2339,6 +2360,9 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                         }
                     ),
                   ),
+                ),
+                Container(
+                  height: 350,
                 ),
               ],
             ),

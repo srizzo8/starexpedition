@@ -706,6 +706,9 @@ class discussionBoardUpdatesPageState extends State<discussionBoardUpdatesPage> 
                 });
               }
           ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.015625,
+          ),
         ],
       ),
     );
@@ -1616,6 +1619,9 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                   theCurrentPageDbuThreadReplies = myIndexDbuThreadReplies;
                 });
               }
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.015625,
             ),
           ],
         ),
