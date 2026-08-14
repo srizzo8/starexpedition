@@ -823,7 +823,7 @@ class questionsAndAnswersThreadContent extends State<questionsAndAnswersThreadsP
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("Reply to: ", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),),
+                                      Text("Reply to:\n", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
 
                                       //Reply content:
                                       Theme(
