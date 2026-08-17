@@ -50,6 +50,8 @@ List<String> letterRegExp = ['A', 'a', 'B', 'b', 'C', 'c', 'D', 'd', 'E', 'e', '
 
 List<String> possibleUsernameChars = numRegExp + letterRegExp + ['_', '.'];
 
+List<String> possibleEmailNameChars = numRegExp + letterRegExp + ['_', '.'];
+
 final myKey = "Sixteen char key";
 
 List<String> registrationRequirements = ["Usernames must not be used by anyone else, contain anywhere between 3 and 25 characters, and only consist of letters, numbers, _, and/or .", "Email addresses must not have any spaces and have the (name)@(website) format.", "Passwords must contain at least one letter, one number, and one special character, be at least 8 characters long, and not have any whitespace."];
@@ -139,6 +141,8 @@ bool checkUsernameValidity(String u){
 }
 
 bool checkEmailValidity(String e){
+  int j = 0;
+
   if(whitespaceChecker(e)){
     return false;
   }
@@ -148,13 +152,20 @@ bool checkEmailValidity(String e){
     print("emailAddressParts: ${emailAddressParts}");
     if(emailAddressParts.length == 2){
       if(emailAddressParts[0] != "" && !(emailAddressParts[0].contains(" ")) && emailAddressParts[1] != "" && !(emailAddressParts[1].contains(" ")) && (emailAddressParts[1].contains("."))){
-        /*if((emailAddressParts[1]).toLowerCase() == ("gmail.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("yahoo.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("icloud.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("hotmail.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("outlook.com").toLowerCase() || (emailAddressParts[1]).toLowerCase() == ("aol.com").toLowerCase()){
+        var emailName = emailAddressParts[0].split("");
+
+        for(String emailNameParts in emailName){
+          if(possibleEmailNameChars.contains(emailNameParts)){
+            j++;
+          }
+          else{
+            break;
+          }
+        }
+        if(j == emailName.length){
           return true;
         }
-        else{
-          return false;
-        }*/
-        return true;
+        return false;
       }
       else{
         return false;
