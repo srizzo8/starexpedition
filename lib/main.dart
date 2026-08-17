@@ -630,7 +630,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         navigatorKey: myNavigatorKey,
         navigatorObservers: [routesToOtherPages.myRouteObserver, myAccessCheckObserver],
-        title: 'Flutter Demo',
+        title: 'Star Expedition',
         theme: ThemeData(
           useMaterial3: false,
           primarySwatch: Colors.red,
