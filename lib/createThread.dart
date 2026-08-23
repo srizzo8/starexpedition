@@ -15,6 +15,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 //import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:starexpedition4/projects_firestore_database_information/projectsDatabaseFirestoreInfo.dart';
@@ -167,18 +168,35 @@ class createThreadState extends State<createThread> with RouteAware{
     return downloadMyUrl;
   }*/
 
-  Future<String> uploadMyImageToCloudinary(File myFile) async{
+  Future<String> uploadMyImageToCloudinary(String myOriginalPath) async{
     const myCloudName = "qrbab8fp";
     const myUploadPreset = "star_expedition_thread_images";
+
+    //Reading the image's bytes immediately so that what is currently there can be captured even if the plugin reuses a handle or path that is stale:
+    final myOriginalFile = File(myOriginalPath);
+    final myBytes = await myOriginalFile.readAsBytes();
+
+    //Writing to a freshly named temporary file. This guarantees no collision between paths with any previous pick:
+    final myTempDirectory = await getTemporaryDirectory();
+    final myUniqueName = "image_${DateTime.now().microsecondsSinceEpoch}.jpg";
+    final myFreshFile = await File("${myTempDirectory.path}/${myUniqueName}").writeAsBytes(myBytes);
 
     final myUri = Uri.parse("https://api.cloudinary.com/v1_1/${myCloudName}/image/upload");
 
     final myRequest = http.MultipartRequest("POST", myUri)
       ..fields["upload_preset"] = myUploadPreset
-      ..files.add(await http.MultipartFile.fromPath("file", myFile.path));
+      ..files.add(await http.MultipartFile.fromPath("file", myFreshFile.path));
 
     final myResponse = await myRequest.send();
     final myResponseBody = await myResponse.stream.bytesToString();
+
+    //Cleaning up the temporary file after upload:
+    try{
+      await myFreshFile.delete();
+    }
+    catch(e){
+      //Does nothing
+    }
 
     if(myResponse.statusCode == 200){
       final myJsonResponse = jsonDecode(myResponseBody);
@@ -191,18 +209,35 @@ class createThreadState extends State<createThread> with RouteAware{
     }
   }
 
-  Future<String> uploadMyVideoToCloudinary(File myFile) async{
+  Future<String> uploadMyVideoToCloudinary(String myOriginalPath) async{
     const myCloudName = "qrbab8fp";
     const myUploadPreset = "star_expedition_thread_videos";
+
+    //Reading the video's bytes immediately so that what is currently there can be captured even if the plugin reuses a handle or path that is stale:
+    final myOriginalFile = File(myOriginalPath);
+    final myBytes = await myOriginalFile.readAsBytes();
+
+    //Writing to a freshly named temporary file. This guarantees no collision between paths with any previous pick:
+    final myTempDirectory = await getTemporaryDirectory();
+    final myUniqueName = "video_${DateTime.now().microsecondsSinceEpoch}.mp4";
+    final myFreshFile = await File("${myTempDirectory.path}/${myUniqueName}").writeAsBytes(myBytes);
 
     final myUri = Uri.parse("https://api.cloudinary.com/v1_1/${myCloudName}/video/upload");
 
     final myRequest = http.MultipartRequest("POST", myUri)
       ..fields["upload_preset"] = myUploadPreset
-      ..files.add(await http.MultipartFile.fromPath("file", myFile.path));
+      ..files.add(await http.MultipartFile.fromPath("file", myFreshFile.path));
 
     final myResponse = await myRequest.send();
     final myResponseBody = await myResponse.stream.bytesToString();
+
+    //Cleaning up the temporary file after upload:
+    try{
+      await myFreshFile.delete();
+    }
+    catch(e){
+      //Does nothing
+    }
 
     if(myResponse.statusCode == 200){
       final myJsonResponse = jsonDecode(myResponseBody);
@@ -418,7 +453,7 @@ class createThreadState extends State<createThread> with RouteAware{
                                       setState(() => uploadingThreadImage = true);
 
                                       try{
-                                        final myDownloadUrl = await uploadMyImageToCloudinary(File(myImage));
+                                        final myDownloadUrl = await uploadMyImageToCloudinary(myImage);
                                         final myIndex = myController.selection.baseOffset;
                                         final myLength = myController.selection.extentOffset - myIndex;
                                         myController.replaceText(myIndex, myLength, BlockEmbed.image(myDownloadUrl), null);
@@ -458,7 +493,7 @@ class createThreadState extends State<createThread> with RouteAware{
                                         setState(() => uploadingThreadVideo = true);
 
                                         try{
-                                          final myDownloadUrl = await uploadMyVideoToCloudinary(File(myVideo));
+                                          final myDownloadUrl = await uploadMyVideoToCloudinary(myVideo);
                                           final myIndex = myController.selection.baseOffset;
                                           final myLength = myController.selection.extentOffset - myIndex;
                                           myController.replaceText(myIndex, myLength, BlockEmbed.video(myDownloadUrl), null);
