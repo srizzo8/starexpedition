@@ -37,6 +37,37 @@ class emailNotifications extends StatelessWidget {
   }
 }
 
+String convertFromDeltaToHtml(dynamic deltaJson){
+  //This accepts either a JSON string or a list that has already been decoded:
+  final List<dynamic> myOps = deltaJson is String ? jsonDecode(deltaJson) as List<dynamic> : deltaJson as List<dynamic>;
+
+  final myBuffer = StringBuffer();
+
+  for(final myOp in myOps){
+    final myInsert = myOp["insert"];
+
+    if(myInsert is String){
+      //In here, escape HTML special chars and new lines are handled accordingly:
+      final myEscape = myInsert.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+      myBuffer.write(myEscape.replaceAll('\n', '<br>'));
+    }
+    else if(myInsert is Map){
+      if(myInsert.containsKey("image")){
+        //Most email clients can see images:
+        final myUrl = myInsert["image"];
+        myBuffer.write('<img src="${myUrl}" style="max-width:100%; height:auto;" /><br>');
+      }
+      else if(myInsert.containsKey("video")){
+        //Most email clients, unfortunately, cannot see videos:
+        final myUrl = myInsert["video"];
+        myBuffer.write('<a href="${myUrl}" target="_blank">Watch Video</a><br>');
+      }
+    }
+  }
+
+  return myBuffer.toString();
+}
+
 Future<void> sendAnEmail(String to, String mySubject, String myHtml) async{
   final myResponse = await myClient.post(
     Uri.parse("https://star-expedition-emails.vercel.app/api/sendEmails"),
@@ -45,6 +76,35 @@ Future<void> sendAnEmail(String to, String mySubject, String myHtml) async{
   );
 
   print("myResponse.body: ${myResponse.body}");
+}
+
+Future<void> sendReplyToThreadNotificationEmail(String emailAddressOfTo, String to, String myReplierName, String subforumName, String threadName, String theirReplyData) async{
+  final theirReplyHtml = convertFromDeltaToHtml(theirReplyData);
+
+  final myHtml = '''
+    <p>Hi ${to},</p>
+    <p>${myReplierName} has replied to your thread from the ${subforumName} subforum thread titled ${threadName}. This is what he or she has said:</p>
+    <div>${theirReplyHtml}</div>
+    <p>Best,<br>Star Expedition</p>
+  ''';
+
+  await sendAnEmail(emailAddressOfTo, "Reply to your thread", myHtml);
+}
+
+Future<void> sendReplyToReplyNotificationEmail(String emailAddressOfTo, String to, String myReplierName, String subforumName, String threadName, String myReplyData, String theirReplyData) async{
+  final myReplyHtml = convertFromDeltaToHtml(myReplyData);
+  final theirReplyHtml = convertFromDeltaToHtml(theirReplyData);
+
+  final myHtml = '''
+    <p>Hi ${to},</p>
+    <p>${myReplierName} has replied to your reply from the ${subforumName} subforum thread titled ${threadName}. Here was the content of your reply:</p>
+    <div>${myReplyHtml}</div>
+    <p>This is what he or she has said:</p>
+    <div>${theirReplyHtml}</div>
+    <p>Best,<br>Star Expedition</p>
+  ''';
+
+  await sendAnEmail(emailAddressOfTo, "Reply to your reply", myHtml);
 }
 
 Future<String> sixDigitCode() async{

@@ -638,7 +638,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfDbuThreadPoster = Map<String, dynamic>.from(theThreadPoster["usernameProfileInformation"] ?? {});
                                         var dbuThreadPostersEmailAddress = currentInfoOfDbuThreadPoster["emailAddress"];
 
-                                        sendAnEmail(dbuThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${discussionBoardUpdatesPage.threadPosterUserIsReplyingToDbu},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Discussion Board Updates subforum titled ${discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(dbuThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${discussionBoardUpdatesPage.threadPosterUserIsReplyingToDbu},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Discussion Board Updates subforum titled ${discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToThreadNotificationEmail(dbuThreadPostersEmailAddress, discussionBoardUpdatesPage.threadPosterUserIsReplyingToDbu, myLoginStatus.myUsername, "Discussion Board Updates", discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu, replyContentController.text);
                                         discussionBoardUpdatesPage.threadPosterUserIsReplyingToDbu = "";
                                         discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu = "";
                                         dbuThreadPostersEmailAddress = "";
@@ -665,7 +666,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var dbuThreadPosterDocName = theThreadPoster.docs.first;
                                       var dbuThreadPostersEmailAddress = dbuThreadPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(dbuThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${discussionBoardUpdatesPage.threadPosterUserIsReplyingToDbu},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Discussion Board Updates subforum titled ${discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(dbuThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${discussionBoardUpdatesPage.threadPosterUserIsReplyingToDbu},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Discussion Board Updates subforum titled ${discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToThreadNotificationEmail(dbuThreadPostersEmailAddress, discussionBoardUpdatesPage.threadPosterUserIsReplyingToDbu, myLoginStatus.myUsername, "Discussion Board Updates", discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu, replyContentController.text);
                                       discussionBoardUpdatesPage.threadPosterUserIsReplyingToDbu = "";
                                       discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu = "";
                                       dbuThreadPostersEmailAddress = "";
@@ -752,7 +754,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfDbuReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
                                         var dbuReplyPostersEmailAddress = currentInfoOfDbuReplyPoster["emailAddress"];
 
-                                        sendAnEmail(dbuReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Discussion Board Updates subforum thread titled ${discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu}. Here was the content of your reply: <br><br>${discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(dbuReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Discussion Board Updates subforum thread titled ${discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu}. Here was the content of your reply: <br><br>${discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToReplyNotificationEmail(dbuReplyPostersEmailAddress, discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu, myLoginStatus.myUsername, "Discussion Board Updates", discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu, discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu, replyContentController.text);
                                         discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu = "";
                                         discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu = "";
                                         discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu = "";
@@ -780,7 +783,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var dbuReplyPosterDocName = theReplyPoster.docs.first;
                                       var dbuReplyPostersEmailAddress = dbuReplyPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(dbuReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Discussion Board Updates subforum thread titled ${discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu}. Here was the content of your reply: <br><br>${discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(dbuReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Discussion Board Updates subforum thread titled ${discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu}. Here was the content of your reply: <br><br>${discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToReplyNotificationEmail(dbuReplyPostersEmailAddress, discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu, myLoginStatus.myUsername, "Discussion Board Updates", discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu, discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu, replyContentController.text);
                                       discussionBoardUpdatesPage.replyPosterUserIsReplyingToDbu = "";
                                       discussionBoardUpdatesPage.contentOfReplyUserIsReplyingToDbu = "";
                                       discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu = "";
@@ -941,7 +945,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfQaaThreadPoster = Map<String, dynamic>.from(theThreadPoster["usernameProfileInformation"] ?? {});
                                         var qaaThreadPostersEmailAddress = currentInfoOfQaaThreadPoster["emailAddress"];
 
-                                        sendAnEmail(qaaThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${questionsAndAnswersPage.threadPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Questions and Answers subforum titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(qaaThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${questionsAndAnswersPage.threadPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Questions and Answers subforum titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToThreadNotificationEmail(qaaThreadPostersEmailAddress, questionsAndAnswersPage.threadPosterUserIsReplyingToQaa, myLoginStatus.myUsername, "Questions and Answers", questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa, replyContentController.text);
                                         questionsAndAnswersPage.threadPosterUserIsReplyingToQaa = "";
                                         questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa = "";
                                         qaaThreadPostersEmailAddress = "";
@@ -968,7 +973,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var qaaThreadPosterDocName = theThreadPoster.docs.first;
                                       var qaaThreadPostersEmailAddress = qaaThreadPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(qaaThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${questionsAndAnswersPage.threadPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Questions and Answers subforum titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(qaaThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${questionsAndAnswersPage.threadPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Questions and Answers subforum titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToThreadNotificationEmail(qaaThreadPostersEmailAddress, questionsAndAnswersPage.threadPosterUserIsReplyingToQaa, myLoginStatus.myUsername, "Questions and Answers", questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa, replyContentController.text);
                                       questionsAndAnswersPage.threadPosterUserIsReplyingToQaa = "";
                                       questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa = "";
                                       qaaThreadPostersEmailAddress = "";
@@ -1055,7 +1061,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfQaaReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
                                         var qaaReplyPostersEmailAddress = currentInfoOfQaaReplyPoster["emailAddress"];
 
-                                        sendAnEmail(qaaReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${questionsAndAnswersPage.replyPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Questions and Answers subforum thread titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. Here was the content of your reply: <br><br>${questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(qaaReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${questionsAndAnswersPage.replyPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Questions and Answers subforum thread titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. Here was the content of your reply: <br><br>${questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToReplyNotificationEmail(qaaReplyPostersEmailAddress, questionsAndAnswersPage.replyPosterUserIsReplyingToQaa, myLoginStatus.myUsername, "Questions and Answers", questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa, questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa, replyContentController.text);
                                         questionsAndAnswersPage.replyPosterUserIsReplyingToQaa = "";
                                         questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa = "";
                                         questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa = "";
@@ -1083,7 +1090,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var qaaReplyPosterDocName = theReplyPoster.docs.first;
                                       var qaaReplyPostersEmailAddress = qaaReplyPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(qaaReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${questionsAndAnswersPage.replyPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Questions and Answers subforum thread titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. Here was the content of your reply: <br><br>${questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(qaaReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${questionsAndAnswersPage.replyPosterUserIsReplyingToQaa},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Questions and Answers subforum thread titled ${questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa}. Here was the content of your reply: <br><br>${questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToReplyNotificationEmail(qaaReplyPostersEmailAddress, questionsAndAnswersPage.replyPosterUserIsReplyingToQaa, myLoginStatus.myUsername, "Questions and Answers", questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa, questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa, replyContentController.text);
                                       questionsAndAnswersPage.replyPosterUserIsReplyingToQaa = "";
                                       questionsAndAnswersPage.contentOfReplyUserIsReplyingToQaa = "";
                                       questionsAndAnswersPage.titleOfThreadUserIsReplyingToQaa = "";
@@ -1244,7 +1252,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfTThreadPoster = Map<String, dynamic>.from(theThreadPoster["usernameProfileInformation"] ?? {});
                                         var tThreadPostersEmailAddress = currentInfoOfTThreadPoster["emailAddress"];
 
-                                        sendAnEmail(tThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${technologiesPage.threadPosterUserIsReplyingToT},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Technologies subforum titled ${technologiesPage.titleOfThreadUserIsReplyingToT}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(tThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${technologiesPage.threadPosterUserIsReplyingToT},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Technologies subforum titled ${technologiesPage.titleOfThreadUserIsReplyingToT}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToThreadNotificationEmail(tThreadPostersEmailAddress, technologiesPage.threadPosterUserIsReplyingToT, myLoginStatus.myUsername, "Technologies", technologiesPage.titleOfThreadUserIsReplyingToT, replyContentController.text);
                                         technologiesPage.threadPosterUserIsReplyingToT = "";
                                         technologiesPage.titleOfThreadUserIsReplyingToT = "";
                                         tThreadPostersEmailAddress = "";
@@ -1271,7 +1280,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var tThreadPosterDocName = theThreadPoster.docs.first;
                                       var tThreadPostersEmailAddress = tThreadPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(tThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${technologiesPage.threadPosterUserIsReplyingToT},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Technologies subforum titled ${technologiesPage.titleOfThreadUserIsReplyingToT}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(tThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${technologiesPage.threadPosterUserIsReplyingToT},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Technologies subforum titled ${technologiesPage.titleOfThreadUserIsReplyingToT}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToThreadNotificationEmail(tThreadPostersEmailAddress, technologiesPage.threadPosterUserIsReplyingToT, myLoginStatus.myUsername, "Technologies", technologiesPage.titleOfThreadUserIsReplyingToT, replyContentController.text);
                                       technologiesPage.threadPosterUserIsReplyingToT = "";
                                       technologiesPage.titleOfThreadUserIsReplyingToT = "";
                                       tThreadPostersEmailAddress = "";
@@ -1358,7 +1368,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfTReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
                                         var tReplyPostersEmailAddress = currentInfoOfTReplyPoster["emailAddress"];
 
-                                        sendAnEmail(tReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${technologiesPage.replyPosterUserIsReplyingToT},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Technologies subforum thread titled ${technologiesPage.titleOfThreadUserIsReplyingToT}. Here was the content of your reply: <br><br>${technologiesPage.contentOfReplyUserIsReplyingToT}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(tReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${technologiesPage.replyPosterUserIsReplyingToT},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Technologies subforum thread titled ${technologiesPage.titleOfThreadUserIsReplyingToT}. Here was the content of your reply: <br><br>${technologiesPage.contentOfReplyUserIsReplyingToT}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToReplyNotificationEmail(tReplyPostersEmailAddress, technologiesPage.replyPosterUserIsReplyingToT, myLoginStatus.myUsername, "Technologies", technologiesPage.titleOfThreadUserIsReplyingToT, technologiesPage.contentOfReplyUserIsReplyingToT, replyContentController.text);
                                         technologiesPage.replyPosterUserIsReplyingToT = "";
                                         technologiesPage.contentOfReplyUserIsReplyingToT = "";
                                         technologiesPage.titleOfThreadUserIsReplyingToT = "";
@@ -1386,7 +1397,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var tReplyPosterDocName = theReplyPoster.docs.first;
                                       var tReplyPostersEmailAddress = tReplyPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(tReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${technologiesPage.replyPosterUserIsReplyingToT},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Technologies subforum thread titled ${technologiesPage.titleOfThreadUserIsReplyingToT}. Here was the content of your reply: <br><br>${technologiesPage.contentOfReplyUserIsReplyingToT}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(tReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${technologiesPage.replyPosterUserIsReplyingToT},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Technologies subforum thread titled ${technologiesPage.titleOfThreadUserIsReplyingToT}. Here was the content of your reply: <br><br>${technologiesPage.contentOfReplyUserIsReplyingToT}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToReplyNotificationEmail(tReplyPostersEmailAddress, technologiesPage.replyPosterUserIsReplyingToT, myLoginStatus.myUsername, "Technologies", technologiesPage.titleOfThreadUserIsReplyingToT, technologiesPage.contentOfReplyUserIsReplyingToT, replyContentController.text);
                                       technologiesPage.replyPosterUserIsReplyingToT = "";
                                       technologiesPage.contentOfReplyUserIsReplyingToT = "";
                                       technologiesPage.titleOfThreadUserIsReplyingToT = "";
@@ -1542,7 +1554,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfPThreadPoster = Map<String, dynamic>.from(theThreadPoster["usernameProfileInformation"] ?? {});
                                         var pThreadPostersEmailAddress = currentInfoOfPThreadPoster["emailAddress"];
 
-                                        sendAnEmail(pThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${projectsPage.threadPosterUserIsReplyingToP},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Projects subforum titled ${projectsPage.titleOfThreadUserIsReplyingToP}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(pThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${projectsPage.threadPosterUserIsReplyingToP},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Projects subforum titled ${projectsPage.titleOfThreadUserIsReplyingToP}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToThreadNotificationEmail(pThreadPostersEmailAddress, projectsPage.threadPosterUserIsReplyingToP, myLoginStatus.myUsername, "Technologies", projectsPage.titleOfThreadUserIsReplyingToP, replyContentController.text);
                                         projectsPage.threadPosterUserIsReplyingToP = "";
                                         projectsPage.titleOfThreadUserIsReplyingToP = "";
                                         pThreadPostersEmailAddress = "";
@@ -1569,7 +1582,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var pThreadPosterDocName = theThreadPoster.docs.first;
                                       var pThreadPostersEmailAddress = pThreadPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(pThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${projectsPage.threadPosterUserIsReplyingToP},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Projects subforum titled ${projectsPage.titleOfThreadUserIsReplyingToP}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(pThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${projectsPage.threadPosterUserIsReplyingToP},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Projects subforum titled ${projectsPage.titleOfThreadUserIsReplyingToP}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToThreadNotificationEmail(pThreadPostersEmailAddress, projectsPage.threadPosterUserIsReplyingToP, myLoginStatus.myUsername, "Technologies", projectsPage.titleOfThreadUserIsReplyingToP, replyContentController.text);
                                       projectsPage.threadPosterUserIsReplyingToP = "";
                                       projectsPage.titleOfThreadUserIsReplyingToP = "";
                                       pThreadPostersEmailAddress = "";
@@ -1656,7 +1670,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfPReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
                                         var pReplyPostersEmailAddress = currentInfoOfPReplyPoster["emailAddress"];
 
-                                        sendAnEmail(pReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${projectsPage.replyPosterUserIsReplyingToP},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Projects subforum thread titled ${projectsPage.titleOfThreadUserIsReplyingToP}. Here was the content of your reply: <br><br>${projectsPage.contentOfReplyUserIsReplyingToP}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(pReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${projectsPage.replyPosterUserIsReplyingToP},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Projects subforum thread titled ${projectsPage.titleOfThreadUserIsReplyingToP}. Here was the content of your reply: <br><br>${projectsPage.contentOfReplyUserIsReplyingToP}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToReplyNotificationEmail(pReplyPostersEmailAddress, projectsPage.replyPosterUserIsReplyingToP, myLoginStatus.myUsername, "Projects", projectsPage.titleOfThreadUserIsReplyingToP, projectsPage.contentOfReplyUserIsReplyingToP, replyContentController.text);
                                         projectsPage.replyPosterUserIsReplyingToP = "";
                                         projectsPage.contentOfReplyUserIsReplyingToP = "";
                                         projectsPage.titleOfThreadUserIsReplyingToP = "";
@@ -1684,7 +1699,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var pReplyPosterDocName = theReplyPoster.docs.first;
                                       var pReplyPostersEmailAddress = pReplyPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(pReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${projectsPage.replyPosterUserIsReplyingToP},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Projects subforum thread titled ${projectsPage.titleOfThreadUserIsReplyingToP}. Here was the content of your reply: <br><br>${projectsPage.contentOfReplyUserIsReplyingToP}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(pReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${projectsPage.replyPosterUserIsReplyingToP},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Projects subforum thread titled ${projectsPage.titleOfThreadUserIsReplyingToP}. Here was the content of your reply: <br><br>${projectsPage.contentOfReplyUserIsReplyingToP}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToReplyNotificationEmail(pReplyPostersEmailAddress, projectsPage.replyPosterUserIsReplyingToP, myLoginStatus.myUsername, "Projects", projectsPage.titleOfThreadUserIsReplyingToP, projectsPage.contentOfReplyUserIsReplyingToP, replyContentController.text);
                                       projectsPage.replyPosterUserIsReplyingToP = "";
                                       projectsPage.contentOfReplyUserIsReplyingToP = "";
                                       projectsPage.titleOfThreadUserIsReplyingToP = "";
@@ -1842,7 +1858,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfNdThreadPoster = Map<String, dynamic>.from(theThreadPoster["usernameProfileInformation"] ?? {});
                                         var ndThreadPostersEmailAddress = currentInfoOfNdThreadPoster["emailAddress"];
 
-                                        sendAnEmail(ndThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${newDiscoveriesPage.threadPosterUserIsReplyingToNd},<br><br>${myLoginStatus.myUsername} has replied to your thread from the New Discoveries subforum titled ${newDiscoveriesPage.titleOfThreadUserIsReplyingToNd}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(ndThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${newDiscoveriesPage.threadPosterUserIsReplyingToNd},<br><br>${myLoginStatus.myUsername} has replied to your thread from the New Discoveries subforum titled ${newDiscoveriesPage.titleOfThreadUserIsReplyingToNd}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToThreadNotificationEmail(ndThreadPostersEmailAddress, newDiscoveriesPage.threadPosterUserIsReplyingToNd, myLoginStatus.myUsername, "New Discoveries", newDiscoveriesPage.titleOfThreadUserIsReplyingToNd, replyContentController.text);
                                         newDiscoveriesPage.threadPosterUserIsReplyingToNd = "";
                                         newDiscoveriesPage.titleOfThreadUserIsReplyingToNd = "";
                                         ndThreadPostersEmailAddress = "";
@@ -1869,7 +1886,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var ndThreadPosterDocName = theThreadPoster.docs.first;
                                       var ndThreadPostersEmailAddress = ndThreadPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(ndThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${newDiscoveriesPage.threadPosterUserIsReplyingToNd},<br><br>${myLoginStatus.myUsername} has replied to your thread from the New Discoveries subforum titled ${newDiscoveriesPage.titleOfThreadUserIsReplyingToNd}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(ndThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${newDiscoveriesPage.threadPosterUserIsReplyingToNd},<br><br>${myLoginStatus.myUsername} has replied to your thread from the New Discoveries subforum titled ${newDiscoveriesPage.titleOfThreadUserIsReplyingToNd}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToThreadNotificationEmail(ndThreadPostersEmailAddress, newDiscoveriesPage.threadPosterUserIsReplyingToNd, myLoginStatus.myUsername, "New Discoveries", newDiscoveriesPage.titleOfThreadUserIsReplyingToNd, replyContentController.text);
                                       newDiscoveriesPage.threadPosterUserIsReplyingToNd = "";
                                       newDiscoveriesPage.titleOfThreadUserIsReplyingToNd = "";
                                       ndThreadPostersEmailAddress = "";
@@ -1956,7 +1974,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfNdReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
                                         var ndReplyPostersEmailAddress = currentInfoOfNdReplyPoster["emailAddress"];
 
-                                        sendAnEmail(ndReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${newDiscoveriesPage.replyPosterUserIsReplyingToNd},<br><br>${myLoginStatus.myUsername} has replied to your reply from the New Discoveries subforum thread titled ${newDiscoveriesPage.titleOfThreadUserIsReplyingToNd}. Here was the content of your reply: <br><br>${newDiscoveriesPage.contentOfReplyUserIsReplyingToNd}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(ndReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${newDiscoveriesPage.replyPosterUserIsReplyingToNd},<br><br>${myLoginStatus.myUsername} has replied to your reply from the New Discoveries subforum thread titled ${newDiscoveriesPage.titleOfThreadUserIsReplyingToNd}. Here was the content of your reply: <br><br>${newDiscoveriesPage.contentOfReplyUserIsReplyingToNd}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToReplyNotificationEmail(ndReplyPostersEmailAddress, newDiscoveriesPage.replyPosterUserIsReplyingToNd, myLoginStatus.myUsername, "New Discoveries", newDiscoveriesPage.titleOfThreadUserIsReplyingToNd, newDiscoveriesPage.contentOfReplyUserIsReplyingToNd, replyContentController.text);
                                         newDiscoveriesPage.replyPosterUserIsReplyingToNd = "";
                                         newDiscoveriesPage.contentOfReplyUserIsReplyingToNd = "";
                                         newDiscoveriesPage.titleOfThreadUserIsReplyingToNd = "";
@@ -1984,7 +2003,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var ndReplyPosterDocName = theReplyPoster.docs.first;
                                       var ndReplyPostersEmailAddress = ndReplyPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(ndReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${newDiscoveriesPage.replyPosterUserIsReplyingToNd},<br><br>${myLoginStatus.myUsername} has replied to your reply from the New Discoveries subforum thread titled ${newDiscoveriesPage.titleOfThreadUserIsReplyingToNd}. Here was the content of your reply: <br><br>${newDiscoveriesPage.contentOfReplyUserIsReplyingToNd}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(ndReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${newDiscoveriesPage.replyPosterUserIsReplyingToNd},<br><br>${myLoginStatus.myUsername} has replied to your reply from the New Discoveries subforum thread titled ${newDiscoveriesPage.titleOfThreadUserIsReplyingToNd}. Here was the content of your reply: <br><br>${newDiscoveriesPage.contentOfReplyUserIsReplyingToNd}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToReplyNotificationEmail(ndReplyPostersEmailAddress, newDiscoveriesPage.replyPosterUserIsReplyingToNd, myLoginStatus.myUsername, "New Discoveries", newDiscoveriesPage.titleOfThreadUserIsReplyingToNd, newDiscoveriesPage.contentOfReplyUserIsReplyingToNd, replyContentController.text);
                                       newDiscoveriesPage.replyPosterUserIsReplyingToNd = "";
                                       newDiscoveriesPage.contentOfReplyUserIsReplyingToNd = "";
                                       newDiscoveriesPage.titleOfThreadUserIsReplyingToNd = "";
@@ -2137,7 +2157,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfFasThreadPoster = Map<String, dynamic>.from(theThreadPoster["usernameProfileInformation"] ?? {});
                                         var fasThreadPostersEmailAddress = currentInfoOfFasThreadPoster["emailAddress"];
 
-                                        sendAnEmail(fasThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${feedbackAndSuggestionsPage.threadPosterUserIsReplyingToFas},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Feedback and Suggestions subforum titled ${feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(fasThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${feedbackAndSuggestionsPage.threadPosterUserIsReplyingToFas},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Feedback and Suggestions subforum titled ${feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToThreadNotificationEmail(fasThreadPostersEmailAddress, feedbackAndSuggestionsPage.threadPosterUserIsReplyingToFas, myLoginStatus.myUsername, "Feedback and Suggestions", feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas, replyContentController.text);
                                         feedbackAndSuggestionsPage.threadPosterUserIsReplyingToFas = "";
                                         feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas = "";
                                         fasThreadPostersEmailAddress = "";
@@ -2164,9 +2185,10 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var fasThreadPosterDocName = theThreadPoster.docs.first;
                                       var fasThreadPostersEmailAddress = fasThreadPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(fasThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${feedbackAndSuggestionsPage.threadPosterUserIsReplyingToFas},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Feedback and Suggestions subforum titled ${feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
-                                      discussionBoardUpdatesPage.threadPosterUserIsReplyingToDbu = "";
-                                      discussionBoardUpdatesPage.titleOfThreadUserIsReplyingToDbu = "";
+                                      //sendAnEmail(fasThreadPostersEmailAddress, "Reply to Your Thread", "Hi ${feedbackAndSuggestionsPage.threadPosterUserIsReplyingToFas},<br><br>${myLoginStatus.myUsername} has replied to your thread from the Feedback and Suggestions subforum titled ${feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas}. This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToThreadNotificationEmail(fasThreadPostersEmailAddress, feedbackAndSuggestionsPage.threadPosterUserIsReplyingToFas, myLoginStatus.myUsername, "Feedback and Suggestions", feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas, replyContentController.text);
+                                      feedbackAndSuggestionsPage.threadPosterUserIsReplyingToFas = "";
+                                      feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas = "";
                                       fasThreadPostersEmailAddress = "";
                                     }
                                   }
@@ -2251,7 +2273,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                         Map<String, dynamic> currentInfoOfFasReplyPoster = Map<String, dynamic>.from(theReplyPoster["usernameProfileInformation"] ?? {});
                                         var fasReplyPostersEmailAddress = currentInfoOfFasReplyPoster["emailAddress"];
 
-                                        sendAnEmail(fasReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Feedback and Suggestions subforum thread titled ${feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas}. Here was the content of your reply: <br><br>${feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        //sendAnEmail(fasReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Feedback and Suggestions subforum thread titled ${feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas}. Here was the content of your reply: <br><br>${feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                        sendReplyToReplyNotificationEmail(fasReplyPostersEmailAddress, feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas, myLoginStatus.myUsername, "Feedback and Suggestions", feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas, feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas, replyContentController.text);
                                         feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas = "";
                                         feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas = "";
                                         feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas = "";
@@ -2279,7 +2302,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       var fasReplyPosterDocName = theReplyPoster.docs.first;
                                       var fasReplyPostersEmailAddress = fasReplyPosterDocName.get("emailAddress");
 
-                                      sendAnEmail(fasReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Feedback and Suggestions subforum thread titled ${feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas}. Here was the content of your reply: <br><br>${feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      //sendAnEmail(fasReplyPostersEmailAddress, "Reply to Your Reply", "Hi ${feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas},<br><br>${myLoginStatus.myUsername} has replied to your reply from the Feedback and Suggestions subforum thread titled ${feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas}. Here was the content of your reply: <br><br>${feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas}<br><br>This was what he or she has said: <br><br>${replyContentController.text}<br><br>Best,<br>Star Expedition");
+                                      sendReplyToReplyNotificationEmail(fasReplyPostersEmailAddress, feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas, myLoginStatus.myUsername, "Feedback and Suggestions", feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas, feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas, replyContentController.text);
                                       feedbackAndSuggestionsPage.replyPosterUserIsReplyingToFas = "";
                                       feedbackAndSuggestionsPage.contentOfReplyUserIsReplyingToFas = "";
                                       feedbackAndSuggestionsPage.titleOfThreadUserIsReplyingToFas = "";
