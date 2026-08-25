@@ -13,6 +13,7 @@ import 'package:number_paginator/number_paginator.dart';
 import 'package:starexpedition4/replyThreadPage.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
+import 'package:starexpedition4/videoPlayer.dart';
 
 import 'createThread.dart';
 import 'discussionBoardPage.dart' as discussionBoardPage;
@@ -846,7 +847,13 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                           scrollController: ScrollController(),
                                           config: QuillEditorConfig(
                                             padding: EdgeInsets.zero,
-                                            embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                            embedBuilders: FlutterQuillEmbeds.editorBuilders(
+                                              videoEmbedConfig: QuillEditorVideoEmbedConfig(
+                                                customVideoBuilder: (myVideoUrl, readOnly){
+                                                  return videoPlayer(myUrl: myVideoUrl);
+                                                }
+                                              ),
+                                            ),
                                             customStyles: DefaultStyles(
                                               paragraph: DefaultTextBlockStyle(
                                                 TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -956,7 +963,13 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                             scrollController: ScrollController(),
                                             config: QuillEditorConfig(
                                               padding: EdgeInsets.zero,
-                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(
+                                                videoEmbedConfig: QuillEditorVideoEmbedConfig(
+                                                  customVideoBuilder: (myVideoUrl, readOnly){
+                                                    return videoPlayer(myUrl: myVideoUrl);
+                                                  }
+                                                ),
+                                              ),
                                               customStyles: DefaultStyles(
                                                 paragraph: DefaultTextBlockStyle(
                                                   TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -1193,7 +1206,13 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                             scrollController: ScrollController(),
                                             config: QuillEditorConfig(
                                               padding: EdgeInsets.zero,
-                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(
+                                                videoEmbedConfig: QuillEditorVideoEmbedConfig(
+                                                  customVideoBuilder: (myVideoUrl, readOnly){
+                                                    return videoPlayer(myUrl: myVideoUrl);
+                                                  }
+                                                ),
+                                              ),
                                               customStyles: DefaultStyles(
                                                 paragraph: DefaultTextBlockStyle(
                                                   TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -1476,7 +1495,13 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                   scrollController: ScrollController(),
                                   config: QuillEditorConfig(
                                     padding: EdgeInsets.zero,
-                                    embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                    embedBuilders: FlutterQuillEmbeds.editorBuilders(
+                                      videoEmbedConfig: QuillEditorVideoEmbedConfig(
+                                        customVideoBuilder: (myVideoUrl, readOnly){
+                                          return videoPlayer(myUrl: myVideoUrl);
+                                        }
+                                      ),
+                                    ),
                                     customStyles: DefaultStyles(
                                       paragraph: DefaultTextBlockStyle(
                                         TextStyle(color: Colors.black, fontWeight: FontWeight.normal),

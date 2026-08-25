@@ -12,6 +12,7 @@ import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:starexpedition4/userProfile.dart';
 import 'package:starexpedition4/userSearchBar.dart';
+import 'package:starexpedition4/videoPlayer.dart';
 
 import 'createThread.dart';
 import 'replyThreadPage.dart';
@@ -841,7 +842,13 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                           scrollController: ScrollController(),
                                           config: QuillEditorConfig(
                                             padding: EdgeInsets.zero,
-                                            embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                            embedBuilders: FlutterQuillEmbeds.editorBuilders(
+                                              videoEmbedConfig: QuillEditorVideoEmbedConfig(
+                                                customVideoBuilder: (myVideoUrl, readOnly){
+                                                  return videoPlayer(myUrl: myVideoUrl);
+                                                }
+                                              ),
+                                            ),
                                             customStyles: DefaultStyles(
                                               paragraph: DefaultTextBlockStyle(
                                                 TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -951,7 +958,13 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                             scrollController: ScrollController(),
                                             config: QuillEditorConfig(
                                               padding: EdgeInsets.zero,
-                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(
+                                                videoEmbedConfig: QuillEditorVideoEmbedConfig(
+                                                  customVideoBuilder: (myVideoUrl, readOnly){
+                                                    return videoPlayer(myUrl: myVideoUrl);
+                                                  }
+                                                ),
+                                              ),
                                               customStyles: DefaultStyles(
                                                 paragraph: DefaultTextBlockStyle(
                                                   TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -1189,7 +1202,13 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                             scrollController: ScrollController(),
                                             config: QuillEditorConfig(
                                               padding: EdgeInsets.zero,
-                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                              embedBuilders: FlutterQuillEmbeds.editorBuilders(
+                                                videoEmbedConfig: QuillEditorVideoEmbedConfig(
+                                                  customVideoBuilder: (myVideoUrl, readOnly){
+                                                    return videoPlayer(myUrl: myVideoUrl);
+                                                  }
+                                                ),
+                                              ),
                                               customStyles: DefaultStyles(
                                                 paragraph: DefaultTextBlockStyle(
                                                   TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
@@ -1472,7 +1491,13 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                 scrollController: ScrollController(),
                                 config: QuillEditorConfig(
                                   padding: EdgeInsets.zero,
-                                  embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                  embedBuilders: FlutterQuillEmbeds.editorBuilders(
+                                    videoEmbedConfig: QuillEditorVideoEmbedConfig(
+                                      customVideoBuilder: (myVideoUrl, readOnly){
+                                        return videoPlayer(myUrl: myVideoUrl);
+                                      }
+                                    ),
+                                  ),
                                   customStyles: DefaultStyles(
                                     paragraph: DefaultTextBlockStyle(
                                       TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
