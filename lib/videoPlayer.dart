@@ -99,8 +99,8 @@ class videoPlayerState extends State<videoPlayer>{
         isPlaying = false;
       }
       else{
-        //If one is resuming the video:
-        videoPlayerRegistry.registerActive(stopAndRelease);
+        //If you are resuming the video:
+        //videoPlayerRegistry.registerActive(stopAndRelease);
         myVideoController!.play();
         isPlaying = true;
       }
@@ -147,7 +147,11 @@ class videoPlayerState extends State<videoPlayer>{
               ),
             ),
             if(!isPlaying)
-              Icon(Icons.play_circle_fill, size: 64, color: Colors.white),
+              Center(
+                child: IgnorePointer(
+                  child: Icon(Icons.play_circle_fill, size: 64, color: Colors.white),
+                ),
+              ),
           ],
         ),
       );
@@ -172,7 +176,9 @@ class videoPlayerState extends State<videoPlayer>{
               ),
             ],
           ) :
-          Icon(Icons.play_circle_fill, size: 64, color: Colors.white),
+          IgnorePointer(
+            child: Icon(Icons.play_circle_fill, size: 64, color: Colors.white),
+          ),
         ),
       ),
     );

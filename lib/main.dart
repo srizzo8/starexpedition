@@ -413,7 +413,7 @@ Future<void> main() async {
           });
         });
       }
-      print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
+      //print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
 
       starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
 
@@ -512,7 +512,7 @@ Future<void> main() async {
         });
       }
 
-      print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
+      //print("usersOnStarExpeditionDocs: ${usersOnStarExpeditionDocs}");
 
       starsForSearchBar.sort((s1, s2) => s1.starName!.compareTo(s2.starName!));
 
