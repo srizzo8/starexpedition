@@ -574,6 +574,19 @@ Future<void> main() async {
 
     //Logging the error to the Supabase Edge function:
     loggingError(error.toString(), stack, myUsername, myExtraInfo: { "origin": "zoned_guarded" },);
+
+    //Temporary to check startup error:
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Center(
+              child: Text("Unfortunately, a startup error has occurred:\n${error}"),
+            ),
+          ),
+        ),
+      ),
+    );
   }
   );
 }
