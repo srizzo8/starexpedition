@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Starexpedition4</string>
+	<string>Star Expedition</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,5 +45,11 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Star Expedition needs access to your photo gallery to let you select and upload images.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Star Expedition needs permission to save images to your photo gallery.</string>
+	<key>NSCameraUsageDescription</key>
+    <string>Star Expedition needs access to your camera to let you take photos.</string>
 </dict>
 </plist>
