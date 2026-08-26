@@ -9,6 +9,9 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.starexpedition
       groups:
         #This has all 20 keys from the dotenv.env file:
         - star_expedition_credentials
@@ -23,20 +26,6 @@ workflows:
           include: true
           source: true
     scripts:
-      - name: Setting up keychain to be used for codesigning with Codemagic's CLI keychain command
-        script: |
-          keychain initialize
-
-      - name: Fetching signing files
-        script: |
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --create
-
-      - name: Adding certificates to the keychain
-        script: |
-          keychain add-certificates
-
       - name: Setting up code signing settings on Xcode
         script: |
           xcode-project use-profiles
