@@ -26,6 +26,26 @@ workflows:
           include: true
           source: true
     scripts:
+      - name: Registering GoogleService-Info.plist in the Xcode project
+        script: |
+          gem install xcodeproj --no-document
+          ruby -e "
+            require 'xcodeproj'
+            project_path = 'ios/Runner.xcodeproj'
+            project = Xcodeproj::Project.open(project_path)
+            target = project.targets.first
+            runner_group = project.main_group['Runner']
+            existing = runner_group.files.find { |f| f.path == 'GoogleService-Info.plist' }
+            unless existing
+              file_ref = runner_group.new_reference('GoogleService-Info.plist')
+              target.add_resources([file_ref])
+              project.save
+              puts 'Added GoogleService-Info.plist to the Xcode project.'
+            else
+              puts 'GoogleService-Info.plist has already been registered.'
+            end
+          "
+
       - name: Setting up code signing settings on Xcode
         script: |
           xcode-project use-profiles
