@@ -22,30 +22,15 @@ import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:starexpedition4/device_information/deviceIdHelper.dart';
+
 class dataCollectionSetting{
   static const String myDataCollectionSettingKey = "dataCollectionSetting";
   bool turnDataCollectionOn = true;
 
-  //Getting the id of one's device:
-  static Future<String> getMyDeviceId() async{
-    final myDeviceInfo = DeviceInfoPlugin();
-
-    if(Platform.isAndroid){
-      final myAndroidInfo = await myDeviceInfo.androidInfo;
-      return myAndroidInfo.id!;
-    }
-    else if(Platform.isIOS){
-      final myIosInfo = await myDeviceInfo.iosInfo;
-      return myIosInfo.identifierForVendor ?? "Unknown iOS device";
-    }
-    else{
-      return "Unknown device";
-    }
-  }
-
   //Creates a Firestore document on the first launch and reads the saved value in every launch afterward:
   static Future<void> getDataCollectionOn() async{
-    final myDeviceId = await getMyDeviceId();
+    final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
 
     final myPrefs = await SharedPreferences.getInstance();
 
@@ -74,7 +59,7 @@ class dataCollectionSetting{
 
   //This method gets called when a user decides to turn dataCollectionOn on or off:
   static Future<void> setEnabled(bool myBoolValue) async{
-    final myDeviceId = await getMyDeviceId();
+    final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
     final myPrefs = await SharedPreferences.getInstance();
 
     //Updating myPrefs and the Firestore database:

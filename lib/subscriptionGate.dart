@@ -18,6 +18,7 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
+import 'package:starexpedition4/device_information/deviceIdHelper.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
@@ -278,9 +279,7 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
   Future<bool> isSubscriptionExpiredInFirestore() async{
     try{
-      final myDeviceInfo = DeviceInfoPlugin();
-      final myAndroidInfo = await myDeviceInfo.androidInfo;
-      final myDeviceId = myAndroidInfo.id;
+      final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
 
       final myDoc = await FirebaseFirestore.instance.collection("Subscriptions").where("deviceId", isEqualTo: myDeviceId).where("isActive", isEqualTo: true).orderBy("lastUpdated", descending: true).limit(1).get();
 

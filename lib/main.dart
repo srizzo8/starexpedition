@@ -42,6 +42,7 @@ import 'package:starexpedition4/userSearchBar.dart';
 import 'package:starexpedition4/pdfViewer.dart';
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
 
+import 'package:starexpedition4/device_information/deviceIdHelper.dart';
 import 'loginPage.dart';
 
 //import 'package:sentry_flutter/sentry_flutter.dart';
@@ -309,7 +310,7 @@ Future<void> loggingError(String myMessage, StackTrace myStacktrace, String? the
   print("These are the outgoing headers: $myHeaders");
 
   //Determining if "device_info" should be myDeviceInfo or N/A:
-  final myDeviceId = await dataCollectionSetting.getMyDeviceId();
+  final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
   final myDoc = await FirebaseFirestore.instance.collection("Data_Collection_Settings").doc(myDeviceId).get();
 
   var dataCollectionOn;
@@ -879,7 +880,7 @@ Future<Map<String, List>> getOtherNames() async{
 //Getting data collection information from Firestore and then opening up a dialog:
 Future<void> showMyDataCollectionDialog(BuildContext bc) async{
   //Getting the device ID and the Firestore value of dataCollectionOn:
-  final myDeviceId = await dataCollectionSetting.getMyDeviceId();
+  final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
   final myDoc = await FirebaseFirestore.instance.collection("Data_Collection_Settings").doc(myDeviceId).get();
 
   //Reading the value of dataCollectionOn from Firestore; it defaults to true when it is not there:

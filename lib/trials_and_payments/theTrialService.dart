@@ -17,6 +17,7 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
+import 'package:starexpedition4/device_information/deviceIdHelper.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
@@ -26,17 +27,9 @@ class theTrialService{
   static const String myInstallDateKey = "installDate";
   static const int myTrialDays = 7;
 
-  //Getting the id of one's device:
-  Future<String> getDeviceId() async{
-    final myDeviceInfo = DeviceInfoPlugin();
-    final myAndroidInfo = await myDeviceInfo.androidInfo;
-
-    return myAndroidInfo.id!;
-  }
-
   //Called once; this records the installation date:
   Future<void> getInstallationDate() async{
-    final myDeviceId = await getDeviceId();
+    final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
 
     //Checking Firestore to see if the device has been seen previously:
     final myDoc = await FirebaseFirestore.instance.collection("Trials").doc(myDeviceId).get();
@@ -61,7 +54,7 @@ class theTrialService{
 
   //Returns true if a user's trial is still in the one-week time window:
   Future<bool> isInTrial() async{
-    final myDeviceId = await getDeviceId();
+    final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
 
     //Checking Firestore database:
     final myDoc = await FirebaseFirestore.instance.collection("Trials").doc(myDeviceId).get();
@@ -86,7 +79,7 @@ class theTrialService{
 
   //Checking how many days are left for a user's trial:
   Future<int> daysLeftOfTrial() async{
-    final myDeviceId = await getDeviceId();
+    final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
 
     final myDoc = await FirebaseFirestore.instance.collection("Trials").doc(myDeviceId).get();
 

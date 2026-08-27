@@ -17,6 +17,7 @@ import 'package:starexpedition4/discussionBoardPage.dart';
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
+import 'package:starexpedition4/device_information/deviceIdHelper.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/src/services/asset_bundle.dart';
 import 'package:json_editor/json_editor.dart';
@@ -178,9 +179,7 @@ class theBillingService{
       final myPurchaseToken = pd.verificationData.serverVerificationData;
 
       //Getting the device ID:
-      final myDeviceInfo = DeviceInfoPlugin();
-      final myAndroidInfo = await myDeviceInfo.androidInfo;
-      final myDeviceId = myAndroidInfo.id;
+      final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
 
       //Calculating the expiry based on the product type:
       DateTime myExpiryDate;
@@ -222,9 +221,7 @@ class theBillingService{
   Future<void> markSubscriptionsAsExpiredInFirestore() async{
     try{
       //Getting myDeviceId:
-      final myDeviceInfo = DeviceInfoPlugin();
-      final myAndroidInfo = await myDeviceInfo.androidInfo;
-      final myDeviceId = myAndroidInfo.id;
+      final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
 
       final QuerySnapshot mySnapshot = await FirebaseFirestore.instance.collection("Subscriptions").where("deviceId", isEqualTo: myDeviceId).where("isActive", isEqualTo: true).get();
 
@@ -241,9 +238,7 @@ class theBillingService{
 
   Future<bool> isAnySubscriptionActiveInFirestore() async{
     try{
-      final myDeviceInfo = DeviceInfoPlugin();
-      final myAndroidInfo = await myDeviceInfo.androidInfo;
-      final myDeviceId = myAndroidInfo.id;
+      final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
 
       final mySnapshot = await FirebaseFirestore.instance.collection("Subscriptions").where("deviceId", isEqualTo: myDeviceId).where("isActive", isEqualTo: true).get();
 
