@@ -389,7 +389,7 @@ Future<void> main() async {
     List usersOnStarExpeditionDocs = [];
 
     if(kIsWeb){
-      if(Firebase.apps.isEmpty){
+      try{
         await Firebase.initializeApp(options: FirebaseOptions(
           apiKey: dotenv.env["FIREBASE_API_KEY"]!,
           appId: dotenv.env["FIREBASE_APP_ID"]!,
@@ -397,6 +397,11 @@ Future<void> main() async {
           messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"]!,
           projectId: dotenv.env["FIREBASE_PROJECT_ID"]!
         ));
+      }
+      on FirebaseException catch(e){
+        if(e.code != "duplicate-app"){
+          rethrow;
+        }
       }
 
       try{
@@ -485,7 +490,7 @@ Future<void> main() async {
       }
     }
     else{
-      if(Firebase.apps.isEmpty){
+      try{
         await Firebase.initializeApp(
           options: FirebaseOptions(
             apiKey: dotenv.env["FIREBASE_API_KEY"] as String,
@@ -496,6 +501,11 @@ Future<void> main() async {
             databaseURL: dotenv.env["FIREBASE_DATABASE_URL"] as String,
           ),
         );
+      }
+      on FirebaseException catch(e){
+        if(e.code != "duplicate-app"){
+          rethrow;
+        }
       }
 
       try{
