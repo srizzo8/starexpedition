@@ -578,6 +578,19 @@ Future<void> main() async {
 
     //Logging the error to the Supabase Edge function:
     loggingError(error.toString(), stack, myUsername, myExtraInfo: { "origin": "zoned_guarded" },);
+
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Container(
+              alignment: Alignment.center,
+              child: Text("Unfortunately, this is your error:\n${error}"),
+            )
+          )
+        ),
+      ),
+    );
   }
   );
 }
