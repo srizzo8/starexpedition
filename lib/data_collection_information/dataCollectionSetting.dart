@@ -29,9 +29,18 @@ class dataCollectionSetting{
   //Getting the id of one's device:
   static Future<String> getMyDeviceId() async{
     final myDeviceInfo = DeviceInfoPlugin();
-    final myAndroidInfo = await myDeviceInfo.androidInfo;
 
-    return myAndroidInfo.id!;
+    if(Platform.isAndroid){
+      final myAndroidInfo = await myDeviceInfo.androidInfo;
+      return myAndroidInfo.id!;
+    }
+    else if(Platform.isIOS){
+      final myIosInfo = await myDeviceInfo.iosInfo;
+      return myIosInfo.identifierForVendor ?? "Unknown iOS device";
+    }
+    else{
+      return "Unknown device";
+    }
   }
 
   //Creates a Firestore document on the first launch and reads the saved value in every launch afterward:
