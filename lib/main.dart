@@ -389,13 +389,15 @@ Future<void> main() async {
     List usersOnStarExpeditionDocs = [];
 
     if(kIsWeb){
-      await Firebase.initializeApp(options: FirebaseOptions(
-        apiKey: dotenv.env["FIREBASE_API_KEY"]!,
-        appId: dotenv.env["FIREBASE_APP_ID"]!,
-        databaseURL: dotenv.env["FIREBASE_DATABASE_URL"]!,
-        messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"]!,
-        projectId: dotenv.env["FIREBASE_PROJECT_ID"]!
-      ));
+      if(Firebase.apps.isEmpty){
+        await Firebase.initializeApp(options: FirebaseOptions(
+          apiKey: dotenv.env["FIREBASE_API_KEY"]!,
+          appId: dotenv.env["FIREBASE_APP_ID"]!,
+          databaseURL: dotenv.env["FIREBASE_DATABASE_URL"]!,
+          messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"]!,
+          projectId: dotenv.env["FIREBASE_PROJECT_ID"]!
+        ));
+      }
 
       try{
         await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.server)).then((snapshot){
@@ -483,16 +485,18 @@ Future<void> main() async {
       }
     }
     else{
-      await Firebase.initializeApp(
-        options: FirebaseOptions(
-          apiKey: dotenv.env["FIREBASE_API_KEY"] as String,
-          appId: dotenv.env["FIREBASE_APP_ID"] as String,
-          messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"] as String,
-          projectId: dotenv.env["FIREBASE_PROJECT_ID"] as String,
-          storageBucket: dotenv.env["FIREBASE_STORAGE_BUCKET"] as String,
-          databaseURL: dotenv.env["FIREBASE_DATABASE_URL"] as String,
-        ),
-      );
+      if(Firebase.apps.isEmpty){
+        await Firebase.initializeApp(
+          options: FirebaseOptions(
+            apiKey: dotenv.env["FIREBASE_API_KEY"] as String,
+            appId: dotenv.env["FIREBASE_APP_ID"] as String,
+            messagingSenderId: dotenv.env["FIREBASE_MESSAGING_SENDER_ID"] as String,
+            projectId: dotenv.env["FIREBASE_PROJECT_ID"] as String,
+            storageBucket: dotenv.env["FIREBASE_STORAGE_BUCKET"] as String,
+            databaseURL: dotenv.env["FIREBASE_DATABASE_URL"] as String,
+          ),
+        );
+      }
 
       try{
         await FirebaseFirestore.instance.collection("User").get(GetOptions(source: Source.server)).then((snapshot){
@@ -574,19 +578,6 @@ Future<void> main() async {
 
     //Logging the error to the Supabase Edge function:
     loggingError(error.toString(), stack, myUsername, myExtraInfo: { "origin": "zoned_guarded" },);
-
-    //Temporary to check startup error:
-    runApp(
-      MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Center(
-              child: Text("Unfortunately, a startup error has occurred:\n${error}"),
-            ),
-          ),
-        ),
-      ),
-    );
   }
   );
 }
