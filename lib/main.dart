@@ -592,10 +592,22 @@ Future<void> main() async {
     runApp(
       MaterialApp(
         home: Scaffold(
-          body: Center(
-            child: Container(
-              alignment: Alignment.center,
-              child: Text("Unfortunately, this is your error:\n${error}"),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  child: Text("Unfortunately, this is your error:\n${error}"),
+                ),
+                Container(
+                  height: 20,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: Text("Stack trace:\n${stack}"),
+                ),
+              ],
             )
           )
         ),
