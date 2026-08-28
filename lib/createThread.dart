@@ -12,6 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -24,6 +25,7 @@ import 'package:starexpedition4/questions_and_answers_firestore_database_informa
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersInformation.dart';
 import 'package:starexpedition4/technologies_firestore_database_information/technologiesDatabaseFirestoreInfo.dart';
 import 'package:starexpedition4/technologies_firestore_database_information/technologiesInformation.dart';
+import 'package:video_compress/video_compress.dart';
 import 'discussionBoardPage.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'login_information/loginStatus.dart';
@@ -172,14 +174,18 @@ class createThreadState extends State<createThread> with RouteAware{
     const myCloudName = "qrbab8fp";
     const myUploadPreset = "star_expedition_thread_images";
 
-    //Reading the image's bytes immediately so that what is currently there can be captured even if the plugin reuses a handle or path that is stale:
-    final myOriginalFile = File(myOriginalPath);
-    final myBytes = await myOriginalFile.readAsBytes();
-
-    //Writing to a freshly named temporary file. This guarantees no collision between paths with any previous pick:
     final myTempDirectory = await getTemporaryDirectory();
     final myUniqueName = "image_${DateTime.now().microsecondsSinceEpoch}.jpg";
-    final myFreshFile = await File("${myTempDirectory.path}/${myUniqueName}").writeAsBytes(myBytes);
+    final myTargetPath = "${myTempDirectory.path}/${myUniqueName}";
+
+    //Re-encoding the photo to a compressed .jpeg file:
+    final myCompressedFile = await FlutterImageCompress.compressAndGetFile(myOriginalPath, myTargetPath, quality: 90, minHeight: 1920, minWidth: 1920, format: CompressFormat.jpeg);
+
+    if(myCompressedFile == null){
+      throw Exception("Unfortunately, the image was not able to be compressed.");
+    }
+
+    final myFreshFile = File(myCompressedFile.path);
 
     final myUri = Uri.parse("https://api.cloudinary.com/v1_1/${myCloudName}/image/upload");
 
@@ -213,14 +219,14 @@ class createThreadState extends State<createThread> with RouteAware{
     const myCloudName = "qrbab8fp";
     const myUploadPreset = "star_expedition_thread_videos";
 
-    //Reading the video's bytes immediately so that what is currently there can be captured even if the plugin reuses a handle or path that is stale:
-    final myOriginalFile = File(myOriginalPath);
-    final myBytes = await myOriginalFile.readAsBytes();
+    //Re-encoding the video to a compressed .mp4 file:
+    final myMediaInfo = await VideoCompress.compressVideo(myOriginalPath, quality: VideoQuality.MediumQuality, deleteOrigin: false);
 
-    //Writing to a freshly named temporary file. This guarantees no collision between paths with any previous pick:
-    final myTempDirectory = await getTemporaryDirectory();
-    final myUniqueName = "video_${DateTime.now().microsecondsSinceEpoch}.mp4";
-    final myFreshFile = await File("${myTempDirectory.path}/${myUniqueName}").writeAsBytes(myBytes);
+    if(myMediaInfo == null || myMediaInfo.file == null){
+      throw Exception("Unfortunately, the video was not able to be compressed.");
+    }
+
+    final myFreshFile = myMediaInfo.file!;
 
     final myUri = Uri.parse("https://api.cloudinary.com/v1_1/${myCloudName}/video/upload");
 
