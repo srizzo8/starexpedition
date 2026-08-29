@@ -81,6 +81,9 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
   String secondDropdownLengthValue = lengthUnits[3];
 
   void calculateTemperature(){
+    if(myTemperature.text.isEmpty || double.tryParse(myTemperature.text) == null){
+      return;
+    }
     if(dropdownTempValue == "Celsius" && secondDropdownTempValue == "Celsius"){
       tempResults = double.parse(myTemperature.text);
     }
@@ -111,6 +114,9 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
   }
 
   void calculateLength(){
+    if(myLength.text.isEmpty || double.tryParse(myLength.text) == null){
+      return;
+    }
     if(dropdownLengthValue == "AU" && secondDropdownLengthValue == "AU"){
       lengthResults = double.parse(myLength.text);
     }
@@ -331,7 +337,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
                             items: temperatureUnits.map((String tu){
                               return DropdownMenuItem(
                                 value: tu,
-                                child: Text(tu),
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(tu, maxLines: 1),
+                                ),
                               );
                             }).toList(),
                             onChanged: (String? newTempUnit){
@@ -357,7 +366,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
                             items: temperatureUnits.map((String stu){
                               return DropdownMenuItem(
                                 value: stu,
-                                child: Text(stu),
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(stu, maxLines: 1),
+                                ),
                               );
                             }).toList(),
                             onChanged: (String? secondNewTempUnit){
@@ -436,7 +448,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
                             items: lengthUnits.map((String lu){
                               return DropdownMenuItem(
                                 value: lu,
-                                child: Text(lu),
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(lu, maxLines: 1),
+                                ),
                               );
                             }).toList(),
                             onChanged: (String? newLengthUnit){
@@ -462,7 +477,10 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
                             items: lengthUnits.map((String slu){
                               return DropdownMenuItem(
                                 value: slu,
-                                child: Text(slu),
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(slu, maxLines: 1),
+                                ),
                               );
                             }).toList(),
                             onChanged: (String? secondNewLengthUnit){
