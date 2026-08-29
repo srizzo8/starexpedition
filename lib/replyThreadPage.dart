@@ -53,6 +53,7 @@ import 'main.dart' as myMain;
 import 'package:starexpedition4/loginPage.dart' as theLoginPage;
 import 'package:starexpedition4/registerPage.dart' as theRegisterPage;
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
+import 'package:starexpedition4/quill_information/quillEmbedHelper.dart';
 
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesDatabaseFirestoreInfo.dart';
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesInformation.dart';
@@ -382,9 +383,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
 
                                         try{
                                           final myDownloadUrl = await uploadMyImageToCloudinary(myImage);
-                                          final myIndex = myController.selection.baseOffset;
-                                          final myLength = myController.selection.extentOffset - myIndex;
-                                          myController.replaceText(myIndex, myLength, BlockEmbed.image(myDownloadUrl), null);
+
+                                          quillEmbedHelper().addEmbedAndCleanUp(myController, BlockEmbed.image(myDownloadUrl));
                                         }
                                         catch (e){
                                           if(mounted){
@@ -422,9 +422,8 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
 
                                         try{
                                           final myDownloadUrl = await uploadMyVideoToCloudinary(myVideo);
-                                          final myIndex = myController.selection.baseOffset;
-                                          final myLength = myController.selection.extentOffset - myIndex;
-                                          myController.replaceText(myIndex, myLength, BlockEmbed.video(myDownloadUrl), null);
+
+                                          quillEmbedHelper().addEmbedAndCleanUp(myController, BlockEmbed.video(myDownloadUrl));
                                         }
                                         catch (e){
                                           if(mounted){

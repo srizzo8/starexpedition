@@ -47,6 +47,7 @@ import 'feedbackAndSuggestionsPage.dart' as feedbackAndSuggestionsPage;
 import 'package:starexpedition4/loginPage.dart';
 import 'package:starexpedition4/registerPage.dart';
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
+import 'package:starexpedition4/quill_information/quillEmbedHelper.dart';
 //import 'package:sentry/sentry.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_quill/flutter_quill.dart';
@@ -460,9 +461,8 @@ class createThreadState extends State<createThread> with RouteAware{
 
                                       try{
                                         final myDownloadUrl = await uploadMyImageToCloudinary(myImage);
-                                        final myIndex = myController.selection.baseOffset;
-                                        final myLength = myController.selection.extentOffset - myIndex;
-                                        myController.replaceText(myIndex, myLength, BlockEmbed.image(myDownloadUrl), null);
+
+                                        quillEmbedHelper().addEmbedAndCleanUp(myController, BlockEmbed.image(myDownloadUrl));
                                       }
                                       catch (e){
                                         if(mounted){
@@ -500,9 +500,8 @@ class createThreadState extends State<createThread> with RouteAware{
 
                                         try{
                                           final myDownloadUrl = await uploadMyVideoToCloudinary(myVideo);
-                                          final myIndex = myController.selection.baseOffset;
-                                          final myLength = myController.selection.extentOffset - myIndex;
-                                          myController.replaceText(myIndex, myLength, BlockEmbed.video(myDownloadUrl), null);
+
+                                          quillEmbedHelper().addEmbedAndCleanUp(myController, BlockEmbed.video(myDownloadUrl));
                                         }
                                         catch (e){
                                           if(mounted){

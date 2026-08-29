@@ -309,7 +309,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
                             border: OutlineInputBorder(),
                             contentPadding: EdgeInsets.all(10.0),
                           ),
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.numberWithOptions(decimal: true),
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp("[0-9.-]")),
                             decimalAndMinusExpectedFormat(),
@@ -420,7 +420,7 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
                             border: OutlineInputBorder(),
                             contentPadding: EdgeInsets.all(10.0),
                           ),
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.numberWithOptions(decimal: true),
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp("[0-9.]")),
                             decimalAndMinusExpectedFormat(),

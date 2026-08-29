@@ -2328,71 +2328,75 @@ class CustomSearchDelegate extends SearchDelegate {
 
                       starSearchBool.value = true;
 
-                      FocusScope.of(context).unfocus();
+                      try{
+                        FocusScope.of(context).unfocus();
 
-                      correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
-                      print(correctStar);
-                      starInfo = await getStarInformation();
-                      starFileContent = await readStarFile();
+                        correctStar = myMatchQuery[index].starName!; //otherNamesMatchQuery.keys.elementAt(index).starName!;
+                        print(correctStar);
+                        starInfo = await getStarInformation();
+                        starFileContent = await readStarFile();
 
-                      listOfStarUrls = [];
+                        listOfStarUrls = [];
 
-                      final myLines = starFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((s) => s.isNotEmpty && s != " ").toList();
+                        final myLines = starFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((s) => s.isNotEmpty && s != " ").toList();
 
-                      Map<int, String> myTitles = {};
+                        Map<int, String> myTitles = {};
 
-                      for(int i = 0; i < myLines.length; i++){
-                        if(myLines[i].contains("||")){
-                          final parts = myLines[i].split("||");
-                          listOfStarUrls.add(parts[0].trim());
-                          myTitles[i] = parts[1].trim();
-                        }
-                        else{
-                          listOfStarUrls.add(myLines[i]);
-                        }
-                      }
-
-                      urlTitlesForStars = await Future.wait(List.generate(listOfStarUrls.length, (i){
-                          if(myTitles.containsKey(i)){
-                            return Future.value(myTitles[i]);
+                        for(int i = 0; i < myLines.length; i++){
+                          if(myLines[i].contains("||")){
+                            final parts = myLines[i].split("||");
+                            listOfStarUrls.add(parts[0].trim());
+                            myTitles[i] = parts[1].trim();
                           }
-                          return getTitleOfPage(listOfStarUrls[i]);
-                        })
-                      );
-
-                      if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                        if(firebaseDesktopHelper.onDesktop){
-                          var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                          var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
-
-                          //Getting the current profile info of the user:
-                          Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
-                          starTracked = currentInfoOfUser["starsTracked"].containsKey(myMatchQuery[index].starName!);
-                          print("starTracked: ${starTracked}");
+                          else{
+                            listOfStarUrls.add(myLines[i]);
+                          }
                         }
-                        else{
-                          var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                          var docNameForUsers;
-                          theUser.docs.forEach((result){
-                            docNameForUsers = result.id;
-                          });
 
-                          DocumentSnapshot<Map<dynamic, dynamic>> snapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForUsers).get();
-                          Map<dynamic, dynamic>? individual = snapshotUsers.data();
+                        urlTitlesForStars = await Future.wait(List.generate(listOfStarUrls.length, (i){
+                            if(myTitles.containsKey(i)){
+                              return Future.value(myTitles[i]);
+                            }
+                            return getTitleOfPage(listOfStarUrls[i]);
+                          })
+                        );
 
-                          starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
-                          print("starTracked: ${starTracked}");
+                        if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                          if(firebaseDesktopHelper.onDesktop){
+                            var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                            var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+
+                            //Getting the current profile info of the user:
+                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
+                            starTracked = currentInfoOfUser["starsTracked"].containsKey(myMatchQuery[index].starName!);
+                            print("starTracked: ${starTracked}");
+                          }
+                          else{
+                            var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                            var docNameForUsers;
+                            theUser.docs.forEach((result){
+                              docNameForUsers = result.id;
+                            });
+
+                            DocumentSnapshot<Map<dynamic, dynamic>> snapshotUsers = await FirebaseFirestore.instance.collection("User").doc(docNameForUsers).get();
+                            Map<dynamic, dynamic>? individual = snapshotUsers.data();
+
+                            starTracked = individual?["usernameProfileInformation"]["starsTracked"].containsKey(myMatchQuery[index].starName!);
+                            print("starTracked: ${starTracked}");
+                          }
                         }
+
+                        myAccessCheckNotifier.value = DateTime.now();
+
+                        if(!context.mounted){
+                          return;
+                        }
+
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
                       }
-
-                      myAccessCheckNotifier.value = DateTime.now();
-
-                      if(!context.mounted){
-                        return;
+                      finally{
+                        starSearchBool.value = false;
                       }
-
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => articlePage(starInfo), settings: RouteSettings(arguments: myMatchQuery[index])));
-                      starSearchBool.value = false;
                     },
                     leading: Image.asset(myMatchQuery[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50),
                   ),
@@ -2641,87 +2645,91 @@ class CustomSearchDelegateForPlanets extends SearchDelegate{
 
                       planetSearchBool.value = true;
 
-                      FocusScope.of(context).unfocus();
+                      try{
+                        FocusScope.of(context).unfocus();
 
-                      fromSearchBarToPlanetArticle = true;
-                      correctPlanet = myMatchQueryPlanets[index].starName!;
+                        fromSearchBarToPlanetArticle = true;
+                        correctPlanet = myMatchQueryPlanets[index].starName!;
 
-                      starsAndTheirPlanets.forEach((key, value){
-                        for(var v in value){
-                          if(v == correctPlanet){
-                            correctStar = key;
-                            break;
+                        starsAndTheirPlanets.forEach((key, value){
+                          for(var v in value){
+                            if(v == correctPlanet){
+                              correctStar = key;
+                              break;
+                            }
+                            else{
+                              //continue
+                            }
+                          }
+                        });
+
+                        var theStarInfo = await getStarInformation();
+                        informationAboutPlanet = await articlePage(theStarInfo).getPlanetData();
+
+                        planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
+
+                        listOfPlanetUrls = [];
+
+                        final myLines = planetFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((p) => p.isNotEmpty && p != " ").toList();
+
+                        Map<int, String> myTitles = {};
+
+                        for(int i = 0; i < myLines.length; i++){
+                          if(myLines[i].contains("||")){
+                            final parts = myLines[i].split("||");
+                            listOfPlanetUrls.add(parts[0].trim());
+                            myTitles[i] = parts[1].trim();
                           }
                           else{
-                            //continue
+                            listOfPlanetUrls.add(myLines[i]);
                           }
                         }
-                      });
 
-                      var theStarInfo = await getStarInformation();
-                      informationAboutPlanet = await articlePage(theStarInfo).getPlanetData();
+                        urlTitlesForPlanets = await Future.wait(List.generate(listOfPlanetUrls.length, (i){
+                            if(myTitles.containsKey(i)){
+                              return Future.value(myTitles[i]);
+                            }
+                            return getTitleOfPage(listOfPlanetUrls[i]);
+                          })
+                        );
 
-                      planetFileContent = await readPlanetFile(informationAboutPlanet[6].toString());
+                        //Is the planet tracked by a user?
+                        if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                          if(firebaseDesktopHelper.onDesktop){
+                            var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
+                            var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
 
-                      listOfPlanetUrls = [];
-
-                      final myLines = planetFileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n").where((p) => p.isNotEmpty && p != " ").toList();
-
-                      Map<int, String> myTitles = {};
-
-                      for(int i = 0; i < myLines.length; i++){
-                        if(myLines[i].contains("||")){
-                          final parts = myLines[i].split("||");
-                          listOfPlanetUrls.add(parts[0].trim());
-                          myTitles[i] = parts[1].trim();
-                        }
-                        else{
-                          listOfPlanetUrls.add(myLines[i]);
-                        }
-                      }
-
-                      urlTitlesForPlanets = await Future.wait(List.generate(listOfPlanetUrls.length, (i){
-                          if(myTitles.containsKey(i)){
-                            return Future.value(myTitles[i]);
+                            //Getting the current profile info of the user:
+                            Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
+                            planetTracked = currentInfoOfUser["planetsTracked"].containsKey(correctPlanet);
+                            print("planetTracked: ${planetTracked}");
                           }
-                          return getTitleOfPage(listOfPlanetUrls[i]);
-                        })
-                      );
+                          else{
+                            var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                            var theDocNameForUsers;
+                            theUser.docs.forEach((result){
+                              theDocNameForUsers = result.id;
+                            });
 
-                      //Is the planet tracked by a user?
-                      if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
-                        if(firebaseDesktopHelper.onDesktop){
-                          var userNeeded = await firebaseDesktopHelper.getFirestoreCollection("User");
-                          var usersDoc = userNeeded.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                            DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForUsers).get();
+                            Map<dynamic, dynamic>? individual = theSnapshotUsers.data();
 
-                          //Getting the current profile info of the user:
-                          Map<String, dynamic> currentInfoOfUser = Map<String, dynamic>.from(usersDoc["usernameProfileInformation"] ?? {});
-                          planetTracked = currentInfoOfUser["planetsTracked"].containsKey(correctPlanet);
-                          print("planetTracked: ${planetTracked}");
+                            planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
+                            print("planetTracked: ${planetTracked}");
+                          }
                         }
-                        else{
-                          var theUser = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
-                          var theDocNameForUsers;
-                          theUser.docs.forEach((result){
-                            theDocNameForUsers = result.id;
-                          });
 
-                          DocumentSnapshot<Map<dynamic, dynamic>> theSnapshotUsers = await FirebaseFirestore.instance.collection("User").doc(theDocNameForUsers).get();
-                          Map<dynamic, dynamic>? individual = theSnapshotUsers.data();
+                        myAccessCheckNotifier.value = DateTime.now();
 
-                          planetTracked = individual?["usernameProfileInformation"]["planetsTracked"].containsKey(correctPlanet);
-                          print("planetTracked: ${planetTracked}");
+                        if(!context.mounted){
+                          return;
                         }
+
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
                       }
-
-                      myAccessCheckNotifier.value = DateTime.now();
-
-                      if(!context.mounted){
-                        return;
+                      finally{
+                        planetSearchBool.value = false;
                       }
-
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => planetArticle(informationAboutPlanet)));
-                      planetSearchBool.value = false;
                     },
                     leading: Image.asset(myMatchQueryPlanets[index].imagePath!, fit: BoxFit.cover, height: 50, width: 50),
                     ),
