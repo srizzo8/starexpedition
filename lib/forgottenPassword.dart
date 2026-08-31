@@ -270,6 +270,8 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
                                 maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                               ),
                               child: TextField(
+                                autocorrect: false,
+                                enableSuggestions: false,
                                 maxLines: 1,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
@@ -301,6 +303,8 @@ class forgottenPasswordState extends State<forgottenPassword> with RouteAware{
                             maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                           ),
                           child: TextField(
+                            autocorrect: false,
+                            enableSuggestions: false,
                             maxLines: 1,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
@@ -567,6 +571,8 @@ class forgottenPasswordCodeEntryState extends State<forgottenPasswordCodeEntry> 
                                   thumbVisibility: true,
                                   child: SizedBox(
                                     child: TextField(
+                                      autocorrect: false,
+                                      enableSuggestions: false,
                                       scrollController: sixDigitCodeScrollController,
                                       minLines: 1,
                                       maxLines: 1,
@@ -872,6 +878,8 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                                     thumbVisibility: true,
                                     child: SizedBox(
                                       child: TextField(
+                                        autocorrect: false,
+                                        enableSuggestions: false,
                                         scrollController: newPasswordScrollController,
                                         minLines: 1,
                                         maxLines: 1,
@@ -913,6 +921,8 @@ class resetPasswordState extends State<resetPassword> with RouteAware{
                                   thumbVisibility: true,
                                   child: SizedBox(
                                     child: TextField(
+                                      autocorrect: false,
+                                      enableSuggestions: false,
                                       scrollController: confirmNewPasswordScrollController,
                                       minLines: 1,
                                       maxLines: 1,

@@ -630,6 +630,8 @@ class questionsAndAnswersPageState extends State<questionsAndAnswersPage> with R
           Container(
             padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
             child: TextField(
+                autocorrect: false,
+                enableSuggestions: false,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                 ),

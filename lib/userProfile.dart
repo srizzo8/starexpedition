@@ -417,6 +417,8 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                                     thumbVisibility: true,
                                     child: SizedBox(
                                       child: TextField(
+                                        autocorrect: false,
+                                        enableSuggestions: false,
                                         scrollController: informationScrollController,
                                         minLines: 5,
                                         maxLines: 5,
@@ -459,6 +461,8 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                                   thumbVisibility: true,
                                   child: SizedBox(
                                     child: TextField(
+                                      autocorrect: false,
+                                      enableSuggestions: false,
                                       scrollController: interestsScrollController,
                                       minLines: 5,
                                       maxLines: 5,
@@ -499,6 +503,8 @@ class editingMyUserProfileState extends State<editingMyUserProfile> with RouteAw
                                   thumbVisibility: true,
                                   child: SizedBox(
                                     child: TextField(
+                                      autocorrect: false,
+                                      enableSuggestions: false,
                                       scrollController: locationScrollController,
                                       minLines: 5,
                                       maxLines: 5,

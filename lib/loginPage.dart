@@ -136,6 +136,8 @@ class loginPageState extends State<loginPage> with RouteAware{
                             ),
                             child: SizedBox(
                               child: TextField(
+                                autocorrect: false,
+                                enableSuggestions: false,
                                 minLines: 1,
                                 maxLines: 1,
                                 decoration: InputDecoration(
@@ -166,6 +168,8 @@ class loginPageState extends State<loginPage> with RouteAware{
                             ),
                             child: SizedBox(
                               child: TextField(
+                                autocorrect: false,
+                                enableSuggestions: false,
                                 minLines: 1,
                                 maxLines: 1,
                                 decoration: InputDecoration(

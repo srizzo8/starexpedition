@@ -327,6 +327,8 @@ class registerPageState extends State<registerPage>{
                             ),
                             child: SizedBox(
                               child: TextField(
+                                autocorrect: false,
+                                enableSuggestions: false,
                                 minLines: 1,
                                 maxLines: 1,
                                 decoration: InputDecoration(
@@ -357,6 +359,8 @@ class registerPageState extends State<registerPage>{
                             ),
                             child: SizedBox(
                               child: TextField(
+                                autocorrect: false,
+                                enableSuggestions: false,
                                 minLines: 1,
                                 maxLines: 1,
                                 decoration: InputDecoration(
@@ -387,6 +391,8 @@ class registerPageState extends State<registerPage>{
                             ),
                             child: SizedBox(
                               child: TextField(
+                                autocorrect: false,
+                                enableSuggestions: false,
                                 minLines: 1,
                                 maxLines: 1,
                                 decoration: InputDecoration(
@@ -594,6 +600,8 @@ class registerSixDigitCodePageState extends State<registerSixDigitCodePage>{
                                 thumbVisibility: true,
                                 child: SizedBox(
                                   child: TextField(
+                                    autocorrect: false,
+                                    enableSuggestions: false,
                                     scrollController: sixDigitCodeScrollController,
                                     minLines: 1,
                                     maxLines: 1,

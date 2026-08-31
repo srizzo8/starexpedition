@@ -303,6 +303,8 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                         child: TextField(
+                          autocorrect: false,
+                          enableSuggestions: false,
                           textAlignVertical: TextAlignVertical.center,
                           controller: myTemperature,
                           decoration: const InputDecoration(
@@ -414,6 +416,8 @@ class conversionCalculatorPageState extends State<conversionCalculatorPage> with
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                         child: TextField(
+                          autocorrect: false,
+                          enableSuggestions: false,
                           textAlignVertical: TextAlignVertical.center,
                           controller: myLength,
                           decoration: const InputDecoration(

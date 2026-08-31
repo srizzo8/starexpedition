@@ -3439,6 +3439,8 @@ class articlePage extends StatelessWidget{
                                                               ),
                                                             ),
                                                             TextField(
+                                                              autocorrect: false,
+                                                              enableSuggestions: false,
                                                               controller: reasonForStarTrackUsers,
                                                             ),
                                                           ],
@@ -4153,6 +4155,8 @@ class planetArticle extends StatelessWidget{
                                                                 ),
                                                               ),
                                                               TextField(
+                                                                autocorrect: false,
+                                                                enableSuggestions: false,
                                                                 controller: reasonForPlanetTrackUsers,
                                                               ),
                                                             ],

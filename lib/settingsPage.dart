@@ -400,6 +400,8 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                               ),
                               child: SizedBox(
                                 child: TextField(
+                                  autocorrect: false,
+                                  enableSuggestions: false,
                                   minLines: 1,
                                   maxLines: 1,
                                   decoration: InputDecoration(
@@ -431,6 +433,8 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                               ),
                               child: SizedBox(
                                 child: TextField(
+                                  autocorrect: false,
+                                  enableSuggestions: false,
                                   minLines: 1,
                                   maxLines: 1,
                                   decoration: InputDecoration(
@@ -462,6 +466,8 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                               ),
                               child: SizedBox(
                                 child: TextField(
+                                  autocorrect: false,
+                                  enableSuggestions: false,
                                   minLines: 1,
                                   maxLines: 1,
                                   decoration: InputDecoration(
@@ -765,6 +771,8 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                               ),
                               child: SizedBox(
                                 child: TextField(
+                                  autocorrect: false,
+                                  enableSuggestions: false,
                                   minLines: 1,
                                   maxLines: 1,
                                   decoration: InputDecoration(
@@ -795,6 +803,8 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                             ),
                             child: SizedBox(
                               child: TextField(
+                                autocorrect: false,
+                                enableSuggestions: false,
                                 minLines: 1,
                                 maxLines: 1,
                                 decoration: InputDecoration(
@@ -825,6 +835,8 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                             ),
                             child: SizedBox(
                               child: TextField(
+                                autocorrect: false,
+                                enableSuggestions: false,
                                 minLines: 1,
                                 maxLines: 1,
                                 decoration: InputDecoration(

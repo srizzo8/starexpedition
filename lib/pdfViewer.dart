@@ -220,6 +220,8 @@ class pdfViewerState extends State<pdfViewer> with RouteAware{
                   children: <Widget>[
                     Expanded(
                       child: TextField(
+                        autocorrect: false,
+                        enableSuggestions: false,
                         controller: starPdfPageController,
                         keyboardType: TextInputType.number,
                         inputFormatters: [
@@ -421,6 +423,8 @@ class pdfViewerState extends State<pdfViewer> with RouteAware{
               children: <Widget>[
                 Expanded(
                   child: TextField(
+                    autocorrect: false,
+                    enableSuggestions: false,
                     controller: planetPdfPageController,
                     keyboardType: TextInputType.number,
                     inputFormatters: [

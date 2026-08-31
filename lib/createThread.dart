@@ -364,6 +364,8 @@ class createThreadState extends State<createThread> with RouteAware{
                   SizedBox(
                     width: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                     child: TextField(
+                      autocorrect: false,
+                      enableSuggestions: false,
                       decoration: InputDecoration(
                         labelText: "Username",
                       ),
@@ -397,6 +399,8 @@ class createThreadState extends State<createThread> with RouteAware{
                                   thumbVisibility: true,
                                   child: SizedBox(
                                     child: TextField(
+                                      autocorrect: false,
+                                      enableSuggestions: false,
                                       scrollController: threadTitleScrollController,
                                       minLines: 1,
                                       maxLines: 1,
