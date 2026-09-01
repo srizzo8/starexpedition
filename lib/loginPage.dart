@@ -138,7 +138,7 @@ class loginPageState extends State<loginPage> with RouteAware{
                               child: TextField(
                                 autocorrect: false,
                                 enableSuggestions: false,
-                                enableInteractiveSelection: false,
+                                autofillHints: null,
                                 minLines: 1,
                                 maxLines: 1,
                                 decoration: InputDecoration(
