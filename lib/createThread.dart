@@ -25,6 +25,7 @@ import 'package:starexpedition4/questions_and_answers_firestore_database_informa
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersInformation.dart';
 import 'package:starexpedition4/technologies_firestore_database_information/technologiesDatabaseFirestoreInfo.dart';
 import 'package:starexpedition4/technologies_firestore_database_information/technologiesInformation.dart';
+import 'package:video_compress/video_compress.dart';
 //import 'package:video_compress/video_compress.dart';
 import 'discussionBoardPage.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
@@ -221,7 +222,22 @@ class createThreadState extends State<createThread> with RouteAware{
     const myCloudName = "qrbab8fp";
     const myUploadPreset = "star_expedition_thread_videos";
 
-    final myFile = File(myOriginalPath);
+    String myPathToUpload = myOriginalPath;
+
+    //Compressing a video for iOS devices (it is only for iOS devices because compressing causes users to not be able to upload videos on Android devices), since iOS videos are generally larger in size than Android videos:
+    if(Platform.isIOS){
+      final myMediaInfo = await VideoCompress.compressVideo(
+        myOriginalPath, quality: VideoQuality.MediumQuality, deleteOrigin: false,
+      );
+
+      if(myMediaInfo != null && myMediaInfo.file != null){
+        myPathToUpload = myMediaInfo.file!.path;
+      }
+
+      //If the compression fails or returns null, myPathToUpload will fall back to the original path, and the upload will still happen.
+    }
+
+    final myFile = File(myPathToUpload);
 
     //This handles files backed by iCloud that may not be fully downloaded yet:
     if(!(await myFile.exists())){
