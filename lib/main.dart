@@ -1213,8 +1213,6 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
   bool featuredStarOfTheDayNavigationThroughText = false;
   bool searchButtonBool = false;
 
-  final myTestController = TextEditingController();
-
   @override
   void initState(){
     super.initState();
@@ -1604,12 +1602,6 @@ class theStarExpeditionState extends State<StarExpedition> with RouteAware{
                   }
                 }
               ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              controller: myTestController,
             ),
           ),
         ],

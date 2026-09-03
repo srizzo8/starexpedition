@@ -13,6 +13,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:starexpedition4/forgottenPassword.dart';
+import 'package:starexpedition4/textfield_information/manualCursorTextField.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'emailNotifications.dart';
 import 'login_information/loginStatus.dart';
@@ -135,7 +136,11 @@ class loginPageState extends State<loginPage> with RouteAware{
                               maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                             ),
                             child: SizedBox(
-                              child: TextField(
+                              child: manualCursorTextField(
+                                myController: usernameController,
+                                myLabelText: "Username",
+                              ),
+                              /*child: TextField(
                                 autocorrect: false,
                                 enableSuggestions: false,
                                 minLines: 1,
@@ -145,7 +150,7 @@ class loginPageState extends State<loginPage> with RouteAware{
                                   labelText: "Username",
                                 ),
                                 controller: usernameController,
-                              ),
+                              ),*/
                             ),
                           ),
                         ),
