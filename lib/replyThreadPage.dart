@@ -58,6 +58,8 @@ import 'package:starexpedition4/quill_information/quillEmbedHelper.dart';
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesDatabaseFirestoreInfo.dart';
 import 'discussion_board_updates_firestore_database_information/discussionBoardUpdatesInformation.dart';
 
+import 'package:http_parser/http_parser.dart';
+
 int replyNum = 0;
 List<dynamic> info = [];
 var myInfoForReplies;
@@ -201,8 +203,17 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
 
     final myFile = File(myOriginalPath);
 
+    //This handles files backed by iCloud that may not be fully downloaded yet:
+    if(!(await myFile.exists())){
+      throw Exception("Unfortunately, the video file cannot be found. If it is stored in iCloud, please make sure that it is completely downloaded first.");
+    }
+
     //To see if a video is too large for your Cloudinary plan or not:
     final myFileSizeInMB = await myFile.length() / (1024 * 1024);
+
+    if(myFileSizeInMB == 0){
+      throw Exception("Unfortunately, the video appears to be empty. If it is stored in iCloud, please make sure that it is completely downloaded first.");
+    }
 
     if(myFileSizeInMB > 100){
       throw Exception("Unfortunately, the video you uploaded was too large. Please upload a video that is under 100 MB");
@@ -210,9 +221,14 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
 
     final myUri = Uri.parse("https://api.cloudinary.com/v1_1/${myCloudName}/video/upload");
 
+    //Setting the content type due to how iOS videos are generally .mov files. These files are not always correctly auto-detected:
+    final myExtension = myFile.path.split(".").last.toLowerCase();
+
+    final myContentType = (myExtension == "mov") ? MediaType("video", "quicktime") : MediaType("video", "mp4");
+
     final myRequest = http.MultipartRequest("POST", myUri)
       ..fields["upload_preset"] = myUploadPreset
-      ..files.add(await http.MultipartFile.fromPath("file", myFile.path));
+      ..files.add(await http.MultipartFile.fromPath("file", myFile.path, contentType: myContentType));
 
     final myResponse = await myRequest.send().timeout(
       Duration(seconds: 120), onTimeout: () => throw Exception("Unfortunately, the video upload has timed out"),
