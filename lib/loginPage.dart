@@ -136,11 +136,7 @@ class loginPageState extends State<loginPage> with RouteAware{
                               maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
                             ),
                             child: SizedBox(
-                              child: manualCursorTextField(
-                                myController: usernameController,
-                                myLabelText: "Username",
-                              ),
-                              /*child: TextField(
+                              child: TextField(
                                 autocorrect: false,
                                 enableSuggestions: false,
                                 minLines: 1,
@@ -150,7 +146,7 @@ class loginPageState extends State<loginPage> with RouteAware{
                                   labelText: "Username",
                                 ),
                                 controller: usernameController,
-                              ),*/
+                              ),
                             ),
                           ),
                         ),

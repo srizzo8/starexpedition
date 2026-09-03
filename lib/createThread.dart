@@ -25,7 +25,7 @@ import 'package:starexpedition4/questions_and_answers_firestore_database_informa
 import 'package:starexpedition4/questions_and_answers_firestore_database_information/questionsAndAnswersInformation.dart';
 import 'package:starexpedition4/technologies_firestore_database_information/technologiesDatabaseFirestoreInfo.dart';
 import 'package:starexpedition4/technologies_firestore_database_information/technologiesInformation.dart';
-import 'package:video_compress/video_compress.dart';
+//import 'package:video_compress/video_compress.dart';
 import 'discussionBoardPage.dart';
 import 'discussionBoardUpdatesPage.dart' as discussionBoardUpdatesPage;
 import 'login_information/loginStatus.dart';
@@ -220,31 +220,26 @@ class createThreadState extends State<createThread> with RouteAware{
     const myCloudName = "qrbab8fp";
     const myUploadPreset = "star_expedition_thread_videos";
 
-    //Re-encoding the video to a compressed .mp4 file:
-    final myMediaInfo = await VideoCompress.compressVideo(myOriginalPath, quality: VideoQuality.MediumQuality, deleteOrigin: false);
+    final myFile = File(myOriginalPath);
 
-    if(myMediaInfo == null || myMediaInfo.file == null){
-      throw Exception("Unfortunately, the video was not able to be compressed.");
+    //To see if a video is too large for your Cloudinary plan or not:
+    final myFileSizeInMB = await myFile.length() / (1024 * 1024);
+
+    if(myFileSizeInMB > 100){
+      throw Exception("Unfortunately, the video you uploaded was too large. Please upload a video that is under 100 MB");
     }
-
-    final myFreshFile = myMediaInfo.file!;
 
     final myUri = Uri.parse("https://api.cloudinary.com/v1_1/${myCloudName}/video/upload");
 
     final myRequest = http.MultipartRequest("POST", myUri)
       ..fields["upload_preset"] = myUploadPreset
-      ..files.add(await http.MultipartFile.fromPath("file", myFreshFile.path));
+      ..files.add(await http.MultipartFile.fromPath("file", myFile.path));
 
-    final myResponse = await myRequest.send();
+    final myResponse = await myRequest.send().timeout(
+      Duration(seconds: 120), onTimeout: () => throw Exception("Unfortunately, the video upload has timed out"),
+    );
+
     final myResponseBody = await myResponse.stream.bytesToString();
-
-    //Cleaning up the temporary file after upload:
-    try{
-      await myFreshFile.delete();
-    }
-    catch(e){
-      //Does nothing
-    }
 
     if(myResponse.statusCode == 200){
       final myJsonResponse = jsonDecode(myResponseBody);
