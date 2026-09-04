@@ -21,8 +21,6 @@ import 'package:json_editor/json_editor.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:starexpedition4/trials_and_payments/theBillingService.dart';
 
-bool myBool = false;
-
 class paywallPage extends StatefulWidget{
   final theBillingService myBillingService;
   final bool isExpired;
@@ -208,24 +206,9 @@ class paywallPageState extends State<paywallPage>{
                 ),
               ],
               //If neither the monthly nor yearly subscription products are available:
-              if(myBool == false)
-                Column(
-                  children: [
-                    /*Text("Our Monthly Plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
-                      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                      color: Colors.black,
-                      child: Text("\$1.99/month", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
-                    ),*/
-                    Text("Our Yearly Plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
-                      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                      color: Colors.black,
-                      child: Text("\$14.99/year", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
-                    ),
-                  ],
+              if(monthly == null && yearly == null)
+                Container(
+                  child: Text("\nThe subscription plans are currently unavailable. We are sorry for the inconvenience.", textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
                 ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.031250,
@@ -233,7 +216,7 @@ class paywallPageState extends State<paywallPage>{
             ],
             Container(
               alignment: Alignment.topCenter,
-              child: const Text("You can cancel your subscription at any time.", style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
+              child: const Text("You can cancel your subscription at any time on Google Play or the Apple App Store.", style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
             ),
           ],
         ),
