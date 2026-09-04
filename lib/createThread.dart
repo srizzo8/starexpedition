@@ -603,6 +603,10 @@ class createThreadState extends State<createThread> with RouteAware{
                                       VerticalSpacing.zero,
                                       null,
                                     ),
+                                    link: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
                                   ),
                                 ),
                               ),

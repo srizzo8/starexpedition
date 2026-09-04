@@ -849,6 +849,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                           scrollController: ScrollController(),
                                           config: QuillEditorConfig(
                                             padding: EdgeInsets.zero,
+                                            showCursor: false,
+                                            enableInteractiveSelection: false,
                                             embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                               videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                                 customVideoBuilder: (myVideoUrl, readOnly){
@@ -863,6 +865,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                                 VerticalSpacing.zero,
                                                 VerticalSpacing.zero,
                                                 null,
+                                              ),
+                                              link: TextStyle(
+                                                color: Colors.blue,
+                                                decoration: TextDecoration.underline,
                                               ),
                                             ),
                                           ),
@@ -965,6 +971,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                             scrollController: ScrollController(),
                                             config: QuillEditorConfig(
                                               padding: EdgeInsets.zero,
+                                              showCursor: false,
+                                              enableInteractiveSelection: false,
                                               embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                                 videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                                   customVideoBuilder: (myVideoUrl, readOnly){
@@ -979,6 +987,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                                   VerticalSpacing.zero,
                                                   VerticalSpacing.zero,
                                                   null,
+                                                ),
+                                                link: TextStyle(
+                                                  color: Colors.blue,
+                                                  decoration: TextDecoration.underline,
                                                 ),
                                               ),
                                             ),
@@ -1208,6 +1220,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                             scrollController: ScrollController(),
                                             config: QuillEditorConfig(
                                               padding: EdgeInsets.zero,
+                                              showCursor: false,
+                                              enableInteractiveSelection: false,
                                               embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                                 videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                                   customVideoBuilder: (myVideoUrl, readOnly){
@@ -1222,6 +1236,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                                   VerticalSpacing.zero,
                                                   VerticalSpacing.zero,
                                                   null,
+                                                ),
+                                                link: TextStyle(
+                                                  color: Colors.blue,
+                                                  decoration: TextDecoration.underline,
                                                 ),
                                               ),
                                             ),
@@ -1497,6 +1515,8 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                   scrollController: ScrollController(),
                                   config: QuillEditorConfig(
                                     padding: EdgeInsets.zero,
+                                    showCursor: false,
+                                    enableInteractiveSelection: false,
                                     embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                       videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                         customVideoBuilder: (myVideoUrl, readOnly){
@@ -1511,6 +1531,10 @@ class feedbackAndSuggestionsThreadContent extends State<feedbackAndSuggestionsTh
                                         VerticalSpacing.zero,
                                         VerticalSpacing.zero,
                                         null,
+                                      ),
+                                      link: TextStyle(
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline,
                                       ),
                                     ),
                                   ),

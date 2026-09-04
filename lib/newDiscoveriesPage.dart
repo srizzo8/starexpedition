@@ -844,6 +844,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                           scrollController: ScrollController(),
                                           config: QuillEditorConfig(
                                             padding: EdgeInsets.zero,
+                                            showCursor: false,
+                                            enableInteractiveSelection: false,
                                             embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                               videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                                 customVideoBuilder: (myVideoUrl, readOnly){
@@ -858,6 +860,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                                 VerticalSpacing.zero,
                                                 VerticalSpacing.zero,
                                                 null,
+                                              ),
+                                              link: TextStyle(
+                                                color: Colors.blue,
+                                                decoration: TextDecoration.underline,
                                               ),
                                             ),
                                           ),
@@ -960,6 +966,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                             scrollController: ScrollController(),
                                             config: QuillEditorConfig(
                                               padding: EdgeInsets.zero,
+                                              showCursor: false,
+                                              enableInteractiveSelection: false,
                                               embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                                 videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                                   customVideoBuilder: (myVideoUrl, readOnly){
@@ -974,6 +982,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                                   VerticalSpacing.zero,
                                                   VerticalSpacing.zero,
                                                   null,
+                                                ),
+                                                link: TextStyle(
+                                                  color: Colors.blue,
+                                                  decoration: TextDecoration.underline,
                                                 ),
                                               ),
                                             ),
@@ -1204,6 +1216,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                             scrollController: ScrollController(),
                                             config: QuillEditorConfig(
                                               padding: EdgeInsets.zero,
+                                              showCursor: false,
+                                              enableInteractiveSelection: false,
                                               embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                                 videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                                   customVideoBuilder: (myVideoUrl, readOnly){
@@ -1218,6 +1232,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                                   VerticalSpacing.zero,
                                                   VerticalSpacing.zero,
                                                   null,
+                                                ),
+                                                link: TextStyle(
+                                                  color: Colors.blue,
+                                                  decoration: TextDecoration.underline,
                                                 ),
                                               ),
                                             ),
@@ -1493,6 +1511,8 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                 scrollController: ScrollController(),
                                 config: QuillEditorConfig(
                                   padding: EdgeInsets.zero,
+                                  showCursor: false,
+                                  enableInteractiveSelection: false,
                                   embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                     videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                       customVideoBuilder: (myVideoUrl, readOnly){
@@ -1507,6 +1527,10 @@ class newDiscoveriesThreadContent extends State<newDiscoveriesThreadsPage> with 
                                       VerticalSpacing.zero,
                                       VerticalSpacing.zero,
                                       null,
+                                    ),
+                                    link: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
                                     ),
                                   ),
                                 ),

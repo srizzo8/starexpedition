@@ -856,6 +856,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                           scrollController: ScrollController(),
                                           config: QuillEditorConfig(
                                             padding: EdgeInsets.zero,
+                                            showCursor: false,
+                                            enableInteractiveSelection: false,
                                             embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                               videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                                 customVideoBuilder: (myVideoUrl, readOnly){
@@ -870,6 +872,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                                 VerticalSpacing.zero,
                                                 VerticalSpacing.zero,
                                                 null,
+                                              ),
+                                              link: TextStyle(
+                                                color: Colors.blue,
+                                                decoration: TextDecoration.underline,
                                               ),
                                             ),
                                           ),
@@ -973,6 +979,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                           scrollController: ScrollController(),
                                           config: QuillEditorConfig(
                                             padding: EdgeInsets.zero,
+                                            showCursor: false,
+                                            enableInteractiveSelection: false,
                                             embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                               videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                                 customVideoBuilder: (myVideoUrl, readOnly){
@@ -987,6 +995,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                                 VerticalSpacing.zero,
                                                 VerticalSpacing.zero,
                                                 null,
+                                              ),
+                                              link: TextStyle(
+                                                color: Colors.blue,
+                                                decoration: TextDecoration.underline,
                                               ),
                                             ),
                                           ),
@@ -1215,6 +1227,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                             scrollController: ScrollController(),
                                             config: QuillEditorConfig(
                                               padding: EdgeInsets.zero,
+                                              showCursor: false,
+                                              enableInteractiveSelection: false,
                                               embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                                 videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                                   customVideoBuilder: (myVideoUrl, readOnly){
@@ -1229,6 +1243,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                                   VerticalSpacing.zero,
                                                   VerticalSpacing.zero,
                                                   null,
+                                                ),
+                                                link: TextStyle(
+                                                  color: Colors.blue,
+                                                  decoration: TextDecoration.underline,
                                                 ),
                                               ),
                                             ),
@@ -1499,6 +1517,8 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                 scrollController: ScrollController(),
                                 config: QuillEditorConfig(
                                   padding: EdgeInsets.zero,
+                                  showCursor: false,
+                                  enableInteractiveSelection: false,
                                   embedBuilders: FlutterQuillEmbeds.editorBuilders(
                                     videoEmbedConfig: QuillEditorVideoEmbedConfig(
                                       customVideoBuilder: (myVideoUrl, readOnly){
@@ -1513,6 +1533,10 @@ class discussionBoardUpdatesThreadContent extends State<discussionBoardUpdatesTh
                                       VerticalSpacing.zero,
                                       VerticalSpacing.zero,
                                       null,
+                                    ),
+                                    link: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
                                     ),
                                   ),
                                 ),

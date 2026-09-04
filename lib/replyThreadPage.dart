@@ -524,6 +524,10 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                       VerticalSpacing.zero,
                                       null,
                                     ),
+                                    link: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
                                   ),
                                 ),
                               ),
