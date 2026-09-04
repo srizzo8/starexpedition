@@ -206,7 +206,7 @@ class paywallPageState extends State<paywallPage>{
                 ),
               ],
               //If neither the monthly nor yearly subscription products are available:
-              if(monthly == null && yearly == null)
+              if(monthly == null)
                 Column(
                   children: [
                     Text("Our Monthly Plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
@@ -224,7 +224,6 @@ class paywallPageState extends State<paywallPage>{
                       child: Text("\$14.99/year", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
                     ),
                   ],
-
                 ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.031250,
@@ -232,7 +231,7 @@ class paywallPageState extends State<paywallPage>{
             ],
             Container(
               alignment: Alignment.topCenter,
-              child: const Text("You can cancel your subscription at any time on Google Play.", style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
+              child: const Text("You can cancel your subscription at any time.", style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
             ),
           ],
         ),
