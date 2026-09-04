@@ -447,10 +447,18 @@ class replyThreadPageState extends State<replyThreadPage> with RouteAware{
                                 videoButtonOptions: QuillToolbarVideoButtonOptions(
                                   videoConfig: QuillToolbarVideoConfig(
                                       onVideoInsertCallback: (myVideo, myController) async{
+                                        if(!mounted){
+                                          return;
+                                        }
+
                                         setState(() => uploadingReplyVideo = true);
 
                                         try{
                                           final myDownloadUrl = await uploadMyVideoToCloudinary(myVideo);
+
+                                          if(!mounted){
+                                            return;
+                                          }
 
                                           quillEmbedHelper().addEmbedAndCleanUp(myController, BlockEmbed.video(myDownloadUrl));
                                         }

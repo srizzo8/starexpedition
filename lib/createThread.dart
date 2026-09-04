@@ -526,10 +526,18 @@ class createThreadState extends State<createThread> with RouteAware{
                                 videoButtonOptions: QuillToolbarVideoButtonOptions(
                                   videoConfig: QuillToolbarVideoConfig(
                                       onVideoInsertCallback: (myVideo, myController) async{
+                                        if(!mounted){
+                                          return;
+                                        }
+
                                         setState(() => uploadingThreadVideo = true);
 
                                         try{
                                           final myDownloadUrl = await uploadMyVideoToCloudinary(myVideo);
+
+                                          if(!mounted){
+                                            return;
+                                          }
 
                                           quillEmbedHelper().addEmbedAndCleanUp(myController, BlockEmbed.video(myDownloadUrl));
                                         }
