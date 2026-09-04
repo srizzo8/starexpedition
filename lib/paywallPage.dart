@@ -207,8 +207,24 @@ class paywallPageState extends State<paywallPage>{
               ],
               //If neither the monthly nor yearly subscription products are available:
               if(monthly == null && yearly == null)
-                Container(
-                  child: Text("\nThe subscription plans are currently unavailable. We are sorry for the inconvenience.", textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+                Column(
+                  children: [
+                    Text("Our Monthly Plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                      color: Colors.black,
+                      child: Text("\$1.99/month", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+                    ),
+                    Text("Our Yearly Plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                      color: Colors.black,
+                      child: Text("\$14.99/year", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+
                 ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.031250,
