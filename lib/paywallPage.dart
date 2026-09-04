@@ -21,6 +21,8 @@ import 'package:json_editor/json_editor.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:starexpedition4/trials_and_payments/theBillingService.dart';
 
+bool myBool = false;
+
 class paywallPage extends StatefulWidget{
   final theBillingService myBillingService;
   final bool isExpired;
@@ -206,16 +208,16 @@ class paywallPageState extends State<paywallPage>{
                 ),
               ],
               //If neither the monthly nor yearly subscription products are available:
-              if(monthly == null)
+              if(myBool == false)
                 Column(
                   children: [
-                    Text("Our Monthly Plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                    /*Text("Our Monthly Plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 8.0),
                       padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                       color: Colors.black,
                       child: Text("\$1.99/month", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
-                    ),
+                    ),*/
                     Text("Our Yearly Plan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 8.0),
