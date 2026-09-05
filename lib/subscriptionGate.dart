@@ -129,13 +129,6 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
         return;
       }
 
-      print("Timer fired");
-
-      //Rechecking subscription from Google Play:
-      print("Calling for the restore of purchases");
-      await InAppPurchase.instance.restorePurchases();
-      await Future.delayed(Duration(seconds: 1));
-
       if(!mounted){
         return;
       }
@@ -254,18 +247,15 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
     print("Navigation check - userIsSubscribed: ${userIsSubscribed}");
 
-    //Asking Google Play if one's subscription is still active on every navigation:
-    await InAppPurchase.instance.restorePurchases();
-    await Future.delayed(Duration(seconds: 1));
+    final isExpiredInFirestore = await isSubscriptionExpiredInFirestore();
 
     if(!mounted){
       return;
     }
 
-    //Google Play updates the userIsSubscribed variable:
-    print("Navigation check - the userIsSubscribed variable: ${userIsSubscribed}");
+    print("Navigation check - the isExpiredInFirestore variable: ${isExpiredInFirestore}");
 
-    if(!isInTrial && !userIsSubscribed && mounted){
+    if(!isInTrial && (isExpiredInFirestore || !userIsSubscribed) && mounted){
       print("Navigation check - showing the paywall page");
 
       setState((){
@@ -342,13 +332,6 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
       return;
     }
 
-    await InAppPurchase.instance.restorePurchases();
-    await Future.delayed(Duration(seconds: 1));
-
-    if(!mounted){
-      return;
-    }
-
     final isInTrial = await myTrialService.isInTrial();
     print("On resume - isInTrial: ${isInTrial}");
 
@@ -356,9 +339,15 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
       return;
     }
 
+    final isExpiredInFirestore = await isSubscriptionExpiredInFirestore();
+
+    if(!mounted){
+      return;
+    }
+
     print("On resume - userIsSubscribed: ${userIsSubscribed}");
 
-    if(!isInTrial && !userIsSubscribed && mounted){
+    if(!isInTrial && (isExpiredInFirestore || !userIsSubscribed) && mounted){
       print("On resume - showing the paywall page");
 
       setState((){

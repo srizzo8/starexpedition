@@ -214,6 +214,16 @@ class paywallPageState extends State<paywallPage>{
                 height: MediaQuery.of(context).size.height * 0.031250,
               ),
             ],
+            if(Platform.isIOS)
+              Align(
+                alignment: Alignment.center,
+                child: GestureDetector(
+                  child: Text("Restore Purchases", style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue)),
+                  onTap: () async {
+                    await InAppPurchase.instance.restorePurchases();
+                  }
+                ),
+              ),
             Container(
               alignment: Alignment.topCenter,
               child: const Text("You can cancel your subscription at any time on Google Play or the Apple App Store.", style: TextStyle(color: Colors.black), textAlign: TextAlign.center),

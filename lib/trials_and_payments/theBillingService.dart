@@ -118,6 +118,9 @@ class theBillingService{
       else if(myPurchase.status == PurchaseStatus.error || myPurchase.status == PurchaseStatus.canceled){
         print("Either there is a subscription error or the subscription has been cancelled.");
       }
+      else if(myPurchase.status == PurchaseStatus.pending){
+        print("The purchase is pending. This is common for iOS devices, since they ask for user verification prior to purchase.");
+      }
     }
 
     //Making a single state update after processing every purchase:
