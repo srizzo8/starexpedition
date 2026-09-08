@@ -34,6 +34,8 @@ var usersEmail;
 var usersEmailForEmailChangeMessage;
 var usersNewEmail;
 var userForEmailChange;
+var userForAccountDeletion;
+var usersEmailForAccountDeletionMessage;
 
 var myUsernameForProfilePicture;
 bool hasProfilePicture = false;
@@ -94,6 +96,7 @@ class settingsPageState extends State<settingsPage> with RouteAware{
   bool changePasswordButton = false;
   bool changeEmailAddressButton = false;
   bool updateProfileButton = false;
+  bool deleteAccountButton = false;
 
   //Lifecycle methods (didChangeDependencies() and dispose()):
   @override
@@ -253,6 +256,37 @@ class settingsPageState extends State<settingsPage> with RouteAware{
               });
             }
           ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
+          AbsorbPointer(
+            absorbing: deleteAccountButton,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
+                  maximumSize: (kIsWeb || firebaseDesktopHelper.onDesktop)? Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.height * 0.0625) : Size(175, 50),
+                  backgroundColor: Colors.black,
+                ),
+                child: InkWell(
+                  child: Ink(
+                    child: Text("Delete Your\nAccount", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                  ),
+                ),
+                onPressed: (){
+                  if(deleteAccountButton){
+                    return;
+                  }
+
+                  setState(() => deleteAccountButton = true);
+
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => deleteAccountPage())).then((_){
+                    if(mounted){
+                      setState(() => deleteAccountButton = false);
+                    }
+                  });
+                }
+            ),
           ),
         ],
       ),
@@ -548,7 +582,7 @@ class changePasswordPageState extends State<changePasswordPage> with RouteAware{
                             });
                           }
                           else{
-                            FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
+                            await FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"password" : encryptMyPassword(myKey, newPasswordController.text).base64}).whenComplete(() async{
                               print("Updated");
                             }).catchError((e) => print("This is your error: ${e}"));
                           }
@@ -919,7 +953,7 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                             }
                           }
                           else{
-                            FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
+                            await FirebaseFirestore.instance.collection("User").doc(gettingDocName).update({"emailAddress" : newEmailAddressController.text}).whenComplete(() async{
                               print("Updated the email address");
                             }).catchError((e) => print("This is your error: ${e}"));
 
@@ -1015,6 +1049,356 @@ class changeEmailAddressPageState extends State<changeEmailAddressPage> with Rou
                         }
                       }
                     }
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+class deleteAccountPage extends StatefulWidget{
+  const deleteAccountPage({Key? key}) : super(key: key);
+
+  @override
+  deleteAccountPageState createState() => deleteAccountPageState();
+}
+class deleteAccountPageState extends State<deleteAccountPage> with RouteAware{
+  TextEditingController myPasswordController = TextEditingController();
+
+  var userInfoResult;
+  var gettingDocName;
+  var docForUsername;
+  var docForPassword;
+
+  var du;
+  List messageForUsers = [];
+
+  bool submitChangesButton = false;
+
+  List<String> subforumNames = ["Discussion_Board_Updates", "Questions_And_Answers", "Technologies", "Projects", "New_Discoveries", "Feedback_And_Suggestions"];
+
+  List<Text> dialogMessageDeleteAccount(String usersPassword){
+    List<Text> usersMessage = [];
+    if(myPasswordController.text == ""){
+      usersMessage.add(Text("Password is empty"));
+    }
+    if(myPasswordController.text != decryptMyPassword(myKey, docForUsername["password"]) && myPasswordController.text != ""){
+      usersMessage.add(Text("The password that you have entered is not correct"));
+    }
+
+    return usersMessage;
+  }
+
+  //This method goes through nested replies; it renames any matching replier to "Deleted User":
+  Map<String, dynamic> anonymizeNestedReplies(Map<String, dynamic> myData, String username){
+    final updated = Map<String, dynamic>.from(myData);
+
+    if(updated["replier"] == username){
+      updated["replier"] = "Deleted User";
+    }
+
+    if(updated["theOriginalReplyInfo"] != null && updated["theOriginalReplyInfo"] is Map){
+      updated["theOriginalReplyInfo"]= anonymizeNestedReplies(Map<String, dynamic>.from(updated["theOriginalReplyInfo"]), username);
+    }
+
+    return updated;
+  }
+
+  //Lifecycle methods (didChangeDependencies() and dispose()):
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    myMain.routesToOtherPages.myRouteObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose(){
+    myMain.routesToOtherPages.myRouteObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  //RouteAware methods (didPopNext() and didPush()):
+  @override
+  void didPopNext(){
+    //Called when returning to this page:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  @override
+  void didPush(){
+    //Called when the page is pushed:
+    myMain.myAccessCheckNotifier.value = DateTime.now();
+  }
+
+  Widget build(BuildContext context){
+    final myLoginStatus = context.watch<loginStatus>();
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_){
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Star Expedition"),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              color: Colors.white,
+              onPressed: () =>{
+                Navigator.push(context, MaterialPageRoute(builder: (context) => settingsPage())),
+              }
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: Text("Delete Your Account", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.031250, right: MediaQuery.of(context).size.width * 0.031250),
+                child: Text("This page allows you to delete your account. Please keep in mind that once you delete your account, you will not be able to reverse this decision. After you have deleted your account, you will receive a confirmation email.", textAlign: TextAlign.center),
+              ),
+              IntrinsicHeight(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Flexible(
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.015625, MediaQuery.of(context).size.height * 0.031250, MediaQuery.of(context).size.width * 0.015625, 0.0),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: (kIsWeb || firebaseDesktopHelper.onDesktop)? MediaQuery.of(context).size.width * 0.375000 : 320,
+                              ),
+                              child: SizedBox(
+                                child: TextField(
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  minLines: 1,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: "Password",
+                                  ),
+                                  controller: myPasswordController,
+                                  obscureText: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.015625,
+              ),
+              Center(
+                child: AbsorbPointer(
+                  absorbing: submitChangesButton,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                      ),
+                      child: InkWell(
+                        child: Ink(
+                          color: Colors.black,
+                          child: Text("Delete Your Account", style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal)),
+                        ),
+                      ),
+                      onPressed: () async{
+                        if(submitChangesButton){
+                          return;
+                        }
+
+                        setState(() => submitChangesButton = true);
+
+                        if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
+                          if(firebaseDesktopHelper.onDesktop){
+                            userInfoResult = await firebaseDesktopHelper.getFirestoreCollection("User");
+                            docForUsername = userInfoResult.firstWhere((myUser) => myUser["usernameLowercased"].toString() == (myLoginStatus.myUsername).toLowerCase(), orElse: () => <String, dynamic>{});
+                            gettingDocName = docForUsername["docId"];
+                          }
+                          else{
+                            userInfoResult = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+                            userInfoResult.docs.forEach((myResult){
+                              docForUsername = myResult.data();
+                              print("This is the result: ${myResult.data()}");
+                              gettingDocName = myResult.id;
+                            });
+                          }
+                          print("docForUsername[emailAddress]: ${docForUsername["emailAddress"].toString()}");
+                          usersEmailForAccountDeletionMessage = docForUsername["emailAddress"];
+                          userForAccountDeletion = myLoginStatus.myUsername;
+
+                          messageForUsers = dialogMessageDeleteAccount(myPasswordController.text);
+
+                          if(messageForUsers.isEmpty){
+                            myMain.myAccessCheckNotifier.value = DateTime.now();
+
+                            if(!mounted){
+                              return;
+                            }
+
+                            await showDialog(
+                                context: context,
+                                builder: (BuildContext bc){
+                                  return AlertDialog(
+                                    title: Text("Are you sure?"),
+                                    content: Text("Once you have deleted your account, you will never be able to use it again."),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () async {
+                                          Navigator.of(bc).pop();
+
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => myMain.StarExpedition()));
+
+                                          //Account successfully deleted
+                                          print("Your account will be deleted");
+
+                                          print("The deletion process will begin for this username: ${myLoginStatus.myUsername}");
+
+                                          try{
+                                            //Changing the replier of threads and replies from his or her username to "Deleted User":
+                                            for(String s1 in subforumNames){
+                                              final allSubforumThreads = await FirebaseFirestore.instance.collection(s1).get();
+
+                                              for(var subforumThread in allSubforumThreads.docs){
+                                                var subforumThreadId = subforumThread.id;
+                                                final allThreadReplies = await FirebaseFirestore.instance.collection(s1).doc(subforumThreadId).collection("Replies").get();
+
+                                                for(var threadReply in allThreadReplies.docs){
+                                                  var threadReplyId = threadReply.id;
+                                                  var myReplyData = threadReply.data() as Map<String, dynamic>;
+
+                                                  //Recursively making the replier become "Deleted User" in every nesting level,
+                                                  //including the top level one as well as any nested "theOriginalReplyInfo" chains:
+                                                  var myUpdatedData = anonymizeNestedReplies(myReplyData, myLoginStatus.myUsername);
+
+
+                                                  //Making sure the code only writes back if something changes (to avoid rewrites that are unnecessary):
+                                                  if(myUpdatedData.toString() != myReplyData.toString()){
+                                                    if(firebaseDesktopHelper.onDesktop){
+                                                      await firebaseDesktopHelper.updateFirestoreDocument("${s1}/${subforumThreadId}/Replies/${threadReplyId}", myUpdatedData);
+                                                    }
+                                                    else{
+                                                      await FirebaseFirestore.instance.collection(s1).doc(subforumThreadId).collection("Replies").doc(threadReplyId).set(myUpdatedData);
+                                                    }
+
+                                                    print("Renamed the deleted replier to Deleted User");
+                                                  }
+                                                }
+                                              }
+                                            }
+
+                                            //Changing the poster of threads from his or her username to "Deleted User":
+                                            for(String s2 in subforumNames){
+                                              final usersThreads = await FirebaseFirestore.instance.collection(s2).where("poster", isEqualTo: myLoginStatus.myUsername).get();
+
+                                              for(var myThreadDoc in usersThreads.docs){
+                                                var myThreadId = myThreadDoc.id;
+
+                                                if(firebaseDesktopHelper.onDesktop){
+                                                  await firebaseDesktopHelper.updateFirestoreDocument("${s2}/${myThreadId}", {
+                                                    "poster": "Deleted User",
+                                                  });
+                                                }
+                                                else{
+                                                  await FirebaseFirestore.instance.collection(s2).doc(myThreadId).update({"poster" : "Deleted User"});
+                                                  print("Updated the name of the deleted account");
+                                                }
+                                              }
+                                            }
+
+                                            //Deleting a user's account:
+                                            final usersQuerySnapshot = await FirebaseFirestore.instance.collection("User").where("usernameLowercased", isEqualTo: (myLoginStatus.myUsername).toLowerCase()).get();
+
+                                            for(final myUsersDoc in usersQuerySnapshot.docs){
+                                              await myUsersDoc.reference.delete();
+                                            }
+                                          }
+                                          catch (e, stackTrace){
+                                            print("Unfortunately, your account was not deleted. This is the error: ${e}");
+                                            print("Stack trace: ${stackTrace}");
+                                          }
+
+                                          //Account deletion confirmation email:
+                                          emailNotifications.sendAnEmail(usersEmailForAccountDeletionMessage, "Account Deletion Confirmation", "Hi ${userForAccountDeletion},<br><br>We have noticed that you have deleted your account. It is unfortunate to see you go.<br><br>Best,<br>Star Expedition");
+
+                                          //Logging a user out of his or her account after he or she deletes it:
+                                          theLoginPage.loginBool = false;
+                                          myMain.discussionBoardLogin = false;
+                                          registerBool = false;
+                                          context.read<loginStatus>().loggingOut();
+
+                                          myPasswordController.text = "";
+                                        },
+                                        child: Text("Yes"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(bc).pop();
+                                        },
+                                        child: Text("No"),
+                                      ),
+                                    ],
+                                  );
+                                }
+                            );
+                            if(mounted){
+                              setState(() => submitChangesButton = false);
+                            }
+                          }
+                          else{
+                            myMain.myAccessCheckNotifier.value = DateTime.now();
+
+                            if(!mounted){
+                              return;
+                            }
+
+                            await showDialog(
+                              context: context,
+                              builder: (myContent) => AlertDialog(
+                                title: Text("Account Deletion Unsuccessful"),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: List.generate(messageForUsers.length, (i){
+                                    return messageForUsers[i];
+                                  }),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: (){
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      child: const Text("Ok"),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if(mounted){
+                              setState(() => submitChangesButton = false);
+                            }
+                          }
+                        }
+                      }
                   ),
                 ),
               ),

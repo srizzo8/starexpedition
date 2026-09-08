@@ -226,6 +226,7 @@ class paywallPageState extends State<paywallPage>{
               ),
             Container(
               alignment: Alignment.topCenter,
+              padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.015625),
               child: const Text("\nYou can cancel your subscription at any time on Google Play or the Apple App Store.", style: TextStyle(color: Colors.black), textAlign: TextAlign.center),
             ),
           ],
