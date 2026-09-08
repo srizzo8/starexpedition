@@ -54,6 +54,22 @@ class theBillingService{
     await InAppPurchase.instance.restorePurchases();
   }
 
+  Future<void> updateDeviceIdIfNecessary(String myPurchaseToken) async{
+    try{
+      final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
+
+      await FirebaseFirestore.instance.collection("Subscriptions").doc(myPurchaseToken).update({
+        "deviceId": myDeviceId,
+        "lastUpdated": DateTime.now().toIso8601String(),
+      });
+
+      print("The device ID has refreshed for this subscription token");
+    }
+    catch (e){
+      print("Unfortunately, there was an error in updating the device ID. This was the error: ${e}");
+    }
+  }
+
   Future<void> handleMyPurchaseUpdate(List<PurchaseDetails> myPurchases) async {
     print("The purchase update has been received: ${myPurchases.length} purchases");
 
@@ -101,6 +117,12 @@ class theBillingService{
           completeMyPurchase(myPurchase);
           anyActivePurchase = true;
           myActiveProductId = myPurchase.productID;
+
+          //Keeping the stored deviceId in sync in the case where it may be changed.
+          //An example of this happening is where iOS identifierForVendor can change after
+          //one reinstalls an application.
+          //If the stored deviceId is kept in sync, expiry checks by deviceId will continue to work correctly:
+          await updateDeviceIdIfNecessary(myPurchaseToken);
         }
         else {
           //A brand new purchase or a restored purchase that Firestore has not yet recorded has been made; save it to Firestore:
