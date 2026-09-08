@@ -102,17 +102,13 @@ class theBillingService{
           anyActivePurchase = true;
           myActiveProductId = myPurchase.productID;
         }
-        else if(myPurchase.status == PurchaseStatus.purchased){
-          //A brand new purchase has been made; save it to Firestore:
-          print("A new purchase has been made; saving it to Firestore");
+        else {
+          //A brand new purchase or a restored purchase that Firestore has not yet recorded has been made; save it to Firestore:
+          print("A new or restored purchase has been made; saving it to Firestore");
           completeMyPurchase(myPurchase);
           await saveSubscriptionToFirestore(myPurchase);
           anyActivePurchase = true;
           myActiveProductId = myPurchase.productID;
-        }
-        else{
-          //Treat this as inactive because although it is restored, it is expired or not in Firestore:
-          print("Since the restored purchase is not active on Firestore, it is being treated as expired");
         }
       }
       else if(myPurchase.status == PurchaseStatus.error || myPurchase.status == PurchaseStatus.canceled){
