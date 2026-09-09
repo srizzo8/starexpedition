@@ -60,6 +60,11 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
     myBillingService = theBillingService(
       onSubscriptionChanged: (isSubscribed) async{
+        await FirebaseFirestore.instance.collection("Debug_Logs").add({
+          "message": "onSubscriptionChanged fired with isSubscribed: ${isSubscribed}",
+          "timestamp": DateTime.now().toIso8601String(),
+        });
+
         userIsSubscribed = isSubscribed;
         if(isSubscribed){
           if(paywallShowing){
@@ -245,6 +250,11 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
       return;
     }
 
+    await FirebaseFirestore.instance.collection("Debug_Logs").add({
+      "message": "checkingAccess - userIsSubscribed (in its local state): ${userIsSubscribed}",
+      "timestamp": DateTime.now().toIso8601String(),
+    });
+
     print("Navigation check - userIsSubscribed: ${userIsSubscribed}");
 
     final isExpiredInFirestore = await isSubscriptionExpiredInFirestore();
@@ -255,8 +265,18 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
     print("Navigation check - the isExpiredInFirestore variable: ${isExpiredInFirestore}");
 
+    await FirebaseFirestore.instance.collection("Debug_Logs").add({
+      "message": "checkingAccess - isExpiredInFirestore: ${isExpiredInFirestore}, userIsSubscribed: ${userIsSubscribed}",
+      "timestamp": DateTime.now().toIso8601String(),
+    });
+
     if(!isInTrial && (isExpiredInFirestore || !userIsSubscribed) && mounted){
       print("Navigation check - showing the paywall page");
+
+      await FirebaseFirestore.instance.collection("Debug_Logs").add({
+        "message": "Showing Paywall page - isExpiredInFirestore: ${isExpiredInFirestore}, userIsSubscribed: ${userIsSubscribed}",
+        "timestamp": DateTime.now().toIso8601String(),
+      });
 
       setState((){
         myAccess = myAccessState.blocked;
