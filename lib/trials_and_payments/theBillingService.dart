@@ -36,6 +36,17 @@ class theBillingService{
 
   bool userIsSubscribed = false;
 
+  /*
+   This method returns a short document ID for a purchase that is safe for Firestore to handle.
+   On iOS devices, serverVerificationData can be the entire base 64-encoded App Store receipt,
+   which can exceed the 1500-byte document ID limit that Firestore has.
+   Since purchaseID is a short and stable per-transaction identifier on both Android and iOS,
+   it is used as the document ID instead. The raw token is still stored as a regular field for reference:
+  */
+  String getMyDocIdForPurchase(PurchaseDetails pd){
+    return pd.purchaseID ?? pd.verificationData.serverVerificationData.hashCode.toString();
+  }
+
   Future<void> initialize() async{
     final bool available = await InAppPurchase.instance.isAvailable();
     print("Is the billing available? ${available}");
@@ -106,10 +117,10 @@ class theBillingService{
       print("The purchase ID: ${myPurchase.productID}");
 
       if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
-        final myPurchaseToken = myPurchase.verificationData.serverVerificationData;
+        final myDocId = getMyDocIdForPurchase(myPurchase);
 
         //Checking Firestore to see if the token is still active:
-        final isActive = await isTokenActiveInFirestore(myPurchaseToken);
+        final isActive = await isTokenActiveInFirestore(myDocId);
         print("Is the token active in Firestore? ${isActive}");
 
         if(isActive){
@@ -122,7 +133,7 @@ class theBillingService{
           //An example of this happening is where iOS identifierForVendor can change after
           //one reinstalls an application.
           //If the stored deviceId is kept in sync, expiry checks by deviceId will continue to work correctly:
-          await updateDeviceIdIfNecessary(myPurchaseToken);
+          await updateDeviceIdIfNecessary(myDocId);
         }
         else {
           //A brand new purchase or a restored purchase that Firestore has not yet recorded has been made; save it to Firestore:
@@ -172,12 +183,12 @@ class theBillingService{
   }
 
   //Checks to see if a certain purchase token is active in Firestore:
-  Future<bool> isTokenActiveInFirestore(String myPurchaseToken) async{
+  Future<bool> isTokenActiveInFirestore(String myDocId) async{
     try{
-      final myDoc = await FirebaseFirestore.instance.collection("Subscriptions").doc(myPurchaseToken).get();
+      final myDoc = await FirebaseFirestore.instance.collection("Subscriptions").doc(myDocId).get();
 
       await FirebaseFirestore.instance.collection("Debug_Logs").add({
-        "message": "isTokenActiveInFirestore - token: ${myPurchaseToken}, exists: ${myDoc.exists}, data: ${myDoc.data()}",
+        "message": "isTokenActiveInFirestore - docId: ${myDocId}, exists: ${myDoc.exists}, data: ${myDoc.data()}",
         "timestamp": DateTime.now().toIso8601String(),
       });
 
@@ -198,7 +209,7 @@ class theBillingService{
       print("There was an error when checking the token. This is the error: ${e}");
 
       await FirebaseFirestore.instance.collection("Debug_Logs").add({
-        "message": "isTokenActiveInFirestore error for token ${myPurchaseToken} is this: ${e}",
+        "message": "isTokenActiveInFirestore error for docId ${myDocId} is this: ${e}",
         "timestamp": DateTime.now().toIso8601String(),
       });
 
@@ -208,6 +219,7 @@ class theBillingService{
 
   Future<void> saveSubscriptionToFirestore(PurchaseDetails pd) async{
     try{
+      final myDocId = getMyDocIdForPurchase(pd);
       final myPurchaseToken = pd.verificationData.serverVerificationData;
 
       //Getting the device ID:
@@ -223,7 +235,7 @@ class theBillingService{
         myExpiryDate = DateTime.now().add(Duration(days: 365));
       }
 
-      await FirebaseFirestore.instance.collection("Subscriptions").doc(myPurchaseToken).set({
+      await FirebaseFirestore.instance.collection("Subscriptions").doc(myDocId).set({
         "productId": pd.productID,
         "purchaseToken": myPurchaseToken,
         "deviceId": myDeviceId,
@@ -235,7 +247,7 @@ class theBillingService{
       print("The subscription is saved to Firestore. It expires on: ${myExpiryDate}");
 
       await FirebaseFirestore.instance.collection("Debug_Logs").add({
-        "message": "saveSubscriptionToFirestore is successful for token ${myPurchaseToken}, deviceId: ${myDeviceId}, expiry: ${myExpiryDate}",
+        "message": "saveSubscriptionToFirestore is successful for docId ${myDocId}, deviceId: ${myDeviceId}, expiry: ${myExpiryDate}",
         "timestamp": DateTime.now().toIso8601String(),
       });
     }
@@ -248,9 +260,9 @@ class theBillingService{
     }
   }
 
-  Future<void> markSubscriptionAsExpired(String myPurchaseToken) async{
+  Future<void> markSubscriptionAsExpired(String myDocId) async{
     try{
-      await FirebaseFirestore.instance.collection("Subscriptions").doc(myPurchaseToken).update({"isActive": false, "expiryDate": DateTime.now().toIso8601String(), "lastUpdated": DateTime.now().toIso8601String()});
+      await FirebaseFirestore.instance.collection("Subscriptions").doc(myDocId).update({"isActive": false, "expiryDate": DateTime.now().toIso8601String(), "lastUpdated": DateTime.now().toIso8601String()});
 
       print("The subscription is marked as expired");
     }
