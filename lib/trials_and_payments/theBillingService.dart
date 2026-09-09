@@ -176,6 +176,11 @@ class theBillingService{
     try{
       final myDoc = await FirebaseFirestore.instance.collection("Subscriptions").doc(myPurchaseToken).get();
 
+      await FirebaseFirestore.instance.collection("Debug_Logs").add({
+        "message": "isTokenActiveInFirestore - token: ${myPurchaseToken}, exists: ${myDoc.exists}, data: ${myDoc.data()}",
+        "timestamp": DateTime.now().toIso8601String(),
+      });
+
       if(!myDoc.exists){
         print("The purchase token is not found in Firestore");
         return false;
@@ -191,6 +196,12 @@ class theBillingService{
     }
     catch (e){
       print("There was an error when checking the token. This is the error: ${e}");
+
+      await FirebaseFirestore.instance.collection("Debug_Logs").add({
+        "message": "isTokenActiveInFirestore error for token ${myPurchaseToken} is this: ${e}",
+        "timestamp": DateTime.now().toIso8601String(),
+      });
+
       return false;
     }
   }
@@ -222,9 +233,18 @@ class theBillingService{
       });
 
       print("The subscription is saved to Firestore. It expires on: ${myExpiryDate}");
+
+      await FirebaseFirestore.instance.collection("Debug_Logs").add({
+        "message": "saveSubscriptionToFirestore is successful for token ${myPurchaseToken}, deviceId: ${myDeviceId}, expiry: ${myExpiryDate}",
+        "timestamp": DateTime.now().toIso8601String(),
+      });
     }
     catch (e){
       print("There is an error saving the subscription. Here is the error: ${e}");
+      await FirebaseFirestore.instance.collection("Debug_Logs").add({
+        "message": "saveSubscriptionToFirestore had an error. This is the error: ${e}",
+        "timestamp": DateTime.now().toIso8601String(),
+      });
     }
   }
 

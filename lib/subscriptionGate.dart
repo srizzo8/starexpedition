@@ -293,6 +293,11 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
       final myDoc = await FirebaseFirestore.instance.collection("Subscriptions").where("deviceId", isEqualTo: myDeviceId).where("isActive", isEqualTo: true).orderBy("lastUpdated", descending: true).limit(1).get();
 
+      await FirebaseFirestore.instance.collection("Debug_Logs").add({
+        "message": "isSubscriptionExpiredInFirestore is querying deviceId ${myDeviceId}, docsFound: ${myDoc.docs.length}",
+        "timestamp": DateTime.now().toIso8601String(),
+      });
+
       if(myDoc.docs.isEmpty){
         //No active subscription has been found:
         return true;
@@ -306,6 +311,12 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
     catch (e){
       //If this error occurs, it does not lock out a user:
       print("Unfortunately, there was an error in checking the expiry on Firestore. Error: ${e}");
+
+      await FirebaseFirestore.instance.collection("Debug_Logs").add({
+        "message": "isSubscriptionExpiredInFirestore had an error. This was the error: ${e}",
+        "timestamp": DateTime.now().toIso8601String(),
+      });
+
       return false;
     }
   }
