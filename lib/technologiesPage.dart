@@ -20,6 +20,7 @@ import 'main.dart' as myMain;
 import 'discussionBoardPage.dart' as discussionBoardPage;
 import 'package:starexpedition4/firebaseDesktopHelper.dart';
 import 'package:flutter/services.dart';
+import 'emailNotifications.dart';
 
 bool technologiesBool = false;
 bool technologiesReplyBool = false;
@@ -720,6 +721,11 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
 
   bool clickUsername = false;
   bool replyButton = false;
+  bool reportThread = false;
+  bool reportReply = false;
+
+  TextEditingController reportThreadController = TextEditingController();
+  TextEditingController reportReplyController = TextEditingController();
 
   Document buildMyDocumentFromTThreadContent(String myRawContent){
     try{
@@ -1042,6 +1048,117 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                                           ],
                                         ),
                                       ),
+                                      //Reporting a reply
+                                      Text.rich(
+                                        TextSpan(
+                                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                            text: "Report",
+                                            recognizer: TapGestureRecognizer()..onTap = () async {
+                                              if(reportReply){
+                                                return;
+                                              }
+
+                                              setState(() => reportReply = true);
+
+                                              //Getting the information of a thread based on its ID:
+                                              final myParentThread = await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.tryParse(threadID)).get();
+
+                                              print("This is threadID: ${threadID}");
+                                              print("The number of matches: ${myParentThread.docs.length}");
+
+                                              if(myParentThread.docs.isEmpty){
+                                                print("Could not find thread with the ID of ${threadID}");
+                                                return;
+                                              }
+
+                                              var myParentThreadDocName = myParentThread.docs.first.id;
+                                              print("This is myParentThreadDocName: ${myParentThreadDocName}");
+
+                                              //Getting the information of a reply based on what time it was posted:
+                                              final myReportedReply = await FirebaseFirestore.instance.collection("Technologies").doc(myParentThreadDocName).collection("Replies").where("time", isEqualTo: mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"]).get();
+
+                                              print("The number of matches: ${myReportedReply.docs.length}");
+
+                                              if(myReportedReply.docs.isEmpty){
+                                                print("Could not find reply with the reply time of ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"].toString()}");
+                                                return;
+                                              }
+
+                                              var myReportedReplyDocName = myReportedReply.docs.first.id;
+                                              print("This is myReportedReplyDocName: ${myReportedReplyDocName}");
+
+                                              //Pop-up dialog that has why a user is reporting the reply:
+                                              await showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context){
+                                                    return Listener(
+                                                      behavior: HitTestBehavior.translucent,
+                                                      onPointerDown: (_){
+                                                        FocusManager.instance.primaryFocus?.unfocus();
+                                                      },
+                                                      child: AlertDialog(
+                                                        title: Text("Reporting Reply"),
+                                                        content: Wrap(
+                                                          children: <Widget>[
+                                                            Center(
+                                                              child: Container(
+                                                                alignment: Alignment.centerLeft,
+                                                                child: Text("Please let us know why this reply is breaking rules."),
+                                                              ),
+                                                            ),
+                                                            TextField(
+                                                              autocorrect: false,
+                                                              enableSuggestions: false,
+                                                              controller: reportReplyController,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        actions: [
+                                                          TextButton(
+                                                              child: Text("Ok"),
+                                                              onPressed: () async{
+                                                                if(!(myMain.whitespaceChecker(reportReplyController.text)) && reportReplyController.text != ""){
+                                                                  if(!context.mounted){
+                                                                    return;
+                                                                  }
+
+                                                                  //Letting the Star Expedition email address know about the document ID of the reply that was reported so action can be taken:
+                                                                  sendAnEmail("starexpedition.theapp@gmail.com", "Reply reported: ", "Hi Star Expedition,<br><br>The reply from the Technologies subforum thread ${threadTitleT} with this document ID got reported: ${myReportedReplyDocName}.<br><br>Reply content: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replyContent"].toString()}<br>Reply time: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"].toString()}<br>Reply author: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString()}<br><br>Reason it got reported: ${reportReplyController.text}<br><br>Best,<br>Star Expedition");
+
+                                                                  Navigator.pop(context);
+
+                                                                  reportReplyController.text = "";
+
+                                                                  if(mounted){
+                                                                    setState(() => reportReply = false);
+                                                                  }
+                                                                }
+                                                              }
+                                                          ),
+                                                          TextButton(
+                                                              child: Text("Cancel"),
+                                                              onPressed: (){
+                                                                if(!context.mounted){
+                                                                  return;
+                                                                }
+
+                                                                Navigator.pop(context);
+
+                                                                reportReplyController.text = "";
+
+                                                                if(mounted){
+                                                                  setState(() => reportReply = false);
+                                                                }
+                                                              }
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }
+                                              );
+                                            }
+                                        ),
+                                      ),
                                     ]
                                 ),
                               ),
@@ -1292,6 +1409,117 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                                                   }
                                               ),
                                             ],
+                                          ),
+                                        ),
+                                        //Reporting a reply
+                                        Text.rich(
+                                          TextSpan(
+                                              style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                                              text: "Report",
+                                              recognizer: TapGestureRecognizer()..onTap = () async {
+                                                if(reportReply){
+                                                  return;
+                                                }
+
+                                                setState(() => reportReply = true);
+
+                                                //Getting the information of a thread based on its ID:
+                                                final myParentThread = await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.tryParse(threadID)).get();
+
+                                                print("This is threadID: ${threadID}");
+                                                print("The number of matches: ${myParentThread.docs.length}");
+
+                                                if(myParentThread.docs.isEmpty){
+                                                  print("Could not find thread with the ID of ${threadID}");
+                                                  return;
+                                                }
+
+                                                var myParentThreadDocName = myParentThread.docs.first.id;
+                                                print("This is myParentThreadDocName: ${myParentThreadDocName}");
+
+                                                //Getting the information of a reply based on what time it was posted:
+                                                final myReportedReply = await FirebaseFirestore.instance.collection("Technologies").doc(myParentThreadDocName).collection("Replies").where("time", isEqualTo: mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"]).get();
+
+                                                print("The number of matches: ${myReportedReply.docs.length}");
+
+                                                if(myReportedReply.docs.isEmpty){
+                                                  print("Could not find reply with the reply time of ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"].toString()}");
+                                                  return;
+                                                }
+
+                                                var myReportedReplyDocName = myReportedReply.docs.first.id;
+                                                print("This is myReportedReplyDocName: ${myReportedReplyDocName}");
+
+                                                //Pop-up dialog that has why a user is reporting the reply:
+                                                await showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context){
+                                                      return Listener(
+                                                        behavior: HitTestBehavior.translucent,
+                                                        onPointerDown: (_){
+                                                          FocusManager.instance.primaryFocus?.unfocus();
+                                                        },
+                                                        child: AlertDialog(
+                                                          title: Text("Reporting Reply"),
+                                                          content: Wrap(
+                                                            children: <Widget>[
+                                                              Center(
+                                                                child: Container(
+                                                                  alignment: Alignment.centerLeft,
+                                                                  child: Text("Please let us know why this reply is breaking rules."),
+                                                                ),
+                                                              ),
+                                                              TextField(
+                                                                autocorrect: false,
+                                                                enableSuggestions: false,
+                                                                controller: reportReplyController,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          actions: [
+                                                            TextButton(
+                                                                child: Text("Ok"),
+                                                                onPressed: () async{
+                                                                  if(!(myMain.whitespaceChecker(reportReplyController.text)) && reportReplyController.text != ""){
+                                                                    if(!context.mounted){
+                                                                      return;
+                                                                    }
+
+                                                                    //Letting the Star Expedition email address know about the document ID of the reply that was reported so action can be taken:
+                                                                    sendAnEmail("starexpedition.theapp@gmail.com", "Reply reported: ", "Hi Star Expedition,<br><br>The reply from the Technologies subforum thread ${threadTitleT} with this document ID got reported: ${myReportedReplyDocName}.<br><br>Reply content: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replyContent"].toString()}<br>Reply time: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["time"].toString()}<br>Reply author: ${mySublistsTechnologiesThreadReplies[theCurrentPageTechnologiesThreadReplies][index]["replier"].toString()}<br><br>Reason it got reported: ${reportReplyController.text}<br><br>Best,<br>Star Expedition");
+
+                                                                    Navigator.pop(context);
+
+                                                                    reportReplyController.text = "";
+
+                                                                    if(mounted){
+                                                                      setState(() => reportReply = false);
+                                                                    }
+                                                                  }
+                                                                }
+                                                            ),
+                                                            TextButton(
+                                                                child: Text("Cancel"),
+                                                                onPressed: (){
+                                                                  if(!context.mounted){
+                                                                    return;
+                                                                  }
+
+                                                                  Navigator.pop(context);
+
+                                                                  reportReplyController.text = "";
+
+                                                                  if(mounted){
+                                                                    setState(() => reportReply = false);
+                                                                  }
+                                                                }
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }
+                                                );
+                                              }
                                           ),
                                         ),
                                       ]
@@ -1584,6 +1812,104 @@ class technologiesThreadContent extends State<technologiesThreadsPage> with Rout
                               }
                             ),
                             ]
+                          ),
+                        ),
+                        //Reporting a thread
+                        Text.rich(
+                          TextSpan(
+                              style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue, fontWeight: FontWeight.normal),
+                              text: "Report",
+                              recognizer: TapGestureRecognizer()..onTap = () async {
+                                if(reportThread){
+                                  return;
+                                }
+
+                                setState(() => reportThread = true);
+
+                                //Getting the information of a thread based on its ID:
+                                final myReportedThread = await FirebaseFirestore.instance.collection("Technologies").where("threadId", isEqualTo: int.tryParse(threadID)).get();
+
+                                print("This is threadID: ${threadID}");
+                                print("The number of matches: ${myReportedThread.docs.length}");
+
+                                if(myReportedThread.docs.isEmpty){
+                                  print("Could not find thread with the ID of ${threadID}");
+                                  return;
+                                }
+
+                                var myReportedThreadDocName = myReportedThread.docs.first.id;
+                                print("This is myReportedThreadDocName: ${myReportedThreadDocName}");
+
+                                //Pop-up dialog that has why a user is reporting the thread:
+                                await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context){
+                                      return Listener(
+                                        behavior: HitTestBehavior.translucent,
+                                        onPointerDown: (_){
+                                          FocusManager.instance.primaryFocus?.unfocus();
+                                        },
+                                        child: AlertDialog(
+                                          title: Text("Reporting Thread"),
+                                          content: Wrap(
+                                            children: <Widget>[
+                                              Center(
+                                                child: Container(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Text("Please let us know why this thread is breaking rules."),
+                                                ),
+                                              ),
+                                              TextField(
+                                                autocorrect: false,
+                                                enableSuggestions: false,
+                                                controller: reportThreadController,
+                                              ),
+                                            ],
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                                child: Text("Ok"),
+                                                onPressed: () async{
+                                                  if(!(myMain.whitespaceChecker(reportThreadController.text)) && reportThreadController.text != ""){
+                                                    if(!context.mounted){
+                                                      return;
+                                                    }
+
+                                                    //Letting the Star Expedition email address know about the document ID of the thread that was reported so action can be taken:
+                                                    sendAnEmail("starexpedition.theapp@gmail.com", "Thread reported: ", "Hi Star Expedition,<br><br>The thread from the Technologies subforum with this document ID got reported: ${myReportedThreadDocName}.<br><br>Thread name: ${threadTitleT}<br>Thread content: ${threadContentT}<br>Thread author: ${threadAuthorT}<br><br>Reason it got reported: ${reportThreadController.text}<br><br>Best,<br>Star Expedition");
+
+                                                    Navigator.pop(context);
+
+                                                    reportThreadController.text = "";
+
+                                                    if(mounted){
+                                                      setState(() => reportThread = false);
+                                                    }
+                                                  }
+                                                }
+                                            ),
+                                            TextButton(
+                                                child: Text("Cancel"),
+                                                onPressed: (){
+                                                  if(!context.mounted){
+                                                    return;
+                                                  }
+
+                                                  Navigator.pop(context);
+
+                                                  reportThreadController.text = "";
+
+                                                  if(mounted){
+                                                    setState(() => reportThread = false);
+                                                  }
+                                                }
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                );
+                              }
                           ),
                         ),
                       ],
