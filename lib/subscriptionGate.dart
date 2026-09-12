@@ -60,12 +60,13 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
     myBillingService = theBillingService(
       onSubscriptionChanged: (isSubscribed) async{
+        userIsSubscribed = isSubscribed;
+
         await FirebaseFirestore.instance.collection("Debug_Logs").add({
           "message": "onSubscriptionChanged fired with isSubscribed: ${isSubscribed}",
           "timestamp": DateTime.now().toIso8601String(),
         });
 
-        userIsSubscribed = isSubscribed;
         if(isSubscribed){
           if(paywallShowing){
             myMain.myNavigatorKey.currentState?.pop();
@@ -106,6 +107,14 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
     //Giving some billing time to restore purchases:
     await Future.delayed(Duration(seconds: 1));
     await myBillingService.initialize();
+
+    /*
+      Waiting for the first real purchase-stream result or timeout before deciding whether it
+      should show the Paywall page or not. This will make users that currently have subscriptions
+      or free trials not temporarily led to the Paywall page briefly during the time that his or her
+      billing data is still loading.
+    */
+    await myBillingService.firstPurchaseCheckComplete.future;
 
     final inTrial = await myTrialService.isInTrial();
     print("init - inTrial: ${inTrial}");

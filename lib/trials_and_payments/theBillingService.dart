@@ -37,24 +37,24 @@ class theBillingService{
   bool userIsSubscribed = false;
 
   /*
-   This method returns a short document ID for a purchase that is safe for Firestore to handle.
-   On iOS devices, serverVerificationData can be the entire base 64-encoded App Store receipt,
-   which can exceed the 1500-byte document ID limit that Firestore has.
-   Since purchaseID is a short and stable per-transaction identifier on both Android and iOS,
-   it is used as the document ID instead. The raw token is still stored as a regular field for reference:
+    This completer completes once the first purchase-stream response has either been processed or timed out.
+    Thus, the initial access check can wait for actual billing data rather than trying to go ahead of it:
   */
-  String getMyDocIdForPurchase(PurchaseDetails pd){
-    return pd.purchaseID ?? pd.verificationData.serverVerificationData.hashCode.toString();
-  }
+  final Completer<void> firstPurchaseCheckComplete = Completer<void>();
+  bool hasReceivedFirstUpdate = false;
 
   Future<void> initialize() async{
-    final bool available = await InAppPurchase.instance.isAvailable();
-    print("Is the billing available? ${available}");
+    final bool isAvailable = await InAppPurchase.instance.isAvailable();
+    print("Is the billing available? ${isAvailable}");
 
     purchaseSubscription = InAppPurchase.instance.purchaseStream.listen(
       handleMyPurchaseUpdate,
       onError: (myError){
-        print("The purchase stream error: ${myError}");
+        print("This is the purchase stream error: ${myError}");
+
+        if(!(firstPurchaseCheckComplete.isCompleted)){
+          firstPurchaseCheckComplete.complete();
+        }
       }
     );
 
@@ -63,6 +63,27 @@ class theBillingService{
 
     //Asking Google Play if the device has an active subscription:
     await InAppPurchase.instance.restorePurchases();
+
+    /*
+      This is a safety timeout. If there are no purchase stream events found in the next three seconds (example: a user having no purchase history at all),
+      the app should proceed anyway so that it does not indefinitely wait for something that will never happen:
+    */
+    Future.delayed(Duration(seconds: 3), (){
+      if(!(firstPurchaseCheckComplete.isCompleted)){
+        firstPurchaseCheckComplete.complete();
+      }
+    });
+  }
+
+  /*
+   This method returns a short document ID for a purchase that is safe for Firestore to handle.
+   On iOS devices, serverVerificationData can be the entire base 64-encoded App Store receipt,
+   which can exceed the 1500-byte document ID limit that Firestore has.
+   Since purchaseID is a short and stable per-transaction identifier on both Android and iOS,
+   it is used as the document ID instead. The raw token is still stored as a regular field for reference:
+  */
+  String getMyDocIdForPurchase(PurchaseDetails pd){
+    return pd.purchaseID ?? pd.verificationData.serverVerificationData.hashCode.toString();
   }
 
   Future<void> updateDeviceIdIfNecessary(String myPurchaseToken) async{
@@ -179,6 +200,11 @@ class theBillingService{
         onSubscriptionChanged(false);
         onProductIdChanged(null);
       }
+    }
+
+    //This happens at the end, after all of the processing has happened:
+    if(!(firstPurchaseCheckComplete.isCompleted)){
+      firstPurchaseCheckComplete.complete();
     }
   }
 
