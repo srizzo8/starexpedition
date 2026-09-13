@@ -143,35 +143,46 @@ class createThreadState extends State<createThread> with RouteAware{
     return messageForUserCreateThread;
   }
 
-  Future<void> sendUserFeedback({required String myUsername, required String myThreadName, required String myThreadContent}) async{
+  Future<void> sendUserFeedback({required BuildContext context, required String myUsername, required String myThreadName, required String myThreadContent}) async{
     final myPayload = {
       "username": myUsername,
       "users_feedback": "${myThreadName}\n${myThreadContent}",
     };
 
-    final myResponse = await http.post(
-      Uri.parse("https://star-expedition-feedback.vercel.app/api/sendUserFeedback"),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(myPayload),
-    );
+    try{
+      final myResponse = await http.post(
+        Uri.parse("https://star-expedition-feedback.vercel.app/api/sendUserFeedback"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(myPayload),
+      );
 
-    if(myResponse.statusCode == 200){
-      print("The feedback has been saved successfully");
+      if(myResponse.statusCode == 200){
+        print("The feedback has been saved successfully");
+      }
+      else{
+        print("Unfortunately, there was an error saving the feedback: ${myResponse.body}");
+      }
     }
-    else{
-      print("Unfortunately, there was an error saving the feedback: ${myResponse.body}");
+    catch(e, myStack){
+      if(context.mounted){
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Feedback unable to be sent to Supabase"),
+            content: Text("Exception: ${e.toString()}\nStack trace: ${myStack}"),
+            actions: [
+              TextButton(
+                child: Text("Ok"),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                }
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
-
-  /*Future<String> uploadMyImageToFirebaseStorage(File myFile) async{
-    final myFileName = "${DateTime.now().toUtc().millisecondsSinceEpoch}_${myFile.path.split('/').last}";
-    final myStorageRef = FirebaseStorage.instance.ref().child("thread_images/${myFileName}");
-
-    final uploadTask = await myStorageRef.putFile(myFile);
-    final downloadMyUrl = await uploadTask.ref.getDownloadURL();
-
-    return downloadMyUrl;
-  }*/
 
   Future<String> uploadMyImageToCloudinary(String myOriginalPath) async{
     const myCloudName = "qrbab8fp";
@@ -1322,7 +1333,7 @@ class createThreadState extends State<createThread> with RouteAware{
                                     createFeedbackAndSuggestionsThread(theNewFeedbackAndSuggestionsThread);
 
                                     //Feedback:
-                                    sendUserFeedback(myUsername: usernameController.text, myThreadName: threadNameController.text, myThreadContent: threadContentController.text);
+                                    await sendUserFeedback(context: context, myUsername: usernameController.text, myThreadName: threadNameController.text, myThreadContent: threadContentController.text);
 
                                     if(myLoginStatus.userIsLoggedIn == true && myLoginStatus.myUsername != ""){
                                       if(firebaseDesktopHelper.onDesktop){
