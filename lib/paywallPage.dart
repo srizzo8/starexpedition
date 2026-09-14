@@ -36,14 +36,36 @@ class paywallPage extends StatefulWidget{
 class paywallPageState extends State<paywallPage>{
   List<ProductDetails> myProducts = [];
   bool isLoading = true;
+  bool isProcessingMyPurchase = false;
 
   bool monthlyButtonBool = false;
   bool yearlyButtonBool = false;
+
+  StreamSubscription<void>? purchaseFailedSubscription;
 
   @override
   void initState(){
     super.initState();
     loadMyProducts();
+
+    //This listens for purchase errors and cancellations so that the
+    //loading screen can immediately disappear instead of waiting for
+    //the 10-second safety timeout:
+    purchaseFailedSubscription = widget.myBillingService.purchaseFailedStream.listen((_){
+      if(mounted && isProcessingMyPurchase){
+        setState((){
+          monthlyButtonBool = false;
+          yearlyButtonBool = false;
+          isProcessingMyPurchase = false;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose(){
+    purchaseFailedSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> loadMyProducts() async{
@@ -95,7 +117,11 @@ class paywallPageState extends State<paywallPage>{
           title: Text("Star Expedition"),
           backgroundColor: Colors.red,
         ),
-        body: Column(
+        body: isProcessingMyPurchase?
+        Center(
+          child: CircularProgressIndicator(color: Colors.red,),
+        ):
+        Column(
           children: [
             Container(
               height: MediaQuery.of(context).size.height * 0.015625,
@@ -148,14 +174,27 @@ class paywallPageState extends State<paywallPage>{
                           return;
                         }
 
-                        setState(() => monthlyButtonBool = true);
+                        setState((){
+                          monthlyButtonBool = true;
+                          isProcessingMyPurchase = true;
+                        });
 
                         print("Paying for a monthly subscription");
                         widget.myBillingService.subscribe(monthly!);
 
-                        if(mounted){
-                          setState(() => monthlyButtonBool = false);
-                        }
+                        //This is a safety timeout. If nothing resolves in 10 seconds (this occurs in cases like a user cancelling a purchase or an error
+                        //occurring during a purchase), the CircularProgressIndicator should stop showing so a user is not indefinitely stuck there:
+                        Future.delayed(Duration(seconds: 10), (){
+                          if(mounted && isProcessingMyPurchase){
+                            setState((){
+                              monthlyButtonBool = false;
+                              isProcessingMyPurchase = false;
+                            });
+                          }
+                        });
+
+                        //There is no setState here because it re-enabled the $1.99/month button before the purchase process actually completed.
+                        //Thus, setState is useless because the only action the subscribe() method does is begin the purchase process.
                       }
                     ),
                   ),
@@ -192,14 +231,27 @@ class paywallPageState extends State<paywallPage>{
                           return;
                         }
 
-                        setState(() => yearlyButtonBool = true);
+                        setState((){
+                          yearlyButtonBool = true;
+                          isProcessingMyPurchase = true;
+                        });
 
                         print("Paying for a yearly subscription");
                         widget.myBillingService.subscribe(yearly!);
 
-                        if(mounted){
-                          setState(() => yearlyButtonBool = false);
-                        }
+                        //This is a safety timeout. If nothing resolves in 10 seconds (this occurs in cases like a user cancelling a purchase or an error
+                        //occurring during a purchase), the CircularProgressIndicator should stop showing so a user is not indefinitely stuck there:
+                        Future.delayed(Duration(seconds: 10), (){
+                          if(mounted && isProcessingMyPurchase){
+                            setState((){
+                              yearlyButtonBool = false;
+                              isProcessingMyPurchase = false;
+                            });
+                          }
+                        });
+
+                        //There is no setState here because it re-enabled the $14.99/year button before the purchase process actually completed.
+                        //Thus, setState is useless because the only action the subscribe() method does is begin the purchase process.
                       }
                     ),
                   ),

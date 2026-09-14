@@ -36,10 +36,13 @@ class theBillingService{
 
   bool userIsSubscribed = false;
 
-  /*
-    This completer completes once the first purchase-stream response has either been processed or timed out.
-    Thus, the initial access check can wait for actual billing data rather than trying to go ahead of it:
-  */
+  //This broadcasts any time that a purchase ends up erroring or getting cancelled so that the Paywall page
+  //can immediately clear its loading state rather than wait for the safety timeout:
+  final StreamController<void> purchaseFailedController = StreamController<void>.broadcast();
+  Stream<void> get purchaseFailedStream => purchaseFailedController.stream;
+
+  //This completer completes once the first purchase-stream response has either been processed or timed out.
+  //Thus, the initial access check can wait for actual billing data rather than trying to go ahead of it:
   final Completer<void> firstPurchaseCheckComplete = Completer<void>();
   bool hasReceivedFirstUpdate = false;
 
@@ -64,10 +67,9 @@ class theBillingService{
     //Asking Google Play if the device has an active subscription:
     await InAppPurchase.instance.restorePurchases();
 
-    /*
-      This is a safety timeout. If there are no purchase stream events found in the next three seconds (example: a user having no purchase history at all),
-      the app should proceed anyway so that it does not indefinitely wait for something that will never happen:
-    */
+
+    //This is a safety timeout. If there are no purchase stream events found in the next three seconds (example: a user having no purchase history at all),
+    //the app should proceed anyway so that it does not indefinitely wait for something that will never happen:
     Future.delayed(Duration(seconds: 3), (){
       if(!(firstPurchaseCheckComplete.isCompleted)){
         firstPurchaseCheckComplete.complete();
@@ -75,13 +77,11 @@ class theBillingService{
     });
   }
 
-  /*
-   This method returns a short document ID for a purchase that is safe for Firestore to handle.
-   On iOS devices, serverVerificationData can be the entire base 64-encoded App Store receipt,
-   which can exceed the 1500-byte document ID limit that Firestore has.
-   Since purchaseID is a short and stable per-transaction identifier on both Android and iOS,
-   it is used as the document ID instead. The raw token is still stored as a regular field for reference:
-  */
+  //This method returns a short document ID for a purchase that is safe for Firestore to handle.
+  //On iOS devices, serverVerificationData can be the entire base 64-encoded App Store receipt,
+  //which can exceed the 1500-byte document ID limit that Firestore has.
+  //Since purchaseID is a short and stable per-transaction identifier on both Android and iOS,
+  //it is used as the document ID instead. The raw token is still stored as a regular field for reference:
   String getMyDocIdForPurchase(PurchaseDetails pd){
     return pd.purchaseID ?? pd.verificationData.serverVerificationData.hashCode.toString();
   }
@@ -167,6 +167,7 @@ class theBillingService{
       }
       else if(myPurchase.status == PurchaseStatus.error || myPurchase.status == PurchaseStatus.canceled){
         print("Either there is a subscription error or the subscription has been cancelled.");
+        purchaseFailedController.add(null);
       }
       else if(myPurchase.status == PurchaseStatus.pending){
         print("The purchase is pending. This is common for iOS devices, since they ask for user verification prior to purchase.");
@@ -360,5 +361,6 @@ class theBillingService{
 
   void dispose(){
     purchaseSubscription?.cancel();
+    purchaseFailedController.close();
   }
 }
