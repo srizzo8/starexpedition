@@ -49,9 +49,8 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
   OverlayEntry? myPaywallOverlay;
   bool paywallShowing = false;
 
-  //This is temporary and meant to make the Paywall page show for a user regardless of his or her subscription status.
-  //It is used to break the Sandbox renewal cycle for testing.
-  bool debugForcePaywall = true;
+  //Setting this to true is used to break the Sandbox renewal cycle for testing:
+  bool debugForcePaywall = false;
 
   @override
   void initState(){
