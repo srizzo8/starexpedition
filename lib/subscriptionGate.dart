@@ -49,6 +49,10 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
   OverlayEntry? myPaywallOverlay;
   bool paywallShowing = false;
 
+  //This is temporary and meant to make the Paywall page show for a user regardless of his or her subscription status.
+  //It is used to break the Sandbox renewal cycle for testing.
+  bool debugForcePaywall = true;
+
   @override
   void initState(){
     super.initState();
@@ -66,6 +70,15 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
           "message": "onSubscriptionChanged fired with isSubscribed: ${isSubscribed}",
           "timestamp": DateTime.now().toIso8601String(),
         });
+
+        if(debugForcePaywall){
+          if(mounted){
+            setState(() => myAccess = myAccessState.blocked);
+          }
+
+          //Entirely skip the normal unlocked/locked logic while debugging:
+          return;
+        }
 
         if(isSubscribed){
           if(paywallShowing){
@@ -120,6 +133,10 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
     print("init - inTrial: ${inTrial}");
     print("init - userIsSubscribed: ${userIsSubscribed}");
 
+    if(debugForcePaywall){
+      setState(() => myAccess = myAccessState.blocked);
+    }
+
     //Updates here only happen if the billing has not unlocked yet:
     if(!userIsSubscribed && mounted){
       setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
@@ -132,6 +149,11 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
   void startAccessMonitoring(){
     print("startAccessMonitoring started at: ${DateTime.now()}");
     myAccessTimer = Timer.periodic(const Duration(seconds: 30), (_) async{
+      if(debugForcePaywall){
+        //Skipping all access monitoring when debugForcePaywall is true:
+        return;
+      }
+
       print("Timer started at: ${DateTime.now()}");
 
       if(!mounted){
