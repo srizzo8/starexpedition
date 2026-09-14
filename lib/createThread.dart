@@ -164,12 +164,15 @@ class createThreadState extends State<createThread> with RouteAware{
       }
     }
     catch(e, myStack){
+      print("sendUserFeedback failed. Here is the exception: ${e}");
+      print("Stack trace: ${myStack}");
+
       if(context.mounted){
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text("Feedback unable to be sent to Supabase"),
-            content: Text("Exception: ${e.toString()}\nStack trace: ${myStack}"),
+            title: Text("Feedback unable to be sent"),
+            content: Text("Unfortunately, something went wrong when trying to send your feedback. Please try again soon."),
             actions: [
               TextButton(
                 child: Text("Ok"),
