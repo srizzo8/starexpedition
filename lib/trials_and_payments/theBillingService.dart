@@ -86,11 +86,20 @@ class theBillingService{
     return pd.purchaseID ?? pd.verificationData.serverVerificationData.hashCode.toString();
   }
 
-  Future<void> updateDeviceIdIfNecessary(String myPurchaseToken) async{
+  Future<void> updateDeviceIdIfNecessary(String myDocId) async{
     try{
       final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
 
-      await FirebaseFirestore.instance.collection("Subscriptions").doc(myPurchaseToken).update({
+      final myDoc = await FirebaseFirestore.instance.collection("Subscriptions").doc(myDocId).get();
+
+      //Firestore should only update if the stored deviceId is different from the current one instead of
+      //updating unconditionally whenever one opens up Star Expedition:
+      if(myDoc.exists && myDoc.data()!["deviceId"] == myDeviceId){
+        print("Since the device ID already matches, no updates are necessary.");
+        return;
+      }
+
+      await FirebaseFirestore.instance.collection("Subscriptions").doc(myDocId).update({
         "deviceId": myDeviceId,
         "lastUpdated": DateTime.now().toIso8601String(),
       });
