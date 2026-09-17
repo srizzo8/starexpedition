@@ -67,7 +67,6 @@ class theBillingService{
     //Asking Google Play if the device has an active subscription:
     await InAppPurchase.instance.restorePurchases();
 
-
     //This is a safety timeout. If there are no purchase stream events found in the next three seconds (example: a user having no purchase history at all),
     //the app should proceed anyway so that it does not indefinitely wait for something that will never happen:
     Future.delayed(Duration(seconds: 3), (){
@@ -77,13 +76,16 @@ class theBillingService{
     });
   }
 
-  //This method returns a short document ID for a purchase that is safe for Firestore to handle.
-  //On iOS devices, serverVerificationData can be the entire base 64-encoded App Store receipt,
-  //which can exceed the 1500-byte document ID limit that Firestore has.
-  //Since purchaseID is a short and stable per-transaction identifier on both Android and iOS,
-  //it is used as the document ID instead. The raw token is still stored as a regular field for reference:
-  String getMyDocIdForPurchase(PurchaseDetails pd){
-    return pd.purchaseID ?? pd.verificationData.serverVerificationData.hashCode.toString();
+  //This method will return a Firestore-safe document ID that is stable and based on the product one purchased and his or her device
+  //instead of the purchase transaction itself. This will avoid iOS issues where purchaseID can be null on purchases that are restored.
+  //Unfortunately, this ends up causing the app to hash the Apple App Store receipt (serverVerificationData), which is a value that is
+  //occasionally unstable between fetches. As a result, a new "unique" ID and a new Firestore document are generated every time an
+  //iOS user opens up Star Expedition, even for an already existing subscription. If the deviceId and productId are keyed instead, the
+  //same Firestore document will be found and reused any time one opens Star Expedition, since a device only needs one active subscription
+  //document per product:
+  Future<String> getMyDocIdForPurchase(PurchaseDetails pd) async{
+    final myDeviceId = await deviceIdHelper().getPlatformDeviceId();
+    return "${myDeviceId}.${pd.productID}";
   }
 
   Future<void> updateDeviceIdIfNecessary(String myDocId) async{
@@ -147,7 +149,7 @@ class theBillingService{
       print("The purchase ID: ${myPurchase.productID}");
 
       if(myPurchase.status == PurchaseStatus.purchased || myPurchase.status == PurchaseStatus.restored){
-        final myDocId = getMyDocIdForPurchase(myPurchase);
+        final myDocId = await getMyDocIdForPurchase(myPurchase);
 
         //Checking Firestore to see if the token is still active:
         final isActive = await isTokenActiveInFirestore(myDocId);
@@ -255,7 +257,7 @@ class theBillingService{
 
   Future<void> saveSubscriptionToFirestore(PurchaseDetails pd) async{
     try{
-      final myDocId = getMyDocIdForPurchase(pd);
+      final myDocId = await getMyDocIdForPurchase(pd);
       final myPurchaseToken = pd.verificationData.serverVerificationData;
 
       //Getting the device ID:
