@@ -135,11 +135,24 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
     if(debugForcePaywall){
       setState(() => myAccess = myAccessState.blocked);
     }
+    else if(!userIsSubscribed && mounted){
+      //This is a fallback for if debugForcePaywall is false.
+      //If the code reaches this else-if statement, the live purchaseStream response may have not arrived on time.
+      //An example of a scenario where this may happen is when the iOS restore latency time exceeds the time of
+      //the safety timeout. Before the Paywall page shows, Firestore should be checked directly, considering that it
+      //already reflects the correct current subscription status for a user:
+      final isExpiredInFirestore = await isSubscriptionExpiredInFirestore();
 
-    //Updates here only happen if the billing has not unlocked yet:
-    if(!userIsSubscribed && mounted){
-      setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
-      print("init - myAccess: ${myAccess}");
+      if(!isExpiredInFirestore){
+        print("Firestore has confirmed an active subscription even though userIsSubscribed is false. Thus, access will be granted.");
+        setState(() => myAccess = myAccessState.permitted);
+      }
+      else{
+        setState(() => myAccess = inTrial? myAccessState.permitted : myAccessState.blocked);
+      }
+    }
+    else if(mounted){
+      setState(() => myAccess = myAccessState.permitted);
     }
 
     startAccessMonitoring();
@@ -180,27 +193,19 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
       if(!isInTrial && mounted){
         final bool isExpiredInFirestore = await isSubscriptionExpiredInFirestore();
 
-        if(isExpiredInFirestore){
-          print("According to Firestore, the subscription is expired. Therefore, the paywall page will show.");
-          setState((){
-            myAccess = myAccessState.blocked;
-            myActiveProductId = null;
-          });
+        if(!isExpiredInFirestore){
+          print("According to Firestore, there is an active subscription. Therefore, access remains granted for the user.");
+          return;
+        }
 
-          showPaywallOverlay();
-        }
-        else if(!userIsSubscribed){
-          print("Since user is not subscribed, it will show the paywall page");
-          setState((){
-            myAccess = myAccessState.blocked;
-            myActiveProductId = null;
-          });
+        print("According to Firestore, the subscription is not active. As a result, it will show the Paywall page");
 
-          showPaywallOverlay();
-        }
-        else{
-          print("Since user is subscribed according to Google Play, it will not show the paywall page");
-        }
+        setState((){
+          myAccess = myAccessState.blocked;
+          myActiveProductId = null;
+        });
+
+        showPaywallOverlay();
       }
     });
   }
@@ -300,7 +305,17 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
       "timestamp": DateTime.now().toIso8601String(),
     });
 
-    if(!isInTrial && (isExpiredInFirestore || !userIsSubscribed) && mounted){
+    if(!isExpiredInFirestore){
+      print("Since Firestore has confirmed that there is an active subscription, access has been granted");
+
+      if(mounted){
+        setState(() => myAccess = myAccessState.permitted);
+      }
+
+      return;
+    }
+
+    if(!isInTrial && !userIsSubscribed && mounted){
       print("Navigation check - showing the paywall page");
 
       await FirebaseFirestore.instance.collection("Debug_Logs").add({
@@ -408,7 +423,20 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
     print("On resume - userIsSubscribed: ${userIsSubscribed}");
 
-    if(!isInTrial && (isExpiredInFirestore || !userIsSubscribed) && mounted){
+    //If Firestore can confirm that a user has an active subscription that has not expired, he or she
+    //should be granted access to using Star Expedition regardless of whether userIsSubscribed is true
+    //or false, since it can be stale if the live purchaseStream response has not caught up yet:
+    if(!isExpiredInFirestore){
+      print("On resume - since Firestore has confirmed that there is an active subscription, the user is granted access to using Star Expedition");
+
+      if(mounted){
+        setState(() => myAccess = myAccessState.permitted);
+      }
+
+      return;
+    }
+
+    if(!isInTrial && !userIsSubscribed && mounted){
       print("On resume - showing the paywall page");
 
       setState((){
