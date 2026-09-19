@@ -278,6 +278,11 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
       return;
     }
 
+    if(debugForcePaywall){
+      //This skips the normal access logic while debugging:
+      return;
+    }
+
     final isInTrial = await myTrialService.isInTrial();
     print("Navigation check - isInTrial: ${isInTrial}");
 
@@ -405,6 +410,11 @@ class subscriptionGateState extends State<subscriptionGate> with WidgetsBindingO
 
   Future<void> checkAccessOnResume() async{
     if(!mounted){
+      return;
+    }
+
+    if(debugForcePaywall){
+      //This skips the normal access logic while debugging:
       return;
     }
 

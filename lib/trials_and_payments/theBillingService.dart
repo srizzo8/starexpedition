@@ -284,6 +284,11 @@ class theBillingService{
 
       print("The subscription is saved to Firestore. It expires on: ${myExpiryDate}");
 
+      //Marking any other active documents in the Subscriptions collection for one's device
+      //as superseded so that a user switching his or her plan does not leave multiple documents
+      //that have isActive set to true for one device:
+      await supersedeOtherActiveSubscriptions(myDeviceId, myDocId);
+
       await FirebaseFirestore.instance.collection("Debug_Logs").add({
         "message": "saveSubscriptionToFirestore is successful for docId ${myDocId}, deviceId: ${myDeviceId}, expiry: ${myExpiryDate}",
         "timestamp": DateTime.now().toIso8601String(),
@@ -295,6 +300,31 @@ class theBillingService{
         "message": "saveSubscriptionToFirestore had an error. This is the error: ${e}",
         "timestamp": DateTime.now().toIso8601String(),
       });
+    }
+  }
+
+  //This method makes all other active documents in the Subscriptions collection for one's device inactive
+  //and only keeps the most recently saved one (myCurrentDocId) active. It also handles the case where a user
+  //switches his or her subscription plan, which results in a new document in the Subscriptions collection being
+  //generated rather than overwriting the previous one due to how the document includes the productId:
+  Future<void> supersedeOtherActiveSubscriptions(String myDeviceId, String myCurrentDocId) async{
+    try{
+      final myOutdatedDocs = await FirebaseFirestore.instance.collection("Subscriptions").where("deviceId", isEqualTo: myDeviceId).where("isActive", isEqualTo: true).get();
+
+      for(final myDoc in myOutdatedDocs.docs){
+        if(myDoc.id != myCurrentDocId){
+          await myDoc.reference.update({
+            "isActive": false,
+            "supersededBy": myCurrentDocId,
+            "lastUpdated": DateTime.now().toIso8601String(),
+          });
+
+          print("The outdated subscription document that was superseded: ${myDoc.id}");
+        }
+      }
+    }
+    catch (e){
+      print("Unfortunately, there was an error in superseding the old subscription documents. Here is the error: ${e}");
     }
   }
 
